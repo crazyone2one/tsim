@@ -16,3 +16,14 @@ spring:
       max-active: 20
       # 配置获取连接等待超时的时间
       max-wait: 60000
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: Asia/Shanghai
+    locale: zh_CN
+
+logging:
+  level:
+    cn:
+      master:
+        tsim:
+          mapper: debug
