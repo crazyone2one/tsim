@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>case manage</title>
+        <link th:href="@{/common/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+        <link rel="stylesheet" th:href="@{/common/bootstrap/icons/bootstrap-icons.css}">
+        <link th:href="@{/css/style.css}" rel="stylesheet">
+        <script type="text/javascript" th:src="@{/common/jquery/jquery-3.6.0.min.js}"></script>
+        <script type="text/javascript" th:src="@{/common/bootstrap/js/bootstrap.js}"></script>
+        <meta name="author" content="11‘s papa">
+    </head>
+    <body>
+        <nav role="navigation" th:include="nav :: navigation"></nav>
+        <div class="wrapper">
+            <div class="main">
+                <main class="content">
+                    <div class="container-fluid">
+                        <div class="header">
+                            <h1>测试用例管理</h1>
+                        </div>
+                        <div class="row">
+                            <!--                            左侧树形菜单-->
+                            <div class="col-md-3 col-xl-2">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h5 class="card-title mb-0">选择项目</h5>
+                                    </div>
+                                    <nav class="nav flex-column" th:each="temp:${proMap}">
+                                        <a class="nav-link " aria-current="page" href="#"
+                                           th:text="${temp.value.projectName}">Active</a>
+                                    </nav>
+                                </div>
+                            </div>
+                            <!--                            右侧内容-->
+                            <div class="col-md-9 col-xl-10 border">
+                                <div class="tab-content">
+                                    <div class="row align-items-center">
+                                        <form th:action="@{case_list}" method="get">
+                                            <input type="text" class="col" placeholder="请输入项目名称" name="priority"
+                                                   id="priority-s"
+                                                   aria-label="priority" aria-describedby="priority-s">
+                                            <button type="submit" class="btn btn-primary col">查询</button>
+                                            <button type="button" class="btn btn-primary col"
+                                                    data-bs-toggle="modal" data-bs-target="#add-case-modal">新增
+                                            </button>
+                                        </form>
+                                    </div>
+                                    <div>
+                                        <table class="table table-hover">
+                                            <thead>
+                                            <tr>
+                                                <th scope="col">#</th>
+                                                <th scope="col">标题</th>
+                                                <th scope="col">描述</th>
+                                                <th scope="col">前置条件</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:each="temp,stat:${tests}">
+                                                <input name="id" type="hidden" class="form-control"
+                                                       th:value="${temp.id}" id="id">
+                                                <td th:text="${stat.index+1}"></td>
+                                                <td th:text="${temp.name}"></td>
+                                                <td th:text="${temp.description}"></td>
+                                                <td th:text="${temp.precondition}"></td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </main>
+            </div>
+        </div>
+        <!-- 添加问题单Modal弹框 -->
+        <div th:replace="~{test-case/add_case_modal::addCaseFragment}"></div>
+    </body>
+</html>
