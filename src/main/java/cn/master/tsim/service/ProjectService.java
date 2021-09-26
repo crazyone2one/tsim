@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -62,4 +63,8 @@ public interface ProjectService extends IService<Project> {
     void updateProjectStatus(String projectId);
 
     IPage<Project> projectListPages(Project project, Integer pageCurrent, Integer pageSize);
+
+    Map<String, Project> projectMap();
+
+    Map<String, Map<String, Integer>> refMap();
 }

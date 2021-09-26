@@ -4,6 +4,7 @@ package cn.master.tsim.controller;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Project;
 import cn.master.tsim.service.ProjectService;
+import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import java.util.List;
  */
 @Slf4j
 @Controller
-@RequestMapping()
+@RequestMapping("/project")
 public class ProjectController {
     private final ProjectService projectService;
 
@@ -33,25 +34,28 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
-    @GetMapping(value = "/projectList_{pageCurrent}_{pageSize}")
-    public String projectList(HttpServletRequest request, Model model, @PathVariable("pageCurrent")Integer pageCurrent,
-                              @PathVariable("pageSize")Integer pageSize, Project project) {
+    @GetMapping(value = "/projectList")
+    public String projectList(HttpServletRequest request, Model model, @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
+                              @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize, Project project) {
         final IPage<Project> iPage = projectService.projectListPages(project, pageCurrent, pageSize);
         final List<Project> records = iPage.getRecords();
         model.addAttribute("records", records);
         model.addAttribute("iPage", iPage);
+        model.addAttribute("ref", projectService.refMap());
         return "project/project_list";
     }
 
     @PostMapping(value = "/addProject")
     @ResponseBody
-    public ResponseResult addProject(Project project) {
+    public ResponseResult addProject(Project project, Model model) {
         try {
             projectService.addProject(project);
-            return ResponseResult.success("数据添加成功");
+            model.addAttribute("resultMsg", ResponseUtils.success("数据添加成功"));
+            return ResponseUtils.success("数据添加成功");
         } catch (Exception e) {
             log.info(e.getMessage());
-            return ResponseResult.error("","数据添加失败");
+            model.addAttribute("resultMsg", ResponseUtils.error(400, "数据添加失败", e.getMessage()));
+            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
         }
     }
 
@@ -60,10 +64,10 @@ public class ProjectController {
     public ResponseResult updateProject(@RequestBody String source) {
         try {
             projectService.updateProjectStatus(source.split("=")[1]);
-            return ResponseResult.success("数据修改成功");
+            return ResponseUtils.success("数据修改成功");
         } catch (Exception e) {
             log.info(e.getMessage());
-            return ResponseResult.error("","数据修改失败");
+            return ResponseUtils.error(400, "数据修改失败", e.getMessage());
         }
     }
 }

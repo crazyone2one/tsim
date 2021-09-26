@@ -4,6 +4,7 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>项目管理</title>
+        <!--        <link th:href="@{/css/style.css}" rel="stylesheet">-->
         <link th:href="@{/common/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
         <link rel="stylesheet" th:href="@{/common/bootstrap/icons/bootstrap-icons.css}">
         <script type="text/javascript" th:src="@{/common/jquery/jquery-3.6.0.min.js}"></script>
@@ -11,88 +12,92 @@
         <meta name="author" content="11‘s papa">
     </head>
     <body>
-        <div id="wrapper">
-            <nav role="navigation" th:include="nav :: navigation"></nav>
-            <div class="container-fluid">
-                <div class="row wrapper border-bottom bg-white">
-                    <div class="col-lg-10"><h2>项目列表</h2></div>
-                </div>
-                <div class="wrapper">
-                    <div class="row">
-                        <div class="col-sm-12">
-                            <form th:action="@{projectList_0_0}" method="get">
-                                <div class="input-group mb-3" style="width: 15%">
-                                    <input type="text" class="form-control" placeholder="请输入项目名称" name="projectName"
-                                           id="basic-addon1"
-                                           aria-label="Username" aria-describedby="basic-addon1">
-                                    <button type="submit" class="btn btn-primary">查询</button>
-                                    <div style="display: inline-block;margin-left: 15px;">
-                                        <button type="button" class="btn btn-primary"
-                                                th:onclick="'javascript:addProject();'">新增
-                                        </button>
-                                    </div>
-                                </div>
-                                <datalist id="proList">
-                                    <option th:each="pro:${records}" th:value="${pro.projectName}"
-                                            th:text="${pro.projectName}"></option>
-                                </datalist>
-                            </form>
-                        </div>
+        <nav role="navigation" th:include="nav :: navigation"></nav>
+        <div class="container-fluid">
+            <div class="row wrapper border-bottom bg-white">
+                <div class="col-lg-10"><h2>项目列表</h2></div>
+            </div>
+            <div class="wrapper">
+                <div class="container-fluid">
+                    <div class="row align-items-center">
+                        <form th:action="@{projectList}" method="get">
+                            <input type="text" class="col" placeholder="请输入项目名称" name="projectName"
+                                   id="basic-addon1"
+                                   aria-label="Username" aria-describedby="basic-addon1">
+                            <button type="submit" class="btn btn-primary col">查询</button>
+                            <button type="button" class="btn btn-primary col"
+                                    th:onclick="addProject()">新增
+                            </button>
+                            <datalist id="proList">
+                                <option th:each="pro:${records}" th:value="${pro.projectName}"
+                                        th:text="${pro.projectName}"></option>
+                            </datalist>
+                        </form>
                     </div>
-                    <div>
-                        <table class="table table-hover">
-                            <thead>
-                            <tr>
-                                <th scope="col">#</th>
-                                <th scope="col">项目名</th>
-                                <th scope="col">是否有效</th>
-                                <th scope="col">操作</th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            <tr th:each="temp,stat:${iPage.records}">
-                                <input name="id" type="hidden" class="form-control"
-                                       th:value="${temp.id}" id="id">
-                                <th scope="row" th:text="${stat.index+1}"></th>
-                                <td th:text="${temp.projectName}"></td>
-                                <td th:switch="${temp.delFlag}">
-                                    <div class="form-check form-switch">
+                </div>
+                <div>
+                    <table class="table table-hover">
+                        <thead>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">项目名</th>
+                            <th scope="col">关联模块</th>
+                            <th scope="col">关联测试用例</th>
+                            <th scope="col">是否有效</th>
+                            <!--                            <th scope="col">操作</th>-->
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="temp,stat:${iPage.records}">
+                            <input name="id" type="hidden" class="form-control"
+                                   th:value="${temp.id}" id="id">
+                            <td th:text="${stat.index+1}"></td>
+                            <td th:text="${temp.projectName}"></td>
+                            <td>
+                                <a href="#"
+                                   th:text="${ref.get(temp.id).get('module')}"></a>
+                            </td>
+                            <td>
+                                <a href="#"
+                                   th:text="${ref.get(temp.id).get('case')}"></a>
+                            </td>
+                            <td th:switch="${temp.delFlag}">
+                                <div class="form-check form-switch">
                                         <span th:case="0">
                                             <input class="form-check-input" type="checkbox" id="un-del" checked
                                                    th:onclick="updateStatus([[${temp.id}]])">
                                         <label class="form-check-label" for="un-del"></label>
                                         </span>
-                                        <span th:case="1">
+                                    <span th:case="1">
                                             <input class="form-check-input" type="checkbox" id="del"
                                                    th:onclick="updateStatus([[${temp.id}]])">
                                         <label class="form-check-label" for="del"></label>
                                         </span>
-                                    </div>
-                                </td>
-                                <td>
-                                    <a href="#" class="disabled">
-                                        <i class="bi bi-card-text"></i>
-                                    </a>
-                                    <a href="#" class="disabled">
-                                        <i class="bi bi-trash"></i>
-                                    </a>
-                            </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                                </div>
+                            </td>
+                            <!--                            <td>-->
+                            <!--                                <a href="#" class="disabled">-->
+                            <!--                                    <i class="bi bi-card-text"></i>-->
+                            <!--                                </a>-->
+                            <!--                                <a href="#" class="disabled">-->
+                            <!--                                    <i class="bi bi-trash"></i>-->
+                            <!--                                </a>-->
+                            <!--                            </td>-->
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
-<!--        toast-->
-        <div aria-live="polite" aria-atomic="true" class="position-relative" id="toast-div">
+        <!--        toast-->
+        <div id="toast-div">
         </div>
         <!--        add modal-->
         <div class="modal fade" id="add-project-modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
              aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <form class="modal-content needs-validation" id="addProjectForm" th:action="@{/addProject}"
-                          method="post">
+                    <form class="modal-content needs-validation" id="addProjectForm">
                         <div class="modal-header">
                             <h5 class="modal-title" id="staticBackdropLabel">新增项目</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -100,7 +105,7 @@
                         <div class="modal-body">
                             <div class="box-body">
                                 <div class="form-group">
-                                    <label class="control-label col-sm-3">项目名：</label>
+                                    <label class="control-label col-sm-3">项目名</label>
                                     <div class="col-sm-5">
                                         <input type="text" class="form-control" id="add-project-name" name="projectName"
                                                value="" placeholder="输入项目名"/>
@@ -110,7 +115,7 @@
 
                         </div>
                         <div class="modal-footer">
-                            <button type="submit" class="btn btn-primary">确定</button>
+                            <button type="button" class="btn btn-primary" id="submit">确定</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消
                             </button>
                         </div>
@@ -123,17 +128,39 @@
 
             function toastInfo(msg, type) {
                 const wrapper = document.createElement('div');
-                wrapper.innerHTML = '<div class="alert alert-' + type + ' alert-dismissible position-absolute top-0 end-0" role="alert">' + msg + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>';
+                wrapper.innerHTML = '<div class="alert alert-' + type + ' alert-dismissible position-absolute top-0 end-0" role="alert">' + msg + '</div>';
                 alterDiv.append(wrapper);
             }
+
+            // 弹出添加modal
             function addProject() {
                 $("#add-project-modal").modal('show');
             }
 
-            // 更新项目状态，置为删除状态
+            // 保存项目
+            $('#submit').click(function () {
+                const data = $("#addProjectForm").serialize();
+                $.ajax({
+                    url: "/project/addProject",
+                    type: 'POST',
+                    data: data,
+                    dataType: 'JSON',
+                    success: function (arg) {
+                        const msg = arg['msg'];
+                        if (Object.is(arg['code'], 200)) {
+                            toastInfo(msg, 'success');
+                            window.location.reload();
+                        } else {
+                            toastInfo(msg, 'danger');
+                        }
+                    }
+                });
+            })
+
+            // 更新项目状态
             function updateStatus(projectId) {
                 $.ajax({
-                    url: '/updateProject/',
+                    url: '/project/updateProject/',
                     type: 'POST',
                     data: {
                         projectId: projectId
@@ -141,8 +168,12 @@
                     dataType: 'JSON',
                     success: function (arg) {
                         // console.log( arg['result']);
-                        const msg = arg['result'];
-                        toastInfo(msg, 'info');
+                        const msg = arg['msg'];
+                        if (Object.is(arg['code'], 200)) {
+                            toastInfo(msg, 'success');
+                        } else {
+                            toastInfo(msg, 'danger');
+                        }
                     }
                 })
             }

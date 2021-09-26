@@ -1,19 +1,23 @@
 package cn.master.tsim.service.impl;
 
+import cn.master.tsim.entity.Module;
 import cn.master.tsim.entity.Project;
+import cn.master.tsim.entity.TestCase;
 import cn.master.tsim.mapper.ProjectMapper;
+import cn.master.tsim.service.ModuleService;
 import cn.master.tsim.service.ProjectService;
+import cn.master.tsim.service.TestCaseService;
 import cn.master.tsim.util.UuidUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <p>
@@ -25,6 +29,10 @@ import java.util.Objects;
  */
 @Service
 public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> implements ProjectService {
+    @Autowired
+    private ModuleService moduleService;
+    @Autowired
+    private TestCaseService caseService;
 
     @Override
     public List<Project> findByPartialProjectName(String searchString) {
@@ -84,5 +92,30 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         return baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize),
                 wrapper);
+    }
+
+    @Override
+    public Map<String, Project> projectMap() {
+        Map<String, Project> result = new LinkedHashMap<>();
+        baseMapper.selectList(new QueryWrapper<>()).forEach(temp -> {
+            result.put(temp.getId(), temp);
+        });
+        return result;
+    }
+
+    @Override
+    public Map<String, Map<String, Integer>> refMap() {
+        Map<String, Map<String, Integer>> mapMap = new LinkedHashMap<>();
+        findByPartialProjectName("").forEach(temp -> {
+            Map<String, Integer> tempMap = new LinkedHashMap<>();
+//            统计关联的模块数量
+            final List<Module> modules = moduleService.listModule(temp.getId());
+            tempMap.put("module", CollectionUtils.isNotEmpty(modules) ? modules.size() : 0);
+//            统计关联的测试用例数量
+            final List<TestCase> cases = caseService.listTestCase(temp.getId(), "");
+            tempMap.put("case", CollectionUtils.isNotEmpty(cases) ? cases.size() : 0);
+            mapMap.put(temp.getId(), tempMap);
+        });
+        return mapMap;
     }
 }
