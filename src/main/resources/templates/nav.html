@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <title>导航列表</title>
+        <meta name="author" content="11‘s papa">
+    </head>
+    <body>
+        <nav class="navbar" role="navigation" th:fragment="navigation">
+            <div class="container">
+                <header class="d-flex justify-content-center py-3">
+                    <ul class="nav nav-pills">
+                        <li class="nav-item">
+                            <a th:href="@{dashboard}" class="nav-link">Dashboard</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/project/projectList}" class="nav-link">项目管理</a>
+                        </li>
+                        <li class="nav-item">
+                            <a th:href="@{/case/case_list}" class="nav-link">用例管理</a>
+                        </li>
+                    </ul>
+                </header>
+            </div>
+        </nav>
+    </body>
+</html>
