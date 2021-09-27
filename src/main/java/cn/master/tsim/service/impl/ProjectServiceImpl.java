@@ -71,7 +71,11 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         if (Objects.nonNull(project)) {
             return project;
         }
-        final Project build = Project.builder().projectName(projectName).build();
+        final Project build = Project.builder().projectName(projectName)
+                .projectCode(UuidUtils.generate())
+                .createData(new Date())
+                .delFlag("0")
+                .build();
         baseMapper.insert(build);
         return build;
     }
@@ -112,7 +116,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
             final List<Module> modules = moduleService.listModule(temp.getId());
             tempMap.put("module", CollectionUtils.isNotEmpty(modules) ? modules.size() : 0);
 //            统计关联的测试用例数量
-            final List<TestCase> cases = caseService.listTestCase(temp.getId(), "");
+            final List<TestCase> cases = caseService.listTestCase(null, temp.getId(), "");
             tempMap.put("case", CollectionUtils.isNotEmpty(cases) ? cases.size() : 0);
             mapMap.put(temp.getId(), tempMap);
         });
