@@ -14,7 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -49,9 +51,42 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     }
 
     @Override
-    public List<TestCase> listTestCase(String projectId, String moduleId) {
-        return baseMapper.selectList(new QueryWrapper<TestCase>().lambda()
-                .eq(StringUtils.isNotBlank(projectId), TestCase::getProjectId, projectId)
-                .eq(StringUtils.isNotBlank(moduleId), TestCase::getModuleId, moduleId));
+    public List<TestCase> listTestCase(TestCase testCase, String projectId, String moduleId) {
+        QueryWrapper<TestCase> wrapper = new QueryWrapper<>();
+        List<String> tempProjectId = new LinkedList<>();
+        List<String> tempModuleId = new LinkedList<>();
+        if (Objects.nonNull(testCase)) {
+//            项目名称模糊查询
+            if (StringUtils.isNotBlank(testCase.getProjectId())) {
+                final List<Project> projects = projectService.findByPartialProjectName(testCase.getProjectId());
+                projects.forEach(temp -> tempProjectId.add(temp.getId()));
+                wrapper.lambda().in(TestCase::getProjectId, tempProjectId);
+            }
+//            模块模糊查询
+            if (StringUtils.isNotBlank(testCase.getModuleId())) {
+                moduleService.findByPartialModuleName(testCase.getModuleId()).forEach(temp -> tempModuleId.add(temp.getId()));
+                wrapper.lambda().in(TestCase::getModuleId, tempModuleId);
+            }
+//            测试用例标题模糊查询
+            wrapper.lambda().like(StringUtils.isNotBlank(testCase.getName()), TestCase::getName, testCase.getName());
+//            优先级
+            if (StringUtils.isNotBlank(testCase.getPriority())) {
+                wrapper.lambda().eq(TestCase::getPriority, testCase.getPriority());
+            }
+//            是否删除
+            wrapper.lambda().eq(StringUtils.isNotBlank(testCase.getActive()), TestCase::getActive, testCase.getActive());
+        } else {
+            wrapper.lambda().eq(StringUtils.isNotBlank(projectId), TestCase::getProjectId, projectId);
+            wrapper.lambda().eq(StringUtils.isNotBlank(moduleId), TestCase::getModuleId, moduleId);
+        }
+        return baseMapper.selectList(wrapper);
+    }
+
+    @Override
+    public void updateCase(String caseId) {
+        final TestCase aCase = getById(caseId);
+        aCase.setActive(Objects.equals(aCase.getActive(), "0") ? "1" : "0");
+        aCase.setUpdateDate(new Date());
+        baseMapper.updateById(aCase);
     }
 }

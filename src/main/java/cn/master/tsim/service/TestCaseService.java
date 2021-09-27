@@ -17,5 +17,7 @@ public interface TestCaseService extends IService<TestCase> {
 
     TestCase saveCase(TestCase testCase);
 
-    List<TestCase> listTestCase(String projectId, String moduleId);
+    List<TestCase> listTestCase(TestCase testCase, String projectId, String moduleId);
+
+    void updateCase(String caseId);
 }

@@ -4,11 +4,13 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>case manage</title>
-        <link th:href="@{/common/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+        <link th:href="@{/common/bootstrap/css/bootstrap.css}" rel="stylesheet">
         <link rel="stylesheet" th:href="@{/common/bootstrap/icons/bootstrap-icons.css}">
         <link th:href="@{/css/style.css}" rel="stylesheet">
         <script type="text/javascript" th:src="@{/common/jquery/jquery-3.6.0.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/bootstrap-treeview/bootstrap-treeview.js}"></script>
         <script type="text/javascript" th:src="@{/common/bootstrap/js/bootstrap.js}"></script>
+
         <meta name="author" content="11‘s papa">
     </head>
     <body>
@@ -27,10 +29,7 @@
                                     <div class="card-header">
                                         <h5 class="card-title mb-0">选择项目</h5>
                                     </div>
-                                    <nav class="nav flex-column" th:each="temp:${proMap}">
-                                        <a class="nav-link " aria-current="page" href="#"
-                                           th:text="${temp.value.projectName}">Active</a>
-                                    </nav>
+                                    <div id="tree"></div>
                                 </div>
                             </div>
                             <!--                            右侧内容-->
@@ -41,7 +40,7 @@
                                             <input type="text" class="col" placeholder="请输入项目名称" name="priority"
                                                    id="priority-s"
                                                    aria-label="priority" aria-describedby="priority-s">
-                                            <button type="submit" class="btn btn-primary col">查询</button>
+                                            <button type="submit" class="btn btn-primary col disabled">查询</button>
                                             <button type="button" class="btn btn-primary col"
                                                     data-bs-toggle="modal" data-bs-target="#add-case-modal">新增
                                             </button>
@@ -78,5 +77,59 @@
         </div>
         <!-- 添加问题单Modal弹框 -->
         <div th:replace="~{test-case/add_case_modal::addCaseFragment}"></div>
+        <script>
+            function getTree() {
+                const tree = [];
+                $.ajax({
+                    url: "/case/loadCaseInfo",
+                    dataType: 'json',
+                    async: false,
+                    success: function (res) {
+                        if (Object.is(res['code'], 200)) {
+                            const infoData = res['data'];
+                            if (infoData != null && infoData.length > 0) {
+                                //    遍历子节点
+                                $.each(infoData, function (index, value) {
+                                    const proNode = {};
+                                    proNode["text"] = value.projectName;
+                                    // proNode["icon"] = "bi bi-folder";
+                                    proNode["id"] = value.id;
+                                    proNode["code"] = value.projectCode;
+                                    //初始化suite
+                                    proNode["nodes"] = [];
+                                    $.each(value.modules, function (index, value) {
+                                        const suiteNode = {};
+                                        suiteNode["text"] = value.moduleName;
+                                        // suiteNode["icon"] = "bi bi-folder";
+                                        suiteNode["id"] = value.id;
+                                        suiteNode["nodes"] = [];
+                                        // 测试用例
+                                        $.each(value.caseList, function (index, value) {
+                                            const caseNode = {};
+                                            caseNode["text"] = value.name;
+                                            caseNode["id"] = value.id;
+                                            suiteNode["nodes"].push(caseNode);
+                                        })
+                                        proNode["nodes"].push(suiteNode);
+                                    })
+                                    tree.push(proNode);
+                                })
+                            }
+                        }
+                    }
+                })
+                console.log(tree);
+                return tree;
+            }
+
+            $(function (){
+                $("#tree").treeview({
+                    data: getTree(),
+                    levels: 3, // 设置层级数
+                    expandIcon: 'bi bi-arrow-bar-down',
+                    collapseIcon: 'bi bi-arrow-bar-up',
+                });
+            })
+        </script>
     </body>
 </html>

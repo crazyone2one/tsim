@@ -9,6 +9,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -31,7 +32,7 @@ public class Module implements Serializable {
     /**
      * 主键id
      */
-    @TableId(value = "id",type = IdType.ASSIGN_ID)
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
     /**
@@ -67,4 +68,6 @@ public class Module implements Serializable {
     @TableField("del_flag")
     private String delFlag;
 
+    @TableField(exist = false)
+    private List<TestCase> caseList;
 }
