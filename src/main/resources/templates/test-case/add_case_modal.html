@@ -8,11 +8,11 @@
     </head>
     <body>
         <div th:fragment="addCaseFragment">
-            <form th:action="@{/case/save}" method="post">
-                <div class="modal fade" id="add-case-modal" tabindex="-1" aria-labelledby="addCaseModalLabel"
-                     aria-hidden="true">
-                    <div class="modal-dialog modal-lg modal-dialog-centered">
-                        <div class="modal-content">
+            <div class="modal fade" id="add-case-modal" tabindex="-1" aria-labelledby="addCaseModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <form th:action="@{/case/save}" method="post" id="add-case-from">
                             <div class="modal-header">
                                 <h5 class="modal-title bg-light" id="addCaseModalLabel">添加测试用例</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -81,7 +81,7 @@
                                 <input id="caseExpectedResults" name="resultStore" type="hidden"
                                        class="form-control">
                                 <div id="case-step-area">
-                                    <div class="position-relative" id="alertPlaceholder"></div>
+                                    <div class="position-relative" id="toast-div"></div>
                                     <div class="row" id="row_1">
                                         <div class="col-md-5">
                                             <label for="caseSteps_1" class="form-label">测试步骤</label>
@@ -105,13 +105,14 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="submit" class="btn btn-primary" onclick="sub()">保存</button>
+                                <button type="button" class="btn btn-primary" onclick="sub()" id="submit">保存</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
                             </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
-            </form>
+            </div>
+            <script th:src="@{/common/toast_c.js}"></script>
             <script>
                 function addCaseStep() {
 
@@ -150,13 +151,13 @@
                     }
                 }
 
-                const alterDiv = document.getElementById('alertPlaceholder');
-
-                function alter(message, type) {
-                    const wrapper = document.createElement('div');
-                    wrapper.innerHTML = '<div class="alert alert-' + type + ' alert-dismissible position-absolute top-0 end-0" role="alert">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
-                    alterDiv.append(wrapper)
-                }
+                // const alterDiv = document.getElementById('alertPlaceholder');
+                //
+                // function alter(message, type) {
+                //     const wrapper = document.createElement('div');
+                //     wrapper.innerHTML = '<div class="alert alert-' + type + ' alert-dismissible position-absolute top-0 end-0" role="alert">' + message + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button></div>'
+                //     alterDiv.append(wrapper)
+                // }
 
                 function sub() {
                     const p_div = document.getElementById("case-step-area");
@@ -167,12 +168,26 @@
                         temp_steps[i] = s_div[i].getElementsByTagName("textarea")[0].value;
                         temp_results[i] = s_div[i].getElementsByTagName("textarea")[1].value;
                     }
-                    const c_s = document.getElementById("caseSteps");
-                    c_s.setAttribute("value", temp_steps.toString());
-                    const cer = document.getElementById("caseExpectedResults");
-                    cer.setAttribute("value", temp_results.toString());
-                    console.log(c_s);
-                    console.log(cer);
+                    const case_step = document.getElementById("caseSteps");
+                    case_step.setAttribute("value", temp_steps.toString());
+                    const caseExp = document.getElementById("caseExpectedResults");
+                    caseExp.setAttribute("value", temp_results.toString());
+                    const data = $("#add-case-from").serialize();
+                    $.ajax({
+                        url: "/case/save",
+                        type: 'POST',
+                        data: data,
+                        dataType: 'JSON',
+                        success: function (arg) {
+                            const msg = arg['msg'];
+                            if (Object.is(arg['code'], 200)) {
+                                toastInfo(msg, 'success');
+                                window.location.reload();
+                            } else {
+                                toastInfo(msg, 'danger');
+                            }
+                        }
+                    });
                 }
             </script>
         </div>
