@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>测试用例管理</title>
+        <link rel="stylesheet" th:href="@{/common/bootstrap/css/bootstrap.css}">
+        <link rel="stylesheet" th:href="@{/common/bootstrap/icons/bootstrap-icons.css}">
+        <script type="text/javascript" th:src="@{/common/jquery/jquery-3.6.0.min.js}"></script>
+        <script type="text/javascript" th:src="@{/common/bootstrap/js/bootstrap.js}"></script>
+        <meta name="author" content="11‘s papa">
+    </head>
+    <body>
+        <nav role="navigation" th:include="nav :: navigation"></nav>
+        <div class="container-fluid">
+            <!--操作栏-->
+            <div class="card pt-2">
+                <div class="card-body">
+                    <form th:action="@{case_list}" method="get">
+                        <div class="row">
+                            <div class="input-group mb-3" style="width: 15%">
+                                <span class="input-group-text" id="basic-addon1">所属项目</span>
+                                <input type="text" class="form-control" name="projectId" placeholder="项目名称（模糊查询）" aria-label="projectId"
+                                       aria-describedby="basic-addon1">
+                            </div>
+                            <div class="input-group mb-3" style="width: 15%">
+                                <span class="input-group-text" id="basic-addon2">所属模块</span>
+                                <input type="text" class="form-control" name="moduleId" placeholder="模块名称（模糊查询）" aria-label="moduleId"
+                                       aria-describedby="basic-addon2">
+                            </div>
+                            <div class="input-group mb-3 " style="width: 15%">
+                                <span class="input-group-text" id="basic-addon3">测试用例标题</span>
+                                <input type="text" class="form-control" name="name" placeholder="标题（模糊查询）" aria-label="name"
+                                       aria-describedby="basic-addon3">
+                            </div>
+                            <select class="form-select mb-3" style="width: 6%" aria-label="priority" name="priority">
+                                <option th:value="' '" selected>优先级</option>
+                                <option value="0">低</option>
+                                <option value="1">中</option>
+                                <option value="2">高</option>
+                            </select>
+                            <select class="form-select mb-3" style="width: 6%" aria-label="active" name="active">
+                                <option value="0">有效</option>
+                                <option value="1">无效</option>
+                            </select>
+                            <div class="col-lg-2 col-md-4 col-sm-6">
+                                <button type="submit" class="btn"><i class="bi bi-search" style="color: cornflowerblue"></i></button>
+                                <button type="button" class="btn"
+                                        data-bs-toggle="modal" data-bs-target="#add-case-modal"><i class="bi bi-plus-circle" style="color: cornflowerblue"></i>
+                                </button>
+                            </div>
+
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--        toast-->
+            <div id="toast-div"></div>
+            <!-- 添加问题单Modal弹框 -->
+            <div th:replace="~{test-case/add_case_modal::addCaseFragment}"></div>
+            <!--            列表数据-->
+            <div>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">所属项目</th>
+                        <th scope="col">所属模块</th>
+                        <th scope="col">标题</th>
+                        <th scope="col">描述</th>
+                        <th scope="col">前置条件</th>
+                        <th scope="col">优先级</th>
+                        <th scope="col">是否有效</th>
+                        <th scope="col">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="temp,stat:${tests}">
+                        <input name="id" type="hidden" class="form-control"
+                               th:value="${temp.id}" id="id">
+                        <td th:text="${stat.index+1}"></td>
+                        <td th:text="${proMap.get(temp.projectId).projectName}"></td>
+                        <td th:text="${moduleMap.get(temp.moduleId).moduleName}"></td>
+                        <td th:text="${temp.name}"></td>
+                        <td th:text="${temp.description}"></td>
+                        <td th:text="${temp.precondition}"></td>
+                        <td th:switch="${temp.priority}">
+                            <span th:case="0" th:text="低"></span>
+                            <span th:case="1" th:text="中"></span>
+                            <span th:case="2" th:text="高"></span>
+                        </td>
+                        <td th:switch="${temp.active}">
+                            <div class="form-check form-switch">
+                                <span th:case="0">
+                                    <input class="form-check-input" type="checkbox" id="un-del" checked
+                                           th:onclick="updateStatus([[${temp.id}]])">
+                                    <label class="form-check-label" for="un-del"></label>
+                                </span>
+                                <span th:case="1">
+                                    <input class="form-check-input" type="checkbox" id="del"
+                                           th:onclick="updateStatus([[${temp.id}]])">
+                                    <label class="form-check-label" for="del"></label>
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script th:src="@{/common/toast_c.js}"></script>
+        <script>
+            // 更新项目状态
+            function updateStatus(caseId) {
+                $.ajax({
+                    url: '/case/updateCaseStatus/',
+                    type: 'POST',
+                    data: {
+                        caseId: caseId
+                    },
+                    dataType: 'JSON',
+                    success: function (arg) {
+                        // console.log( arg['result']);
+                        const msg = arg['msg'];
+                        if (Object.is(arg['code'], 200)) {
+                            toastInfo(msg, 'success');
+                        } else {
+                            toastInfo(msg, 'danger');
+                        }
+                    }
+                })
+            }
+        </script>
+    </body>
+</html>
