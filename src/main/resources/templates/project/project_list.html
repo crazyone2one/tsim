@@ -4,15 +4,14 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>项目管理</title>
-        <!--        <link th:href="@{/css/style.css}" rel="stylesheet">-->
         <link th:href="@{/common/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-        <link rel="stylesheet" th:href="@{/common/bootstrap/icons/bootstrap-icons.css}">
         <script type="text/javascript" th:src="@{/common/jquery/jquery-3.6.0.min.js}"></script>
-        <script type="text/javascript" th:src="@{/common/bootstrap/js/bootstrap.js}"></script>
+        <script type="text/javascript" th:src="@{/common/bootstrap/js/bootstrap.min.js}"></script>
+        <link rel="stylesheet" th:href="@{/common/bootstrap/icons/bootstrap-icons.css}">
         <meta name="author" content="11‘s papa">
     </head>
     <body>
-        <nav role="navigation" th:include="nav :: navigation"></nav>
+        <div class="container-fluid position-sticky z-index-sticky" role="navigation" th:include="/navbar/nav_1 :: nav1"></div>
         <div class="container-fluid">
             <div class="row wrapper border-bottom bg-white">
                 <div class="col-lg-10"><h2>项目列表</h2></div>
