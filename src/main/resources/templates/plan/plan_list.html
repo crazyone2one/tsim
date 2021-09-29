@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>plan</title>
+        <link th:href="@{/css/bs/bootstrap.min.css}" rel="stylesheet">
+        <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+        <script type="text/javascript" th:src="@{/js/bs/bootstrap.js}"></script>
+        <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
+        <link rel="stylesheet" th:href="@{/css/hover.css}">
+        <meta name="author" content="11‘s papa">
+    </head>
+    <body>
+        <div class="container-fluid z-index-sticky" role="navigation"
+             th:include="/navbar/nav_1 :: nav1"></div>
+        <div class="container-fluid">
+            <!--操作栏-->
+            <div class="card pt-2">
+                <div class="card-body">
+                    <form th:action="@{list}" method="get">
+                        <div class="row">
+                            <div class="input-group mb-3" style="width: 15%">
+                                <span class="input-group-text" id="basic-addon1">所属项目</span>
+                                <input type="text" class="form-control" name="projectId" placeholder="项目名称（模糊查询）" aria-label="projectId"
+                                       aria-describedby="basic-addon1">
+
+                            </div>
+                            <div class="input-group mb-3 " style="width: 15%">
+                                <span class="input-group-text" id="basic-addon3">需求内容</span>
+                                <input type="text" class="form-control" name="description" placeholder="测试计划名称（模糊查询）" aria-label="name"
+                                       aria-describedby="basic-addon3">
+                            </div>
+                            <select class="form-select mb-3" style="width: 6%" aria-label="active" name="active">
+                                <option th:value="''">完成状态</option>
+                                <option value="0">有效</option>
+                                <option value="1">无效</option>
+                            </select>
+                            <div class="col-lg-2 col-md-4 col-sm-6">
+                                <button type="submit" class="btn hvr-grow"><i class="bi bi-search" style="color: cornflowerblue"></i></button>
+                                <button type="button" class="btn"
+                                        data-bs-toggle="modal" data-bs-target="#add-plan-modal"><i class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--            列表数据-->
+            <div>
+                <table class="table table-hover">
+                    <thead>
+                    <tr class="text-center">
+                        <th scope="col">#</th>
+                        <th scope="col">所属项目</th>
+                        <th scope="col">关联需求</th>
+                        <th scope="col">测试计划名称</th>
+                        <th scope="col">测试计划描述</th>
+                        <th scope="col">完成状态</th>
+                        <th scope="col">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr class="text-center" th:each="temp,stat:${iPage.records}">
+                        <input name="id" type="hidden" class="form-control"
+                               th:value="${temp.id}" id="id">
+                        <td th:text="${stat.index+1}"></td>
+                        <td th:text="${temp.projectId}"></td>
+                        <td th:text="${temp.storyId}"></td>
+                        <td th:text="${temp.name}"></td>
+                        <td th:text="${temp.description}"></td>
+                        <td th:switch="${temp.delFlag}">
+                            <div class="form-check form-switch">
+                                <span th:case="0">
+                                    <input class="form-check-input" type="checkbox" id="un-del" checked
+                                           th:onclick="updateStatus([[${temp.id}]])">
+                                    <label class="form-check-label" for="un-del"></label>
+                                </span>
+                                <span th:case="1">
+                                    <input class="form-check-input" type="checkbox" id="del"
+                                           th:onclick="updateStatus([[${temp.id}]])">
+                                    <label class="form-check-label" for="del"></label>
+                                </span>
+                            </div>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!--        toast-->
+            <div id="toast-div"></div>
+            <!-- 添加问题单Modal弹框 -->
+            <div th:replace="~{plan/add_plan_modal::addPlanFragment}"></div>
+        </div>
+        <!--        分页-->
+        <div th:replace="/fragment/pagination_fragment :: pagination01"></div>
+        <script th:src="@{/js/toast_c.js}"></script>
+        <script>
+            // 保存项目
+            $('#submit').click(function () {
+                const data = $("#addPlanForm").serialize();
+                $.ajax({
+                    url: "/plan/save",
+                    type: 'POST',
+                    data: data,
+                    dataType: 'JSON',
+                    success: function (arg) {
+                        const msg = arg['msg'];
+                        if (Object.is(arg['code'], 200)) {
+                            toastInfo(msg, 'success');
+                            window.location.reload();
+                        } else {
+                            toastInfo(msg, 'danger');
+                        }
+                    }
+                });
+            })
+            // 更新项目状态
+            function updateStatus(projectId) {
+                $.ajax({
+                    url: '/plan/updatePlanStatus/',
+                    type: 'POST',
+                    data: {
+                        projectId: projectId
+                    },
+                    dataType: 'JSON',
+                    success: function (arg) {
+                        // console.log( arg['result']);
+                        const msg = arg['msg'];
+                        if (Object.is(arg['code'], 200)) {
+                            toastInfo(msg, 'success');
+                        } else {
+                            toastInfo(msg, 'danger');
+                        }
+                    }
+                })
+            }
+        </script>
+    </body>
+</html>

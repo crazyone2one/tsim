@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>add</title>
+        <meta name="author" content="11‘s papa">
+    </head>
+    <body>
+        <div th:fragment="addPlanFragment">
+            <div class="modal fade" id="add-plan-modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form class="modal-content needs-validation" id="addPlanForm">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">新增测试计划</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="box-body">
+                                    <div class="input-group mb-3">
+                                        <label for="projectId" class="form-label">所属项目</label>
+                                        <input class="form-control" list="datalistOptions" name="projectId" id="projectId" placeholder="Type to search...">
+                                        <datalist id="datalistOptions">
+                                            <option th:each="temp:${projects}" th:value="${temp.value.projectName}"></option>
+                                        </datalist>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="story-name" class="form-label">需求</label>
+                                        <input type="text" class="form-control" id="story-name" name="storyId" placeholder="输入需求内容描述"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="add-name" class="form-label">测试计划名称</label>
+                                        <input type="text" class="form-control" id="add-name" name="name" placeholder="测试计划名称"/>
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="add-description-name" class="form-label">测试计划描述</label>
+                                        <input type="text" class="form-control" id="add-description-name" name="description" placeholder="测试计划描述"/>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" id="submit">确定</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
