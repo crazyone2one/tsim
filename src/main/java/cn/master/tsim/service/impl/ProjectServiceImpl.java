@@ -94,7 +94,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         // 按照项目名称模糊查询
         wrapper.lambda().like(StringUtils.isNotBlank(project.getProjectName()), Project::getProjectName, project.getProjectName());
         return baseMapper.selectPage(
-                new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize),
+                new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
     }
 

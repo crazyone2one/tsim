@@ -9,6 +9,7 @@ import cn.master.tsim.service.ModuleService;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestCaseService;
 import cn.master.tsim.util.ResponseUtils;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -44,11 +45,16 @@ public class TestCaseController {
     }
 
     @GetMapping("/case_list")
-    public String allTests(HttpServletRequest request, TestCase testCase, Model model) {
+    public String allTests(HttpServletRequest request, TestCase testCase, Model model,
+                           @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
+                           @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
         final List<TestCase> testCases = caseService.listTestCase(testCase, "", "");
         model.addAttribute("tests", testCases);
         model.addAttribute("proMap", projectService.projectMap());
         model.addAttribute("moduleMap", moduleService.moduleMap());
+        final IPage<TestCase> iPage = caseService.pageList(testCase, pageCurrent, pageSize);
+        model.addAttribute("iPage", iPage);
+        model.addAttribute("redirecting", "/case/case_list?pageCurrent=");
         return "test-case/case_list_2";
     }
 

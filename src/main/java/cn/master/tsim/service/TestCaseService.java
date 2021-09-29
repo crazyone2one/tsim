@@ -1,6 +1,7 @@
 package cn.master.tsim.service;
 
 import cn.master.tsim.entity.TestCase;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface TestCaseService extends IService<TestCase> {
     List<TestCase> listTestCase(TestCase testCase, String projectId, String moduleId);
 
     void updateCase(String caseId);
+
+    IPage<TestCase> pageList(TestCase testCase, Integer pageCurrent, Integer pageSize);
 }

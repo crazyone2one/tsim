@@ -6,12 +6,15 @@ import cn.master.tsim.mapper.TestBugMapper;
 import cn.master.tsim.service.ModuleService;
 import cn.master.tsim.service.TestBugService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -49,5 +52,13 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
     @Override
     public TestBug updateBug(TestBug testBug) {
         return null;
+    }
+
+    @Override
+    public IPage<TestBug> pageListBug(TestBug bug,Integer pageCurrent, Integer pageSize) {
+        QueryWrapper<TestBug> wrapper = new QueryWrapper<>();
+        return baseMapper.selectPage(
+                new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
+                wrapper);
     }
 }

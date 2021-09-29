@@ -8,6 +8,7 @@
         <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/bs/bootstrap.js}"></script>
         <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
+        <link rel="stylesheet" th:href="@{/css/hover.css}">
         <meta name="author" content="11‘s papa">
     </head>
     <body>
@@ -44,9 +45,9 @@
                                 <option value="1">无效</option>
                             </select>
                             <div class="col-lg-2 col-md-4 col-sm-6">
-                                <button type="submit" class="btn"><i class="bi bi-search" style="color: cornflowerblue"></i></button>
+                                <button type="submit" class="btn hvr-grow"><i class="bi bi-search" style="color: cornflowerblue"></i></button>
                                 <button type="button" class="btn"
-                                        data-bs-toggle="modal" data-bs-target="#add-case-modal"><i class="bi bi-plus-circle" style="color: cornflowerblue"></i>
+                                        data-bs-toggle="modal" data-bs-target="#add-case-modal"><i class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
                                 </button>
                             </div>
 
@@ -109,8 +110,11 @@
                     </tbody>
                 </table>
             </div>
+
         </div>
-        <script th:src="@{/common/toast_c.js}"></script>
+        <!--        分页-->
+        <div th:replace="/fragment/pagination_fragment :: pagination01">
+        <script th:src="@{/js/toast_c.js}"></script>
         <script>
             // 更新项目状态
             function updateStatus(caseId) {

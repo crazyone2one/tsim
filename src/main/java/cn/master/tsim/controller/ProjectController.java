@@ -41,6 +41,7 @@ public class ProjectController {
         final List<Project> records = iPage.getRecords();
         model.addAttribute("records", records);
         model.addAttribute("iPage", iPage);
+        model.addAttribute("redirecting", "/project/projectList?pageCurrent=");
         model.addAttribute("ref", projectService.refMap());
         return "project/project_list";
     }

@@ -7,6 +7,7 @@ import cn.master.tsim.service.ModuleService;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestBugService;
 import cn.master.tsim.util.ResponseUtils;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -46,11 +47,15 @@ public class TestBugController {
      * @return java.lang.String
      */
     @GetMapping("/list")
-    public String allBug(TestBug bug, Model model) {
+    public String allBug(TestBug bug, Model model,@RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
+                         @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
         final List<TestBug> bugList = bugService.listAllBug(bug);
         model.addAttribute("lists", bugList);
         model.addAttribute("proMap", projectService.projectMap());
         model.addAttribute("moduleMap", moduleService.moduleMap());
+        final IPage<TestBug> iPage = bugService.pageListBug(bug, pageCurrent, pageSize);
+        model.addAttribute("iPage", iPage);
+        model.addAttribute("redirecting", "/bug/list?pageCurrent=");
         return "bug/bug_list";
     }
 

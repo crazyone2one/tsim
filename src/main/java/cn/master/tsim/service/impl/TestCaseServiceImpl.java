@@ -8,6 +8,8 @@ import cn.master.tsim.service.ModuleService;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestCaseService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,5 +90,13 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         aCase.setActive(Objects.equals(aCase.getActive(), "0") ? "1" : "0");
         aCase.setUpdateDate(new Date());
         baseMapper.updateById(aCase);
+    }
+
+    @Override
+    public IPage<TestCase> pageList(TestCase testCase, Integer pageCurrent, Integer pageSize) {
+        QueryWrapper<TestCase> wrapper = new QueryWrapper<>();
+        return baseMapper.selectPage(
+                new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
+                wrapper);
     }
 }

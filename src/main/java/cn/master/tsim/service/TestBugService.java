@@ -1,6 +1,7 @@
 package cn.master.tsim.service;
 
 import cn.master.tsim.entity.TestBug;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -21,4 +22,5 @@ public interface TestBugService extends IService<TestBug> {
 
     TestBug updateBug(TestBug testBug);
 
+    IPage<TestBug> pageListBug(TestBug bug, Integer pageCurrent, Integer pageSize);
 }
