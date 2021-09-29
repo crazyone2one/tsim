@@ -60,11 +60,29 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     @Override
     public TestStory saveStory(TestStory story) {
         final Project project = projectService.addProject(story.getProjectId());
+        final TestStory testStory = getStory(story.getDescription(), project.getId());
+        if (Objects.nonNull(testStory)) {
+            return testStory;
+        }
         story.setProjectId(project.getId());
         story.setDelFlag("0");
         story.setCreateDate(new Date());
         baseMapper.insert(story);
         return story;
+    }
+
+    @Override
+    public TestStory getStory(String storyName, String proId) {
+        QueryWrapper<TestStory> wrapper = new QueryWrapper<>();
+//        完全匹配
+        wrapper.lambda().eq(StringUtils.isNotBlank(storyName), TestStory::getDescription, storyName);
+        wrapper.lambda().eq(StringUtils.isNotBlank(proId), TestStory::getProjectId, proId);
+        return baseMapper.selectOne(wrapper);
+    }
+
+    @Override
+    public TestStory searchStoryById(String storyId) {
+        return baseMapper.selectById(storyId);
     }
 
     @Override

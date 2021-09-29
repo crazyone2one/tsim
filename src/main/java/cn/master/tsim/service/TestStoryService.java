@@ -18,5 +18,8 @@ public interface TestStoryService extends IService<TestStory> {
 
     TestStory saveStory(TestStory story);
 
+    TestStory getStory(String storyName, String proId);
+    TestStory searchStoryById(String storyId);
+
     TestStory updateStory(String argument);
 }
