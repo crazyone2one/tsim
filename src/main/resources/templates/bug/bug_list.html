@@ -30,8 +30,8 @@
                                        aria-describedby="basic-addon2">
                             </div>
                             <div class="input-group mb-3 " style="width: 15%">
-                                <span class="input-group-text" id="basic-addon3">标题</span>
-                                <input type="text" class="form-control" name="title" placeholder="标题（模糊查询）" aria-label="title"
+                                <span class="input-group-text" id="basic-addon3">问题描述</span>
+                                <input type="text" class="form-control" name="title" placeholder="问题描述（模糊查询）" aria-label="title"
                                        aria-describedby="basic-addon3">
                             </div>
                             <select class="form-select mb-3" style="width: 6%" aria-label="severity" name="severity">
@@ -42,8 +42,12 @@
                                 <option value="4">致命</option>
                             </select>
                             <select class="form-select mb-3" style="width: 6%" aria-label="bugStatus" name="bugStatus">
-                                <option value="0">有效</option>
-                                <option value="1">无效</option>
+                                <option th:value="' '" selected>问题状态</option>
+                                <option value="1">新建</option>
+                                <option value="2">挂起</option>
+                                <option value="3">已提交</option>
+                                <option value="4">已解决</option>
+                                <option value="5">非bug</option>
                             </select>
                             <div class="col-lg-2 col-md-4 col-sm-6">
                                 <button type="submit" class="btn hvr-grow"><i class="bi bi-search" style="color: cornflowerblue"></i></button>
@@ -63,12 +67,14 @@
             <div>
                 <table class="table table-hover">
                     <thead>
-                    <tr>
+                    <tr class="text-center">
                         <th scope="col">#</th>
                         <th scope="col">所属项目</th>
                         <th scope="col">所属模块</th>
-                        <th scope="col">内容</th>
                         <th scope="col">功能点</th>
+                        <th scope="col">问题描述</th>
+                        <th scope="col">严重程度</th>
+                        <th scope="col">问题状态</th>
                         <th scope="col">操作</th>
                     </tr>
                     </thead>
@@ -79,8 +85,21 @@
                         <td th:text="${stat.index+1}"></td>
                         <td th:text="${proMap.get(temp.projectId).projectName}"></td>
                         <td th:text="${moduleMap.get(temp.moduleId).moduleName}"></td>
-                        <td th:text="${temp.title}"></td>
                         <td th:text="${temp.function}"></td>
+                        <td th:text="${temp.title}"></td>
+                        <td th:switch="${temp.severity}">
+                            <span th:case="1" th:text="轻微"></span>
+                            <span th:case="2" th:text="一般"></span>
+                            <span th:case="3" th:text="严重"></span>
+                            <span th:case="4" th:text="致命"></span>
+                        </td>
+                        <td th:switch="${temp.bugStatus}">
+                            <span th:case="1" th:text="新建"></span>
+                            <span th:case="2" th:text="挂起"></span>
+                            <span th:case="3" th:text="已提交"></span>
+                            <span th:case="4" th:text="已解决"></span>
+                            <span th:case="5" th:text="非bug"></span>
+                        </td>
                         <td>
                         </td>
                     </tr>
