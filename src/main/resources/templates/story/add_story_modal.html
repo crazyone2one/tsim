@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>add</title>
+        <meta name="author" content="11‘s papa">
+    </head>
+    <body>
+        <div th:fragment="addStoryFragment">
+            <div class="modal fade" id="add-story-modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <form class="modal-content needs-validation" id="addStoryForm">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="staticBackdropLabel">新增需求</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="box-body">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">项目名称</span>
+                                        <input name="projectId" id="projectId"
+                                               class="form-control"
+                                               required
+                                               placeholder="Type to search...">
+<!--                                        <datalist id="proList">-->
+<!--                                            <option th:each="pro:${proMap}" th:value="${pro.value.projectName}"></option>-->
+<!--                                        </datalist>-->
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="add-description-name" class="form-label">需求内容描述</label>
+                                        <input type="text" class="form-control" id="add-description-name" name="description" placeholder="输入需求内容描述"/>
+                                    </div>
+                                </div>
+
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" id="submit">确定</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
