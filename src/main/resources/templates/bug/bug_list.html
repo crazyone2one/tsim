@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>bug</title>
+        <link th:href="@{/css/bs/bootstrap.min.css}" rel="stylesheet">
+        <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+        <script type="text/javascript" th:src="@{/js/bs/bootstrap.js}"></script>
+        <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
+        <meta name="author" content="11‘s papa">
+    </head>
+    <body>
+        <div class="container-fluid" role="navigation" th:include="/navbar/nav_1 :: nav1"></div>
+        <div class="container-fluid">
+            <!--操作栏-->
+            <div class="card pt-2">
+                <div class="card-body">
+                    <form th:action="@{list}" method="get">
+                        <div class="row">
+                            <div class="input-group mb-3" style="width: 15%">
+                                <span class="input-group-text" id="basic-addon1">所属项目</span>
+                                <input type="text" class="form-control" name="projectId" placeholder="项目名称（模糊查询）" aria-label="projectId"
+                                       aria-describedby="basic-addon1">
+                            </div>
+                            <div class="input-group mb-3" style="width: 15%">
+                                <span class="input-group-text" id="basic-addon2">所属模块</span>
+                                <input type="text" class="form-control" name="moduleId" placeholder="模块名称（模糊查询）" aria-label="moduleId"
+                                       aria-describedby="basic-addon2">
+                            </div>
+                            <div class="input-group mb-3 " style="width: 15%">
+                                <span class="input-group-text" id="basic-addon3">标题</span>
+                                <input type="text" class="form-control" name="title" placeholder="标题（模糊查询）" aria-label="title"
+                                       aria-describedby="basic-addon3">
+                            </div>
+                            <select class="form-select mb-3" style="width: 6%" aria-label="severity" name="severity">
+                                <option th:value="' '" selected>严重程度</option>
+                                <option value="1">轻微</option>
+                                <option value="2">一般</option>
+                                <option value="3">严重</option>
+                                <option value="4">致命</option>
+                            </select>
+                            <select class="form-select mb-3" style="width: 6%" aria-label="bugStatus" name="bugStatus">
+                                <option value="0">有效</option>
+                                <option value="1">无效</option>
+                            </select>
+                            <div class="col-lg-2 col-md-4 col-sm-6">
+                                <button type="submit" class="btn"><i class="bi bi-search" style="color: cornflowerblue"></i></button>
+                                <button type="button" class="btn"
+                                        data-bs-toggle="modal" data-bs-target="#add-bug-modal"><i class="bi bi-plus-circle" style="color: cornflowerblue"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+            <!--        toast-->
+            <div id="toast-div"></div>
+            <!-- 添加问题单Modal弹框 -->
+            <div th:replace="~{bug/add_bug_modal::addBugFragment}"></div>
+            <!--            列表数据-->
+            <div>
+                <table class="table table-hover">
+                    <thead>
+                    <tr>
+                        <th scope="col">#</th>
+                        <th scope="col">所属项目</th>
+                        <th scope="col">所属模块</th>
+                        <th scope="col">内容</th>
+                        <th scope="col">功能点</th>
+                        <th scope="col">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="temp,stat:${lists}">
+                        <input name="id" type="hidden" class="form-control"
+                               th:value="${temp.id}" id="id">
+                        <td th:text="${stat.index+1}"></td>
+                        <td th:text="${proMap.get(temp.projectId).projectName}"></td>
+                        <td th:text="${moduleMap.get(temp.moduleId).moduleName}"></td>
+                        <td th:text="${temp.title}"></td>
+                        <td th:text="${temp.function}"></td>
+                        <td>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <script>
+            // 保存项目
+            function saveBug() {
+                const data = $("#add-bug-from").serialize();
+                $.ajax({
+                    url: "/bug/save",
+                    type: 'POST',
+                    data: data,
+                    dataType: 'JSON',
+                    success: function (arg) {
+                        const msg = arg['msg'];
+                        if (Object.is(arg['code'], 200)) {
+                            toastInfo(msg, 'success');
+                            window.location.reload();
+                        } else {
+                            toastInfo(msg, 'danger');
+                        }
+                    }
+                });
+            }
+        </script>
+        <script th:src="@{/common/toast_c.js}"></script>
+    </body>
+</html>

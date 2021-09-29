@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>bug</title>
+        <meta name="author" content="11‘s papa">
+    </head>
+    <body>
+        <div th:fragment="addBugFragment">
+            <!-- 添加问题单Modal弹框 -->
+            <div class="modal fade" id="add-bug-modal" tabindex="-1"
+                 aria-labelledby="issueAddModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <form class="modal-content needs-validation" id="add-bug-from">
+                        <div class="modal-header">
+                            <h5 class="modal-title bg-light" id="issueAddModalLabel">添加问题单</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-4">
+                                    <label for="projectCode" class="form-label">项目名称</label>
+                                    <input name="projectId" id="projectCode" type="text"
+                                           class="form-control" placeholder value list="proList"
+                                           required>
+                                    <datalist id="proList">
+                                        <option th:each="pro:${proMap}" th:value="${pro.value.projectName}"
+                                                th:text="${pro.value.projectName}"></option>
+                                    </datalist>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="module" class="form-label">模块</label>
+                                    <input name="moduleId" id="module" type="text" class="form-control"
+                                           placeholder value
+                                           required>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="functionDesc" class="form-label">功能点</label>
+                                    <input name="function" id="functionDesc" type="text"
+                                           class="form-control" placeholder
+                                           value
+                                           required>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="title" class="form-label">标题(问题描述)</label>
+                                    <textarea name="title" id="title" type="text"
+                                              class="form-control" rows="2"></textarea>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="severity" class="form-label"></label>
+                                    <select class="form-select" name="severity" id="severity" required>
+                                        <option th:value="' '" selected>严重程度</option>
+                                        <option value="1">轻微</option>
+                                        <option value="2">一般</option>
+                                        <option value="3">严重</option>
+                                        <option value="4">致命</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="owner" class="form-label"></label>
+                                    <select class="form-select" name="tester" id="owner" required>
+                                        <option value="">--测试人员--</option>
+                                        <option value="1">张三</option>
+                                        <option value="2">李四</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="status" class="form-label"></label>
+                                    <select class="form-select" name="bugStatus" id="status" required>
+                                        <option th:value="' '" selected>状态</option>
+                                        <option value="1">新建</option>
+                                        <option value="2">挂起</option>
+                                        <option value="3">已提交</option>
+                                        <option value="4">已解决</option>
+                                        <option value="5">非bug</option>
+                                    </select>
+                                </div>
+                                <!--                                <div class="col-md-3">-->
+                                <!--                                    <label for="monthDate" class="form-label"></label>-->
+                                <!--                                    <select class="form-select" name="issueDate" id="monthDate"-->
+                                <!--                                            required>-->
+                                <!--                                        <option th:each="m:${monthList}"-->
+                                <!--                                                th:value="${m}"-->
+                                <!--                                                th:text="${m}"-->
+                                <!--                                                th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}"-->
+                                <!--                                        >-->
+                                <!--                                    </select>-->
+                                <!--                                </div>-->
+                                <div class="col-md-12">
+                                    <label for="remark" class="form-label">备注</label>
+                                    <textarea name="note" id="remark" type="text" class="form-control"
+                                              rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" onclick="saveBug()" id="submit">保存</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
