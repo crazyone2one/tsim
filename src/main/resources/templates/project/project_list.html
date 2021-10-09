@@ -18,77 +18,91 @@
             <div class="row wrapper border-bottom bg-white">
                 <div class="col-lg-10"><h2>项目列表</h2></div>
             </div>
-            <div class="wrapper">
-                <div class="container-fluid">
-                    <div class="row align-items-center">
-                        <form th:action="@{projectList}" method="get">
-                            <input type="text" class="col" placeholder="请输入项目名称" name="projectName"
-                                   id="basic-addon1"
-                                   aria-label="Username" aria-describedby="basic-addon1">
-                            <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
-                                                                          style="color: cornflowerblue"></i></button>
-                            <button type="button" class="btn hvr-grow" th:onclick="addProject()"><i
-                                    class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
-                            </button>
-                            <datalist id="proList">
-                                <option th:each="pro:${records}" th:value="${pro.projectName}"
-                                        th:text="${pro.projectName}"></option>
-                            </datalist>
-                        </form>
-                    </div>
+            <div class="container-fluid">
+                <div class="row">
+                    <form th:action="@{projectList}" method="get" class="row row-cols-lg-auto g-3 align-items-center">
+                        <div class="col-12">
+                            <input type="text" class="form-control" placeholder="请输入项目名称" name="projectName">
+                        </div>
+
+                        <div class="col-12">
+                            <select class="form-control" name="workDate" id="workDate-search"
+                                    required>
+                                <option th:each="m:${monthList}"
+                                        th:value="${m}"
+                                        th:text="${m}"
+                                        th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}">
+                            </select>
+                        </div>
+                        <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
+                                                                      style="color: cornflowerblue"></i></button>
+                        <button type="button" class="btn hvr-grow" th:onclick="addProject()"><i
+                                class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
+                        </button>
+                        <datalist id="proList">
+                            <option th:each="pro:${records}" th:value="${pro.projectName}"
+                                    th:text="${pro.projectName}"></option>
+                        </datalist>
+                    </form>
+
                 </div>
-                <div>
-                    <table class="table table-hover">
-                        <thead>
-                        <tr class="text-center">
-                            <th scope="col">#</th>
-                            <th scope="col">项目名</th>
-                            <th scope="col">关联模块</th>
-                            <th scope="col">关联测试用例</th>
-                            <th scope="col">是否有效</th>
-                            <!--                            <th scope="col">操作</th>-->
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <tr th:each="temp,stat:${iPage.records}">
-                            <input name="id" type="hidden" class="form-control"
-                                   th:value="${temp.id}" id="id">
-                            <td th:text="${stat.index+1}"></td>
-                            <td th:text="${temp.projectName}"></td>
-                            <td>
-                                <a href="#"
-                                   th:text="${ref.get(temp.id).get('module')}"></a>
-                            </td>
-                            <td>
-                                <a href="#"
-                                   th:text="${ref.get(temp.id).get('case')}"></a>
-                            </td>
-                            <td th:switch="${temp.delFlag}">
-                                <div class="form-check form-switch">
+            </div>
+            <div>
+                <table class="table table-hover">
+                    <thead>
+                    <tr class="text-center">
+                        <th scope="col">#</th>
+                        <th scope="col">项目名</th>
+                        <th scope="col">关联模块</th>
+                        <th scope="col">关联测试用例</th>
+                        <th scope="col">关联bug</th>
+                        <th scope="col">是否有效</th>
+                        <!--                            <th scope="col">操作</th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="temp,stat:${iPage.records}" class="text-center">
+                        <input name="id" type="hidden" class="form-control"
+                               th:value="${temp.id}" id="id">
+                        <td th:text="${stat.index+1}"></td>
+                        <td th:text="${temp.projectName}"></td>
+                        <td>
+                            <a href="#"
+                               th:text="${ref.get(temp.id).get('module')}"></a>
+                        </td>
+                        <td>
+                            <a href="#"
+                               th:text="${ref.get(temp.id).get('case')}"></a>
+                        </td>
+                        <td>
+                            <a href="#"
+                               th:text="${ref.get(temp.id).get('bug')}"></a>
+                        </td>
+                        <td th:switch="${temp.delFlag}">
+                            <div class="form-check form-switch">
                                         <span th:case="0">
                                             <input class="form-check-input" type="checkbox" id="un-del" checked
                                                    th:onclick="updateStatus([[${temp.id}]])">
                                         <label class="form-check-label" for="un-del"></label>
                                         </span>
-                                    <span th:case="1">
+                                <span th:case="1">
                                             <input class="form-check-input" type="checkbox" id="del"
                                                    th:onclick="updateStatus([[${temp.id}]])">
                                         <label class="form-check-label" for="del"></label>
                                         </span>
-                                </div>
-                            </td>
-                            <!--                            <td>-->
-                            <!--                                <a href="#" class="disabled">-->
-                            <!--                                    <i class="bi bi-card-text"></i>-->
-                            <!--                                </a>-->
-                            <!--                                <a href="#" class="disabled">-->
-                            <!--                                    <i class="bi bi-trash"></i>-->
-                            <!--                                </a>-->
-                            <!--                            </td>-->
-                        </tr>
-                        </tbody>
-                    </table>
-                </div>
+                            </div>
+                        </td>
+                        <!--                            <td>-->
+                        <!--                                <a href="#" class="disabled">-->
+                        <!--                                    <i class="bi bi-card-text"></i>-->
+                        <!--                                </a>-->
+                        <!--                                <a href="#" class="disabled">-->
+                        <!--                                    <i class="bi bi-trash"></i>-->
+                        <!--                                </a>-->
+                        <!--                            </td>-->
+                    </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
         <!--        分页-->
@@ -116,8 +130,18 @@
                                                value="" placeholder="输入项目名"/>
                                     </div>
                                 </div>
+                                <div class="col-md-3">
+                                    <label for="workDate" class="form-label"></label>
+                                    <select class="form-select" name="workDate" id="workDate"
+                                            required>
+                                        <option th:each="m:${monthList}"
+                                                th:value="${m}"
+                                                th:text="${m}"
+                                                th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}"
+                                        >
+                                    </select>
+                                </div>
                             </div>
-
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-primary" id="submit">确定</button>
@@ -129,6 +153,7 @@
             </div>
         </div>
         <script th:src="@{/js/toast_c.js}"></script>
+        <script th:src="@{/js/init_table_checkbox.js}"></script>
         <script>
             // const alterDiv = document.getElementById('toast-div');
             //

@@ -4,6 +4,7 @@ package cn.master.tsim.controller;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Project;
 import cn.master.tsim.service.ProjectService;
+import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
@@ -43,6 +44,7 @@ public class ProjectController {
         model.addAttribute("iPage", iPage);
         model.addAttribute("redirecting", "/project/projectList?pageCurrent=");
         model.addAttribute("ref", projectService.refMap());
+        model.addAttribute("monthList", DateUtils.currentYearMonth());
         return "project/project_list";
     }
 

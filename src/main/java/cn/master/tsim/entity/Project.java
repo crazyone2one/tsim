@@ -46,6 +46,8 @@ public class Project implements Serializable {
      */
     @TableField("project_code")
     private String projectCode;
+    @TableField("work_date")
+    private String workDate;
 
     /**
      * 创建时间

@@ -2,11 +2,10 @@ package cn.master.tsim.service.impl;
 
 import cn.master.tsim.entity.Module;
 import cn.master.tsim.entity.Project;
+import cn.master.tsim.entity.TestBug;
 import cn.master.tsim.entity.TestCase;
 import cn.master.tsim.mapper.ProjectMapper;
-import cn.master.tsim.service.ModuleService;
-import cn.master.tsim.service.ProjectService;
-import cn.master.tsim.service.TestCaseService;
+import cn.master.tsim.service.*;
 import cn.master.tsim.util.UuidUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -33,6 +32,10 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     private ModuleService moduleService;
     @Autowired
     private TestCaseService caseService;
+    @Autowired
+    private TestBugService bugService;
+    @Autowired
+    private ProjectBugRefService projectBugRefService;
 
     @Override
     public List<Project> findByPartialProjectName(String searchString) {
@@ -60,9 +63,11 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
             return;
         }
         project.setProjectCode(UuidUtils.generate());
+        project.setWorkDate(project.getWorkDate());
         project.setCreateData(new Date());
         project.setDelFlag("0");
         baseMapper.insert(project);
+        projectBugRefService.addItem(project.getId(), null, project.getWorkDate());
     }
 
     @Override
@@ -93,6 +98,14 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         QueryWrapper<Project> wrapper = new QueryWrapper<>();
         // 按照项目名称模糊查询
         wrapper.lambda().like(StringUtils.isNotBlank(project.getProjectName()), Project::getProjectName, project.getProjectName());
+        if (StringUtils.isNotBlank(project.getProjectName())) {
+            final Project projectByName = getProjectByName(project.getProjectName());
+            wrapper.lambda().in(StringUtils.isNotBlank(project.getWorkDate()), Project::getId, projectBugRefService.refList(projectByName.getId(), null, project.getWorkDate()));
+        } else {
+            List<String> tempRefId = new LinkedList<>();
+            projectBugRefService.refList(null, null, project.getWorkDate()).forEach(r -> tempRefId.add(r.getProjectId()));
+            wrapper.lambda().in(StringUtils.isNotBlank(project.getWorkDate()), Project::getId, tempRefId);
+        }
         return baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
@@ -118,6 +131,10 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
 //            统计关联的测试用例数量
             final List<TestCase> cases = caseService.listTestCase(null, temp.getId(), "");
             tempMap.put("case", CollectionUtils.isNotEmpty(cases) ? cases.size() : 0);
+
+//            关联bug
+            final List<TestBug> testBugs = bugService.listBugByProjectId(temp.getId());
+            tempMap.put("bug", CollectionUtils.isNotEmpty(testBugs) ? testBugs.size() : 0);
             mapMap.put(temp.getId(), tempMap);
         });
         return mapMap;
