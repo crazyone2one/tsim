@@ -25,15 +25,15 @@
                                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">项目管理</a>
                                         <ul class="dropdown-menu">
                                             <li><a class="dropdown-item" th:href="@{/project/projectList}">项目管理</a></li>
-                                            <li><a class="dropdown-item" href="#">任务汇总</a></li>
+                                            <li><a class="dropdown-item" th:href="@{/task/list}">任务汇总</a></li>
                                         </ul>
                                     </li>
                                     <li class="nav-item dropdown">
                                         <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#" role="button" aria-expanded="false">测试用例管理</a>
                                         <ul class="dropdown-menu">
                                             <li><a class="dropdown-item" th:href="@{/case/case_list}">测试用例</a></li>
-                                            <li><a class="dropdown-item" th:href="@{/story/list}">测试需求管理</a></li>
-                                            <li><a class="dropdown-item" th:href="@{/plan/list}">测试计划管理</a></li>
+                                            <li><a class="dropdown-item disabled" th:href="@{/story/list}">测试需求管理</a></li>
+                                            <li><a class="dropdown-item disabled" th:href="@{/plan/list}">测试计划管理</a></li>
 <!--                                            <li><hr class="dropdown-divider"></li>-->
 <!--                                            <li><a class="dropdown-item" href="#">Separated link</a></li>-->
                                         </ul>
