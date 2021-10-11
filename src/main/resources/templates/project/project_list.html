@@ -134,10 +134,10 @@
                                     <label for="workDate" class="form-label"></label>
                                     <select class="form-select" name="workDate" id="workDate"
                                             required>
+                                        <option th:value="''"  th:text="选择日期" selected="selected"></option>
                                         <option th:each="m:${monthList}"
                                                 th:value="${m}"
                                                 th:text="${m}"
-                                                th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}"
                                         >
                                     </select>
                                 </div>
@@ -153,16 +153,8 @@
             </div>
         </div>
         <script th:src="@{/js/toast_c.js}"></script>
-        <script th:src="@{/js/init_table_checkbox.js}"></script>
+<!--        <script th:src="@{/js/init_table_checkbox.js}"></script>-->
         <script>
-            // const alterDiv = document.getElementById('toast-div');
-            //
-            // function toastInfo(msg, type) {
-            //     const wrapper = document.createElement('div');
-            //     wrapper.innerHTML = '<div class="alert alert-' + type + ' alert-dismissible position-absolute top-0 end-0" role="alert">' + msg + '</div>';
-            //     alterDiv.append(wrapper);
-            // }
-
             // 弹出添加modal
             function addProject() {
                 $("#add-project-modal").modal('show');
