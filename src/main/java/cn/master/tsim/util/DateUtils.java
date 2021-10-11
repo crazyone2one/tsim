@@ -1,5 +1,6 @@
 package cn.master.tsim.util;
 
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
@@ -13,10 +14,19 @@ import java.util.List;
  * @version 1.0.0
  */
 public class DateUtils {
+    private static final String DATEFORMAT_DAY = "yyyy-MM-dd";
 
     public static LocalDate parse2LocalDate(String date) {
-        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("");
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATEFORMAT_DAY);
         return LocalDate.parse(date, formatter);
+    }
+
+    public static LocalDate parse2LocalDate(String date,String dateFormat) {
+        final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
+        return LocalDate.parse(date, formatter);
+    }
+    public static String parse2String(Date date,String dateFormat) {
+        return new SimpleDateFormat(dateFormat).format(date);
     }
 
     public static LocalDate parse2LocalDate(Date date) {
