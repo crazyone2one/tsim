@@ -59,7 +59,7 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module> impleme
     @Override
     public Module getModuleByName(String proName, String moduleName) {
         return baseMapper.selectOne(new QueryWrapper<Module>().lambda()
-                .eq(StringUtils.isNotBlank(proName), Module::getProjectId, projectService.getProjectByName(proName).getId())
+                .eq(StringUtils.isNotBlank(proName), Module::getProjectId, projectService.addProject(proName).getId())
                 .eq(StringUtils.isNotBlank(moduleName), Module::getModuleName, moduleName));
     }
 
