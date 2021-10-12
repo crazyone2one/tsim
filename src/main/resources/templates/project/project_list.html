@@ -15,11 +15,8 @@
         <div class="container-fluid position-sticky z-index-sticky" role="navigation"
              th:include="/navbar/nav_1 :: nav1"></div>
         <div class="container-fluid">
-            <div class="row wrapper border-bottom bg-white">
-                <div class="col-lg-10"><h2>项目列表</h2></div>
-            </div>
             <div class="container-fluid">
-                <div class="row">
+                <div class="row border">
                     <form th:action="@{projectList}" method="get" class="row row-cols-lg-auto g-3 align-items-center">
                         <div class="col-12">
                             <input type="text" class="form-control" placeholder="请输入项目名称" name="projectName">
