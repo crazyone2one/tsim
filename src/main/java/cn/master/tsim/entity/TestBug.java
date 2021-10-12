@@ -32,7 +32,7 @@ public class TestBug implements Serializable {
     /**
      * 主键id
      */
-    @TableId(value = "id",type = IdType.ASSIGN_ID)
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
     /**
@@ -62,8 +62,8 @@ public class TestBug implements Serializable {
     /**
      * 功能点
      */
-    @TableField("function")
-    private String function;
+    @TableField("func")
+    private String func;
 
     /**
      * 状态
@@ -83,6 +83,8 @@ public class TestBug implements Serializable {
     @TableField("tester")
     private String tester;
 
+    @TableField("work_date")
+    private String workDate;
     /**
      * 测试计划id
      */

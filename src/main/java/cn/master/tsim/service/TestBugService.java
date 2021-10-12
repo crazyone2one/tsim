@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -17,10 +18,13 @@ import java.util.List;
 public interface TestBugService extends IService<TestBug> {
 
     List<TestBug> listAllBug(TestBug bug);
+    List<TestBug> listBugByProjectId(String projectId);
 
     TestBug addBug(TestBug testBug);
 
     TestBug updateBug(TestBug testBug);
 
     IPage<TestBug> pageListBug(TestBug bug, Integer pageCurrent, Integer pageSize);
+
+    Map<String, Integer> bugMapByProject(String projectId, String bugStatus);
 }

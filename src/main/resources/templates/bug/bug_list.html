@@ -85,7 +85,7 @@
                         <td th:text="${stat.index+1}"></td>
                         <td th:text="${proMap.get(temp.projectId).projectName}"></td>
                         <td th:text="${moduleMap.get(temp.moduleId).moduleName}"></td>
-                        <td th:text="${temp.function}"></td>
+                        <td th:text="${temp.func}"></td>
                         <td th:text="${temp.title}"></td>
                         <td th:switch="${temp.severity}">
                             <span th:case="1" th:text="轻微"></span>

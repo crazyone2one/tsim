@@ -14,10 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <p>
@@ -46,6 +43,11 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
     }
 
     @Override
+    public List<TestBug> listBugByProjectId(String projectId) {
+        return baseMapper.selectList(new QueryWrapper<TestBug>().lambda().eq(TestBug::getProjectId, projectId));
+    }
+
+    @Override
     public TestBug addBug(TestBug testBug) {
         final Module module = moduleService.addModule(testBug.getProjectId(), testBug.getModuleId());
         testBug.setProjectId(module.getProjectId());
@@ -61,11 +63,42 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
     }
 
     @Override
-    public IPage<TestBug> pageListBug(TestBug bug,Integer pageCurrent, Integer pageSize) {
+    public IPage<TestBug> pageListBug(TestBug bug, Integer pageCurrent, Integer pageSize) {
         QueryWrapper<TestBug> wrapper = getTestBugQueryWrapper(bug);
         return baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
+    }
+
+    @Override
+    public Map<String, Integer> bugMapByProject(String projectId, String bugStatus) {
+        Map<String, Integer> result = new LinkedHashMap<>();
+        Integer level1 = 0;
+        Integer level2 = 0;
+        Integer level3 = 0;
+        Integer level4 = 0;
+        QueryWrapper<TestBug> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(TestBug::getProjectId, projectId).eq(TestBug::getBugStatus, bugStatus);
+        for (TestBug b : baseMapper.selectList(wrapper)) {
+            if (Objects.equals("1", b.getSeverity())) {
+                level1++;
+            }
+            if (Objects.equals("2", b.getSeverity())) {
+                level2++;
+            }
+            if (Objects.equals("3", b.getSeverity())) {
+                level3++;
+            }
+            if (Objects.equals("4", b.getSeverity())) {
+                level4++;
+            }
+        }
+        result.put("level1", level1);
+        result.put("level2", level2);
+        result.put("level3", level3);
+        result.put("level4", level4);
+        result.put("total", level1 + level2 + level3 + level4);
+        return result;
     }
 
     private QueryWrapper<TestBug> getTestBugQueryWrapper(TestBug bug) {
