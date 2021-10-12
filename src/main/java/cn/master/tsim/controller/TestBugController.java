@@ -1,6 +1,7 @@
 package cn.master.tsim.controller;
 
 
+import cn.master.tsim.common.Constants;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.TestBug;
 import cn.master.tsim.service.ModuleService;
@@ -47,7 +48,7 @@ public class TestBugController {
      * @return java.lang.String
      */
     @GetMapping("/list")
-    public String allBug(TestBug bug, Model model,@RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
+    public String allBug(TestBug bug, Model model, @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
                          @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
         final List<TestBug> bugList = bugService.listAllBug(bug);
         model.addAttribute("lists", bugList);
@@ -55,6 +56,7 @@ public class TestBugController {
         model.addAttribute("moduleMap", moduleService.moduleMap());
         final IPage<TestBug> iPage = bugService.pageListBug(bug, pageCurrent, pageSize);
         model.addAttribute("iPage", iPage);
+        model.addAttribute("users", Constants.userMaps);
         model.addAttribute("redirecting", "/bug/list?pageCurrent=");
         return "bug/bug_list";
     }
