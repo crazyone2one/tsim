@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.master.tsim.mapper.TestTaskInfoMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.master.tsim.entity.TestTaskInfo">
+        <id column="id" property="id" />
+        <result column="project_id" property="projectId" />
+        <result column="summary_desc" property="summaryDesc" />
+        <result column="create_case_count" property="createCaseCount" />
+        <result column="execute_case_count" property="executeCaseCount" />
+        <result column="bug_doc" property="bugDoc" />
+        <result column="report_doc" property="reportDoc" />
+        <result column="req_doc" property="reqDoc" />
+        <result column="finish_status" property="finishStatus" />
+        <result column="delivery_status" property="deliveryStatus" />
+        <result column="tester" property="tester" />
+        <result column="remark" property="remark" />
+        <result column="issue_date" property="issueDate" />
+        <result column="create_date" property="createDate" />
+        <result column="update_date" property="updateDate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, project_id, summary_desc, create_case_count, execute_case_count, bug_doc, report_doc, req_doc, finish_status, delivery_status, tester, remark, issue_date, create_date, update_date
+    </sql>
+
+</mapper>
