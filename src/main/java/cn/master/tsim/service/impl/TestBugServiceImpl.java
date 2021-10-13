@@ -6,6 +6,7 @@ import cn.master.tsim.mapper.TestBugMapper;
 import cn.master.tsim.service.ModuleService;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestBugService;
+import cn.master.tsim.util.DateUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -54,6 +55,11 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
         testBug.setProjectId(module.getProjectId());
         testBug.setModuleId(module.getId());
         testBug.setCreateDate(new Date());
+        if (StringUtils.isBlank(testBug.getWorkDate())) {
+            testBug.setWorkDate(DateUtils.parse2String(new Date(), "yyyy-MM"));
+        } else {
+            testBug.setWorkDate(testBug.getWorkDate());
+        }
         baseMapper.insert(testBug);
         return testBug;
     }
