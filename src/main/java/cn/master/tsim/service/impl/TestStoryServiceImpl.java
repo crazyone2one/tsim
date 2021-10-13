@@ -13,6 +13,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -58,8 +59,8 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     }
 
     @Override
-    public TestStory saveStory(TestStory story) {
-        final Project project = projectService.addProject(story.getProjectId());
+    public TestStory saveStory(HttpServletRequest request, TestStory story) {
+        final Project project = projectService.addProject(story.getProjectId(), request);
         final TestStory testStory = getStory(story.getDescription(), project.getId());
         if (Objects.nonNull(testStory)) {
             return testStory;
@@ -92,5 +93,10 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         story.setUpdateDate(new Date());
         baseMapper.updateById(story);
         return story;
+    }
+
+    @Override
+    public List<TestStory> listStoryByProjectId(String projectName) {
+        return baseMapper.selectList(new QueryWrapper<TestStory>().lambda().eq(TestStory::getProjectId, projectService.getProjectByName(projectName).getId()));
     }
 }

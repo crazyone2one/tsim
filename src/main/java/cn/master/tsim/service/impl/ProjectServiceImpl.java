@@ -6,6 +6,7 @@ import cn.master.tsim.entity.TestBug;
 import cn.master.tsim.entity.TestCase;
 import cn.master.tsim.mapper.ProjectMapper;
 import cn.master.tsim.service.*;
+import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.UuidUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -36,6 +38,8 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     private TestBugService bugService;
     @Autowired
     private ProjectBugRefService projectBugRefService;
+    @Autowired
+    private TestTaskInfoService taskInfoService;
 
     @Override
     public List<Project> findByPartialProjectName(String searchString) {
@@ -57,31 +61,39 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
-    public void addProject(Project project) {
-        final Project project1 = getProjectByName(project.getProjectName());
-        if (Objects.nonNull(project1)) {
-            return;
-        }
-        project.setProjectCode(UuidUtils.generate());
-        project.setWorkDate(project.getWorkDate());
-        project.setCreateData(new Date());
-        project.setDelFlag("0");
-        baseMapper.insert(project);
-        projectBugRefService.addItem(project.getId(), null, project.getWorkDate());
-    }
-
-    @Override
-    public Project addProject(String projectName) {
+    public Project addProject(String projectName, HttpServletRequest request) {
+        /*1. 根据名称是否可查询到相关的项目*/
         final Project project = getProjectByName(projectName);
         if (Objects.nonNull(project)) {
             return project;
         }
+        /*未查询到对应的项目数据,新创建*/
         final Project build = Project.builder().projectName(projectName)
+                .projectCode(UuidUtils.generate())
+                .workDate(DateUtils.parse2String(new Date(), "yyyy-MM"))
+                .createData(new Date())
+                .delFlag("0")
+                .build();
+        baseMapper.insert(build);
+        final String workDate = StringUtils.isNotBlank(project.getWorkDate()) ? project.getWorkDate() : DateUtils.parse2String(new Date(), "yyyy-MM");
+        taskInfoService.addItem(build, request, workDate);
+        return build;
+    }
+
+    @Override
+    public Project addProject(Project project, HttpServletRequest request) {
+        final Project projectByName = getProjectByName(project.getProjectName());
+        if (Objects.nonNull(projectByName)) {
+            return projectByName;
+        }
+        final Project build = Project.builder().projectName(project.getProjectName())
                 .projectCode(UuidUtils.generate())
                 .createData(new Date())
                 .delFlag("0")
                 .build();
         baseMapper.insert(build);
+        final String workDate = StringUtils.isNotBlank(project.getWorkDate()) ? project.getWorkDate() : DateUtils.parse2String(new Date(), "yyyy-MM");
+        taskInfoService.addItem(build, request, workDate);
         return build;
     }
 

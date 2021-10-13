@@ -4,6 +4,7 @@ import cn.master.tsim.entity.Project;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Map;
 
@@ -43,17 +44,13 @@ public interface ProjectService extends IService<Project> {
     /**
      * 添加项目
      *
-     * @param project project
-     */
-    void addProject(Project project);
-
-    /**
-     * 添加项目
-     *
      * @param projectName 项目名称
+     * @param request
      * @return int
      */
-    Project addProject(String projectName);
+    Project addProject(String projectName, HttpServletRequest request);
+
+    Project addProject(Project project, HttpServletRequest request);
 
     /**
      * 更新项目状态

@@ -4,6 +4,7 @@ package cn.master.tsim.controller;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Project;
 import cn.master.tsim.entity.TestPlan;
+import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestPlanService;
 import cn.master.tsim.service.TestStoryService;
@@ -13,6 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * <p>
@@ -44,8 +48,8 @@ public class TestPlanController {
         final IPage<TestPlan> iPage = planService.pageList(plan, pageCurrent, pageSize);
         iPage.getRecords().forEach(t -> {
             final Project project = projectService.getProjectById(t.getProjectId());
-            t.setProjectId(project.getProjectName());
-            t.setStoryId(storyService.searchStoryById(t.getStoryId()).getDescription());
+            t.setProject(project);
+            t.setStory(storyService.searchStoryById(t.getStoryId()));
         });
         model.addAttribute("iPage", iPage);
         model.addAttribute("projects", projectService.projectMap());
@@ -55,9 +59,9 @@ public class TestPlanController {
 
     @PostMapping(value = "/save")
     @ResponseBody
-    public ResponseResult savePlan(TestPlan plan) {
+    public ResponseResult savePlan(HttpServletRequest request,TestPlan plan) {
         try {
-            final TestPlan testPlan = planService.savePlan(plan);
+            final TestPlan testPlan = planService.savePlan(request,plan);
             return ResponseUtils.success("数据添加成功", testPlan);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据添加失败", e.getMessage());
@@ -72,6 +76,23 @@ public class TestPlanController {
             return ResponseUtils.success("数据修改成功", testPlan);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据修改失败", e.getMessage());
+        }
+    }
+
+    /**
+     * 根据项目查询相关需求
+     *
+     * @param projectId 项目名称
+     * @return cn.master.tsim.common.ResponseResult
+     */
+    @RequestMapping(value = "/getStoryMapByProject")
+    @ResponseBody
+    public ResponseResult getStoryMapByProject(@RequestParam String projectId) {
+        try {
+            final List<TestStory> stories = storyService.listStoryByProjectId(projectId);
+            return ResponseUtils.success(stories);
+        } catch (Exception e) {
+            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
         }
     }
 }

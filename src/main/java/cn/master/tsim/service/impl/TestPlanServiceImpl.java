@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -58,9 +59,9 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     }
 
     @Override
-    public TestPlan savePlan(TestPlan plan) {
-        final Project project = projectService.addProject(plan.getProjectId());
-        final TestStory story = storyService.saveStory(TestStory.builder().projectId(plan.getProjectId()).description(plan.getDescription()).build());
+    public TestPlan savePlan(HttpServletRequest request,TestPlan plan) {
+        final Project project = projectService.addProject(plan.getProjectId(),request );
+        final TestStory story = storyService.saveStory(request, TestStory.builder().projectId(plan.getProjectId()).description(plan.getDescription()).build());
         plan.setProjectId(project.getId());
         plan.setStoryId(story.getId());
         plan.setDelFlag("0");

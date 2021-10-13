@@ -15,10 +15,8 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
 
 /**
  * <p>
@@ -34,21 +32,24 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     private final ProjectService projectService;
     private final ModuleService moduleService;
 
+
     @Autowired
-    public TestCaseServiceImpl(ProjectService projectService, ModuleService moduleService) {
+    public TestCaseServiceImpl(ProjectService projectService, ModuleService moduleService ) {
         this.projectService = projectService;
         this.moduleService = moduleService;
+
     }
 
     @Override
-    public TestCase saveCase(TestCase testCase) {
-        final Project project = projectService.addProject(testCase.getProjectId());
-        final Module module = moduleService.addModule(testCase.getProjectId(), testCase.getModuleId());
+    public TestCase saveCase(TestCase testCase, HttpServletRequest request) {
+        final Project project = projectService.addProject(testCase.getProjectId(), request);
+        final Module module = moduleService.addModule(testCase.getProjectId(), testCase.getModuleId(), request);
         testCase.setActive("0");
         testCase.setProjectId(project.getId());
         testCase.setModuleId(module.getId());
         testCase.setCreateDate(new Date());
         baseMapper.insert(testCase);
+
         return testCase;
     }
 
@@ -98,5 +99,25 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         return baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
+    }
+
+    @Override
+    public Map<String, Integer> caseCountByStatus(String projectId, String moduleId) {
+        Map<String, Integer> map = new LinkedHashMap<>();
+        QueryWrapper<TestCase> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(StringUtils.isNotBlank(projectId), TestCase::getProjectId, projectId);
+        wrapper.lambda().eq(StringUtils.isNotBlank(moduleId), TestCase::getModuleId, moduleId);
+        map.put("total", baseMapper.selectCount(wrapper));
+        // TODO: 2021/9/30 0030 已执行状态的测试用例
+        return map;
+    }
+
+    @Override
+    public Map<String, Map<String, Integer>> caseCountByStatus() {
+        Map<String, Map<String, Integer>> result = new LinkedHashMap<>();
+        baseMapper.selectList(new QueryWrapper<TestCase>().lambda().select(TestCase::getProjectId)).forEach(t->{
+            result.put(t.getProjectId(), caseCountByStatus(t.getProjectId(), null));
+        });
+        return result;
     }
 }

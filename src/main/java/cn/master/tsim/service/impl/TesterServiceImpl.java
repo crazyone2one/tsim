@@ -31,6 +31,7 @@ public class TesterServiceImpl extends ServiceImpl<TesterMapper, Tester> impleme
     @Override
     public ResponseResult login(Tester tester) {
         QueryWrapper<Tester> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(Tester::getAccount, tester.getAccount()).eq(Tester::getPassword,tester.getPassword());
         final Tester result = baseMapper.selectOne(wrapper);
         if (Objects.isNull(result)) {
             return ResponseUtils.error("用户名或密码错误");

@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -61,9 +62,9 @@ public class TestStoryController {
 
     @PostMapping(value = "/save")
     @ResponseBody
-    public ResponseResult saveStory(TestStory story) {
+    public ResponseResult saveStory(HttpServletRequest request,TestStory story) {
         try {
-            final TestStory testStory = service.saveStory(story);
+            final TestStory testStory = service.saveStory(request, story);
             return ResponseUtils.success("数据添加成功", testStory);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据添加失败", e.getMessage());

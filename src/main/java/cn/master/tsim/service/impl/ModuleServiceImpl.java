@@ -11,6 +11,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -57,9 +58,9 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module> impleme
     }
 
     @Override
-    public Module getModuleByName(String proName, String moduleName) {
+    public Module getModuleByName(String proName, String moduleName, HttpServletRequest request) {
         return baseMapper.selectOne(new QueryWrapper<Module>().lambda()
-                .eq(StringUtils.isNotBlank(proName), Module::getProjectId, projectService.addProject(proName).getId())
+                .eq(StringUtils.isNotBlank(proName), Module::getProjectId, projectService.addProject(proName, request).getId())
                 .eq(StringUtils.isNotBlank(moduleName), Module::getModuleName, moduleName));
     }
 
@@ -74,15 +75,15 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module> impleme
     }
 
     @Override
-    public Module addModule(String projectName, String moduleName) {
-        final Module module = getModuleByName(projectName, moduleName);
+    public Module addModule(String projectName, String moduleName, HttpServletRequest request) {
+        final Module module = getModuleByName(projectName, moduleName, request);
         if (Objects.nonNull(module)) {
             return module;
         }
         final Module build = Module.builder()
                 .moduleName(moduleName)
                 .moduleCode(UuidUtils.generate())
-                .projectId(projectService.addProject(projectName).getId())
+                .projectId(projectService.addProject(projectName, request).getId())
                 .createDate(new Date())
                 .delFlag("0")
                 .build();

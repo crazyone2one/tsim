@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 
 /**
@@ -48,8 +49,8 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
     }
 
     @Override
-    public TestBug addBug(TestBug testBug) {
-        final Module module = moduleService.addModule(testBug.getProjectId(), testBug.getModuleId());
+    public TestBug addBug(HttpServletRequest request,TestBug testBug) {
+        final Module module = moduleService.addModule(testBug.getProjectId(), testBug.getModuleId(), request);
         testBug.setProjectId(module.getProjectId());
         testBug.setModuleId(module.getId());
         testBug.setCreateDate(new Date());

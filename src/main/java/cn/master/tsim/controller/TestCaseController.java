@@ -16,6 +16,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -60,9 +61,9 @@ public class TestCaseController {
 
     @PostMapping("/save")
     @ResponseBody
-    public ResponseResult saveTestCase(@ModelAttribute @Validated TestCase testCase) {
+    public ResponseResult saveTestCase(HttpServletRequest request,@ModelAttribute @Validated TestCase testCase) {
         try {
-            caseService.saveCase(testCase);
+            caseService.saveCase(testCase, request);
             return ResponseUtils.success("数据添加成功");
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据添加失败", e.getMessage());
@@ -98,6 +99,24 @@ public class TestCaseController {
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据查询错误", e.getMessage());
         }
+    }
+
+    @RequestMapping(value = "loadCaseByProject")
+    @ResponseBody
+    public ResponseResult loadCaseByProject(@RequestParam String projectId) {
+        try {
+            final List<TestCase> testCases = caseService.listTestCase(null, projectId, null);
+            return ResponseUtils.success("数据查询成功", testCases);
+        } catch (Exception e) {
+            return ResponseUtils.error(400, "数据查询错误", e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/upload")
+    public String uploadCase(MultipartFile file) {
+        final MultipartFile file1 = file;
+        System.out.println(file1.getOriginalFilename());
+        return "redirect:/case/case_list";
     }
 }
 

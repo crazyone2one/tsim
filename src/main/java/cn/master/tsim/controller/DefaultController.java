@@ -1,5 +1,6 @@
 package cn.master.tsim.controller;
 
+import cn.master.tsim.entity.Tester;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,9 +16,10 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @Controller
 public class DefaultController {
-
-    @RequestMapping({"/", "/login.html"})
-    public String index() {
+    @RequestMapping({"", "/", "/index"})
+    public String index(Model model, HttpServletRequest request) {
+        Tester user = (Tester) request.getSession().getAttribute("account");
+        model.addAttribute("account", user);
         return "login";
     }
 

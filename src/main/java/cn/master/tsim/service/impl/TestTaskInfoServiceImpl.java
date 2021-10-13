@@ -2,11 +2,13 @@ package cn.master.tsim.service.impl;
 
 import cn.master.tsim.entity.Project;
 import cn.master.tsim.entity.TestTaskInfo;
+import cn.master.tsim.entity.Tester;
 import cn.master.tsim.mapper.TestTaskInfoMapper;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestBugService;
 import cn.master.tsim.service.TestCaseService;
 import cn.master.tsim.service.TestTaskInfoService;
+import cn.master.tsim.util.JacksonUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -14,6 +16,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
 
 /**
@@ -53,9 +56,18 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
     }
 
     @Override
-    public TestTaskInfo addItem(Project project) {
+    public TestTaskInfo addItem(Project project, HttpServletRequest request, String workDate) {
+        Tester tester = new Tester();
+        final Object account = request.getSession().getAttribute("account");
+        if (Objects.nonNull(account)) {
+            tester = JacksonUtils.convertToClass(JacksonUtils.convertToString(account), Tester.class);
+        }
+        assert tester != null;
         final TestTaskInfo build = TestTaskInfo.builder().projectId(project.getId())
-                .createCaseCount(caseService.caseCountByStatus(project.getId(), "").get("total")).build();
+                .createCaseCount(caseService.caseCountByStatus(project.getId(), "").get("total"))
+                .tester(tester.getAccount())
+                .issueDate(workDate)
+                .build();
         baseMapper.insert(build);
         return build;
     }

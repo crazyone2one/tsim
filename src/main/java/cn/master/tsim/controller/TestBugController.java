@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -69,9 +70,9 @@ public class TestBugController {
      */
     @PostMapping("/save")
     @ResponseBody
-    public ResponseResult saveTestCase(@ModelAttribute @Validated TestBug bug) {
+    public ResponseResult saveTestCase(HttpServletRequest request, @ModelAttribute @Validated TestBug bug) {
         try {
-            final TestBug testBug = bugService.addBug(bug);
+            final TestBug testBug = bugService.addBug(request,bug);
             return ResponseUtils.success("数据添加成功", testBug);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据添加失败", e.getMessage());

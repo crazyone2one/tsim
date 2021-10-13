@@ -50,11 +50,11 @@ public class ProjectController {
 
     @PostMapping(value = "/addProject")
     @ResponseBody
-    public ResponseResult addProject(Project project, Model model) {
+    public ResponseResult addProject(HttpServletRequest request,Project project, Model model) {
         try {
-            projectService.addProject(project);
-            model.addAttribute("resultMsg", ResponseUtils.success("数据添加成功"));
-            return ResponseUtils.success("数据添加成功");
+            final Project project1 = projectService.addProject(project, request);
+            model.addAttribute("resultMsg", ResponseUtils.success("数据[" + project1.getProjectName() + "]添加成功"));
+            return ResponseUtils.success("数据[" + project1.getProjectName() + "]添加成功");
         } catch (Exception e) {
             log.info(e.getMessage());
             model.addAttribute("resultMsg", ResponseUtils.error(400, "数据添加失败", e.getMessage()));
