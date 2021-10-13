@@ -22,13 +22,15 @@
                         <div class="row">
                             <div class="input-group mb-3" style="width: 15%">
                                 <span class="input-group-text" id="basic-addon1">所属项目</span>
-                                <input type="text" class="form-control" name="projectId" placeholder="项目名称（模糊查询）" aria-label="projectId"
+                                <input type="text" class="form-control" name="projectId" placeholder="项目名称（模糊查询）"
+                                       aria-label="projectId"
                                        aria-describedby="basic-addon1">
 
                             </div>
                             <div class="input-group mb-3 " style="width: 15%">
                                 <span class="input-group-text" id="basic-addon3">需求内容</span>
-                                <input type="text" class="form-control" name="description" placeholder="测试计划名称（模糊查询）" aria-label="name"
+                                <input type="text" class="form-control" name="description" placeholder="测试计划名称（模糊查询）"
+                                       aria-label="name"
                                        aria-describedby="basic-addon3">
                             </div>
                             <select class="form-select mb-3" style="width: 6%" aria-label="active" name="active">
@@ -37,9 +39,12 @@
                                 <option value="1">无效</option>
                             </select>
                             <div class="col-lg-2 col-md-4 col-sm-6">
-                                <button type="submit" class="btn hvr-grow"><i class="bi bi-search" style="color: cornflowerblue"></i></button>
+                                <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
+                                                                              style="color: cornflowerblue"></i>
+                                </button>
                                 <button type="button" class="btn"
-                                        data-bs-toggle="modal" data-bs-target="#add-plan-modal"><i class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
+                                        data-bs-toggle="modal" data-bs-target="#add-plan-modal"><i
+                                        class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
                                 </button>
                             </div>
                         </div>
@@ -65,8 +70,8 @@
                         <input name="id" type="hidden" class="form-control"
                                th:value="${temp.id}" id="id">
                         <td th:text="${stat.index+1}"></td>
-                        <td th:text="${temp.projectId}"></td>
-                        <td th:text="${temp.storyId}"></td>
+                        <td th:value="${temp.project.id}" th:text="${temp.project.projectName}" th:id="project"></td>
+                        <td th:value="${temp.story.id}" th:text="${temp.story.description}"></td>
                         <td th:text="${temp.name}"></td>
                         <td th:text="${temp.description}"></td>
                         <td th:switch="${temp.delFlag}">
@@ -84,6 +89,10 @@
                             </div>
                         </td>
                         <td>
+                            <button type="button" class="btn"
+                                    data-bs-toggle="modal" data-bs-target="#ref-case-modal"><i
+                                    class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
+                            </button>
                         </td>
                     </tr>
                     </tbody>
@@ -92,11 +101,56 @@
             <!--        toast-->
             <div id="toast-div"></div>
             <!-- 添加问题单Modal弹框 -->
-            <div th:replace="~{plan/add_plan_modal::addPlanFragment}"></div>
+            <div th:replace="~{plan/ref_case_modal::refCaseFragment}"></div>
         </div>
         <!--        分页-->
         <div th:replace="/fragment/pagination_fragment :: pagination01"></div>
+        <script>
+            const ref_modal = document.getElementById('ref-case-modal');
+            ref_modal.addEventListener('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const modal = $(this);
+                const temProId = button.closest('tr').find('#project').attr('value');
+                $.ajax({
+                        url: '/case/loadCaseByProject/',
+                        type: 'get',
+                        data: {
+                            projectId: temProId
+                        },
+                        dataType: 'JSON',
+                        success: function (arg) {
+                            console.log(arg['data']);
+                            loadCase(arg['data']);
+                        }
+                    }
+                )
+            });
+
+            function loadCase(res) {
+                const tbody = $('#refCaseTable').find('tbody');
+                for (const index in res) {
+                    const new_tr = $("<tr></tr>")
+                    const title_td = $("<td></td>")
+                    const desc_td = $("<td></td>")
+                    const pre_td = $("<td></td>")
+                    const title = res[index].name;
+                    const desc = res[index].description;
+                    const pre = res[index].precondition;
+                    title_td.text(title);
+                    desc_td.text(desc);
+                    pre_td.text(pre);
+                    const checkItemTd = $('<td><input type="checkbox" name="brand" id="brand" /></td>');
+                    new_tr.prepend(checkItemTd);
+                    new_tr.append(title_td);
+                    new_tr.append(desc_td);
+                    new_tr.append(pre_td);
+                    tbody.append(new_tr);
+                }
+            }
+
+        </script>
         <script th:src="@{/js/toast_c.js}"></script>
+        <script th:src="@{/js/init_table_checkbox.js}"></script>
         <script>
             // 保存项目
             $('#submit').click(function () {
@@ -117,6 +171,7 @@
                     }
                 });
             })
+
             // 更新项目状态
             function updateStatus(projectId) {
                 $.ajax({
@@ -137,6 +192,31 @@
                     }
                 })
             }
+
+            // 选择后联动展示相关相关的需求数据
+            function refreshStory() {
+                const project_id = $("#projectId").val();
+                $.ajax({
+                        url: '/plan/getStoryMapByProject/',
+                        type: 'get',
+                        data: {
+                            projectId: project_id
+                        },
+                        dataType: 'JSON',
+                        success: function (arg) {
+                            console.log(arg['data']);
+                            const story = arg['data'];
+                            for (const i in story) {
+                                const temp_id = story[i].id;
+                                const temp_description = story[i].description;
+                                $("#storylist").append(new Option(temp_description));
+                                // $("#storyId").selectpicker('refresh');
+                            }
+                        }
+                    }
+                )
+            }
         </script>
+
     </body>
 </html>

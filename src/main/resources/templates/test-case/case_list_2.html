@@ -3,7 +3,9 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>测试用例管理</title>
+        <title>TSIM @ CASE</title>
+        <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
+        <link rel="bookmark" th:href="@{/favicon.ico}" type="image/x-icon"/>
         <link th:href="@{/css/bs/bootstrap.min.css}" rel="stylesheet">
         <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/bs/bootstrap.js}"></script>
@@ -49,6 +51,15 @@
                                 <button type="button" class="btn"
                                         data-bs-toggle="modal" data-bs-target="#add-case-modal"><i class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
                                 </button>
+                                <!--                                // 导出数据-->
+                                <a class="btn btn-light mb-3 mb-lg-0 hvr-grow" onclick="exportExcel()">
+                                    <i class="bi bi-download"></i>
+                                </a>
+                                <!--                                //导入数据-->
+                                <a class="btn btn-light mb-3 mb-lg-0 hvr-grow" data-bs-toggle="modal"
+                                   data-bs-target="#uploadModal">
+                                    <i class="bi bi-upload"></i>
+                                </a>
                             </div>
 
                         </div>
@@ -59,6 +70,7 @@
             <div id="toast-div"></div>
             <!-- 添加问题单Modal弹框 -->
             <div th:replace="~{test-case/add_case_modal::addCaseFragment}"></div>
+            <div th:replace="~{test-case/uploadCase::uploadModal}"></div>
             <!--            列表数据-->
             <div>
                 <table class="table table-hover">
@@ -76,7 +88,7 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr th:each="temp,stat:${tests}">
+                    <tr th:each="temp,stat:${tests}" class="text-center">
                         <input name="id" type="hidden" class="form-control"
                                th:value="${temp.id}" id="id">
                         <td th:text="${stat.index+1}"></td>
