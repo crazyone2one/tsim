@@ -75,8 +75,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
                 .delFlag("0")
                 .build();
         baseMapper.insert(build);
-        final String workDate = StringUtils.isNotBlank(project.getWorkDate()) ? project.getWorkDate() : DateUtils.parse2String(new Date(), "yyyy-MM");
-        taskInfoService.addItem(build, request, workDate);
+        taskInfoService.addItem(build, request, build.getWorkDate());
         return build;
     }
 
@@ -92,8 +91,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
                 .delFlag("0")
                 .build();
         baseMapper.insert(build);
-        final String workDate = StringUtils.isNotBlank(project.getWorkDate()) ? project.getWorkDate() : DateUtils.parse2String(new Date(), "yyyy-MM");
-        taskInfoService.addItem(build, request, workDate);
+        taskInfoService.addItem(build, request, build.getWorkDate());
         return build;
     }
 
