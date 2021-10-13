@@ -25,5 +25,8 @@ logging:
   level:
     cn:
       master:
-        tsim:
-          mapper: debug
+        tsim: debug
+server:
+  servlet:
+    session:
+      timeout: 7200
