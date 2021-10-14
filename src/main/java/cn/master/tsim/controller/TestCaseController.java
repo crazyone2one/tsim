@@ -5,10 +5,13 @@ import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Module;
 import cn.master.tsim.entity.Project;
 import cn.master.tsim.entity.TestCase;
+import cn.master.tsim.listener.TestCaseListener;
 import cn.master.tsim.service.ModuleService;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestCaseService;
 import cn.master.tsim.util.ResponseUtils;
+import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.ExcelReader;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +23,9 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -61,7 +66,7 @@ public class TestCaseController {
 
     @PostMapping("/save")
     @ResponseBody
-    public ResponseResult saveTestCase(HttpServletRequest request,@ModelAttribute @Validated TestCase testCase) {
+    public ResponseResult saveTestCase(HttpServletRequest request, @ModelAttribute @Validated TestCase testCase) {
         try {
             caseService.saveCase(testCase, request);
             return ResponseUtils.success("数据添加成功");
@@ -113,9 +118,20 @@ public class TestCaseController {
     }
 
     @PostMapping(value = "/upload")
-    public String uploadCase(MultipartFile file) {
-        final MultipartFile file1 = file;
-        System.out.println(file1.getOriginalFilename());
+    public String uploadCase(MultipartFile file, Model model) {
+        ExcelReader reader = null;
+        try {
+            reader = EasyExcel.read(file.getInputStream(), TestCase.class, new TestCaseListener(caseService)).build();
+            reader.read(EasyExcel.readSheet(0).build());
+            model.addAttribute("msg", "success");
+        } catch (IOException e) {
+            e.printStackTrace();
+            model.addAttribute("msg", "failed");
+        } finally {
+            if (Objects.nonNull(reader)) {
+                reader.finish();
+            }
+        }
         return "redirect:/case/case_list";
     }
 }

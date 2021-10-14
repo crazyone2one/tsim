@@ -34,7 +34,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
 
 
     @Autowired
-    public TestCaseServiceImpl(ProjectService projectService, ModuleService moduleService ) {
+    public TestCaseServiceImpl(ProjectService projectService, ModuleService moduleService) {
         this.projectService = projectService;
         this.moduleService = moduleService;
 
@@ -44,13 +44,13 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     public TestCase saveCase(TestCase testCase, HttpServletRequest request) {
         final Project project = projectService.addProject(testCase.getProjectId(), request);
         final Module module = moduleService.addModule(testCase.getProjectId(), testCase.getModuleId(), request);
-        testCase.setActive("0");
-        testCase.setProjectId(project.getId());
-        testCase.setModuleId(module.getId());
-        testCase.setCreateDate(new Date());
-        baseMapper.insert(testCase);
-
-        return testCase;
+        TestCase build = TestCase.builder().active("0").projectId(project.getId()).moduleId(module.getId())
+                .name(testCase.getName()).description(testCase.getDescription()).precondition(testCase.getPrecondition())
+                .note(testCase.getNote()).testMode("0").priority(StringUtils.isNotBlank(testCase.getPriority()) ? testCase.getPriority() : "1")
+                .stepStore(testCase.getStepStore()).resultStore(testCase.getResultStore())
+                .createDate(new Date()).build();
+        baseMapper.insert(build);
+        return build;
     }
 
     @Override
@@ -115,7 +115,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     @Override
     public Map<String, Map<String, Integer>> caseCountByStatus() {
         Map<String, Map<String, Integer>> result = new LinkedHashMap<>();
-        baseMapper.selectList(new QueryWrapper<TestCase>().lambda().select(TestCase::getProjectId)).forEach(t->{
+        baseMapper.selectList(new QueryWrapper<TestCase>().lambda().select(TestCase::getProjectId)).forEach(t -> {
             result.put(t.getProjectId(), caseCountByStatus(t.getProjectId(), null));
         });
         return result;
