@@ -4,7 +4,7 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
   datasource:
-    url: jdbc:mysql://localhost:3306/tsim?useUnicode=true&characterEncoding=UTF-8
+    url: jdbc:mysql://192.168.4.29:3306/tsim?useUnicode=true&characterEncoding=UTF-8
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
     password: admin
@@ -30,3 +30,4 @@ server:
   servlet:
     session:
       timeout: 7200
+  port: 8088
