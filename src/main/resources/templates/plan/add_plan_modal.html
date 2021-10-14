@@ -19,16 +19,29 @@
                             </div>
                             <div class="modal-body">
                                 <div class="box-body">
-                                    <div class="input-group mb-3">
+                                    <div class="mb-3">
+<!--                                        <label for="projectId" class="font-monospace">所属项目</label>-->
+<!--                                        <select class="selectpicker" onchange="refreshStory()" id="projectId" name="projectId"-->
+<!--                                                data-live-search="true">-->
+<!--                                            <option selected>所属项目</option>-->
+<!--                                            <option th:each="p:${projects}" th:value="${p.key}" th:text="${p.value.projectName}">One</option>-->
+<!--                                        </select>-->
                                         <label for="projectId" class="form-label">所属项目</label>
-                                        <input class="form-control" list="datalistOptions" name="projectId" id="projectId" placeholder="Type to search...">
-                                        <datalist id="datalistOptions">
-                                            <option th:each="temp:${projects}" th:value="${temp.value.projectName}"></option>
+                                        <input class="form-control" list="prolist" id="projectId" name="projectId" placeholder="Type to search..."
+                                               onchange="refreshStory()">
+                                        <datalist id="prolist">
+                                            <option th:each="p:${projects}" th:value="${p.value.projectName}"></option>
                                         </datalist>
                                     </div>
                                     <div class="mb-3">
-                                        <label for="story-name" class="form-label">需求</label>
-                                        <input type="text" class="form-control" id="story-name" name="storyId" placeholder="输入需求内容描述"/>
+<!--                                        <label for="storyId" class="font-monospace">关联需求</label>-->
+<!--                                        <select class="selectpicker" aria-label="storyId" id="storyId" name="storyId" data-live-search="true">-->
+<!--                                            <option selected>选择需求</option>-->
+<!--                                        </select>-->
+                                        <label for="storyId" class="form-label">关联需求</label>
+                                        <input class="form-control" list="storylist" id="storyId" name="storyId" placeholder="Type to search...">
+                                        <datalist id="storylist">
+                                        </datalist>
                                     </div>
                                     <div class="mb-3">
                                         <label for="add-name" class="form-label">测试计划名称</label>
