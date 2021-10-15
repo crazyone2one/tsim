@@ -5,6 +5,7 @@ import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestStoryService;
+import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,7 @@ public class TestStoryController {
         model.addAttribute("records", pageRecords);
         model.addAttribute("iPage", iPage);
         model.addAttribute("redirecting", "/story/list?pageCurrent=");
+        model.addAttribute("monthList", DateUtils.currentYearMonth());
         return "story/story_list";
     }
 

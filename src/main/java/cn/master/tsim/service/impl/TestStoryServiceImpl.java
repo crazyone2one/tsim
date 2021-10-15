@@ -53,6 +53,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         if (StringUtils.isNotBlank(story.getDelFlag())) {
             wrapper.lambda().eq(TestStory::getDelFlag, story.getDelFlag());
         }
+        wrapper.lambda().orderByAsc(TestStory::getDelFlag);
         return baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
@@ -65,11 +66,10 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         if (Objects.nonNull(testStory)) {
             return testStory;
         }
-        story.setProjectId(project.getId());
-        story.setDelFlag("0");
-        story.setCreateDate(new Date());
-        baseMapper.insert(story);
-        return story;
+        TestStory build = TestStory.builder().projectId(project.getId()).description(story.getDescription()).workDate(story.getWorkDate())
+                .delFlag("0").createDate(new Date()).build();
+        baseMapper.insert(build);
+        return build;
     }
 
     @Override
@@ -98,5 +98,13 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     @Override
     public List<TestStory> listStoryByProjectId(String projectName) {
         return baseMapper.selectList(new QueryWrapper<TestStory>().lambda().eq(TestStory::getProjectId, projectService.getProjectByName(projectName).getId()));
+    }
+
+    @Override
+    public List<TestStory> listStoryByProjectAndWorkDate(String projectId, String workDate) {
+        QueryWrapper<TestStory> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(TestStory::getProjectId, projectId);
+        wrapper.lambda().eq(StringUtils.isNotBlank(workDate), TestStory::getWorkDate, workDate);
+        return baseMapper.selectList(wrapper);
     }
 }

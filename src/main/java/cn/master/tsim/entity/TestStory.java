@@ -50,8 +50,8 @@ public class TestStory implements Serializable {
     /**
      * 需求时间
      */
-    @TableField("data")
-    private Date data;
+    @TableField("work_date")
+    private String workDate;
 
     /**
      * 完成状态(0:未结束，1：已结束)
