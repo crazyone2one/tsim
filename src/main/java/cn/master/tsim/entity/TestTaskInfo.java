@@ -62,19 +62,19 @@ public class TestTaskInfo implements Serializable {
      * bug文档
      */
     @TableField("bug_doc")
-    private String bugDoc;
+    private boolean bugDoc;
 
     /**
      * 测试报告
      */
     @TableField("report_doc")
-    private String reportDoc;
+    private boolean reportDoc;
 
     /**
      * 需求文档
      */
     @TableField("req_doc")
-    private String reqDoc;
+    private boolean reqDoc;
 
     /**
      * 完成状态

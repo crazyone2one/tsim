@@ -63,6 +63,7 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
             //            设置任务描述为需求内容
             List<TestStory> storyList = storyService.listStoryByProjectAndWorkDate(t.getProjectId(), t.getIssueDate());
             t.setSummaryDesc(CollectionUtils.isNotEmpty(storyList) ? storyList.get(0).getDescription() : "");
+            t.setReqDoc(CollectionUtils.isNotEmpty(storyList));
             t.setProjectId(projectService.getProjectById(t.getProjectId()).getProjectName());
         });
         return testTaskInfoPage;

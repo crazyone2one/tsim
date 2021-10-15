@@ -27,6 +27,7 @@ public interface TestStoryService extends IService<TestStory> {
     TestStory updateStory(String argument);
 
     List<TestStory> listStoryByProjectId(String projectName);
+    List<TestStory> listStory();
 
     List<TestStory> listStoryByProjectAndWorkDate(String projectId, String workDate);
 }

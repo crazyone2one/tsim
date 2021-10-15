@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.*;
 
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * <p>
@@ -67,6 +68,11 @@ public class TestPlan implements Serializable {
 
     @TableField("num")
     private String num;
+    @TableField("create_date")
+    private Date createDate;
+
+    @TableField("update_date")
+    private Date updateDate;
 
     @TableField(exist = false)
     private Project project;

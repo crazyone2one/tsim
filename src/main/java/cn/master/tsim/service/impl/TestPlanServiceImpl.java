@@ -1,6 +1,5 @@
 package cn.master.tsim.service.impl;
 
-import cn.master.tsim.entity.Project;
 import cn.master.tsim.entity.TestPlan;
 import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.mapper.TestPlanMapper;
@@ -16,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Objects;
@@ -60,13 +60,10 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
 
     @Override
     public TestPlan savePlan(HttpServletRequest request,TestPlan plan) {
-        final Project project = projectService.addProject(plan.getProjectId(),request );
         final TestStory story = storyService.saveStory(request, TestStory.builder().projectId(plan.getProjectId()).description(plan.getDescription()).build());
-        plan.setProjectId(project.getId());
-        plan.setStoryId(story.getId());
-        plan.setDelFlag("0");
-        baseMapper.insert(plan);
-        return plan;
+        TestPlan build = TestPlan.builder().projectId(story.getProjectId()).storyId(story.getId()).delFlag("0").createDate(new Date()).build();
+        baseMapper.insert(build);
+        return build;
     }
 
     @Override

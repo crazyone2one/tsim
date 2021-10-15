@@ -53,6 +53,7 @@ public class TestPlanController {
         });
         model.addAttribute("iPage", iPage);
         model.addAttribute("projects", projectService.projectMap());
+        model.addAttribute("storyList", storyService.listStory());
         model.addAttribute("redirecting", "/plan/list?pageCurrent=");
         return "plan/plan_list";
     }

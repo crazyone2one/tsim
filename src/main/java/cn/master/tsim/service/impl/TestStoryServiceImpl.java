@@ -101,6 +101,11 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     }
 
     @Override
+    public List<TestStory> listStory() {
+        return baseMapper.selectList(new QueryWrapper<TestStory>().lambda().eq(TestStory::getDelFlag, "0"));
+    }
+
+    @Override
     public List<TestStory> listStoryByProjectAndWorkDate(String projectId, String workDate) {
         QueryWrapper<TestStory> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(TestStory::getProjectId, projectId);
