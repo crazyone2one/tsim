@@ -33,6 +33,17 @@
                                         <label for="add-description-name" class="form-label">需求内容描述</label>
                                         <input type="text" class="form-control" id="add-description-name" name="description" placeholder="输入需求内容描述"/>
                                     </div>
+                                    <div class="col-md-3">
+                                        <label for="workDate" class="form-label"></label>
+                                        <select class="form-select" name="workDate" id="workDate"
+                                                required>
+                                            <option th:value="''"  th:text="选择日期" selected="selected"></option>
+                                            <option th:each="m:${monthList}"
+                                                    th:value="${m}"
+                                                    th:text="${m}"
+                                            >
+                                        </select>
+                                    </div>
                                 </div>
 
                             </div>
