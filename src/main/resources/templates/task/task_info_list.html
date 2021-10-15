@@ -5,8 +5,6 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>TSIM @ TASK</title>
         <link th:href="@{/css/bs/bootstrap.min.css}" rel="stylesheet">
-        <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
-        <script type="text/javascript" th:src="@{/js/bs/bootstrap.js}"></script>
         <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
         <link rel="stylesheet" th:href="@{/css/hover.css}">
         <meta name="author" content="11‘s papa">
@@ -205,7 +203,7 @@
                                 <span th:case="1">进行中</span>
                                 <span th:case="2">待回测</span>
                                 <span th:case="3">已回测</span>
-                                <span th:case="4">已完成</span>
+                                <span th:case="0">已完成</span>
                             </span>
                         </td>
                         <!--是否交付-->
@@ -240,6 +238,8 @@
         </div>
         <!--        分页-->
         <div th:replace="/fragment/pagination_fragment :: pagination01"></div>
+        <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+        <script type="text/javascript" th:src="@{/js/bs/bootstrap.js}"></script>
         <script th:src="@{/js/toast_c.js}"></script>
     </body>
 </html>
