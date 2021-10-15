@@ -91,7 +91,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
                 .delFlag("0")
                 .build();
         baseMapper.insert(build);
-        taskInfoService.addItem(build, request, build.getWorkDate());
+        taskInfoService.addItem(build, request, project.getWorkDate());
         return build;
     }
 
