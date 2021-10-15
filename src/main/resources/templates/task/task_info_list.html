@@ -23,18 +23,20 @@
                             <input type="text" class="form-control" placeholder="请输入项目名称" name="projectId">
                         </div>
                         <div class="col-12">
-                            <select class="form-control" name="finishStatus">
+                            <select class="form-select" name="finishStatus">
                                 <option th:value="''" selected>完成状态</option>
-                                <option value="0">有效</option>
-                                <option value="1">无效</option>
+                                <option value="0">已完成</option>
+                                <option value="1">进行中</option>
+                                <option value="2">待回测</option>
+                                <option value="3">已回测</option>
                             </select>
                         </div>
                         <div class="col-12">
-                            <select class="form-control" name="issueDate" id="workDate-search">
+                            <select class="form-select" name="issueDate" id="workDate-search">
+                                <option th:value="''" selected>任务时间</option>
                                 <option th:each="m:${monthList}"
                                         th:value="${m}"
-                                        th:text="${m}"
-                                        th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}">
+                                        th:text="${m}">
                             </select>
                         </div>
                         <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
