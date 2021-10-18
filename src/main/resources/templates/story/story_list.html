@@ -5,10 +5,9 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>story</title>
         <link th:href="@{/css/bs/bootstrap.min.css}" rel="stylesheet">
-        <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
-        <script type="text/javascript" th:src="@{/js/bs/bootstrap.js}"></script>
         <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
         <link rel="stylesheet" th:href="@{/css/hover.css}">
+        <link rel="stylesheet" th:href="@{/css/style.css}">
         <meta name="author" content="11‘s papa">
     </head>
     <body>
@@ -91,6 +90,8 @@
         </div>
         <!--        分页-->
         <div th:replace="/fragment/pagination_fragment :: pagination01"></div>
+        <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
+        <script type="text/javascript" th:src="@{/js/bs/bootstrap.js}"></script>
         <script th:src="@{/js/toast_c.js}"></script>
         <script>
             // 保存项目
