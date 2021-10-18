@@ -78,12 +78,20 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
 //        完全匹配
         wrapper.lambda().eq(StringUtils.isNotBlank(storyName), TestStory::getDescription, storyName);
         wrapper.lambda().eq(StringUtils.isNotBlank(proId), TestStory::getProjectId, proId);
-        return baseMapper.selectOne(wrapper);
+        final TestStory story = baseMapper.selectOne(wrapper);
+        if (Objects.nonNull(story)) {
+            story.setProject(projectService.getProjectById(story.getProjectId()));
+        }
+        return story;
     }
 
     @Override
     public TestStory searchStoryById(String storyId) {
-        return baseMapper.selectById(storyId);
+        final TestStory story = baseMapper.selectById(storyId);
+        if (Objects.nonNull(story)) {
+            story.setProject(projectService.getProjectById(story.getProjectId()));
+        }
+        return story;
     }
 
     @Override
