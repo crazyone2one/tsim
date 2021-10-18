@@ -52,7 +52,7 @@ public class TestPlanController {
             t.setStory(storyService.searchStoryById(t.getStoryId()));
         });
         model.addAttribute("iPage", iPage);
-        model.addAttribute("projects", projectService.projectMap());
+        model.addAttribute("projects", projectService.findByPartialProjectName(""));
         model.addAttribute("storyList", storyService.listStory());
         model.addAttribute("redirecting", "/plan/list?pageCurrent=");
         return "plan/plan_list";

@@ -39,11 +39,11 @@
 <!--                                            <option selected>选择需求</option>-->
 <!--                                        </select>-->
                                         <label for="storyList" class="form-label">关联需求</label>
-                                        <input class="form-control" list="storyStuff" id="storyList" name="storyId" placeholder="Type to search...">
+                                        <input class="form-control" list="storyStuff" id="storyList" name="storyName" placeholder="搜索并选择需求...">
                                         <datalist id="storyStuff">
-                                            <option th:each="s:${storyList}" th:value="${s.id}" th:text="${s.description}"></option>
+                                            <option th:each="s:${storyList}" th:data-value="${s.id}">[[${s.description}]]</option>
                                         </datalist>
-                                        <input type="hidden" name="storyId" id="storyList-hidden">
+                                        <input type="hidden" name="storyId" id="storyId">
                                     </div>
                                     <div class="mb-3">
                                         <label for="add-name" class="form-label">测试计划名称</label>

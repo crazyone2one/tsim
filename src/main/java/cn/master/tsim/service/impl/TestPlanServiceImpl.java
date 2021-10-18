@@ -3,7 +3,6 @@ package cn.master.tsim.service.impl;
 import cn.master.tsim.entity.TestPlan;
 import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.mapper.TestPlanMapper;
-import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestPlanService;
 import cn.master.tsim.service.TestStoryService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -16,8 +15,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Objects;
 
 /**
@@ -31,37 +28,37 @@ import java.util.Objects;
 @Service
 public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> implements TestPlanService {
 
-    private final ProjectService projectService;
     private final TestStoryService storyService;
 
     @Autowired
-    public TestPlanServiceImpl(ProjectService projectService, TestStoryService storyService) {
-        this.projectService = projectService;
+    public TestPlanServiceImpl(TestStoryService storyService) {
         this.storyService = storyService;
     }
 
     @Override
     public IPage<TestPlan> pageList(TestPlan plan, Integer pageCurrent, Integer pageSize) {
         QueryWrapper<TestPlan> wrapper = new QueryWrapper<>();
+//        按照项目查询
         if (StringUtils.isNotBlank(plan.getProjectId())) {
-            List<String> projectId = new LinkedList<>();
-            projectService.findByPartialProjectName(plan.getProjectId()).forEach(p -> projectId.add(p.getId()));
-            wrapper.lambda().in(TestPlan::getProjectId, projectId);
+            wrapper.lambda().eq(TestPlan::getProjectId, plan.getProjectId());
         }
-        if (StringUtils.isNotBlank(plan.getStoryId())) {
-
-        }
+        //        根据测试计划名称查询
         wrapper.lambda().like(StringUtils.isNotBlank(plan.getName()), TestPlan::getName, plan.getName());
+        //        根据测试计划描述内容查询
         wrapper.lambda().like(StringUtils.isNotBlank(plan.getDescription()), TestPlan::getDescription, plan.getDescription());
+        wrapper.lambda().eq(StringUtils.isNotBlank(plan.getDelFlag()), TestPlan::getDelFlag, plan.getDelFlag());
+        wrapper.lambda().orderByAsc(TestPlan::getDelFlag);
+        wrapper.lambda().orderByAsc(TestPlan::getCreateDate);
         return baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
     }
 
     @Override
-    public TestPlan savePlan(HttpServletRequest request,TestPlan plan) {
-        final TestStory story = storyService.saveStory(request, TestStory.builder().projectId(plan.getProjectId()).description(plan.getDescription()).build());
-        TestPlan build = TestPlan.builder().projectId(story.getProjectId()).storyId(story.getId()).delFlag("0").createDate(new Date()).build();
+    public TestPlan savePlan(HttpServletRequest request, TestPlan plan) {
+        final TestStory story = storyService.searchStoryById(plan.getStoryId());
+        TestPlan build = TestPlan.builder().description(plan.getDescription()).name(plan.getName())
+                .projectId(story.getProject().getId()).storyId(story.getId()).delFlag("0").createDate(new Date()).build();
         baseMapper.insert(build);
         return build;
     }
