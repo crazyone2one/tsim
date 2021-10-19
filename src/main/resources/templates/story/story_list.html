@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>story</title>
+        <title>TSIM @ STORY</title>
         <link th:href="@{/css/bs/bootstrap.min.css}" rel="stylesheet">
         <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
         <link rel="stylesheet" th:href="@{/css/hover.css}">
@@ -21,8 +21,12 @@
                         <div class="row">
                             <div class="input-group mb-3" style="width: 15%">
                                 <span class="input-group-text" id="basic-addon1">所属项目</span>
-                                <input type="text" class="form-control" name="projectId" placeholder="项目名称（模糊查询）" aria-label="projectId"
-                                       aria-describedby="basic-addon1">
+                                <input type="text" class="form-control" placeholder="项目名称" aria-label="projectId"
+                                       aria-describedby="basic-addon1" id="project-s" list="proStuff">
+                                <datalist id="proStuff">
+                                    <option th:each="s:${projects}" th:data-value="${s.id}">[[${s.projectName}]]</option>
+                                </datalist>
+                                <input type="hidden" name="projectId" id="projectId">
                             </div>
                             <div class="input-group mb-3 " style="width: 15%">
                                 <span class="input-group-text" id="basic-addon3">需求内容</span>
@@ -52,7 +56,7 @@
                         <th scope="col">#</th>
                         <th scope="col">所属项目</th>
                         <th scope="col">需求内容</th>
-                        <th scope="col">完成状态</th>
+                        <th scope="col" th:width="60px">完成状态</th>
                         <th scope="col">操作</th>
                     </tr>
                     </thead>
@@ -133,6 +137,41 @@
                     }
                 })
             }
+            // 查询条件：项目
+            $('#project-s').change(function () {
+                const input_select = $("#project-s").val();
+                const op = $('option');
+                const options = op.length;
+                if (options.length > 0) {
+                    for (let i = 0; i < options; i++) {
+                        const option_value = op.eq(i).attr('data-value');
+                        const optionT = op.eq(i).val();
+                        if (input_select === optionT) {
+                            $('#projectId').val(option_value);
+                            break
+                        }
+                    }
+                } else {
+                    $('#projectId').val(input_select);
+                }
+            })
+            $('#projectId-a').change(function () {
+                const input_select = $("#projectId-a").val();
+                const op = $('option');
+                const options = op.length;
+                if (options.length > 0) {
+                    for (let i = 0; i < options; i++) {
+                        const option_value = op.eq(i).attr('data-value');
+                        const optionT = op.eq(i).val();
+                        if (input_select === optionT) {
+                            $('#projectId').val(option_value);
+                            break
+                        }
+                    }
+                }else {
+                    $('#projectId-h').val(input_select);
+                }
+            })
         </script>
     </body>
 </html>

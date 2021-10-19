@@ -15,32 +15,37 @@
                         <form class="modal-content needs-validation" id="addStoryForm">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="staticBackdropLabel">新增需求</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                        aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="box-body">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="basic-addon1">项目名称</span>
-                                        <input name="projectId" id="projectId"
+                                        <input id="projectId-a"
                                                class="form-control"
                                                required
-                                               placeholder="Type to search...">
-<!--                                        <datalist id="proList">-->
-<!--                                            <option th:each="pro:${proMap}" th:value="${pro.value.projectName}"></option>-->
-<!--                                        </datalist>-->
+                                               placeholder="搜索选择项目..." list="proStuff">
+                                        <datalist id="proStuff">
+                                            <option th:each="s:${projects}" th:data-value="${s.id}">
+                                                [[${s.projectName}]]
+                                            </option>
+                                        </datalist>
+                                        <input type="hidden" name="projectId" id="projectId-h">
                                     </div>
                                     <div class="mb-3">
                                         <label for="add-description-name" class="form-label">需求内容描述</label>
-                                        <input type="text" class="form-control" id="add-description-name" name="description" placeholder="输入需求内容描述"/>
+                                        <textarea type="text" class="form-control" id="add-description-name"
+                                                  name="description" placeholder="输入需求内容描述"></textarea>
                                     </div>
-                                    <div class="col-md-3">
-                                        <label for="workDate" class="form-label"></label>
+                                    <div class="input-group col-md-3">
+                                        <label for="workDate" class="input-group-text">需求日期</label>
                                         <select class="form-select" name="workDate" id="workDate"
                                                 required>
-                                            <option th:value="''"  th:text="选择日期" selected="selected"></option>
                                             <option th:each="m:${monthList}"
                                                     th:value="${m}"
                                                     th:text="${m}"
+                                                    th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}"
                                             >
                                         </select>
                                     </div>

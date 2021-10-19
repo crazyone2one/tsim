@@ -59,6 +59,7 @@ public class TestStoryController {
         model.addAttribute("iPage", iPage);
         model.addAttribute("redirecting", "/story/list?pageCurrent=");
         model.addAttribute("monthList", DateUtils.currentYearMonth());
+        model.addAttribute("projects", projectService.findByPartialProjectName(""));
         return "story/story_list";
     }
 
