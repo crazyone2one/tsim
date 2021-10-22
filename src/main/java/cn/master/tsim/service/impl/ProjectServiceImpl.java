@@ -55,6 +55,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
 
     @Override
     public Project getProjectByName(String projectName) {
+        // FIXME: 2021/10/22 0022 TooManyResultsException
         QueryWrapper<Project> wrapper = new QueryWrapper<>();
         wrapper.eq(StringUtils.isNotBlank(projectName), "project_name", projectName);
         return baseMapper.selectOne(wrapper);

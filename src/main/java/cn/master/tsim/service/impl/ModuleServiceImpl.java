@@ -53,6 +53,7 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module> impleme
 
     @Override
     public Module getModuleByName(String moduleName) {
+        // FIXME: 2021/10/22 0022 TooManyResultsException 不同的项目存在相同模块
         return baseMapper.selectOne(new QueryWrapper<Module>().lambda()
                 .eq(StringUtils.isNotBlank(moduleName), Module::getModuleName, moduleName));
     }
