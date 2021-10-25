@@ -67,6 +67,7 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     public TestPlan updatePlan(String argument) {
         final TestPlan testPlan = baseMapper.selectById(argument);
         testPlan.setDelFlag(Objects.equals(testPlan.getDelFlag(), "0") ? "1" : "0");
+        testPlan.setUpdateDate(new Date());
         baseMapper.updateById(testPlan);
         return testPlan;
     }
