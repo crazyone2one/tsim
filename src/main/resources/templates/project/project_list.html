@@ -17,32 +17,33 @@
              th:include="/navbar/nav_1 :: nav1"></div>
         <div class="container-fluid">
             <div class="container-fluid">
-                <div class="row border">
-                    <form th:action="@{projectList}" method="get" class="row row-cols-lg-auto g-3 align-items-center">
-                        <div class="col-12">
-                            <input type="text" class="form-control" placeholder="请输入项目名称" name="projectName">
-                        </div>
+                <div class="card pt-2">
+                    <div class="card-body">
+                        <form th:action="@{projectList}" method="get" class="row row-cols-lg-auto g-3 align-items-center">
+                            <div class="col-12">
+                                <input type="text" class="form-control" placeholder="请输入项目名称" name="projectName">
+                            </div>
 
-                        <div class="col-12">
-                            <select class="form-control" name="workDate" id="workDate-search"
-                                    required>
-                                <option th:each="m:${monthList}"
-                                        th:value="${m}"
-                                        th:text="${m}"
-                                        th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}">
-                            </select>
-                        </div>
-                        <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
-                                                                      style="color: cornflowerblue"></i></button>
-                        <button type="button" class="btn hvr-grow" th:onclick="addProject()"><i
-                                class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
-                        </button>
-                        <datalist id="proList">
-                            <option th:each="pro:${records}" th:value="${pro.projectName}"
-                                    th:text="${pro.projectName}"></option>
-                        </datalist>
-                    </form>
-
+                            <div class="col-12">
+                                <select class="form-control" name="workDate" id="workDate-search"
+                                        required>
+                                    <option th:each="m:${monthList}"
+                                            th:value="${m}"
+                                            th:text="${m}"
+                                            th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}">
+                                </select>
+                            </div>
+                            <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
+                                                                          style="color: cornflowerblue"></i></button>
+                            <button type="button" class="btn hvr-grow" th:onclick="addProject()"><i
+                                    class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
+                            </button>
+                            <datalist id="proList">
+                                <option th:each="pro:${records}" th:value="${pro.projectName}"
+                                        th:text="${pro.projectName}"></option>
+                            </datalist>
+                        </form>
+                    </div>
                 </div>
             </div>
             <div>
