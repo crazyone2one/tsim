@@ -1,10 +1,12 @@
 package cn.master.tsim.controller;
 
 
+import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Tester;
 import cn.master.tsim.service.TesterService;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,8 +38,11 @@ public class TesterController {
 
     @RequestMapping("/login")
     public String login(Tester user, Model model, HttpServletRequest request) {
+        if (StringUtils.isBlank(user.getAccount()) && StringUtils.isBlank(user.getPassword())) {
+            return "login";
+        }
         final ResponseResult responseResult = testerService.login(user);
-        if (Objects.equals(200, responseResult.getCode())) {
+        if (Objects.equals(ResponseCode.SUCCESS.getCode(), responseResult.getCode())) {
             String requestURI = request.getRequestURI();
             log.debug("此次请求的url:{}", requestURI);
             HttpSession session = request.getSession();
