@@ -14,6 +14,7 @@ import cn.master.tsim.util.JacksonUtils;
 import cn.master.tsim.util.ResponseUtils;
 import cn.master.tsim.util.StreamUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -107,13 +108,20 @@ public class TestPlanController {
         }
     }
 
-    @RequestMapping(value = "/addRefCase")
+    /**
+     * 测试计划关联测试用例
+     *
+     * @param request HttpServletRequest
+     * @return cn.master.tsim.common.ResponseResult
+     */
+    @PostMapping(value = "/addRefCase")
     @ResponseBody
     public ResponseResult addRefCase(HttpServletRequest request) {
         try {
             final String planId = String.valueOf(request.getSession().getAttribute("planId"));
             final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
-            final List<String> list = JacksonUtils.convertToClass(JacksonUtils.convertToString(params.get("caseId")), List.class);
+            final List<String> list = JacksonUtils.jsonToObject(JacksonUtils.convertToString(params.get("caseId")), new TypeReference<List<String>>() {
+            });
             planCaseRefService.addItemRef(planId, list);
             return ResponseUtils.success();
         } catch (Exception e) {
