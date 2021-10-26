@@ -28,6 +28,10 @@ public class JacksonUtils {
 
     public static Map<String, Object> convertStringToJson(String source) {
         Map<String, Object> objectMap = new LinkedHashMap<>();
+//       fix MismatchedInputException
+        if (StringUtils.isBlank(source)) {
+            return objectMap;
+        }
         try {
             objectMap = OBJECT_MAPPER.readValue(source, new TypeReference<Map<String, Object>>() {
             });
