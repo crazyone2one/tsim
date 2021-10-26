@@ -90,8 +90,10 @@
                         <input name="id" id="id" type="hidden" class="form-control"
                                th:value="${tempItem.getId}">
                         <td th:text="${stat.count}"></td>
-                        <td th:text="${tempItem.projectId}" class="overflow-hidden"></td>
-                        <td th:text="${tempItem.getSummaryDesc}"></td>
+                        <td th:text="${tempItem.projectId}"
+                            style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"></td>
+                        <td th:text="${tempItem.getSummaryDesc}"
+                            style="overflow: hidden;white-space: nowrap;text-overflow: ellipsis;"></td>
                         <!--编写用例-->
                         <td>
                             <!--                            th:href="@{/case/list(proId=${proMap.get(tempItem.getProjectCode()).getProjectName()})}"-->
