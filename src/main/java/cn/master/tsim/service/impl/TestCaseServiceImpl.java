@@ -96,6 +96,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     @Override
     public IPage<TestCase> pageList(TestCase testCase, Integer pageCurrent, Integer pageSize) {
         QueryWrapper<TestCase> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(StringUtils.isNotBlank(testCase.getProjectId()), TestCase::getProjectId, testCase.getProjectId());
         return baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);

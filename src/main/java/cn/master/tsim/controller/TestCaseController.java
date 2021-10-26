@@ -114,9 +114,11 @@ public class TestCaseController {
         try {
             final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
             final String projectId = String.valueOf(params.get("projectId"));
-            final List<TestCase> testCases = caseService.listTestCase(null, projectId, null);
+            final int pn = Integer.parseInt(String.valueOf(params.get("pn")));
+            final TestCase build = TestCase.builder().projectId(projectId).build();
+            final IPage<TestCase> casePage = caseService.pageList(build, pn, 10);
             request.getSession().setAttribute("planId", String.valueOf(params.get("planId")));
-            return ResponseUtils.success("数据查询成功", testCases);
+            return ResponseUtils.success("数据查询成功", casePage);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据查询错误", e.getMessage());
         }
