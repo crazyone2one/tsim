@@ -76,7 +76,14 @@ public class JacksonUtils {
         }
     }
 
-    public <T> T jsonToObject(String responseJson, TypeReference<T> valueTypeRef) {
+    /**
+     * json字符串转对象
+     *
+     * @param responseJson 源字符串
+     * @param valueTypeRef TypeReference
+     * @return T
+     */
+    public static <T> T jsonToObject(String responseJson, TypeReference<T> valueTypeRef) {
         try {
             return OBJECT_MAPPER.readValue(responseJson, valueTypeRef);
         } catch (JsonProcessingException e) {
