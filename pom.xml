@@ -11,6 +11,7 @@
     <groupId>cn.master</groupId>
     <artifactId>tsim</artifactId>
     <version>0.0.1-SNAPSHOT</version>
+    <packaging>war</packaging>
     <name>tsim</name>
     <description>test case issue manage</description>
     <properties>
@@ -34,6 +35,11 @@
             <artifactId>spring-boot-devtools</artifactId>
             <scope>runtime</scope>
             <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>mysql</groupId>
