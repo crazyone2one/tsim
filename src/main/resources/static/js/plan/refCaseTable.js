@@ -35,27 +35,32 @@ function loadCase(res) {
     const tbody = $('#refCaseTable').find('tbody');
     for (let i = 0; i < res.length; i++) {
         const id = res[i].id;
-        const new_tr = $("<tr></tr>")
-        const title_td = $("<td></td>")
-        const desc_td = $("<td></td>")
-        const pre_td = $("<td></td>")
-        const step_td = $("<td></td>")
-        const result_td = $("<td></td>")
+        const new_tr = $("<tr></tr>").addClass("text-center")
+        const title_td = $("<td></td>").attr("style", "overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 100px");
+        const desc_td = $("<td></td>").attr("style", "overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 100px");
+        // const pre_td = $("<td></td>").attr("style", "overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 90px");
+        const step_td = $("<td></td>").attr("style", "overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 160px");
+        const result_td = $("<td></td>").attr("style", "overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 160px");
         const title = res[i].name;
+        // 加上tooltips
+        title_td.attr("data-bs-toggle0", "tooltip").attr("data-bs-placement", "top").attr("title", title);
         const desc = res[i].description;
-        const pre = res[i].precondition;
+        desc_td.attr("data-bs-toggle0", "tooltip").attr("data-bs-placement", "top").attr("title", desc);
+        // const pre = res[i].precondition;
         const step = res[i].stepStore;
+        step_td.attr("data-bs-toggle0", "tooltip").attr("data-bs-placement", "top").attr("title", step);
         const result = res[i].resultStore;
+        result_td.attr("data-bs-toggle0", "tooltip").attr("data-bs-placement", "top").attr("title", result);
         title_td.text(title);
         desc_td.text(desc);
-        pre_td.text(pre);
+        // pre_td.text(pre);
         step_td.text(step);
         result_td.text(result);
         const checkItemTd = $('<td><input type="checkbox" class="select-item checkbox" name="brand" id="brand" onclick="selectItem($(this))" value="' + id + '"/></td>');
         new_tr.prepend(checkItemTd);
         new_tr.append(title_td);
         new_tr.append(desc_td);
-        new_tr.append(pre_td);
+        // new_tr.append(pre_td);
         new_tr.append(step_td);
         new_tr.append(result_td);
         tbody.append(new_tr);
@@ -70,7 +75,7 @@ function build_page_info(res) {
     const pages = res.pages;
     // 项目存在关联的测试用例时展示分页
     if (pages !== 0) {
-        const ul = $("<ul></ul>").addClass("pagination");
+        const ul = $("<ul></ul>").addClass("pagination pagination-sm");
         // 上一页按钮
         const previous_page = $("<li></li>").addClass("page-item")
             .append($("<a></a>").addClass("page-link").attr("href", "#").attr("aria-label", "Previous")
