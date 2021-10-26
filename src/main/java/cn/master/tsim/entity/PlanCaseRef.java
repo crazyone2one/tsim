@@ -38,11 +38,17 @@ public class PlanCaseRef implements Serializable {
     @TableField("plan_id")
     private String planId;
 
+    @TableField(exist = false)
+    private TestPlan plan;
+
     /**
      * 测试用例id
      */
     @TableField("case_id")
     private String caseId;
+
+    @TableField(exist = false)
+    private TestCase testCase;
 
     /**
      * 是否执行（0，未执行，1，已执行）

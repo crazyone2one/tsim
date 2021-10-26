@@ -1,9 +1,12 @@
 package cn.master.tsim.service;
 
 import cn.master.tsim.entity.PlanCaseRef;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -22,4 +25,6 @@ public interface PlanCaseRefService extends IService<PlanCaseRef> {
      * @param caseRef 待关联的测试用例id集合
      */
     void addItemRef(String planId, List<String> caseRef);
+
+    IPage<PlanCaseRef> loadRefRecords(HttpServletRequest request, Map<String, Object> params);
 }

@@ -1,5 +1,6 @@
 let projectId = "";
 let planId = "";
+// 测试计划关联测试用例modal
 const ref_modal = document.getElementById('ref-case-modal');
 ref_modal.addEventListener('show.bs.modal', function (event) {
     const button = $(event.relatedTarget);
@@ -7,8 +8,36 @@ ref_modal.addEventListener('show.bs.modal', function (event) {
     planId = button.closest('tr').find("#id").attr('value');
     const pn = 1;
     build_case_table(projectId, planId, pn);
-
 });
+
+// 测试计划关联测试用例执行modal
+const ref_run_modal = document.getElementById('ref-run-modal');
+ref_run_modal.addEventListener('show.bs.modal', function (event) {
+    const button = $(event.relatedTarget);
+    // projectId = button.closest('tr').find('#project').attr('value');
+    planId = button.closest('tr').find("#id").attr('value');
+    const pn = 1;
+    build_run_case_table(planId, pn);
+});
+
+function build_run_case_table(planId, pn) {
+    $.ajax({
+            url: '/planCaseRef/loadRefRecords/',
+            type: 'post',
+            data: JSON.stringify({
+                planId: planId,
+                pn: pn,
+                pageSize: 10
+            }),
+            dataType: 'JSON',
+            // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+            success: function (arg) {
+                load_run_case_info(arg['data'].records);
+                build_page_info(arg['data']);
+            }
+        }
+    )
+}
 
 function build_case_table(projectId, planId, pn) {
     $.ajax({
@@ -27,6 +56,41 @@ function build_case_table(projectId, planId, pn) {
             }
         }
     )
+}
+
+// 执行测试用例modal加载数据
+function load_run_case_info(res) {
+    $('#refRunTable > tbody').html("");
+    const tbody = $('#refRunTable').find('tbody');
+    for (let i = 0; i < res.length; i++) {
+        const id = res[i].id;
+        const new_tr = $("<tr></tr>").addClass("text-center")
+        //测试用例标题
+        const title_td = $("<td></td>").attr("style", "overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 100px");
+        // 加上tooltips
+        const title = res[i].testCase.name;
+        title_td.attr("data-bs-toggle0", "tooltip").attr("data-bs-placement", "top").attr("title", title);
+        title_td.text(title);
+        //测试用例描述
+        const desc_td = $("<td></td>").attr("style", "overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 100px");
+        const desc = res[i].testCase.description;
+        desc_td.attr("data-bs-toggle0", "tooltip").attr("data-bs-placement", "top").attr("title", desc);
+        desc_td.text(desc);
+        //测试结果 todo 设置为可编辑
+        const case_result = $("<td></td>")
+        const result_context = res[i].runResult;
+        case_result.text(result_context);
+        // bug数据
+        // todo 1. 测试用例通过时设置为灰色bug图标。测试用例未通过时设置为红色bug图标。2.添加bug功能
+        const case_bug = $("<td></td>")
+        // checkbox
+        const checkItemTd = $('<td><input type="checkbox" class="select-item checkbox" name="brand" id="brand" onclick="selectItem($(this))" value="' + id + '"/></td>');
+        new_tr.prepend(checkItemTd);
+        new_tr.append(title_td);
+        new_tr.append(desc_td);
+        new_tr.append(case_result);
+        tbody.append(new_tr);
+    }
 }
 
 // 加载数据

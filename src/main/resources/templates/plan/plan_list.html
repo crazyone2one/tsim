@@ -99,10 +99,16 @@
                             </div>
                         </td>
                         <td class="align-items-md-center">
-                            <button type="button" class="btn" id="ref-add"
+                            <a type="button" class="btn" id="ref-add"
                                     data-bs-toggle="modal" data-bs-target="#ref-case-modal"><i
-                                    class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
-                            </button>
+                                    class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="关联测试用例"></i>
+                            </a>
+                            <a type="button" class="btn" id="ref-run"
+                                    data-bs-toggle="modal" data-bs-target="#ref-run-modal"><i
+                                    class="bi bi-list-check hvr-grow" style="color: cornflowerblue"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="执行测试用例"></i>
+                            </a>
                         </td>
                     </tr>
                     </tbody>
@@ -115,6 +121,7 @@
         <!-- 添加问题单Modal弹框 -->
         <div th:replace="~{plan/add_plan_modal::addPlanFragment}"></div>
         <div th:replace="~{plan/ref_case_modal::refCaseFragment}"></div>
+        <div th:replace="~{plan/ref_run_modal::refRunFragment}"></div>
         <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/bs/bootstrap.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/iziToast.min.js}"></script>
