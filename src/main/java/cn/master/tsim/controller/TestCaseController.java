@@ -10,6 +10,7 @@ import cn.master.tsim.service.ModuleService;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestCaseService;
 import cn.master.tsim.util.ResponseUtils;
+import cn.master.tsim.util.StreamUtils;
 import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -25,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -108,9 +110,12 @@ public class TestCaseController {
 
     @RequestMapping(value = "loadCaseByProject")
     @ResponseBody
-    public ResponseResult loadCaseByProject(@RequestParam String projectId) {
+    public ResponseResult loadCaseByProject(HttpServletRequest request) {
         try {
+            final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
+            final String projectId = String.valueOf(params.get("projectId"));
             final List<TestCase> testCases = caseService.listTestCase(null, projectId, null);
+            request.getSession().setAttribute("planId", String.valueOf(params.get("planId")));
             return ResponseUtils.success("数据查询成功", testCases);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据查询错误", e.getMessage());
