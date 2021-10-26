@@ -1,19 +1,29 @@
 package cn.master.tsim.controller;
 
+import cn.master.tsim.common.ResponseResult;
+import cn.master.tsim.entity.Project;
+import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.entity.Tester;
 import cn.master.tsim.mapper.CommonMapper;
+import cn.master.tsim.service.ProjectService;
+import cn.master.tsim.service.TestStoryService;
 import cn.master.tsim.util.JacksonUtils;
+import cn.master.tsim.util.ResponseUtils;
+import cn.master.tsim.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 /**
  * @author Created by 11's papa on 2021/09/23
@@ -23,10 +33,14 @@ import java.util.Map;
 @Controller
 public class DefaultController {
     private final CommonMapper commonMapper;
+    private final ProjectService projectService;
+    @Autowired
+    TestStoryService storyService;
 
     @Autowired
-    public DefaultController(CommonMapper commonMapper) {
+    public DefaultController(CommonMapper commonMapper, ProjectService projectService) {
         this.commonMapper = commonMapper;
+        this.projectService = projectService;
     }
 
     @RequestMapping({"", "/", "/index"})
@@ -47,7 +61,7 @@ public class DefaultController {
         String countQuery = "SELECT GROUP_CONCAT(count ORDER BY date) data  from (SELECT t1.date,IFNULL( issueCount.c, 0 ) count FROM ( SELECT DATE_FORMAT( DATE_SUB( NOW(), INTERVAL ac - 1 MONTH ), '%Y-%m' ) AS date FROM (SELECT @ai /*'*/ := /*'*/ @ai + 1 AS ac FROM ( SELECT 1 UNION SELECT 2 UNION SELECT 3 ) ac1, ( SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 ) ac2,( SELECT @ai /*'*/ := /*'*/ 0 ) xc0 ) a ORDER BY date )\n" +
                 "t1 LEFT JOIN ( SELECT work_date, COUNT( id ) c FROM test_bug {whereSQL} GROUP BY work_date ) issueCount ON issueCount.work_date = t1.date ORDER BY t1.date) t2";
         // 新增bug
-        final List<Map<String, Object>> newBugCount = commonMapper.findMapBySql(countQuery.replace("{whereSQL}","where bug_status='1'"));
+        final List<Map<String, Object>> newBugCount = commonMapper.findMapBySql(countQuery.replace("{whereSQL}", "where bug_status='1'"));
         model.addAttribute("newBugCount", JacksonUtils.convertToString(getSeries(newBugCount)));
         return "dashboard";
     }
@@ -59,5 +73,39 @@ public class DefaultController {
             objectMap.put("data", dateString.split(","));
         }
         return xAxi;
+    }
+
+    @GetMapping("/demo")
+    public String demo(HttpServletRequest request) {
+        return "demo/demo";
+    }
+
+    @PostMapping(value = "/addPro")
+    @ResponseBody
+    public ResponseResult addPro(HttpServletRequest request, TestStory story) {
+        try {
+            for (int i = 0; i < 10; i++) {
+                projectService.addProject("测试项目数据" + StringUtils.randomCode(6), request);
+            }
+            return ResponseUtils.success("数据添加成功", null);
+        } catch (Exception e) {
+            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/addStory")
+    @ResponseBody
+    public ResponseResult addStory(HttpServletRequest request) {
+        try {
+            for (int i = 0; i < 10; i++) {
+                final List<Project> projects = projectService.findByPartialProjectName("");
+                final Project project = projects.get(new Random().nextInt(projects.size()));
+                final TestStory build = TestStory.builder().projectId(project.getProjectName()).description("测试需求数据" + StringUtils.randomCode(6)).workDate("2021-10").build();
+                storyService.saveStory(request, build);
+            }
+            return ResponseUtils.success("数据添加成功", null);
+        } catch (Exception e) {
+            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
+        }
     }
 }
