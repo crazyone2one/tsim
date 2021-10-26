@@ -1,15 +1,20 @@
 package cn.master.tsim.controller;
 
 
+import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Project;
 import cn.master.tsim.entity.TestPlan;
 import cn.master.tsim.entity.TestStory;
+import cn.master.tsim.service.PlanCaseRefService;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestPlanService;
 import cn.master.tsim.service.TestStoryService;
+import cn.master.tsim.util.JacksonUtils;
 import cn.master.tsim.util.ResponseUtils;
+import cn.master.tsim.util.StreamUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -26,6 +32,7 @@ import java.util.List;
  * @author 11's papa
  * @since 2021-09-29
  */
+@Slf4j
 @Controller
 @RequestMapping("/plan")
 public class TestPlanController {
@@ -33,12 +40,15 @@ public class TestPlanController {
     private final TestPlanService planService;
     private final ProjectService projectService;
     private final TestStoryService storyService;
+    private final PlanCaseRefService planCaseRefService;
 
     @Autowired
-    public TestPlanController(TestPlanService planService, ProjectService projectService, TestStoryService storyService) {
+    public TestPlanController(TestPlanService planService, ProjectService projectService,
+                              TestStoryService storyService, PlanCaseRefService planCaseRefService) {
         this.planService = planService;
         this.projectService = projectService;
         this.storyService = storyService;
+        this.planCaseRefService = planCaseRefService;
     }
 
     @GetMapping("/list")
@@ -60,9 +70,9 @@ public class TestPlanController {
 
     @PostMapping(value = "/save")
     @ResponseBody
-    public ResponseResult savePlan(HttpServletRequest request,TestPlan plan) {
+    public ResponseResult savePlan(HttpServletRequest request, TestPlan plan) {
         try {
-            final TestPlan testPlan = planService.savePlan(request,plan);
+            final TestPlan testPlan = planService.savePlan(request, plan);
             return ResponseUtils.success("数据添加成功", testPlan);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据添加失败", e.getMessage());
@@ -94,6 +104,20 @@ public class TestPlanController {
             return ResponseUtils.success(stories);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据添加失败", e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/addRefCase")
+    @ResponseBody
+    public ResponseResult addRefCase(HttpServletRequest request) {
+        try {
+            final String planId = String.valueOf(request.getSession().getAttribute("planId"));
+            final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
+            final List<String> list = JacksonUtils.convertToClass(JacksonUtils.convertToString(params.get("caseId")), List.class);
+            planCaseRefService.addItemRef(planId, list);
+            return ResponseUtils.success();
+        } catch (Exception e) {
+            return ResponseUtils.error(ResponseCode.BODY_NOT_MATCH.getCode(), "数据添加失败", e.getMessage());
         }
     }
 }

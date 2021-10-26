@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.master.tsim.mapper.PlanCaseRefMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.master.tsim.entity.PlanCaseRef">
+        <id column="id" property="id" />
+        <result column="plan_id" property="planId" />
+        <result column="case_id" property="caseId" />
+        <result column="run_status" property="runStatus" />
+        <result column="run_result" property="runResult" />
+        <result column="bug_id" property="bugId" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, plan_id, case_id, run_status, run_result, bug_id
+    </sql>
+
+</mapper>
