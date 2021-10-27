@@ -40,6 +40,7 @@ function build_run_case_table(planId, pn) {
 }
 
 function build_case_table(projectId, planId, pn) {
+    // todo 不加载已关联的测试用例数据
     $.ajax({
             url: '/case/loadCaseByProject/',
             type: 'post',
@@ -81,14 +82,26 @@ function load_run_case_info(res) {
         const result_context = res[i].runResult;
         case_result.text(result_context);
         // bug数据
-        // todo 1. 测试用例通过时设置为灰色bug图标。测试用例未通过时设置为红色bug图标。2.添加bug功能
-        const case_bug = $("<td></td>")
+        // todo 1. 添加bug功能
+        const case_bug = $("<td></td>");
+        const case_bug_a = $("<a type='button' class='btn'></a>");
+        const case_bug_a_i = $("<i class='bi bi-bug hvr-grow'></i>");
+        if (Object.is(res[i].runStatus, 0)) {
+            case_bug_a_i.attr("style", "color: #cca1a1");
+        } else {
+            case_bug_a_i.attr("style", "color: red");
+            // 点击后弹出添加bug弹框
+            case_bug_a.attr("data-bs-toggle", "modal").attr("data-bs-target", "#add-bug-modal");
+        }
+        case_bug_a.append(case_bug_a_i);
+        case_bug.append(case_bug_a);
         // checkbox
         const checkItemTd = $('<td><input type="checkbox" class="select-item checkbox" name="brand" id="brand" onclick="selectItem($(this))" value="' + id + '"/></td>');
         new_tr.prepend(checkItemTd);
         new_tr.append(title_td);
         new_tr.append(desc_td);
         new_tr.append(case_result);
+        new_tr.append(case_bug);
         tbody.append(new_tr);
     }
 }
@@ -130,68 +143,6 @@ function loadCase(res) {
         tbody.append(new_tr);
     }
 }
-
-// 加载分页信息
-function build_page_info(res) {
-    console.log(res);
-    const page_nav_area = $('#page_nav_area')
-    page_nav_area.empty();
-    const pages = res.pages;
-    // 项目存在关联的测试用例时展示分页
-    if (pages !== 0) {
-        const ul = $("<ul></ul>").addClass("pagination pagination-sm");
-        // 上一页按钮
-        const previous_page = $("<li></li>").addClass("page-item")
-            .append($("<a></a>").addClass("page-link").attr("href", "#").attr("aria-label", "Previous")
-                .append($("<span></span>").attr("aria-hidden", "true").append("&laquo;"))
-            );
-
-        ul.append(previous_page);
-        // 每页按钮
-        const page_range = arr.range(1, pages);
-        for (let i = 0; i < page_range.length; i++) {
-            const per_page = $("<li></li>").addClass("page-item")
-                .append($("<a></a>").addClass("page-link").append(page_range[i]));
-            if (res.current === page_range[i]) {
-                per_page.addClass("active");
-            }
-            per_page.click(function () {
-                build_case_table(projectId, planId, page_range[i]);
-            });
-            ul.append(per_page);
-        }
-        //下一页按钮
-        const next_page = $("<li></li>").addClass("page-item")
-            .append($("<a></a>").addClass("page-link").attr("href", "#").attr("aria-label", "Next")
-                .append($("<span></span>").attr("aria-hidden", "true").append("&raquo;"))
-            );
-        // 只有一页数据（10条数据）时，设置上一页/下一页按钮不可点击
-        if (pages === 1) {
-            previous_page.addClass("disabled");
-            next_page.addClass("disabled");
-        } else {
-            previous_page.click(function () {
-                build_case_table(projectId, planId, res.current - 1)
-            });
-            next_page.click(function () {
-                build_case_table(projectId, planId, res.current + 1)
-            });
-        }
-        ul.append(next_page);
-        page_nav_area.append(ul);
-    }
-}
-
-const arr = [];
-Array.prototype.range = function (start, end) {
-    const _self = this;
-    const length = end - start + 1;
-    let step = start - 1;
-    return Array.apply(null, {length: length}).map(function (v, index) {
-        step++;
-        return step;
-    })
-};
 // 全选/全不选
 $("input.select-all").click(function () {
     let temp_ids = [];
@@ -209,7 +160,6 @@ $("input.select-all").click(function () {
         });
         temp_ids = []
     }
-    console.log(temp_ids);
 });
 
 //选择单个数据
@@ -218,15 +168,12 @@ function selectItem(item) {
     const checked = $(item).prop("checked");
     $(item).prop("checked", checked);
     if (checked) {
-        console.log(checked);
         const val = $(item).val();
         temp_ids.push(val);
     } else {
-        console.log(checked);
         const val = $(item).val();
         temp_ids.slice($.inArray(val, temp_ids), 1);
     }
-    console.log(temp_ids);
 }
 
 //提交保存选择的测试用例数据

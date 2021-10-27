@@ -122,13 +122,16 @@
         <div th:replace="~{plan/add_plan_modal::addPlanFragment}"></div>
         <div th:replace="~{plan/ref_case_modal::refCaseFragment}"></div>
         <div th:replace="~{plan/ref_run_modal::refRunFragment}"></div>
+        <!-- 添加问题单Modal弹框 -->
+        <div th:replace="~{bug/add_bug_modal::addBugFragment}"></div>
         <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/bs/bootstrap.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/iziToast.min.js}"></script>
 <!--        <script type="text/javascript" th:src="@{/js/bstable/bootstrap-table.min.js}"></script>-->
 <!--        <script type="text/javascript" th:src="@{/js/bstable/bootstrap-table-zh-CN.min.js}"></script>-->
 
-        <script type="text/javascript" th:src="@{/js/plan/refCaseTable.js}"></script>
+        <script th:inline="javascript" th:src="@{/js/fragment/build_page_info.js}"></script>
+        <script th:inline="javascript" th:src="@{/js/plan/refCaseTable.js}"></script>
         <script>
             // 保存项目
             $('#submit').click(function () {
