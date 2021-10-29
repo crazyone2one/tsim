@@ -9,4 +9,6 @@ public interface SystemService {
     void initUserMap();
 
     void refreshUserMap();
+
+    boolean validate(Object object);
 }
