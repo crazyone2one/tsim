@@ -8,6 +8,7 @@ import cn.master.tsim.entity.TestCase;
 import cn.master.tsim.listener.TestCaseListener;
 import cn.master.tsim.service.ModuleService;
 import cn.master.tsim.service.ProjectService;
+import cn.master.tsim.service.SystemService;
 import cn.master.tsim.service.TestCaseService;
 import cn.master.tsim.util.ResponseUtils;
 import cn.master.tsim.util.StreamUtils;
@@ -44,12 +45,14 @@ public class TestCaseController {
     private final ProjectService projectService;
     private final ModuleService moduleService;
     private final TestCaseService caseService;
+    private final SystemService systemService;
 
     @Autowired
-    public TestCaseController(ProjectService projectService, ModuleService moduleService, TestCaseService caseService) {
+    public TestCaseController(ProjectService projectService, ModuleService moduleService, TestCaseService caseService, SystemService systemService) {
         this.projectService = projectService;
         this.moduleService = moduleService;
         this.caseService = caseService;
+        this.systemService = systemService;
     }
 
     @GetMapping("/case_list")
@@ -69,11 +72,15 @@ public class TestCaseController {
     @PostMapping("/save")
     @ResponseBody
     public ResponseResult saveTestCase(HttpServletRequest request, @ModelAttribute @Validated TestCase testCase) {
-        try {
-            caseService.saveCase(testCase, request);
-            return ResponseUtils.success("数据添加成功");
-        } catch (Exception e) {
-            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
+        if (systemService.validate(testCase)) {
+            try {
+                caseService.saveCase(testCase, request);
+                return ResponseUtils.success("数据添加成功");
+            } catch (Exception e) {
+                return ResponseUtils.error(400, "数据添加失败", e.getMessage());
+            }
+        } else {
+            return ResponseUtils.error("数据添加失败");
         }
     }
 
