@@ -1,7 +1,11 @@
-// 加载分页信息
-function build_page_info(res) {
+/*
+* 加载分页信息
+* @param res : 数据
+* @param nav_selector : 定位信息
+* **/
+function build_page_info(res, nav_selector) {
     console.log(res);
-    const page_nav_area = $('#page_nav_area')
+    const page_nav_area = $(nav_selector)
     page_nav_area.html("");
     const pages = res.pages;
     // 项目存在关联的测试用例时展示分页
