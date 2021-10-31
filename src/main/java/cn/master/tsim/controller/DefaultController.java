@@ -7,6 +7,7 @@ import cn.master.tsim.entity.Tester;
 import cn.master.tsim.mapper.CommonMapper;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestStoryService;
+import cn.master.tsim.service.TesterService;
 import cn.master.tsim.util.JacksonUtils;
 import cn.master.tsim.util.ResponseUtils;
 import cn.master.tsim.util.StringUtils;
@@ -34,13 +35,15 @@ import java.util.Random;
 public class DefaultController {
     private final CommonMapper commonMapper;
     private final ProjectService projectService;
+    private final TesterService userService;
     @Autowired
     TestStoryService storyService;
 
     @Autowired
-    public DefaultController(CommonMapper commonMapper, ProjectService projectService) {
+    public DefaultController(CommonMapper commonMapper, ProjectService projectService, TesterService userService) {
         this.commonMapper = commonMapper;
         this.projectService = projectService;
+        this.userService = userService;
     }
 
     @RequestMapping({"", "/", "/index"})
@@ -106,6 +109,16 @@ public class DefaultController {
             return ResponseUtils.success("数据添加成功", null);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据添加失败", e.getMessage());
+        }
+    }
+
+    @GetMapping(value = "/loadUser")
+    @ResponseBody
+    public ResponseResult loadUser(HttpServletRequest request) {
+        try {
+            return ResponseUtils.success("数据加载成功", userService.testList());
+        } catch (Exception e) {
+            return ResponseUtils.error(400, "数据加载失败", e.getMessage());
         }
     }
 }
