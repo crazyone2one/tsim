@@ -29,4 +29,6 @@ public interface TestCaseService extends IService<TestCase> {
     Map<String, Integer> caseCountByStatus(String projectId, String moduleId);
 
     Map<String, Map<String, Integer>> caseCountByStatus();
+
+    TestCase getById(String caseId);
 }

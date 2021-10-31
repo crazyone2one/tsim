@@ -121,4 +121,11 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         });
         return result;
     }
+
+    @Override
+    public TestCase getById(String caseId) {
+        final TestCase testCase = baseMapper.selectById(caseId);
+        testCase.setProject(projectService.getProjectById(testCase.getProjectId()));
+        return testCase;
+    }
 }
