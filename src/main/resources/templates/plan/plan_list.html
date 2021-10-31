@@ -6,7 +6,6 @@
         <title>TSIM @ PLAN</title>
         <link th:href="@{/css/bs/bootstrap.min.css}" rel="stylesheet">
         <link rel="stylesheet" th:href="@{/css/iziToast.min.css}">
-<!--        <link rel="stylesheet" th:href="@{/css/bstable/bootstrap-table-min.css}">-->
         <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
         <link rel="stylesheet" th:href="@{/css/hover.css}">
         <link rel="stylesheet" th:href="@{/css/style.css}">
@@ -100,12 +99,12 @@
                         </td>
                         <td class="align-items-md-center">
                             <a type="button" class="btn" id="ref-add"
-                                    data-bs-toggle="modal" data-bs-target="#ref-case-modal"><i
+                               data-bs-toggle="modal" data-bs-target="#ref-case-modal"><i
                                     class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"
                                     data-bs-toggle="tooltip" data-bs-placement="top" title="关联测试用例"></i>
                             </a>
                             <a type="button" class="btn" id="ref-run"
-                                    data-bs-toggle="modal" data-bs-target="#ref-run-modal"><i
+                               data-bs-toggle="modal" data-bs-target="#ref-run-modal"><i
                                     class="bi bi-list-check hvr-grow" style="color: cornflowerblue"
                                     data-bs-toggle="tooltip" data-bs-placement="top" title="执行测试用例"></i>
                             </a>
@@ -127,14 +126,12 @@
         <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/bs/bootstrap.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/iziToast.min.js}"></script>
-<!--        <script type="text/javascript" th:src="@{/js/bstable/bootstrap-table.min.js}"></script>-->
-<!--        <script type="text/javascript" th:src="@{/js/bstable/bootstrap-table-zh-CN.min.js}"></script>-->
-
         <script th:inline="javascript" th:src="@{/js/fragment/build_page_info.js}"></script>
         <script th:inline="javascript" th:src="@{/js/plan/refCaseTable.js}"></script>
+        <script th:src="@{/js/fragment/add_bug.js}"></script>
         <script>
-            // 保存项目
-            $('#submit').click(function () {
+            // 保存测试计划
+            $('#submitPlan').click(function () {
                 const data = $("#addPlanForm").serialize();
                 $.ajax({
                     url: "/plan/save",
@@ -144,11 +141,11 @@
                     success: function (arg) {
                         if (Object.is(arg['code'], 200)) {
                             iziToast.show({
-                                // title: 'Success',
-                                message: arg['msg'],
-                                position: 'topRight',
-                                timeout: 2000,
-                                color: 'green'
+                                    // title: 'Success',
+                                    message: arg['msg'],
+                                    position: 'topRight',
+                                    timeout: 2000,
+                                    color: 'green'
                                 }
                             );
                             // 数据添加成功后关闭弹框
@@ -202,27 +199,13 @@
                 })
             }
 
-            // 查询条件：项目
-            $('#project-s').change(function () {
-                const input_select = $("#project-s").val();
-                const op = $('option');
-                const options = op.length;
-                for (let i = 0; i < options; i++) {
-                    const option_value = op.eq(i).attr('data-value');
-                    const optionT = op.eq(i).val();
-                    if (input_select === optionT) {
-                        $('#projectId').val(option_value);
-                        break
-                    }
-                }
-            })
             // 需求data list 前端显示name，后台传id
             $('#storyList').change(function () {
                 const input_select = $("#storyList").val();
-                const options = $('option').length;
+                const options = $('#storyStuff>option').length;
                 for (let i = 0; i < options; i++) {
-                    const option_value = $('option').eq(i).attr('data-value');
-                    const optionT = $("option").eq(i).val();
+                    const option_value = $('#storyStuff>option').eq(i).attr('data-value');
+                    const optionT = $("#storyStuff>option").eq(i).val();
                     if (input_select === optionT) {
                         $('#storyId').val(option_value);
                         break
@@ -230,6 +213,5 @@
                 }
             })
         </script>
-
     </body>
 </html>

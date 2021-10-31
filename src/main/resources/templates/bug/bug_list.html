@@ -112,27 +112,7 @@
         <div th:replace="/fragment/pagination_fragment :: pagination01"></div>
         <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/bs/bootstrap.js}"></script>
-        <script>
-            // 保存项目
-            function saveBug() {
-                const data = $("#add-bug-from").serialize();
-                $.ajax({
-                    url: "/bug/save",
-                    type: 'POST',
-                    data: data,
-                    dataType: 'JSON',
-                    success: function (arg) {
-                        const msg = arg['msg'];
-                        if (Object.is(arg['code'], 200)) {
-                            toastInfo(msg, 'success');
-                            window.location.reload();
-                        } else {
-                            toastInfo(msg, 'danger');
-                        }
-                    }
-                });
-            }
-        </script>
-        <script th:src="@{/js/toast_c.js}"></script>
+        <script type="text/javascript" th:src="@{/js/iziToast.min.js}"></script>
+        <script th:src="@{/js/fragment/add_bug.js}"></script>
     </body>
 </html>

@@ -18,7 +18,7 @@ public interface TestPlanService extends IService<TestPlan> {
 
     IPage<TestPlan> pageList(TestPlan plan, Integer pageCurrent, Integer pageSize);
 
-    TestPlan savePlan(HttpServletRequest request,TestPlan plan);
+    TestPlan savePlan(HttpServletRequest request, TestPlan plan);
 
     TestPlan updatePlan(String argument);
 

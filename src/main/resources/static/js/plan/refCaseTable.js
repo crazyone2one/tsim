@@ -33,7 +33,7 @@ function build_run_case_table(planId, pn) {
             // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
             success: function (arg) {
                 load_run_case_info(arg['data'].records);
-                build_page_info(arg['data']);
+                build_page_info(arg['data'],"#page-nav-area");
             }
         }
     )
@@ -53,7 +53,7 @@ function build_case_table(projectId, planId, pn) {
             // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
             success: function (arg) {
                 loadCase(arg['data'].records);
-                build_page_info(arg['data']);
+                build_page_info(arg['data'],"#page_nav_area");
             }
         }
     )
@@ -82,19 +82,20 @@ function load_run_case_info(res) {
         const result_context = res[i].runResult;
         case_result.text(result_context);
         // bug数据
-        // todo 1. 添加bug功能
         const case_bug = $("<td></td>");
-        const case_bug_a = $("<a type='button' class='btn'></a>");
-        const case_bug_a_i = $("<i class='bi bi-bug hvr-grow'></i>");
         if (Object.is(res[i].runStatus, 0)) {
-            case_bug_a_i.attr("style", "color: #cca1a1");
+            const case_bug_a = $("<a type='button' class='btn'></a>");
+            const case_bug_a_i = $("<i class='bi bi-bug hvr-grow' style='color: #cca1a1'></i>");
+            case_bug_a.append(case_bug_a_i);
+            case_bug.append(case_bug_a);
         } else {
-            case_bug_a_i.attr("style", "color: red");
             // 点击后弹出添加bug弹框
-            case_bug_a.attr("data-bs-toggle", "modal").attr("data-bs-target", "#add-bug-modal");
+            // todo 当测试用例已添加相关的bug后，设置按钮不可用（不能继续添加bug数据）
+            const case_bug_a = $("<a type='button' class='btn' data-bs-toggle='modal' data-bs-target='#add-bug-modal' onclick='addBug(" + JSON.stringify(res[i]) + ")'></a>");
+            const case_bug_a_i = $("<i class='bi bi-bug hvr-grow' style='color: red'></i>");
+            case_bug_a.append(case_bug_a_i);
+            case_bug.append(case_bug_a);
         }
-        case_bug_a.append(case_bug_a_i);
-        case_bug.append(case_bug_a);
         // checkbox
         const checkItemTd = $('<td><input type="checkbox" class="select-item checkbox" name="brand" id="brand" onclick="selectItem($(this))" value="' + id + '"/></td>');
         new_tr.prepend(checkItemTd);
@@ -143,6 +144,7 @@ function loadCase(res) {
         tbody.append(new_tr);
     }
 }
+
 // 全选/全不选
 $("input.select-all").click(function () {
     let temp_ids = [];
@@ -220,3 +222,24 @@ $('#sub-ref').click(function () {
         }
     })
 });
+
+function addBug(arg) {
+    //项目名称赋值并不可更改
+    $('#projectCode').val(arg.testCase.project.projectName).attr("readonly", "readonly");
+    $('#functionDesc').val(arg.testCase.description);
+    $('#remark').text(arg.testCase.description);
+    load_user_option("#owner");
+    $('#submitBug').attr("onclick", 'saveBug(0,' + JSON.stringify(arg) + ')');
+}
+
+/*
+* 加载用户信息
+* @param : selector 元素选择
+* */
+function load_user_option(selector) {
+    $.get("/loadUser", function (result) {
+        $.each(result.data, function (i, value) {
+            $(selector).append($("<option value='" + value.id + "'>" + value.username + "</option>"))
+        });
+    })
+}

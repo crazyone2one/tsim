@@ -26,5 +26,21 @@ public interface PlanCaseRefService extends IService<PlanCaseRef> {
      */
     void addItemRef(String planId, List<String> caseRef);
 
+    /**
+     * 更新数据
+     *
+     * @param request HttpServletRequest
+     * @param params  参数
+     * @return cn.master.tsim.entity.PlanCaseRef
+     */
+    PlanCaseRef uploadItemRef(HttpServletRequest request, Map<String, Object> params);
+
+    /**
+     * 查询关联数据
+     *
+     * @param request HttpServletRequest
+     * @param params  参数
+     * @return com.baomidou.mybatisplus.core.metadata.IPage<cn.master.tsim.entity.PlanCaseRef>
+     */
     IPage<PlanCaseRef> loadRefRecords(HttpServletRequest request, Map<String, Object> params);
 }

@@ -17,7 +17,7 @@ import java.util.Map;
 
 /**
  * <p>
- *  前端控制器
+ * 前端控制器
  * </p>
  *
  * @author 11's papa
@@ -39,6 +39,18 @@ public class PlanCaseRefController {
             final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
             final IPage<PlanCaseRef> iPage = refService.loadRefRecords(request, params);
             return ResponseUtils.success("数据添加成功", iPage);
+        } catch (Exception e) {
+            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/saveRefInfo")
+    @ResponseBody
+    public ResponseResult saveRefInfo(HttpServletRequest request) {
+        try {
+            final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
+            final PlanCaseRef itemRef = refService.uploadItemRef(request, params);
+            return ResponseUtils.success("数据添加成功", itemRef);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据添加失败", e.getMessage());
         }
