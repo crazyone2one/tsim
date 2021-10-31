@@ -44,7 +44,7 @@ public class JacksonUtils {
     /**
      * 对象转json格式字符串
      *
-     * @param object
+     * @param object object
      * @return java.lang.String
      */
     public static String convertToString(Object object) {
@@ -60,8 +60,8 @@ public class JacksonUtils {
     /**
      * 字符串转自定义对象
      *
-     * @param source
-     * @param clazz
+     * @param source String
+     * @param clazz clazz
      * @return T
      */
     public static <T> T convertToClass(String source, Class<T> clazz) {
@@ -74,6 +74,17 @@ public class JacksonUtils {
             e.printStackTrace();
             return null;
         }
+    }
+
+    /**
+     * object 转其他类型
+     *
+     * @param object Object
+     * @param valueTypeRef TypeReference
+     * @return T
+     */
+    public static <T> T convertValue(Object object, TypeReference<T> valueTypeRef) {
+        return OBJECT_MAPPER.convertValue(object, valueTypeRef);
     }
 
     /**
