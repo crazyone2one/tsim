@@ -49,10 +49,13 @@ public class TestCase implements Serializable {
     @TableField("project_id")
     @ExcelProperty(value = "项目名称", index = 0)
     private String projectId;
+    @TableField(exist = false)
+    private Project project;
 
     @TableField("module_id")
     @ExcelProperty(value = "模块", index = 1)
     private String moduleId;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     @TableField("create_date")
     private Date createDate;
