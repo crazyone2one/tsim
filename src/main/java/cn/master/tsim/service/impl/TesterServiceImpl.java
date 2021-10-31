@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -55,5 +56,11 @@ public class TesterServiceImpl extends ServiceImpl<TesterMapper, Tester> impleme
         baseMapper.insert(build);
         service.refreshUserMap();
         return ResponseUtils.success(build);
+    }
+
+    @Override
+    public List<Tester> testList() {
+        QueryWrapper<Tester> wrapper = new QueryWrapper<>();
+        return baseMapper.selectList(wrapper);
     }
 }

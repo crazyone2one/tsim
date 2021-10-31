@@ -4,6 +4,8 @@ import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Tester;
 import com.baomidou.mybatisplus.extension.service.IService;
 
+import java.util.List;
+
 /**
  * <p>
  * 服务类
@@ -23,4 +25,6 @@ public interface TesterService extends IService<Tester> {
      * @return cn.master.tsim.common.ResponseResult
      */
     ResponseResult register(Tester tester);
+
+    List<Tester> testList();
 }
