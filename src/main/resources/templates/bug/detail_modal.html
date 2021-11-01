@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>bug detail</title>
+        <meta name="author" content="11‘s papa">
+    </head>
+    <body>
+        <div th:fragment="detailBugFragment">
+            <!-- 添加问题单Modal弹框 -->
+            <div class="modal fade" id="bug-detail-modal" tabindex="-1"
+                 aria-labelledby="issueAddModalLabel"
+                 aria-hidden="true">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <form class="modal-content needs-validation" id="bug-detail-from">
+                        <div class="modal-header">
+                            <h5 class="modal-title bg-light" id="issueAddModalLabel">bug详情</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-md-4">
+                                    <label for="projectCode-d" class="form-label">项目名称</label>
+                                    <input name="projectId" id="projectCode-d" type="text"
+                                           class="form-control" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="module-d" class="form-label">模块</label>
+                                    <input name="moduleId" id="module-d" type="text" class="form-control" readonly>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="function-d" class="form-label">功能点</label>
+                                    <input name="func" id="function-d" type="text"
+                                           class="form-control" readonly>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="title-d" class="form-label">标题(问题描述)</label>
+                                    <textarea name="title" id="title-d" type="text"
+                                              class="form-control" rows="2"></textarea>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="severity-d" class="form-label">严重程度</label>
+                                    <input name="severity" id="severity-d" type="text"
+                                           class="form-control" readonly>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="status-d" class="form-label">bug状态</label>
+                                    <input name="status" id="status-d" type="text"
+                                           class="form-control" readonly>
+                                </div>
+                                <div class="col-md-3">
+                                    <label for="owner-d" class="form-label">测试人员</label>
+                                    <input name="severity" id="owner-d" type="text"
+                                           class="form-control" readonly>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="remark-d" class="form-label">备注</label>
+                                    <textarea name="note" id="remark-d" type="text" class="form-control"
+                                              rows="2"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+<!--                            <button type="button" class="btn btn-primary" onclick="saveBug(1)" id="submitBug">保存</button>-->
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

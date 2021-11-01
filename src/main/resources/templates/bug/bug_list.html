@@ -80,12 +80,12 @@
                     </tr>
                     </thead>
                     <tbody>
-                    <tr class="text-center" th:each="temp,stat:${lists}">
+                    <tr class="text-center" th:each="temp,stat:${iPage.records}">
                         <input name="id" type="hidden" class="form-control"
                                th:value="${temp.id}" id="id">
                         <td th:text="${stat.index+1}"></td>
-                        <td th:text="${proMap.get(temp.projectId).projectName}"></td>
-                        <td th:text="${moduleMap.get(temp.moduleId).moduleName}"></td>
+                        <td th:text="${temp.project.projectName}"></td>
+                        <td th:text="${temp.module.moduleName}"></td>
                         <td th:text="${temp.func}"></td>
                         <td th:text="${temp.title}"></td>
                         <td th:switch="${temp.severity}">
@@ -102,6 +102,11 @@
                             <span th:case="5" th:text="非bug"></span>
                         </td>
                         <td>
+                            <a type="button" class="btn" id="bug-detail"
+                               data-bs-toggle="modal" data-bs-target="#bug-detail-modal"><i
+                                    class="bi bi-eye hvr-grow" style="color: cornflowerblue"
+                                    data-bs-toggle="tooltip" data-bs-placement="top" title="查看详情"></i>
+                            </a>
                         </td>
                     </tr>
                     </tbody>
@@ -110,9 +115,71 @@
         </div>
         <!--        分页-->
         <div th:replace="/fragment/pagination_fragment :: pagination01"></div>
+        <div th:replace="/bug/detail_modal :: detailBugFragment"></div>
         <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/bs/bootstrap.js}"></script>
         <script type="text/javascript" th:src="@{/js/iziToast.min.js}"></script>
         <script th:src="@{/js/fragment/add_bug.js}"></script>
+        <script>
+            const detail_modal = document.getElementById('bug-detail-modal');
+            detail_modal.addEventListener('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const bug_id = button.closest('tr').find("#id").attr('value');
+                $.ajax({
+                        url: '/bug/bugDetail/',
+                        type: 'post',
+                        data: JSON.stringify({
+                            bugId: bug_id,
+                        }),
+                        dataType: 'JSON',
+                        // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        success: function (arg) {
+                            console.log(arg['data']);
+                            $("#projectCode-d").val(arg['data'].project.projectName);
+                            $("#module-d").val(arg['data'].module.moduleName);
+                            $("#title-d").val(arg['data'].title);
+                            $("#function-d").val(arg['data'].func);
+                            $("#owner-d").val(arg['data'].testerEntity.username);
+                            let _severity = "";
+                            switch (arg['data'].severity) {
+                                case "1":
+                                    _severity = "轻微";
+                                    break
+                                case '2':
+                                    _severity = "一般";
+                                    break
+                                case '3':
+                                    _severity = "严重";
+                                    break
+                                case '4':
+                                    _severity = "致命";
+                                    break
+                            }
+                            $("#severity-d").val(_severity);
+                            let _status = "";
+                            switch (arg['data'].bugStatus) {
+                                case "1":
+                                    _status = "新建";
+                                    break
+                                case '2':
+                                    _status = "挂起";
+                                    break
+                                case '3':
+                                    _status = "已提交";
+                                    break
+                                case '4':
+                                    _status = "已解决";
+                                    break
+                                case '5':
+                                    _status = "非bug";
+                                    break
+                            }
+                            $("#status-d").val(_status);
+                            $("#remark-d").val(arg['data'].note);
+                        }
+                    }
+                )
+            });
+        </script>
     </body>
 </html>

@@ -4,10 +4,7 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
+import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -25,6 +22,7 @@ import java.util.Date;
 @TableName("test_bug")
 @Builder
 @AllArgsConstructor
+@NoArgsConstructor
 public class TestBug implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -40,12 +38,16 @@ public class TestBug implements Serializable {
      */
     @TableField("project_id")
     private String projectId;
+    @TableField(exist = false)
+    private Project project;
 
     /**
      * suite id
      */
     @TableField("module_id")
     private String moduleId;
+    @TableField(exist = false)
+    private Module module;
 
     /**
      * 标题
@@ -82,6 +84,8 @@ public class TestBug implements Serializable {
      */
     @TableField("tester")
     private String tester;
+    @TableField(exist = false)
+    private Tester testerEntity;
 
     @TableField("work_date")
     private String workDate;

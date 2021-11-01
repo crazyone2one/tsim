@@ -1,5 +1,6 @@
 package cn.master.tsim.service.impl;
 
+import cn.master.tsim.common.Constants;
 import cn.master.tsim.entity.Module;
 import cn.master.tsim.entity.TestBug;
 import cn.master.tsim.mapper.TestBugMapper;
@@ -39,18 +40,12 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
     }
 
     @Override
-    public List<TestBug> listAllBug(TestBug bug) {
-        QueryWrapper<TestBug> wrapper = getTestBugQueryWrapper(bug);
-        return baseMapper.selectList(wrapper);
-    }
-
-    @Override
     public List<TestBug> listBugByProjectId(String projectId) {
         return baseMapper.selectList(new QueryWrapper<TestBug>().lambda().eq(TestBug::getProjectId, projectId));
     }
 
     @Override
-    public TestBug addBug(HttpServletRequest request,TestBug testBug) {
+    public TestBug addBug(HttpServletRequest request, TestBug testBug) {
         final Module module = moduleService.addModule(testBug.getProjectId(), testBug.getModuleId(), request);
         testBug.setProjectId(module.getProjectId());
         testBug.setModuleId(module.getId());
@@ -72,9 +67,15 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
     @Override
     public IPage<TestBug> pageListBug(TestBug bug, Integer pageCurrent, Integer pageSize) {
         QueryWrapper<TestBug> wrapper = getTestBugQueryWrapper(bug);
-        return baseMapper.selectPage(
+        final Page<TestBug> selectPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
+        selectPage.getRecords().forEach(temp -> {
+            temp.setProject(posService.getProjectById(temp.getProjectId()));
+            temp.setModule(moduleService.getModuleById(temp.getModuleId()));
+            temp.setTesterEntity(Constants.userMaps.get(temp.getTester()));
+        });
+        return selectPage;
     }
 
     @Override
@@ -106,6 +107,15 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
         result.put("level4", level4);
         result.put("total", level1 + level2 + level3 + level4);
         return result;
+    }
+
+    @Override
+    public TestBug getBugById(String id) {
+        final TestBug testBug = baseMapper.selectById(id);
+        testBug.setProject(posService.getProjectById(testBug.getProjectId()));
+        testBug.setModule(moduleService.getModuleById(testBug.getModuleId()));
+        testBug.setTesterEntity(Constants.userMaps.get(testBug.getTester()));
+        return testBug;
     }
 
     private QueryWrapper<TestBug> getTestBugQueryWrapper(TestBug bug) {

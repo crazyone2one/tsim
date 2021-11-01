@@ -18,7 +18,6 @@ import java.util.Map;
  */
 public interface TestBugService extends IService<TestBug> {
 
-    List<TestBug> listAllBug(TestBug bug);
     List<TestBug> listBugByProjectId(String projectId);
 
     TestBug addBug(HttpServletRequest request,TestBug testBug);
@@ -28,4 +27,6 @@ public interface TestBugService extends IService<TestBug> {
     IPage<TestBug> pageListBug(TestBug bug, Integer pageCurrent, Integer pageSize);
 
     Map<String, Integer> bugMapByProject(String projectId, String bugStatus);
+
+    TestBug getBugById(String id);
 }
