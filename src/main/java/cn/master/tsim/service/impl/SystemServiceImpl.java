@@ -30,7 +30,7 @@ public class SystemServiceImpl implements SystemService {
     @PostConstruct
     public void initUserMap() {
         testerMapper.selectList(new QueryWrapper<>()).forEach(u->{
-            Constants.userMaps.put(u.getAccount(), u.getUsername());
+            Constants.userMaps.put(u.getId(), u);
         });
     }
 
@@ -49,6 +49,7 @@ public class SystemServiceImpl implements SystemService {
                 field.setAccessible(true);
                 final Object value = field.get(object);
                 final ParameterNotNull annotation = field.getAnnotation(ParameterNotNull.class);
+                // FIXME: 2021/11/1 0001 字段可为空的排除掉
                 if (StringUtils.isBlank(String.valueOf(value))) {
                     flag = false;
                 }
