@@ -219,7 +219,7 @@
                         <td th:value="${tempItem.tester}">
                                         <span th:each="o:${users}">
                                             <span th:if="${tempItem.tester eq o.key}">
-                                                <span th:value="${o.value}" th:text="${o.value}"></span>
+                                                <span th:value="${o.value.account}" th:text="${o.value.username}"></span>
                                             </span>
                                         </span>
                         </td>
