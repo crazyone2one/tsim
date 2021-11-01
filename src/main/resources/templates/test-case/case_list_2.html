@@ -65,8 +65,6 @@
                     </form>
                 </div>
             </div>
-            <!--        toast-->
-            <div id="toast-div"></div>
             <!-- 添加问题单Modal弹框 -->
             <div th:replace="~{test-case/add_case_modal::addCaseFragment}"></div>
             <div th:replace="~{test-case/uploadCase::uploadModal}"></div>
@@ -127,7 +125,7 @@
         <div th:replace="/fragment/pagination_fragment :: pagination01"></div>
         <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/bs/bootstrap.js}"></script>
-        <script th:src="@{/js/toast_c.js}"></script>
+        <script type="text/javascript" th:src="@{/js/iziToast.min.js}"></script>
         <script>
             // 更新项目状态
             function updateStatus(caseId) {
@@ -142,9 +140,23 @@
                         // console.log( arg['result']);
                         const msg = arg['msg'];
                         if (Object.is(arg['code'], 200)) {
-                            toastInfo(msg, 'success');
+                            iziToast.show({
+                                    // title: 'Success',
+                                    message: msg,
+                                    position: 'topRight',
+                                    timeout: 2000,
+                                    color: 'green'
+                                }
+                            );
                         } else {
-                            toastInfo(msg, 'danger');
+                            iziToast.show({
+                                    // title: 'Success',
+                                    message: arg['msg'],
+                                    position: 'topRight',
+                                    timeout: 2000,
+                                    color: 'red'
+                                }
+                            );
                         }
                     }
                 })
@@ -165,10 +177,24 @@
                         // console.log( arg['result']);
                         const msg = arg['msg'];
                         if (Object.is(arg['code'], 200)) {
-                            toastInfo(msg, 'success');
-                            window.location.reload();
+                            iziToast.show({
+                                    // title: 'Success',
+                                    message: msg,
+                                    position: 'topRight',
+                                    timeout: 2000,
+                                    color: 'green'
+                                }
+                            );
+                            location.reload();
                         } else {
-                            toastInfo(msg, 'danger');
+                            iziToast.show({
+                                    // title: 'Success',
+                                    message: arg['msg'],
+                                    position: 'topRight',
+                                    timeout: 2000,
+                                    color: 'red'
+                                }
+                            );
                         }
                     }
                 })

@@ -153,7 +153,7 @@
         </div>
         <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/bs/bootstrap.js}"></script>
-        <script th:src="@{/js/toast_c.js}"></script>
+        <script type="text/javascript" th:src="@{/js/iziToast.min.js}"></script>
 <!--        <script th:src="@{/js/init_table_checkbox.js}"></script>-->
         <script>
             // 弹出添加modal
@@ -172,10 +172,24 @@
                     success: function (arg) {
                         const msg = arg['msg'];
                         if (Object.is(arg['code'], 200)) {
-                            toastInfo(msg, 'success');
+                            iziToast.show({
+                                    // title: 'Success',
+                                    message: msg,
+                                    position: 'topRight',
+                                    timeout: 2000,
+                                    color: 'green'
+                                }
+                            );
                             window.location.reload();
                         } else {
-                            toastInfo(msg, 'danger');
+                            iziToast.show({
+                                    // title: 'Success',
+                                    message: arg['msg'],
+                                    position: 'topRight',
+                                    timeout: 2000,
+                                    color: 'red'
+                                }
+                            );
                         }
                     }
                 });
