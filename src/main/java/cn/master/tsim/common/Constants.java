@@ -1,5 +1,7 @@
 package cn.master.tsim.common;
 
+import cn.master.tsim.entity.Tester;
+
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -9,5 +11,5 @@ import java.util.Map;
  */
 public class Constants {
 
-    public static Map<String, String> userMaps = new LinkedHashMap<>();
+    public static Map<String, Tester> userMaps = new LinkedHashMap<>();
 }
