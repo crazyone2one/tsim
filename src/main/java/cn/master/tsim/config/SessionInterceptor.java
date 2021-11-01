@@ -23,6 +23,10 @@ public class SessionInterceptor implements HandlerInterceptor {
         if (Objects.nonNull(account)) {
             return true;
         }
+        // 注册功能不重定向到登录
+        if (Objects.equals("/user/register", request.getRequestURI())) {
+            return true;
+        }
         response.sendRedirect("/user/login");
         return false;
     }
