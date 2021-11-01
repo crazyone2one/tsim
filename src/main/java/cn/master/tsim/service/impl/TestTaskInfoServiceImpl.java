@@ -17,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -71,6 +72,7 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
 
     @Override
     public TestTaskInfo addItem(Project project, HttpServletRequest request, String workDate) {
+        // TODO: 2021/11/1 0001 保存项目信息时，暂设置负责人为当前登录用户 。后期优化为可配置
         Tester tester = new Tester();
         final Object account = request.getSession().getAttribute("account");
         if (Objects.nonNull(account)) {
@@ -79,8 +81,9 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
         assert tester != null;
         final TestTaskInfo build = TestTaskInfo.builder().projectId(project.getId())
                 .createCaseCount(caseService.caseCountByStatus(project.getId(), "").get("total"))
-                .tester(tester.getAccount())
+                .tester(tester.getId())
                 .issueDate(workDate)
+                .createDate(new Date())
                 .build();
         baseMapper.insert(build);
         return build;
