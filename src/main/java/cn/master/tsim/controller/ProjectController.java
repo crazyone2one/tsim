@@ -9,7 +9,6 @@ import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -38,6 +37,16 @@ public class ProjectController {
         this.projectService = projectService;
     }
 
+    /**
+     * 加载列表数据
+     *
+     * @param request HttpServletRequest
+     * @param model Model
+     * @param pageCurrent pageCurrent
+     * @param pageSize pageSize
+     * @param project Project
+     * @return java.lang.String
+     */
     @GetMapping(value = "/projectList")
     public String projectList(HttpServletRequest request, Model model, @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
                               @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize, Project project) {
@@ -48,21 +57,24 @@ public class ProjectController {
         return "project/project_list";
     }
 
+    /**
+     * 添加项目数据
+     *
+     * @param request HttpServletRequest
+     * @param project Project
+     * @param model Model
+     * @return java.lang.String
+     */
     @PostMapping(value = "/addProject")
-    @ResponseBody
-    public ResponseResult addProject(HttpServletRequest request, Project project, Model model) {
+    public String addProject(HttpServletRequest request, Project project, Model model) {
         try {
-            if (StringUtils.isBlank(project.getProjectName()) && StringUtils.isBlank(project.getWorkDate())) {
-                return ResponseUtils.error(400, "数据添加失败", "字段不能为空");
-            }
             final Project project1 = projectService.addProject(project, request);
             model.addAttribute("resultMsg", ResponseUtils.success("数据[" + project1.getProjectName() + "]添加成功"));
-            return ResponseUtils.success("数据[" + project1.getProjectName() + "]添加成功");
         } catch (Exception e) {
             log.info(e.getMessage());
             model.addAttribute("resultMsg", ResponseUtils.error(400, "数据添加失败", e.getMessage()));
-            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
         }
+        return "redirect:/project/projectList";
     }
 
     /**

@@ -126,7 +126,7 @@
              aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <form class="modal-content needs-validation" id="addProjectForm">
+                    <form class="modal-content needs-validation" th:action="@{/project/addProject}" method="post" id="addProjectForm">
                         <div class="modal-header">
                             <h5 class="modal-title" id="staticBackdropLabel">新增项目</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -155,7 +155,7 @@
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="submit">确定</button>
+                            <button type="submit" class="btn btn-primary" id="submit">确定</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消
                             </button>
                         </div>
@@ -167,64 +167,9 @@
         <div th:replace="/fragment/pagination_fragment :: pagination01">
         </div>
         <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
-        <script type="text/javascript" th:src="@{/js/bs/bootstrap.js}"></script>
+        <script type="text/javascript" th:src="@{/js/bs/bootstrap.min.js}"></script>
         <script type="text/javascript" th:src="@{/js/iziToast.min.js}"></script>
         <script>
-            // 保存项目
-            $('#submit').click(function () {
-                const data = $("#addProjectForm").serialize();
-                // 验证待添加的数据是否存在
-                $.ajax({
-                    url: "/project/checkProject",
-                    type: 'get',
-                    data: data,
-                    dataType: 'JSON',
-                    success: function (result) {
-                        if (Object.is(result['code'], 400)) {
-                            iziToast.show({
-                                    // title: 'Success',
-                                    message: result['msg'],
-                                    position: 'topRight',
-                                    timeout: 2000,
-                                    color: 'red'
-                                }
-                            );
-                        } else {
-                            // 保存数据
-                            $.ajax({
-                                url: "/project/addProject",
-                                type: 'POST',
-                                data: data,
-                                dataType: 'JSON',
-                                success: function (arg) {
-                                    const msg = arg['msg'];
-                                    if (Object.is(arg['code'], 200)) {
-                                        iziToast.show({
-                                                // title: 'Success',
-                                                message: msg,
-                                                position: 'topRight',
-                                                timeout: 2000,
-                                                color: 'green'
-                                            }
-                                        );
-                                        location.reload();
-                                    } else {
-                                        iziToast.show({
-                                                // title: 'Success',
-                                                message: arg['msg'],
-                                                position: 'topRight',
-                                                timeout: 2000,
-                                                color: 'red'
-                                            }
-                                        );
-                                    }
-                                }
-                            });
-                        }
-                    }
-                })
-            })
-
             // 更新项目状态
             function updateStatus(projectId, workDate) {
                 $.ajax({
