@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -50,7 +51,7 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
         QueryWrapper<TestTaskInfo> wrapper = new QueryWrapper<>();
 //        根据项目名称模糊查询
         wrapper.lambda().inSql(StringUtils.isNotBlank(taskInfo.getProjectId()),
-                TestTaskInfo::getProjectId, "select id from project where project_name like '%" + taskInfo.getProjectId() + "%'");
+                TestTaskInfo::getProjectId, "select id from t_project where project_name like '%" + taskInfo.getProjectId() + "%'");
 //        根据完成状态查询
         wrapper.lambda().eq(StringUtils.isNotBlank(taskInfo.getFinishStatus()), TestTaskInfo::getFinishStatus, taskInfo.getFinishStatus());
 //        根据任务时间查询
@@ -79,13 +80,39 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
             tester = JacksonUtils.convertToClass(JacksonUtils.convertToString(account), Tester.class);
         }
         assert tester != null;
+        final TestTaskInfo taskInfo = getItemByProject(request, project, workDate);
+        if (Objects.nonNull(taskInfo)) {
+            return taskInfo;
+        }
         final TestTaskInfo build = TestTaskInfo.builder().projectId(project.getId())
                 .createCaseCount(caseService.caseCountByStatus(project.getId(), "").get("total"))
+                .finishStatus("1")
                 .tester(tester.getId())
                 .issueDate(workDate)
                 .createDate(new Date())
                 .build();
         baseMapper.insert(build);
         return build;
+    }
+
+    @Override
+    public TestTaskInfo getItemByProject(HttpServletRequest request, Project project, String workDate) {
+        QueryWrapper<TestTaskInfo> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(TestTaskInfo::getProjectId, project.getId());
+        wrapper.lambda().eq(TestTaskInfo::getIssueDate, workDate);
+        return baseMapper.selectOne(wrapper);
+    }
+
+    @Override
+    public TestTaskInfo updateItemStatue(HttpServletRequest request) {
+        final Map<String, String[]> parameterMap = request.getParameterMap();
+        QueryWrapper<TestTaskInfo> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(TestTaskInfo::getProjectId, parameterMap.get("projectId")[0]);
+        wrapper.lambda().eq(TestTaskInfo::getIssueDate, parameterMap.get("workDate")[0]);
+        final TestTaskInfo info = baseMapper.selectOne(wrapper);
+//        更新任务完成状态
+        info.setFinishStatus("0");
+        baseMapper.updateById(info);
+        return info;
     }
 }

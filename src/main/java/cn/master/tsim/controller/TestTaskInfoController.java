@@ -2,16 +2,19 @@ package cn.master.tsim.controller;
 
 
 import cn.master.tsim.common.Constants;
+import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.TestTaskInfo;
 import cn.master.tsim.service.TestTaskInfoService;
 import cn.master.tsim.util.DateUtils;
+import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * <p>
@@ -21,6 +24,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  * @author 11's papa
  * @since 2021-09-30
  */
+@Slf4j
 @Controller
 @RequestMapping("/task")
 public class TestTaskInfoController {
@@ -32,7 +36,7 @@ public class TestTaskInfoController {
     }
 
     @GetMapping("/list")
-    public String taskList(TestTaskInfo taskInfo,Model model,@RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
+    public String taskList(TestTaskInfo taskInfo, Model model, @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
                            @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
         final IPage<TestTaskInfo> iPage = taskInfoService.taskInfoPage(taskInfo, pageCurrent, pageSize);
         model.addAttribute("iPage", iPage);
@@ -40,6 +44,24 @@ public class TestTaskInfoController {
         model.addAttribute("monthList", DateUtils.currentYearMonth());
         model.addAttribute("users", Constants.userMaps);
         return "task/task_info_list";
+    }
+
+    /**
+     * 更新项目状态
+     *
+     * @param request 请求参数
+     * @return cn.master.tsim.common.ResponseResult
+     */
+    @PostMapping(value = "/updateProject")
+    @ResponseBody
+    public ResponseResult updateProject(HttpServletRequest request) {
+        try {
+            final TestTaskInfo taskInfo = taskInfoService.updateItemStatue(request);
+            return ResponseUtils.success("项目状态修改成功", taskInfo);
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return ResponseUtils.error(400, "项目状态修改失败", e.getMessage());
+        }
     }
 }
 

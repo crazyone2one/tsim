@@ -20,7 +20,7 @@ import java.util.Map;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("test_task_info")
+@TableName("t_task_info")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder

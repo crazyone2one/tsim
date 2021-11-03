@@ -24,7 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@TableName("project")
+@TableName("t_project")
 public class Project implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -67,8 +67,21 @@ public class Project implements Serializable {
      * 删除标志(0=未删除;1=删除)
      */
     @TableField("del_flag")
-    private String delFlag;
+    private Integer delFlag;
+    @TableField(exist = false)
+    private String finishStatus;
 
     @TableField(exist = false)
     private List<Module> modules;
+
+    @TableField(exist = false)
+    private List<TestTaskInfo> projectTasks;
+    @TableField(exist = false)
+    private String issueDate;
+    @TableField(exist = false)
+    private Integer refModuleCount;
+    @TableField(exist = false)
+    private Integer refCaseCount;
+    @TableField(exist = false)
+    private Integer refBugCount;
 }

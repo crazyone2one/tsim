@@ -1,9 +1,6 @@
 package cn.master.tsim.service.impl;
 
-import cn.master.tsim.entity.Module;
-import cn.master.tsim.entity.Project;
-import cn.master.tsim.entity.TestBug;
-import cn.master.tsim.entity.TestCase;
+import cn.master.tsim.entity.*;
 import cn.master.tsim.mapper.ProjectMapper;
 import cn.master.tsim.service.*;
 import cn.master.tsim.util.DateUtils;
@@ -37,8 +34,6 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     @Autowired
     private TestBugService bugService;
     @Autowired
-    private ProjectBugRefService projectBugRefService;
-    @Autowired
     private TestTaskInfoService taskInfoService;
 
     @Override
@@ -62,34 +57,49 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
+    public Project checkProject(String projectName, String workDate) {
+        return baseMapper.queryProjectByName(projectName, workDate);
+    }
+
+    @Override
     public Project addProject(String projectName, HttpServletRequest request) {
+        final String workDate = DateUtils.parse2String(new Date(), "yyyy-MM");
         /*1. 根据名称是否可查询到相关的项目*/
-        final Project project = getProjectByName(projectName);
+        final Project project = checkProject(projectName, workDate);
         if (Objects.nonNull(project)) {
             return project;
         }
         /*未查询到对应的项目数据,新创建*/
         final Project build = Project.builder().projectName(projectName)
                 .projectCode(UuidUtils.generate())
-                .workDate(DateUtils.parse2String(new Date(), "yyyy-MM"))
                 .createData(new Date())
-                .delFlag("0")
+                .delFlag(0)
                 .build();
         baseMapper.insert(build);
-        taskInfoService.addItem(build, request, build.getWorkDate());
+        taskInfoService.addItem(build, request, workDate);
         return build;
     }
 
     @Override
     public Project addProject(Project project, HttpServletRequest request) {
-        final Project projectByName = getProjectByName(project.getProjectName());
+        final Project projectByName = checkProject(project.getProjectName(), project.getWorkDate());
         if (Objects.nonNull(projectByName)) {
+            for (TestTaskInfo projectTask : projectByName.getProjectTasks()) {
+                if (Objects.equals(projectTask.getIssueDate(), project.getWorkDate())) {
+                    return projectByName;
+                }
+            }
+            final TestTaskInfo taskInfo = taskInfoService.addItem(projectByName, request, project.getWorkDate());
+            final List<TestTaskInfo> projectTasks = projectByName.getProjectTasks();
+            projectTasks.add(taskInfo);
+            projectByName.setProjectTasks(projectTasks);
             return projectByName;
         }
+//        未查询到相关的项目数据，新添加
         final Project build = Project.builder().projectName(project.getProjectName())
                 .projectCode(UuidUtils.generate())
                 .createData(new Date())
-                .delFlag("0")
+                .delFlag(0)
                 .build();
         baseMapper.insert(build);
         taskInfoService.addItem(build, request, project.getWorkDate());
@@ -99,27 +109,30 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     @Override
     public void updateProjectStatus(String projectId) {
         final Project project = getProjectById(projectId);
-        project.setDelFlag(Objects.equals(project.getDelFlag(), "0") ? "1" : "0");
+        project.setDelFlag(Objects.equals(project.getDelFlag(), 0) ? 1 : 0);
         project.setUpdateDate(new Date());
         baseMapper.updateById(project);
     }
 
     @Override
     public IPage<Project> projectListPages(Project project, Integer pageCurrent, Integer pageSize) {
-        QueryWrapper<Project> wrapper = new QueryWrapper<>();
-        // 按照项目名称模糊查询
-        wrapper.lambda().like(StringUtils.isNotBlank(project.getProjectName()), Project::getProjectName, project.getProjectName());
-        if (StringUtils.isNotBlank(project.getProjectName())) {
-            final Project projectByName = getProjectByName(project.getProjectName());
-            wrapper.lambda().in(StringUtils.isNotBlank(project.getWorkDate()), Project::getId, projectBugRefService.refList(projectByName.getId(), null, project.getWorkDate()));
-        } else {
-            List<String> tempRefId = new LinkedList<>();
-            projectBugRefService.refList(null, null, project.getWorkDate()).forEach(r -> tempRefId.add(r.getProjectId()));
-            wrapper.lambda().in(StringUtils.isNotBlank(project.getWorkDate()), Project::getId, tempRefId);
-        }
-        return baseMapper.selectPage(
+        String proName = StringUtils.isNotBlank(project.getProjectName()) ? project.getProjectName() : "";
+        String workDate = StringUtils.isNotBlank(project.getWorkDate()) ? project.getWorkDate() : "";
+        final IPage<Project> iPage = baseMapper.queryList(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
-                wrapper);
+                proName, workDate);
+        iPage.getRecords().forEach(temp -> {
+            //            统计关联的模块数量
+            final List<Module> modules = moduleService.listModule(temp.getId());
+            temp.setRefModuleCount(CollectionUtils.isNotEmpty(modules) ? modules.size() : 0);
+            //            统计关联的测试用例数量
+            final List<TestCase> cases = caseService.listTestCase(null, temp.getId(), "");
+            temp.setRefCaseCount(CollectionUtils.isNotEmpty(cases) ? cases.size() : 0);
+            //            关联bug
+            final List<TestBug> testBugs = bugService.listBugByProjectId(temp.getId());
+            temp.setRefBugCount(CollectionUtils.isNotEmpty(testBugs) ? testBugs.size() : 0);
+        });
+        return iPage;
     }
 
     @Override
@@ -131,23 +144,4 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         return result;
     }
 
-    @Override
-    public Map<String, Map<String, Integer>> refMap() {
-        Map<String, Map<String, Integer>> mapMap = new LinkedHashMap<>();
-        findByPartialProjectName("").forEach(temp -> {
-            Map<String, Integer> tempMap = new LinkedHashMap<>();
-//            统计关联的模块数量
-            final List<Module> modules = moduleService.listModule(temp.getId());
-            tempMap.put("module", CollectionUtils.isNotEmpty(modules) ? modules.size() : 0);
-//            统计关联的测试用例数量
-            final List<TestCase> cases = caseService.listTestCase(null, temp.getId(), "");
-            tempMap.put("case", CollectionUtils.isNotEmpty(cases) ? cases.size() : 0);
-
-//            关联bug
-            final List<TestBug> testBugs = bugService.listBugByProjectId(temp.getId());
-            tempMap.put("bug", CollectionUtils.isNotEmpty(testBugs) ? testBugs.size() : 0);
-            mapMap.put(temp.getId(), tempMap);
-        });
-        return mapMap;
-    }
 }

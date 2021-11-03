@@ -19,5 +19,32 @@ public interface TestTaskInfoService extends IService<TestTaskInfo> {
 
     IPage<TestTaskInfo> taskInfoPage(TestTaskInfo taskInfo, Integer pageCurrent, Integer pageSize);
 
+    /**
+     * 保存 任务汇总信息
+     *
+     * @param project
+     * @param request
+     * @param workDate
+     * @return cn.master.tsim.entity.TestTaskInfo
+     */
     TestTaskInfo addItem(Project project, HttpServletRequest request, String workDate);
+
+    /**
+     * 获取单个任务汇总信息
+     *
+     * @param request  HttpServletRequest
+     * @param project  Project
+     * @param workDate workDate
+     * @return cn.master.tsim.entity.TestTaskInfo
+     */
+
+    TestTaskInfo getItemByProject(HttpServletRequest request, Project project, String workDate);
+
+    /**
+     * 更新任务完成状态
+     *
+     * @param request HttpServletRequest
+     * @return cn.master.tsim.entity.TestTaskInfo
+     */
+    TestTaskInfo updateItemStatue(HttpServletRequest request);
 }

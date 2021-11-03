@@ -1,19 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="cn.master.tsim.mapper.ProjectMapper">
-
     <!-- 通用查询映射结果 -->
     <resultMap id="BaseResultMap" type="cn.master.tsim.entity.Project">
-        <id column="id" property="id" />
-        <result column="project_name" property="projectName" />
-        <result column="project_code" property="projectCode" />
-        <result column="create_data" property="createData" />
-        <result column="update_date" property="updateDate" />
+        <id column="id" property="id"/>
+        <result column="project_name" property="projectName"/>
+        <result column="project_code" property="projectCode"/>
+        <result column="create_data" property="createData"/>
+        <result column="update_date" property="updateDate"/>
     </resultMap>
 
     <!-- 通用查询结果列 -->
     <sql id="Base_Column_List">
-        id, project_name, project_code, create_data, update_date
+        id,
+        project_name,
+        project_code,
+        create_data,
+        update_date
     </sql>
 
+    <select id="queryList" resultMap="BaseResultMap">
+        SELECT a.*, b.`issue_date`, b.finish_status
+        from t_project a
+                     inner join t_task_info b on a.id = b.project_id
+        <trim prefix="where" prefixOverrides="and|or">
+            <if test="proName != null and proName != ''">
+                and a.project_name like '%${proName}%'
+            </if>
+            <if test="workDate != null and workDate != ''">
+                and b.issue_date = #{workDate}
+            </if>
+        </trim>
+    </select>
 </mapper>

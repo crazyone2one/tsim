@@ -42,6 +42,15 @@ public interface ProjectService extends IService<Project> {
     Project getProjectByName(String projectName);
 
     /**
+     * 根据项目名称和任务时间查询项目数据
+     *
+     * @param projectName 项目名称
+     * @param workDate    任务时间
+     * @return cn.master.tsim.entity.Project
+     */
+    Project checkProject(String projectName, String workDate);
+
+    /**
      * 添加项目
      *
      * @param projectName 项目名称
@@ -59,9 +68,17 @@ public interface ProjectService extends IService<Project> {
      */
     void updateProjectStatus(String projectId);
 
+    /**
+     * 分页查询
+     *
+     * @param project     项目信息
+     * @param pageCurrent pageCurrent
+     * @param pageSize    pageSize
+     * @return com.baomidou.mybatisplus.core.metadata.IPage<cn.master.tsim.entity.Project>
+     */
     IPage<Project> projectListPages(Project project, Integer pageCurrent, Integer pageSize);
+
 
     Map<String, Project> projectMap();
 
-    Map<String, Map<String, Integer>> refMap();
 }
