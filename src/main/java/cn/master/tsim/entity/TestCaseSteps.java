@@ -1,5 +1,6 @@
 package cn.master.tsim.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -22,12 +23,12 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@TableName("test_case_steps")
+@TableName("t_case_steps")
 public class TestCaseSteps implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId("id")
+    @TableId(value = "id",type = IdType.ASSIGN_ID)
     private String id;
 
     @TableField("case_id")
@@ -43,7 +44,7 @@ public class TestCaseSteps implements Serializable {
     private String caseStepResult;
 
     @TableField("active")
-    private String active;
+    private Integer active;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @TableField("create_date")

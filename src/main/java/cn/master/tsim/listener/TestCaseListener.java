@@ -54,7 +54,7 @@ public class TestCaseListener extends AnalysisEventListener<TestCase> {
     private void saveData() {
         HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
         for (int i = 0; i < list.size(); i++) {
-            caseService.saveCase(list.get(i), request);
+            caseService.saveCase(request, list.get(i));
             log.info("第" + i + "条");
         }
     }

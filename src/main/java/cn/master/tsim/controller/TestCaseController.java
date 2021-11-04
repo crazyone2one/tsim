@@ -8,7 +8,6 @@ import cn.master.tsim.entity.TestCase;
 import cn.master.tsim.listener.TestCaseListener;
 import cn.master.tsim.service.ModuleService;
 import cn.master.tsim.service.ProjectService;
-import cn.master.tsim.service.SystemService;
 import cn.master.tsim.service.TestCaseService;
 import cn.master.tsim.util.ResponseUtils;
 import cn.master.tsim.util.StreamUtils;
@@ -19,7 +18,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -45,42 +43,33 @@ public class TestCaseController {
     private final ProjectService projectService;
     private final ModuleService moduleService;
     private final TestCaseService caseService;
-    private final SystemService systemService;
 
     @Autowired
-    public TestCaseController(ProjectService projectService, ModuleService moduleService, TestCaseService caseService, SystemService systemService) {
+    public TestCaseController(ProjectService projectService, ModuleService moduleService, TestCaseService caseService) {
         this.projectService = projectService;
         this.moduleService = moduleService;
         this.caseService = caseService;
-        this.systemService = systemService;
     }
 
     @GetMapping("/case_list")
     public String allTests(HttpServletRequest request, TestCase testCase, Model model,
                            @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
                            @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
-        final List<TestCase> testCases = caseService.listTestCase(testCase, "", "");
-        model.addAttribute("tests", testCases);
-        model.addAttribute("proMap", projectService.projectMap());
-        model.addAttribute("moduleMap", moduleService.moduleMap());
         final IPage<TestCase> iPage = caseService.pageList(testCase, pageCurrent, pageSize);
         model.addAttribute("iPage", iPage);
         model.addAttribute("redirecting", "/case/case_list?pageCurrent=");
         return "test-case/case_list_2";
     }
 
-    @PostMapping("/save")
+    @PostMapping(value = "/save")
     @ResponseBody
-    public ResponseResult saveTestCase(HttpServletRequest request, @ModelAttribute @Validated TestCase testCase) {
-        if (systemService.validate(testCase)) {
-            try {
-                caseService.saveCase(testCase, request);
-                return ResponseUtils.success("数据添加成功");
-            } catch (Exception e) {
-                return ResponseUtils.error(400, "数据添加失败", e.getMessage());
-            }
-        } else {
-            return ResponseUtils.error("数据添加失败");
+    public ResponseResult saveTestCase(HttpServletRequest request) {
+        try {
+            final TestCase saveCase = caseService.saveCase(request, null);
+            return ResponseUtils.success("数据添加成功", saveCase);
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
         }
     }
 
@@ -147,6 +136,19 @@ public class TestCaseController {
             }
         }
         return "redirect:/case/case_list";
+    }
+
+    @PostMapping(value = "/queryCase")
+    @ResponseBody
+    public ResponseResult queryCase(HttpServletRequest request) {
+        try {
+            final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
+            final TestCase testCase = caseService.queryCaseById(String.valueOf(params.get("id")));
+            return ResponseUtils.success("数据修改成功", testCase);
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return ResponseUtils.error(400, "数据修改失败", e.getMessage());
+        }
     }
 }
 

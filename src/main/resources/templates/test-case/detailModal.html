@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>case-detail</title>
+        <meta name="author" content="11‘s papa">
+    </head>
+    <body>
+        <div th:fragment="caseDetailFragment">
+            <div class="modal fade" id="case-detail-modal" tabindex="-1" aria-labelledby="caseDetailModalLabel"
+                 aria-hidden="true" data-bs-backdrop="static">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title bg-light" id="caseDetailModalLabel">测试用例详情</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">项目名称</span>
+                                <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"
+                                       name="projectId" id="projectCode-d" readonly>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon2">模块名称</span>
+                                <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"
+                                       name="moduleId" id="moduleId-d" readonly>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon3">测试用例标题</span>
+                                <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"
+                                       name="name" id="caseTitle-d" readonly>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">测试用例描述</span>
+                                <textarea class="form-control" aria-label="With textarea" name="description" id="description-d" readonly></textarea>
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">前提条件</span>
+                                <textarea class="form-control" aria-label="With textarea" name="precondition" id="precondition-d" readonly></textarea>
+                            </div>
+                            <div class="row">
+                                <div class="input-group mb-3" style="width: 50%">
+                                    <span class="input-group-text" id="basic-addon4">优先级</span>
+                                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"
+                                           name="name" id="priority-d" readonly>
+                                </div>
+                                <div class="input-group mb-3" style="width: 50%">
+                                    <span class="input-group-text" id="basic-addon5">测试方式</span>
+                                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"
+                                           name="testMode" id="testMode-d" readonly>
+                                </div>
+                            </div>
+                            <div>
+                                <table class="table" id="step-result">
+                                    <thead>
+                                    <tr class="text-center">
+                                        <th scope="col">step</th>
+                                        <th scope="col">result</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <!--                            <button type="button" class="btn btn-primary" onclick="sub()" id="submit">保存</button>-->
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

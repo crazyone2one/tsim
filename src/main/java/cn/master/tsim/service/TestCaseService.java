@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * <p>
- *  服务类
+ * 服务类
  * </p>
  *
  * @author 11's papa
@@ -18,7 +18,14 @@ import java.util.Map;
  */
 public interface TestCaseService extends IService<TestCase> {
 
-    TestCase saveCase(TestCase testCase, HttpServletRequest request);
+    /**
+     * 保存测试用例
+     *
+     * @param request  HttpServletRequest
+     * @param testCase TestCase参数(暂用不到）
+     * @return cn.master.tsim.entity.TestCase
+     */
+    TestCase saveCase(HttpServletRequest request, TestCase testCase);
 
     List<TestCase> listTestCase(TestCase testCase, String projectId, String moduleId);
 
@@ -31,4 +38,6 @@ public interface TestCaseService extends IService<TestCase> {
     Map<String, Map<String, Integer>> caseCountByStatus();
 
     TestCase getById(String caseId);
+
+    TestCase queryCaseById(String caseId);
 }

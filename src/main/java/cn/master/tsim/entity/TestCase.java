@@ -11,6 +11,7 @@ import lombok.*;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 /**
  * <p>
@@ -25,7 +26,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@TableName("test_case")
+@TableName("t_case")
 public class TestCase implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -44,9 +45,11 @@ public class TestCase implements Serializable {
     @TableField("description")
     @ExcelProperty(value = "摘要", index = 3)
     private String description;
-
+    /**
+     * 删除标志(0=未删除;1=删除)
+     */
     @TableField("active")
-    private String active;
+    private Integer active;
 
     @ParameterNotNull(message = "项目名称不能为空")
     @TableField("project_id")
@@ -60,10 +63,13 @@ public class TestCase implements Serializable {
     @TableField("module_id")
     @ExcelProperty(value = "模块", index = 1)
     private String moduleId;
+    @TableField(exist = false)
+    private Module module;
 
     @JsonFormat(pattern = "yyyy-MM-dd")
     @TableField("create_date")
     private Date createDate;
+
     @JsonFormat(pattern = "yyyy-MM-dd")
     @TableField("update_date")
     private Date updateDate;
@@ -93,10 +99,13 @@ public class TestCase implements Serializable {
      */
     @TableField("priority")
     @ExcelProperty(value = "优先级", index = 7)
-    private String priority;
+    private Integer priority;
     /**
      * 测试方式(0=手动;1=自动)
      */
     @TableField("test_mode")
-    private String testMode;
+    private Integer testMode;
+
+    @TableField(exist = false)
+    private List<TestCaseSteps> caseSteps;
 }
