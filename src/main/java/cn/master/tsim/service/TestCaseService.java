@@ -31,7 +31,25 @@ public interface TestCaseService extends IService<TestCase> {
 
     void updateCase(String caseId);
 
+    /**
+     * 测试用例模块查询
+     *
+     * @param testCase    查询参数
+     * @param pageCurrent 分页
+     * @param pageSize    分页
+     * @return com.baomidou.mybatisplus.core.metadata.IPage<cn.master.tsim.entity.TestCase>
+     */
     IPage<TestCase> pageList(TestCase testCase, Integer pageCurrent, Integer pageSize);
+
+    /**
+     * 测试计划关联测试用例，根据项目查询相应的测试用例
+     *
+     * @param projectId   项目id
+     * @param pageCurrent 分页
+     * @param pageSize    分页
+     * @return com.baomidou.mybatisplus.core.metadata.IPage<cn.master.tsim.entity.TestCase>
+     */
+    IPage<TestCase> pageByProject(String projectId, Integer pageCurrent, Integer pageSize);
 
     Map<String, Integer> caseCountByStatus(String projectId, String moduleId);
 

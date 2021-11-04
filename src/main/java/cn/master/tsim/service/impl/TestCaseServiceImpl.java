@@ -118,11 +118,20 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         final Page<TestCase> page = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
-        page.getRecords().forEach(t->{
+        page.getRecords().forEach(t -> {
             t.setProject(projectService.getProjectById(t.getProjectId()));
             t.setModule(moduleService.getModuleById(t.getModuleId()));
         });
         return page;
+    }
+
+    @Override
+    public IPage<TestCase> pageByProject(String projectId, Integer pageCurrent, Integer pageSize) {
+        QueryWrapper<TestCase> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(TestCase::getProjectId, projectService.getProjectById(projectId).getId());
+        return baseMapper.selectPage(
+                new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
+                wrapper);
     }
 
     @Override
