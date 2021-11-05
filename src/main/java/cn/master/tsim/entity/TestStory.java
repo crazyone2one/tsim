@@ -19,7 +19,7 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("test_story")
+@TableName("t_story")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -55,7 +55,7 @@ public class TestStory implements Serializable {
      * 完成状态(0:未结束，1：已结束)
      */
     @TableField("del_flag")
-    private String delFlag;
+    private Integer delFlag;
 
     @TableField("create_date")
     private Date createDate;

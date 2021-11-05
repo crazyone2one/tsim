@@ -19,7 +19,7 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("test_bug")
+@TableName("t_bug")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -59,7 +59,7 @@ public class TestBug implements Serializable {
      * 严重程度(1:轻微,2:一般,3:严重,4:致命)
      */
     @TableField("severity")
-    private String severity;
+    private Integer severity;
 
     /**
      * 功能点
@@ -68,10 +68,10 @@ public class TestBug implements Serializable {
     private String func;
 
     /**
-     * 状态
+     * 状态（1,新增 2，挂起 3，已提交 4，已解决 5 非bug）
      */
     @TableField("bug_status")
-    private String bugStatus;
+    private Integer bugStatus;
 
     /**
      * 备注内容
@@ -107,5 +107,9 @@ public class TestBug implements Serializable {
     @TableField("update_date")
     private Date updateDate;
 
-
+    /**
+     * 删除标志(0=未删除;1=删除)
+     */
+    @TableField("del_flag")
+    private Integer delFlag;
 }

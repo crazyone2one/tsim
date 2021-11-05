@@ -86,7 +86,7 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module> impleme
                 .moduleCode(UuidUtils.generate())
                 .projectId(projectService.addProject(projectName, request).getId())
                 .createDate(new Date())
-                .delFlag("0")
+                .delFlag(0)
                 .build();
         baseMapper.insert(build);
         return build;

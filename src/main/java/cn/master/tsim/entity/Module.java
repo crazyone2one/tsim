@@ -24,7 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode(callSuper = false)
-@TableName("module")
+@TableName("t_module")
 public class Module implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -66,7 +66,7 @@ public class Module implements Serializable {
      * 删除标志(0=未删除;1=删除)
      */
     @TableField("del_flag")
-    private String delFlag;
+    private Integer delFlag;
 
     @TableField(exist = false)
     private List<TestCase> caseList;

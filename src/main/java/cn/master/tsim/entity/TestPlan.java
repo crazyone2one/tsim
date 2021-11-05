@@ -19,7 +19,7 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("test_plan")
+@TableName("t_plan")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
@@ -58,10 +58,15 @@ public class TestPlan implements Serializable {
     private String storyId;
 
     /**
+     * 任务时间
+     */
+    @TableField("work_date")
+    private String workDate;
+    /**
      * 删除状态（0，有效 1，无效）
      */
     @TableField("del_flag")
-    private String delFlag;
+    private Integer delFlag;
 
     @TableField("group_id")
     private String groupId;

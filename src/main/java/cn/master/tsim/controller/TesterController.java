@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 import javax.servlet.http.HttpServletRequest;
@@ -26,7 +27,7 @@ import java.util.Objects;
  */
 @Slf4j
 @Controller
-@RequestMapping("user")
+@RequestMapping("/user")
 public class TesterController {
 
     private final TesterService testerService;
@@ -55,7 +56,7 @@ public class TesterController {
     }
 
     @RequestMapping("/register")
-    public String register(Tester user) {
+    public String register(@ModelAttribute Tester user) {
         final ResponseResult responseResult = testerService.register(user);
         return "login";
     }

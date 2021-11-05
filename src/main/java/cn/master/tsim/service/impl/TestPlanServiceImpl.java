@@ -46,7 +46,7 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
         wrapper.lambda().like(StringUtils.isNotBlank(plan.getName()), TestPlan::getName, plan.getName());
         //        根据测试计划描述内容查询
         wrapper.lambda().like(StringUtils.isNotBlank(plan.getDescription()), TestPlan::getDescription, plan.getDescription());
-        wrapper.lambda().eq(StringUtils.isNotBlank(plan.getDelFlag()), TestPlan::getDelFlag, plan.getDelFlag());
+        wrapper.lambda().eq(Objects.nonNull(plan.getDelFlag()), TestPlan::getDelFlag, plan.getDelFlag());
         wrapper.lambda().orderByAsc(TestPlan::getDelFlag);
         wrapper.lambda().orderByAsc(TestPlan::getCreateDate);
         return baseMapper.selectPage(
@@ -58,7 +58,7 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     public TestPlan savePlan(HttpServletRequest request, TestPlan plan) {
         final TestStory story = storyService.searchStoryById(plan.getStoryId());
         TestPlan build = TestPlan.builder().description(plan.getDescription()).name(plan.getName())
-                .projectId(story.getProject().getId()).storyId(story.getId()).delFlag("0").createDate(new Date()).build();
+                .projectId(story.getProject().getId()).storyId(story.getId()).workDate(story.getWorkDate()).delFlag(0).createDate(new Date()).build();
         baseMapper.insert(build);
         return build;
     }
@@ -66,7 +66,7 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     @Override
     public TestPlan updatePlan(String argument) {
         final TestPlan testPlan = baseMapper.selectById(argument);
-        testPlan.setDelFlag(Objects.equals(testPlan.getDelFlag(), "0") ? "1" : "0");
+        testPlan.setDelFlag(Objects.equals(testPlan.getDelFlag(), 0) ? 1 : 0);
         testPlan.setUpdateDate(new Date());
         baseMapper.updateById(testPlan);
         return testPlan;

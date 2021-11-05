@@ -50,7 +50,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
             wrapper.lambda().like(TestStory::getDescription, story.getDescription());
         }
 //        按照需求完成状态查询
-        if (StringUtils.isNotBlank(story.getDelFlag())) {
+        if (Objects.nonNull(story.getDelFlag())) {
             wrapper.lambda().eq(TestStory::getDelFlag, story.getDelFlag());
         }
         wrapper.lambda().orderByAsc(TestStory::getDelFlag);
@@ -67,7 +67,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
             return testStory;
         }
         TestStory build = TestStory.builder().projectId(project.getId()).description(story.getDescription()).workDate(story.getWorkDate())
-                .delFlag("0").createDate(new Date()).build();
+                .delFlag(0).createDate(new Date()).build();
         baseMapper.insert(build);
         return build;
     }
@@ -97,7 +97,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     @Override
     public TestStory updateStory(String argument) {
         final TestStory story = baseMapper.selectById(argument);
-        story.setDelFlag(Objects.equals(story.getDelFlag(), "0") ? "1" : "0");
+        story.setDelFlag(Objects.equals(story.getDelFlag(), 0) ? 1 : 0);
         story.setUpdateDate(new Date());
         baseMapper.updateById(story);
         return story;

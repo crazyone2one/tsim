@@ -2,8 +2,10 @@ package cn.master.tsim.service.impl;
 
 import cn.master.tsim.entity.PlanCaseRef;
 import cn.master.tsim.entity.TestBug;
+import cn.master.tsim.entity.TestTaskInfo;
 import cn.master.tsim.mapper.PlanCaseRefMapper;
 import cn.master.tsim.mapper.TestPlanMapper;
+import cn.master.tsim.mapper.TestTaskInfoMapper;
 import cn.master.tsim.service.PlanCaseRefService;
 import cn.master.tsim.service.TestBugService;
 import cn.master.tsim.service.TestCaseService;
@@ -36,19 +38,25 @@ public class PlanCaseRefServiceImpl extends ServiceImpl<PlanCaseRefMapper, PlanC
     private final TestPlanMapper planMapper;
     private final TestCaseService caseService;
     private final TestBugService bugService;
+    private final TestTaskInfoMapper taskInfoMapper;
 
     @Autowired
-    public PlanCaseRefServiceImpl(TestPlanMapper planMapper, TestCaseService caseService, TestBugService bugService) {
+    public PlanCaseRefServiceImpl(TestPlanMapper planMapper, TestCaseService caseService, TestBugService bugService, TestTaskInfoMapper testTaskInfoMapper) {
         this.planMapper = planMapper;
         this.caseService = caseService;
         this.bugService = bugService;
+        this.taskInfoMapper = testTaskInfoMapper;
     }
 
     @Override
     public void addItemRef(String planId, List<String> caseRef) {
         for (String caseId : caseRef) {
             final PlanCaseRef build = PlanCaseRef.builder().planId(planId).caseId(caseId).runStatus(0).runResult(1).build();
-            baseMapper.insert(build);
+            final int insert = baseMapper.insert(build);
+//            保存测试计划关联的测试用例时，更新task表中新增测试用例数量
+            final TestTaskInfo taskInfo = taskInfoMapper.queryTaskInfoByPlan(planId);
+            taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + insert);
+            taskInfoMapper.updateById(taskInfo);
         }
     }
 
@@ -58,8 +66,8 @@ public class PlanCaseRefServiceImpl extends ServiceImpl<PlanCaseRefMapper, PlanC
         });
 //       添加关联的bug
         final TestBug build = TestBug.builder().projectId(bugInfo.get("projectId"))
-                .moduleId(bugInfo.get("moduleId")).title(bugInfo.get("title")).severity(bugInfo.get("severity"))
-                .func(bugInfo.get("func")).bugStatus(bugInfo.get("bugStatus")).note(bugInfo.get("note")).tester(bugInfo.get("tester"))
+                .moduleId(bugInfo.get("moduleId")).title(bugInfo.get("title")).severity(Integer.parseInt(bugInfo.get("severity")))
+                .func(bugInfo.get("func")).bugStatus(Integer.parseInt(bugInfo.get("bugStatus"))).note(bugInfo.get("note")).tester(bugInfo.get("tester"))
                 .build();
         final TestBug testBug = bugService.addBug(request, build);
         final Map<String, Object> planCase = JacksonUtils.convertValue(params.get("plan_case"), new TypeReference<Map<String, Object>>() {

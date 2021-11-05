@@ -133,8 +133,8 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
         if (StringUtils.isNotBlank(bug.getTitle())) {
             wrapper.lambda().like(TestBug::getTitle, bug.getTitle());
         }
-        wrapper.lambda().eq(StringUtils.isNotBlank(bug.getSeverity()), TestBug::getSeverity, bug.getSeverity());
-        wrapper.lambda().eq(StringUtils.isNotBlank(bug.getBugStatus()), TestBug::getBugStatus, bug.getBugStatus());
+        wrapper.lambda().eq(Objects.nonNull(bug.getSeverity()), TestBug::getSeverity, bug.getSeverity());
+        wrapper.lambda().eq(Objects.nonNull(bug.getBugStatus()), TestBug::getBugStatus, bug.getBugStatus());
         return wrapper;
     }
 }

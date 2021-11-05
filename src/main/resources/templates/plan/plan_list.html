@@ -78,6 +78,7 @@
                     <tr class="text-center" th:each="temp,stat:${iPage.records}">
                         <input name="id" type="hidden" class="form-control"
                                th:value="${temp.id}" id="id">
+                        <input name="workDate" type="hidden" th:value="${temp.workDate}" id="workDate"/>
                         <td th:text="${stat.index+1}"></td>
                         <td th:value="${temp.project.id}" th:text="${temp.project.projectName}" th:id="project"></td>
                         <td th:value="${temp.story.id}" th:text="${temp.story.description}"></td>

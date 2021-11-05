@@ -60,26 +60,36 @@
                                               placeholder="前提条件" aria-label="前提条件"
                                               aria-describedby="pre-span"></textarea>
                                 </div>
-                                <div class="row">
-                                    <div class="input-group mb-3 col-md-6" style="width: 50%">
-                                        <span class="input-group-text">优先级</span>
-                                        <select class="form-select" aria-label="priority" name="priority">
+                                <div class="row g-3">
+                                    <div class="mb-3 col-md-4">
+                                        <select class="form-select" aria-label="priority" name="priority"
+                                                data-bs-toggle="tooltip" data-bs-placement="bottom" title="测试用例优先级">
                                             <option value="0">低</option>
                                             <option value="1" selected>中</option>
                                             <option value="2">高</option>
                                         </select>
                                     </div>
-                                    <div class="input-group mb-3 col-md-6" style="width: 50%">
-                                        <span class="input-group-text" id="testMode-span">测试方式</span>
-                                        <select class="form-select" aria-label="testMode" name="testMode">
-                                            <option value="0" selected>手动</option>
-                                            <option value="1">自动</option>
+                                    <div class=" mb-3 col-md-4">
+                                        <select class="form-select" aria-label="testMode" name="testMode"
+                                                data-bs-toggle="tooltip" data-bs-placement="bottom" title="测试用例执行方式">
+                                            <option value="0" selected>手动测试</option>
+                                            <option value="1">自动测试</option>
+                                        </select>
+                                    </div>
+                                    <div class=" mb-3 col-md-4">
+                                        <select class="form-select" aria-label="workDate" id="workDate" name="workDate"
+                                                data-bs-toggle="tooltip" data-bs-placement="bottom" title="此字段值用于和项目统计关联使用">
+                                            <option th:each="m:${monthList}"
+                                                    th:value="${m}"
+                                                    th:text="${m}"
+                                                    th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}">
                                         </select>
                                     </div>
                                 </div>
                                 <div class="border border-danger">
                                     <div>
-                                        <a href="#" id="AddMoreFileBox" class="btn btn-info btn-sm" onclick="addCaseStep()">添加测试步骤</a>
+                                        <a href="#" id="AddMoreFileBox" class="btn btn-info btn-sm"
+                                           onclick="addCaseStep()">添加测试步骤</a>
                                     </div>
                                     <input id="caseSteps" name="stepStore" type="hidden" class="form-control">
                                     <input id="caseExpectedResults" name="resultStore" type="hidden"

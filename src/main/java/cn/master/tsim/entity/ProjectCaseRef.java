@@ -10,53 +10,45 @@ import java.io.Serializable;
 
 /**
  * <p>
- *
+ * 项目-测试用例关联表
  * </p>
  *
  * @author 11's papa
- * @since 2021-10-11
+ * @since 2021-11-04
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("t_user")
+@TableName("t_project_case_ref")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Tester implements Serializable {
+public class ProjectCaseRef implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 主键id
+     * id
      */
     @TableId(value = "id",type = IdType.ASSIGN_ID)
     private String id;
 
     /**
-     * 账号
+     * projectId
      */
-    @TableField("account")
-    private String account;
+    @TableField("project_id")
+    private String projectId;
 
     /**
-     * 密码
+     * caseId
      */
-    @TableField("password")
-    private String password;
+    @TableField("case_id")
+    private String caseId;
 
     /**
-     * 删除标记（0，未删除，1 删除）
+     * workDate
      */
-    @TableField("del_flag")
-    private String delFlag;
+    @TableField("work_date")
+    private String workDate;
 
-    /**
-     * 真实姓名
-     */
-    @TableField("username")
-    private String username;
-
-    @TableField("email")
-    private String email;
 
 }

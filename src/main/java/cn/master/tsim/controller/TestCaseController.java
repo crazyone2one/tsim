@@ -9,6 +9,7 @@ import cn.master.tsim.listener.TestCaseListener;
 import cn.master.tsim.service.ModuleService;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestCaseService;
+import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
 import cn.master.tsim.util.StreamUtils;
 import com.alibaba.excel.EasyExcel;
@@ -58,6 +59,7 @@ public class TestCaseController {
         final IPage<TestCase> iPage = caseService.pageList(testCase, pageCurrent, pageSize);
         model.addAttribute("iPage", iPage);
         model.addAttribute("redirecting", "/case/case_list?pageCurrent=");
+        model.addAttribute("monthList", DateUtils.currentYearMonth());
         return "test-case/case_list_2";
     }
 
@@ -110,9 +112,11 @@ public class TestCaseController {
         try {
             final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
             final String projectId = String.valueOf(params.get("projectId"));
+            final String planId = String.valueOf(params.get("planId"));
+            final String workDate = String.valueOf(params.get("workDate"));
             final int pn = Integer.parseInt(String.valueOf(params.get("pn")));
-            final IPage<TestCase> casePage = caseService.pageByProject(projectId, pn, 10);
-            request.getSession().setAttribute("planId", String.valueOf(params.get("planId")));
+            final IPage<TestCase> casePage = caseService.pageByProject(projectId, workDate, pn, 10);
+            request.getSession().setAttribute("planId", planId);
             return ResponseUtils.success("数据查询成功", casePage);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据查询错误", e.getMessage());

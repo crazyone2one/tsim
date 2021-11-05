@@ -55,6 +55,7 @@ public class DefaultController {
 
     @GetMapping(value = "/dashboard")
     public String dashboard(Model model, HttpServletRequest request) {
+
         /*时间轴，当前月份往前12个月份*/
         String xAxisSql = "SELECT GROUP_CONCAT(date ORDER BY date) data from (SELECT DATE_FORMAT( DATE_SUB(NOW(),INTERVAL ac - 1 MONTH),'%Y-%m' ) AS date \n" +
                 "FROM ( SELECT @ai /*'*/ := /*'*/@ai + 1 AS ac FROM ( SELECT 1  UNION SELECT  2   UNION SELECT 3 ) ac1, (SELECT 1  UNION SELECT 2  UNION SELECT 3  UNION SELECT 4 ) ac2,(SELECT @ai /*'*/ := /*'*/ 0 )xc0) a ORDER BY date ) t1";
@@ -62,7 +63,7 @@ public class DefaultController {
         List<Map<String, Object>> xAxi = getSeries(xAxData);
         model.addAttribute("xAxisList", JacksonUtils.convertToString(xAxi));
         String countQuery = "SELECT GROUP_CONCAT(count ORDER BY date) data  from (SELECT t1.date,IFNULL( issueCount.c, 0 ) count FROM ( SELECT DATE_FORMAT( DATE_SUB( NOW(), INTERVAL ac - 1 MONTH ), '%Y-%m' ) AS date FROM (SELECT @ai /*'*/ := /*'*/ @ai + 1 AS ac FROM ( SELECT 1 UNION SELECT 2 UNION SELECT 3 ) ac1, ( SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 ) ac2,( SELECT @ai /*'*/ := /*'*/ 0 ) xc0 ) a ORDER BY date )\n" +
-                "t1 LEFT JOIN ( SELECT work_date, COUNT( id ) c FROM test_bug {whereSQL} GROUP BY work_date ) issueCount ON issueCount.work_date = t1.date ORDER BY t1.date) t2";
+                "t1 LEFT JOIN ( SELECT work_date, COUNT( id ) c FROM t_bug {whereSQL} GROUP BY work_date ) issueCount ON issueCount.work_date = t1.date ORDER BY t1.date) t2";
         // 新增bug
         final List<Map<String, Object>> newBugCount = commonMapper.findMapBySql(countQuery.replace("{whereSQL}", "where bug_status='1'"));
         model.addAttribute("newBugCount", JacksonUtils.convertToString(getSeries(newBugCount)));

@@ -1,13 +1,15 @@
 let projectId = "";
 let planId = "";
+let work_date = "";
 // 测试计划关联测试用例modal
 const ref_modal = document.getElementById('ref-case-modal');
 ref_modal.addEventListener('show.bs.modal', function (event) {
     const button = $(event.relatedTarget);
     projectId = button.closest('tr').find('#project').attr('value');
     planId = button.closest('tr').find("#id").attr('value');
+    work_date = button.closest('tr').find("#workDate").attr('value');
     const pn = 1;
-    build_case_table(projectId, planId, pn);
+    build_case_table(projectId, planId, work_date, pn);
 });
 
 // 测试计划关联测试用例执行modal
@@ -33,13 +35,13 @@ function build_run_case_table(planId, pn) {
             // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
             success: function (arg) {
                 load_run_case_info(arg['data'].records);
-                build_page_info(arg['data'],"#page-nav-area");
+                build_page_info(arg['data'], "#page-nav-area");
             }
         }
     )
 }
 
-function build_case_table(projectId, planId, pn) {
+function build_case_table(projectId, planId,work_date, pn) {
     // todo 不加载已关联的测试用例数据
     $.ajax({
             url: '/case/loadCaseByProject/',
@@ -47,13 +49,14 @@ function build_case_table(projectId, planId, pn) {
             data: JSON.stringify({
                 projectId: projectId,
                 planId: planId,
+                workDate: work_date,
                 pn: pn
             }),
             dataType: 'JSON',
             // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
             success: function (arg) {
                 loadCase(arg['data'].records);
-                build_page_info(arg['data'],"#page_nav_area");
+                build_page_info(arg['data'], "#page_nav_area");
             }
         }
     )
@@ -134,7 +137,10 @@ function loadCase(res) {
         // pre_td.text(pre);
         step_td.text(step);
         result_td.text(result);
-        const checkItemTd = $('<td><input type="checkbox" class="select-item checkbox" name="brand" id="brand" onclick="selectItem($(this))" value="' + id + '"/></td>');
+        let checkItemTd = $('<td><input type="checkbox" class="select-item checkbox" name="brand" id="brand" onclick="selectItem($(this))" value="' + id + '"/></td>');
+        if (res[i].refFlag) {
+            checkItemTd = $('<td><input type="checkbox" class="select-item checkbox" name="brand" id="brand" disabled onclick="selectItem($(this))" value="' + id + '"/></td>');
+        }
         new_tr.prepend(checkItemTd);
         new_tr.append(title_td);
         new_tr.append(desc_td);

@@ -1,23 +1,21 @@
 package cn.master.tsim.service.impl;
 
-import cn.master.tsim.entity.Module;
-import cn.master.tsim.entity.Project;
-import cn.master.tsim.entity.TestCase;
+import cn.master.tsim.entity.*;
 import cn.master.tsim.mapper.TestCaseMapper;
-import cn.master.tsim.service.ModuleService;
-import cn.master.tsim.service.ProjectService;
-import cn.master.tsim.service.TestCaseService;
-import cn.master.tsim.service.TestCaseStepsService;
+import cn.master.tsim.mapper.TestTaskInfoMapper;
+import cn.master.tsim.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -33,13 +31,17 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     private final ProjectService projectService;
     private final ModuleService moduleService;
     private final TestCaseStepsService stepsService;
+    private final TestTaskInfoMapper taskInfoMapper;
+    private final ProjectCaseRefService caseRefService;
 
 
     @Autowired
-    public TestCaseServiceImpl(ProjectService projectService, ModuleService moduleService, TestCaseStepsService stepsService) {
+    public TestCaseServiceImpl(ProjectService projectService, ModuleService moduleService, TestCaseStepsService stepsService, TestTaskInfoMapper taskInfoMapper, ProjectCaseRefService caseRefService) {
         this.projectService = projectService;
         this.moduleService = moduleService;
         this.stepsService = stepsService;
+        this.taskInfoMapper = taskInfoMapper;
+        this.caseRefService = caseRefService;
     }
 
     @Override
@@ -58,8 +60,26 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 .stepStore(request.getParameter("stepStore"))
                 .resultStore(request.getParameter("resultStore"))
                 .createDate(new Date()).build();
-        baseMapper.insert(build);
+        final int insert = baseMapper.insert(build);
         stepsService.saveStep(request, build);
+        final String workDate = request.getParameter("workDate");
+//        查询project-case-ref表是否有该项目对应月份相关的测试用例
+        final List<ProjectCaseRef> caseRefs = caseRefService.queryRefList(project.getId(), workDate);
+        if (CollectionUtils.isNotEmpty(caseRefs)) {
+            // 存在对应数据，不包括当前添加的测试用例
+            final List<ProjectCaseRef> collect = caseRefs.stream().filter(t -> Objects.equals(t.getCaseId(), build.getId())).collect(Collectors.toList());
+            if (CollectionUtils.isEmpty(collect)) {
+                caseRefService.addRefItem(project.getId(), build.getId(), workDate);
+                final TestTaskInfo taskInfo = taskInfoMapper.queryInfoByIdAndDate(project.getId(), workDate);
+                taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + insert);
+                taskInfoMapper.updateById(taskInfo);
+            }
+        } else {
+            caseRefService.addRefItem(project.getId(), build.getId(), workDate);
+            final TestTaskInfo taskInfo = taskInfoMapper.queryInfoByIdAndDate(project.getId(), workDate);
+            taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + insert);
+            taskInfoMapper.updateById(taskInfo);
+        }
         return build;
     }
 
@@ -126,12 +146,22 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     }
 
     @Override
-    public IPage<TestCase> pageByProject(String projectId, Integer pageCurrent, Integer pageSize) {
+    public IPage<TestCase> pageByProject(String projectId, String workDate, Integer pageCurrent, Integer pageSize) {
+        final List<ProjectCaseRef> projectCaseRefs = caseRefService.queryRefList(projectId, workDate);
+        List<String> caseIds = new LinkedList<>();
+        projectCaseRefs.forEach(r->caseIds.add(r.getCaseId()));
         QueryWrapper<TestCase> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(TestCase::getProjectId, projectService.getProjectById(projectId).getId());
-        return baseMapper.selectPage(
+        final Page<TestCase> page = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
+        page.getRecords().forEach(r->{
+            if (caseIds.stream().anyMatch(c -> c.equals(r.getId()))) {
+                r.setRefFlag(true);
+//                caseRefService.addRefItem(projectId, r.getId(), workDate);
+            }
+        });
+        return page;
     }
 
     @Override

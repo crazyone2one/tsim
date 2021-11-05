@@ -108,4 +108,7 @@ public class TestCase implements Serializable {
 
     @TableField(exist = false)
     private List<TestCaseSteps> caseSteps;
+
+    @TableField(exist = false)
+    private boolean refFlag;
 }
