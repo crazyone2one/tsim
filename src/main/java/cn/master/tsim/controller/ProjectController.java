@@ -40,11 +40,11 @@ public class ProjectController {
     /**
      * 加载列表数据
      *
-     * @param request HttpServletRequest
-     * @param model Model
+     * @param request     HttpServletRequest
+     * @param model       Model
      * @param pageCurrent pageCurrent
-     * @param pageSize pageSize
-     * @param project Project
+     * @param pageSize    pageSize
+     * @param project     Project
      * @return java.lang.String
      */
     @GetMapping(value = "/projectList")
@@ -61,20 +61,18 @@ public class ProjectController {
      * 添加项目数据
      *
      * @param request HttpServletRequest
-     * @param project Project
-     * @param model Model
      * @return java.lang.String
      */
     @PostMapping(value = "/addProject")
-    public String addProject(HttpServletRequest request, Project project, Model model) {
+    @ResponseBody
+    public ResponseResult addProject(HttpServletRequest request) {
         try {
-            final Project project1 = projectService.addProject(project, request);
-            model.addAttribute("resultMsg", ResponseUtils.success("数据[" + project1.getProjectName() + "]添加成功"));
+            final Project project1 = projectService.addProject("", request);
+            return ResponseUtils.success(project1);
         } catch (Exception e) {
             log.info(e.getMessage());
-            model.addAttribute("resultMsg", ResponseUtils.error(400, "数据添加失败", e.getMessage()));
+            return ResponseUtils.error(e.getMessage());
         }
-        return "redirect:/project/projectList";
     }
 
     /**

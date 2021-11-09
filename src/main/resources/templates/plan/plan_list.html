@@ -4,11 +4,11 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>TSIM @ PLAN</title>
-        <link th:href="@{/css/bs/bootstrap.min.css}" rel="stylesheet">
-        <link rel="stylesheet" th:href="@{/css/iziToast.min.css}">
-        <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
-        <link rel="stylesheet" th:href="@{/css/hover.css}">
-        <link rel="stylesheet" th:href="@{/css/style.css}">
+        <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+        <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
+        <link rel="stylesheet" th:href="@{/plugins/hover.css}">
+        <!--        toast插件-->
+        <link rel="stylesheet" th:href="@{/plugins/iziToast.min.css}">
         <meta name="author" content="11‘s papa">
     </head>
     <body>
@@ -124,12 +124,12 @@
         <div th:replace="~{plan/ref_run_modal::refRunFragment}"></div>
         <!-- 添加问题单Modal弹框 -->
         <div th:replace="~{bug/add_bug_modal::addBugFragment}"></div>
-        <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
-        <script type="text/javascript" th:src="@{/js/bs/bootstrap.min.js}"></script>
-        <script type="text/javascript" th:src="@{/js/iziToast.min.js}"></script>
-        <script th:inline="javascript" th:src="@{/js/fragment/build_page_info.js}"></script>
-        <script th:inline="javascript" th:src="@{/js/plan/refCaseTable.js}"></script>
-        <script th:src="@{/js/fragment/add_bug.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
+        <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/iziToast.min.js}"></script>
+        <script th:inline="javascript" th:src="@{/dist/js/build_page_info.js}"></script>
+        <script th:inline="javascript" th:src="@{/dist/js/refCaseTable.js}"></script>
+        <script th:src="@{/dist/js/add_bug.js}"></script>
         <script>
             // 保存测试计划
             $('#submitPlan').click(function () {
