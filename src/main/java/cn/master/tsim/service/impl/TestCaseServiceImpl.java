@@ -101,8 +101,11 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         //            项目名称模糊查询
         if (StringUtils.isNotBlank(testCase.getProjectId())) {
             final List<Project> projects = projectService.findByPartialProjectName(testCase.getProjectId());
-            projects.forEach(temp -> tempProjectId.add(temp.getId()));
-            wrapper.lambda().in(TestCase::getProjectId, tempProjectId);
+//          未查询到项目数时不使用项目查询条件
+            if (CollectionUtils.isNotEmpty(projects)) {
+                projects.forEach(temp -> tempProjectId.add(temp.getId()));
+                wrapper.lambda().in(TestCase::getProjectId, tempProjectId);
+            }
         }
 //            模块模糊查询
         if (StringUtils.isNotBlank(testCase.getModuleId())) {
