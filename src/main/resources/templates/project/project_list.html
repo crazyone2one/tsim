@@ -6,11 +6,11 @@
         <title>TSIM @ PROJECT</title>
         <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
         <link rel="bookmark" th:href="@{/favicon.ico}" type="image/x-icon"/>
-        <link th:href="@{/css/bs/bootstrap.min.css}" rel="stylesheet">
-        <link rel="stylesheet" th:href="@{/icons/bootstrap-icons.css}">
-        <link rel="stylesheet" th:href="@{/css/hover.css}">
+        <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+        <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
+        <link rel="stylesheet" th:href="@{/plugins/hover.css}">
         <!--        toast插件-->
-        <link rel="stylesheet" th:href="@{/css/iziToast.min.css}">
+        <link rel="stylesheet" th:href="@{/plugins/iziToast.min.css}">
         <!--        <link rel="stylesheet" th:href="@{/css/style.css}">-->
         <meta name="author" content="11‘s papa">
     </head>
@@ -61,7 +61,7 @@
                         <th scope="col">关联模块</th>
                         <th scope="col">关联测试用例</th>
                         <th scope="col">关联bug</th>
-                        <th scope="col">是否完成</th>
+<!--                        <th scope="col">是否完成</th>-->
                         <!--                            <th scope="col">操作</th>-->
                     </tr>
                     </thead>
@@ -84,38 +84,30 @@
                             <a href="#"
                                th:text="${temp.refBugCount}"></a>
                         </td>
-                        <td th:switch="${temp.finishStatus}">
-                            <div class="form-check form-switch">
-                                        <span th:case="1">
-                                            <input class="form-check-input" type="checkbox" id="un-del-1" checked
-                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">
-                                        <label class="form-check-label" for="un-del-1"></label>
-                                        </span>
-                                <span th:case="2">
-                                            <input class="form-check-input" type="checkbox" id="un-del-2" checked
-                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">
-                                        <label class="form-check-label" for="un-del-2"></label>
-                                        </span>
-                                <span th:case="3">
-                                            <input class="form-check-input" type="checkbox" id="un-del-3" checked
-                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">
-                                        <label class="form-check-label" for="un-del-3"></label>
-                                        </span>
-                                <span th:case="0">
-                                            <input class="form-check-input" type="checkbox" id="del"
-                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">
-                                        <label class="form-check-label" for="del"></label>
-                                        </span>
-                            </div>
-                        </td>
-                        <!--                            <td>-->
-                        <!--                                <a href="#" class="disabled">-->
-                        <!--                                    <i class="bi bi-card-text"></i>-->
-                        <!--                                </a>-->
-                        <!--                                <a href="#" class="disabled">-->
-                        <!--                                    <i class="bi bi-trash"></i>-->
-                        <!--                                </a>-->
-                        <!--                            </td>-->
+<!--                        <td th:switch="${temp.finishStatus}">-->
+<!--                            <div class="form-check form-switch">-->
+<!--                                        <span th:case="1">-->
+<!--                                            <input class="form-check-input" type="checkbox" id="un-del-1" checked-->
+<!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
+<!--                                        <label class="form-check-label" for="un-del-1"></label>-->
+<!--                                        </span>-->
+<!--                                <span th:case="2">-->
+<!--                                            <input class="form-check-input" type="checkbox" id="un-del-2" checked-->
+<!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
+<!--                                        <label class="form-check-label" for="un-del-2"></label>-->
+<!--                                        </span>-->
+<!--                                <span th:case="3">-->
+<!--                                            <input class="form-check-input" type="checkbox" id="un-del-3" checked-->
+<!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
+<!--                                        <label class="form-check-label" for="un-del-3"></label>-->
+<!--                                        </span>-->
+<!--                                <span th:case="0">-->
+<!--                                            <input class="form-check-input" type="checkbox" id="del"-->
+<!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
+<!--                                        <label class="form-check-label" for="del"></label>-->
+<!--                                        </span>-->
+<!--                            </div>-->
+<!--                        </td>-->
                     </tr>
                     </tbody>
                 </table>
@@ -126,7 +118,8 @@
              aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <form class="modal-content needs-validation" th:action="@{/project/addProject}" method="post" id="addProjectForm">
+                    <form class="modal-content needs-validation" th:action="@{/project/addProject}"
+                          method="post" id="addProjectForm">
                         <div class="modal-header">
                             <h5 class="modal-title" id="staticBackdropLabel">新增项目</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
@@ -166,9 +159,9 @@
         <!--        分页-->
         <div th:replace="/fragment/pagination_fragment :: pagination01">
         </div>
-        <script type="text/javascript" th:src="@{/js/jquery-3.6.0.min.js}"></script>
-        <script type="text/javascript" th:src="@{/js/bs/bootstrap.min.js}"></script>
-        <script type="text/javascript" th:src="@{/js/iziToast.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
+        <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/iziToast.min.js}"></script>
         <script>
             // 更新项目状态
             function updateStatus(projectId, workDate) {

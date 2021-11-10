@@ -64,14 +64,14 @@ public class ProjectController {
      * @return java.lang.String
      */
     @PostMapping(value = "/addProject")
-    @ResponseBody
-    public ResponseResult addProject(HttpServletRequest request) {
+    public String addProject(HttpServletRequest request, Project project) {
         try {
-            final Project project1 = projectService.addProject("", request);
-            return ResponseUtils.success(project1);
+            final Project project1 = projectService.addProject(project, request);
+            ResponseUtils.success(project1);
+            return "redirect:/project/projectList";
         } catch (Exception e) {
             log.info(e.getMessage());
-            return ResponseUtils.error(e.getMessage());
+            return "redirect:/project/projectList";
         }
     }
 
