@@ -35,6 +35,8 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     private TestBugService bugService;
     @Autowired
     private TestTaskInfoService taskInfoService;
+    @Autowired
+    SystemService systemService;
 
     @Override
     public List<Project> findByPartialProjectName(String searchString) {
@@ -87,6 +89,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
                 .build();
         baseMapper.insert(build);
         taskInfoService.addItem(build, request, date);
+        systemService.refreshProjectName();
         return build;
     }
 
@@ -113,6 +116,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
                 .build();
         baseMapper.insert(build);
         taskInfoService.addItem(build, request, project.getWorkDate());
+        systemService.refreshProjectName();
         return build;
     }
 

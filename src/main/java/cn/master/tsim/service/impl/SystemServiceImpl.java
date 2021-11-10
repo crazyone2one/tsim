@@ -1,16 +1,21 @@
 package cn.master.tsim.service.impl;
 
 import cn.master.tsim.common.Constants;
+import cn.master.tsim.entity.Project;
 import cn.master.tsim.mapper.TesterMapper;
+import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.SystemService;
 import cn.master.tsim.util.ParameterNotNull;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.lang.reflect.Field;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -20,10 +25,12 @@ import java.util.Objects;
 @Service
 public class SystemServiceImpl implements SystemService {
     private final TesterMapper testerMapper;
+    private final ProjectService projectService;
 
     @Autowired
-    public SystemServiceImpl(TesterMapper testerMapper) {
+    public SystemServiceImpl(TesterMapper testerMapper, ProjectService projectService) {
         this.testerMapper = testerMapper;
+        this.projectService = projectService;
     }
 
     @Override
@@ -61,5 +68,22 @@ public class SystemServiceImpl implements SystemService {
             e.printStackTrace();
         }
         return flag;
+    }
+
+    @Override
+    @PostConstruct
+    public void initProjectName() {
+        final List<Project> projects = projectService.findByPartialProjectName("");
+        if (CollectionUtils.isNotEmpty(projects)) {
+            List<String> projectNames = new LinkedList<>();
+            projects.forEach(p -> projectNames.add(p.getProjectName()));
+            Constants.projectNames = projectNames;
+        }
+    }
+
+    @Override
+    public void refreshProjectName() {
+        Constants.projectNames.clear();
+        initProjectName();
     }
 }
