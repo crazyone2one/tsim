@@ -1,6 +1,7 @@
 package cn.master.tsim.controller;
 
 
+import cn.master.tsim.common.Constants;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Module;
 import cn.master.tsim.entity.Project;
@@ -60,6 +61,7 @@ public class TestCaseController {
         model.addAttribute("iPage", iPage);
         model.addAttribute("redirecting", "/case/case_list?pageCurrent=");
         model.addAttribute("monthList", DateUtils.currentYearMonth());
+        model.addAttribute("projectNames", Constants.projectNames);
         return "test-case/case_list_2";
     }
 

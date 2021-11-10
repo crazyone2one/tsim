@@ -8,6 +8,7 @@
         <link rel="bookmark" th:href="@{/favicon.ico}" type="image/x-icon"/>
         <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
         <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
+        <link rel="stylesheet" th:href="@{/plugins/auto.complete.css}">
         <link rel="stylesheet" th:href="@{/plugins/hover.css}">
         <!--        toast插件-->
         <link rel="stylesheet" th:href="@{/plugins/iziToast.min.css}">
@@ -23,17 +24,20 @@
                         <div class="row">
                             <div class="input-group mb-3" style="width: 15%">
                                 <span class="input-group-text" id="basic-addon1">所属项目</span>
-                                <input type="text" class="form-control" name="projectId" placeholder="项目名称（模糊查询）" aria-label="projectId"
+                                <input type="text" class="form-control" name="projectId" id="p-search"
+                                       placeholder="项目名称（模糊查询）" aria-label="projectId"
                                        aria-describedby="basic-addon1">
                             </div>
                             <div class="input-group mb-3" style="width: 15%">
                                 <span class="input-group-text" id="basic-addon2">所属模块</span>
-                                <input type="text" class="form-control" name="moduleId" placeholder="模块名称（模糊查询）" aria-label="moduleId"
+                                <input type="text" class="form-control" name="moduleId" placeholder="模块名称（模糊查询）"
+                                       aria-label="moduleId"
                                        aria-describedby="basic-addon2">
                             </div>
                             <div class="input-group mb-3 " style="width: 15%">
                                 <span class="input-group-text" id="basic-addon3">测试用例标题</span>
-                                <input type="text" class="form-control" name="name" placeholder="标题（模糊查询）" aria-label="name"
+                                <input type="text" class="form-control" name="name" placeholder="标题（模糊查询）"
+                                       aria-label="name"
                                        aria-describedby="basic-addon3">
                             </div>
                             <select class="form-select mb-3" style="width: 6%" aria-label="priority" name="priority">
@@ -47,9 +51,12 @@
                                 <option value="1">无效</option>
                             </select>
                             <div class="col-lg-2 col-md-4 col-sm-6">
-                                <button type="submit" class="btn hvr-grow"><i class="bi bi-search" style="color: cornflowerblue"></i></button>
+                                <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
+                                                                              style="color: cornflowerblue"></i>
+                                </button>
                                 <button type="button" class="btn"
-                                        data-bs-toggle="modal" data-bs-target="#add-case-modal"><i class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
+                                        data-bs-toggle="modal" data-bs-target="#add-case-modal"><i
+                                        class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
                                 </button>
                                 <!--                                // 导出数据-->
                                 <a class="btn btn-light mb-3 mb-lg-0 hvr-grow" onclick="exportExcel()">
@@ -131,10 +138,16 @@
         <div th:replace="/fragment/pagination_fragment :: pagination01"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/complete.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/iziToast.min.js}"></script>
         <script type="text/javascript" th:src="@{/dist/js/add-case.js}"></script>
         <script type="text/javascript" th:src="@{/dist/js/case.edit.detail.js}"></script>
-        <script>
+        <script th:inline="javascript">
+            const pro_name_tags = /*[[${projectNames}]]*/ 'projectNames';
+            console.log(pro_name_tags);
+            /*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/
+            autocomplete(document.getElementById("p-search"), pro_name_tags);
+
             // 更新项目状态
             function updateStatus(caseId) {
                 $.ajax({
