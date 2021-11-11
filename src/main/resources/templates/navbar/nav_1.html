@@ -50,9 +50,10 @@
                             </li>
                             <li class="nav-item dropdown">
                                 <a class="nav-link dropdown-toggle" data-bs-toggle="dropdown" href="#"
-                                   role="button" aria-expanded="false">username</a>
-                                <ul class="dropdown-menu">
+                                   role="button" aria-expanded="false"><span th:text="${session.account.username}"></span></a>
+                                <ul class="dropdown-menu text-small">
                                     <li><a class="dropdown-item" href="#" disabled="">Setting</a></li>
+                                    <li><hr class="dropdown-divider"></li>
                                     <li><a class="dropdown-item" th:href="@{/user/exit}">注销</a></li>
                                 </ul>
                             </li>
