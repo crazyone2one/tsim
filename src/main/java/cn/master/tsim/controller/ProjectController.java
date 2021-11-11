@@ -7,6 +7,7 @@ import cn.master.tsim.entity.TestTaskInfo;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
+import cn.master.tsim.util.StreamUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,14 +65,18 @@ public class ProjectController {
      * @return java.lang.String
      */
     @PostMapping(value = "/addProject")
-    public String addProject(HttpServletRequest request, Project project) {
+    @ResponseBody
+    public ResponseResult addProject(HttpServletRequest request, Project project) {
         try {
+            Map<String, Object> paramsFromRequest = StreamUtils.getParamsFromRequest(request);
+            project.setProjectName(String.valueOf(paramsFromRequest.get("name")));
+            project.setWorkDate(String.valueOf(paramsFromRequest.get("date")));
             final Project project1 = projectService.addProject(project, request);
-            ResponseUtils.success(project1);
-            return "redirect:/project/projectList";
+//            request.getSession().setAttribute("project", project1);
+            return ResponseUtils.success(project1);
         } catch (Exception e) {
             log.info(e.getMessage());
-            return "redirect:/project/projectList";
+            return ResponseUtils.error(400, "数据查询错误", e.getMessage());
         }
     }
 
