@@ -1,243 +1,235 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>TSIM @ PROJECT</title>
-    <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
-    <link rel="bookmark" th:href="@{/favicon.ico}" type="image/x-icon"/>
-    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
-    <link rel="stylesheet" th:href="@{/plugins/hover.css}">
-    <!--        toast插件-->
-    <link rel="stylesheet" th:href="@{/plugins/iziToast.min.css}">
-    <!--        <link rel="stylesheet" th:href="@{/css/style.css}">-->
-    <meta name="author" content="11‘s papa">
-</head>
-<body>
-<!--        导航栏-->
-<div class="container-fluid" role="navigation" th:include="/navbar/nav_1 :: nav1"></div>
-<div class="container-fluid">
-    <div id="liveAlertPlaceholder">
-    </div>
-    <!--操作栏-->
-    <div class="card pt-2">
-        <div class="card-body">
-            <form th:action="@{projectList}" method="get">
-                <div class="row">
-                    <div class="input-group mb-3" style="width: 15%">
-                        <span class="input-group-text">所属项目</span>
-                        <input type="text" class="form-control" name="projectName" placeholder="项目名称（模糊查询）"
-                               aria-label="projectId"
-                               aria-describedby="basic-addon1">
-                    </div>
-                    <div class="input-group mb-3" style="width: 15%">
-                        <label class="input-group-text" for="workDate-search">任务时间</label>
-                        <select class="form-select" aria-label="priority" name="workDate" id="workDate-search">
-                            <option th:each="m:${monthList}"
-                                    th:value="${m}"
-                                    th:text="${m}"
-                                    th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}">
-                        </select>
-                    </div>
-                    <div class="col-lg-2 col-md-4 col-sm-6">
-                        <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
-                                                                      style="color: cornflowerblue"></i>
-                        </button>
-                        <button type="button" class="btn hvr-grow" data-bs-toggle="modal"
-                                data-bs-target="#add-project-modal"><i
-                                class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
-    </div>
-    <div>
-        <table class="table table-hover">
-            <thead>
-            <tr class="text-center">
-                <th scope="col">#</th>
-                <th scope="col">项目名</th>
-                <th scope="col">任务时间</th>
-                <th scope="col">关联模块</th>
-                <th scope="col">关联测试用例</th>
-                <th scope="col">关联bug</th>
-                <!--                        <th scope="col">是否完成</th>-->
-                <!--                            <th scope="col">操作</th>-->
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="temp,stat:${iPage.records}" class="text-center">
-                <input name="id" type="hidden" class="form-control"
-                       th:value="${temp.id}" id="id">
-                <td th:text="${stat.index+1}"></td>
-                <td th:text="${temp.projectName}"></td>
-                <td th:text="${temp.issueDate}"></td>
-                <td>
-                    <a href="#"
-                       th:text="${temp.refModuleCount}"></a>
-                </td>
-                <td>
-                    <a href="#"
-                       th:text="${temp.refCaseCount}"></a>
-                </td>
-                <td>
-                    <a href="#"
-                       th:text="${temp.refBugCount}"></a>
-                </td>
-                <!--                        <td th:switch="${temp.finishStatus}">-->
-                <!--                            <div class="form-check form-switch">-->
-                <!--                                        <span th:case="1">-->
-                <!--                                            <input class="form-check-input" type="checkbox" id="un-del-1" checked-->
-                <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
-                <!--                                        <label class="form-check-label" for="un-del-1"></label>-->
-                <!--                                        </span>-->
-                <!--                                <span th:case="2">-->
-                <!--                                            <input class="form-check-input" type="checkbox" id="un-del-2" checked-->
-                <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
-                <!--                                        <label class="form-check-label" for="un-del-2"></label>-->
-                <!--                                        </span>-->
-                <!--                                <span th:case="3">-->
-                <!--                                            <input class="form-check-input" type="checkbox" id="un-del-3" checked-->
-                <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
-                <!--                                        <label class="form-check-label" for="un-del-3"></label>-->
-                <!--                                        </span>-->
-                <!--                                <span th:case="0">-->
-                <!--                                            <input class="form-check-input" type="checkbox" id="del"-->
-                <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
-                <!--                                        <label class="form-check-label" for="del"></label>-->
-                <!--                                        </span>-->
-                <!--                            </div>-->
-                <!--                        </td>-->
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-<!--        add modal-->
-<div class="modal fade" id="add-project-modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
-     aria-hidden="true" data-bs-backdrop="static">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <form class="modal-content needs-validation"
-                  method="post" id="addProjectForm">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="staticBackdropLabel">新增项目</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <div class="box-body">
-                        <div class="form-group">
-                            <div class="input-group mb-3">
-                                <span class="input-group-text" id="basic-addon1">项目名</span>
-                                <input type="text" name="projectName" id="projectName" class="form-control"
-                                       placeholder="输入项目名"
-                                       aria-label="Username" aria-describedby="basic-addon1"
-                                       required>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>TSIM @ PROJECT</title>
+        <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
+        <link rel="bookmark" th:href="@{/favicon.ico}" type="image/x-icon"/>
+        <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+        <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
+        <link rel="stylesheet" th:href="@{/plugins/hover.css}">
+        <meta name="author" content="11‘s papa">
+    </head>
+    <body>
+        <!--        导航栏-->
+        <div class="container-fluid" role="navigation" th:include="/navbar/nav_1 :: nav1"></div>
+        <div class="container-fluid">
+            <div id="liveAlertPlaceholder">
+            </div>
+            <!--操作栏-->
+            <div class="card pt-2">
+                <div class="card-body">
+                    <form th:action="@{projectList}" method="get">
+                        <div class="row">
+                            <div class="input-group mb-3" style="width: 15%">
+                                <span class="input-group-text">所属项目</span>
+                                <input type="text" class="form-control" name="projectName" placeholder="项目名称（模糊查询）"
+                                       aria-label="projectId"
+                                       aria-describedby="basic-addon1">
+                            </div>
+                            <div class="input-group mb-3" style="width: 15%">
+                                <label class="input-group-text" for="workDate-search">任务时间</label>
+                                <select class="form-select" aria-label="priority" name="workDate" id="workDate-search">
+                                    <option th:each="m:${monthList}"
+                                            th:value="${m}"
+                                            th:text="${m}"
+                                            th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}">
+                                </select>
+                            </div>
+                            <div class="col-lg-2 col-md-4 col-sm-6">
+                                <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
+                                                                              style="color: cornflowerblue"></i>
+                                </button>
+                                <button type="button" class="btn hvr-grow" data-bs-toggle="modal"
+                                        data-bs-target="#add-project-modal"><i
+                                        class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
+                                </button>
                             </div>
                         </div>
-                        <div class="input-group mb-3">
-                            <label class="input-group-text" for="workDate">任务时间</label>
-                            <select class="form-select" id="workDate" name="workDate" required>
-                                <option th:value="''" selected>Choose...</option>
-                                <option th:each="m:${monthList}"
-                                        th:value="${m}"
-                                        th:text="${m}"
-                                >
-                            </select>
-                        </div>
-                    </div>
+                    </form>
                 </div>
-                <div class="modal-footer">
-                    <button type="submit" class="btn btn-primary" id="submit">确定</button>
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消
-                    </button>
-                </div>
-            </form>
+            </div>
+            <div>
+                <table class="table table-hover">
+                    <thead>
+                    <tr class="text-center">
+                        <th scope="col">#</th>
+                        <th scope="col">项目名</th>
+                        <th scope="col">任务时间</th>
+                        <th scope="col">关联模块</th>
+                        <th scope="col">关联测试用例</th>
+                        <th scope="col">关联bug</th>
+                        <!--                        <th scope="col">是否完成</th>-->
+                        <!--                            <th scope="col">操作</th>-->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="temp,stat:${iPage.records}" class="text-center">
+                        <input name="id" type="hidden" class="form-control"
+                               th:value="${temp.id}" id="id">
+                        <td th:text="${stat.index+1}"></td>
+                        <td th:text="${temp.projectName}"></td>
+                        <td th:text="${temp.issueDate}"></td>
+                        <td>
+                            <a href="#"
+                               th:text="${temp.refModuleCount}"></a>
+                        </td>
+                        <td>
+                            <a href="#"
+                               th:text="${temp.refCaseCount}"></a>
+                        </td>
+                        <td>
+                            <a href="#"
+                               th:text="${temp.refBugCount}"></a>
+                        </td>
+                        <!--                        <td th:switch="${temp.finishStatus}">-->
+                        <!--                            <div class="form-check form-switch">-->
+                        <!--                                        <span th:case="1">-->
+                        <!--                                            <input class="form-check-input" type="checkbox" id="un-del-1" checked-->
+                        <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
+                        <!--                                        <label class="form-check-label" for="un-del-1"></label>-->
+                        <!--                                        </span>-->
+                        <!--                                <span th:case="2">-->
+                        <!--                                            <input class="form-check-input" type="checkbox" id="un-del-2" checked-->
+                        <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
+                        <!--                                        <label class="form-check-label" for="un-del-2"></label>-->
+                        <!--                                        </span>-->
+                        <!--                                <span th:case="3">-->
+                        <!--                                            <input class="form-check-input" type="checkbox" id="un-del-3" checked-->
+                        <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
+                        <!--                                        <label class="form-check-label" for="un-del-3"></label>-->
+                        <!--                                        </span>-->
+                        <!--                                <span th:case="0">-->
+                        <!--                                            <input class="form-check-input" type="checkbox" id="del"-->
+                        <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
+                        <!--                                        <label class="form-check-label" for="del"></label>-->
+                        <!--                                        </span>-->
+                        <!--                            </div>-->
+                        <!--                        </td>-->
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
-</div>
-<!--        分页-->
-<div th:replace="/fragment/pagination_fragment :: pagination01">
-</div>
-<script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
-<script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/iziToast.min.js}"></script>
-<script th:inline="javascript">
-    $('button[id=submit]').click(function (e) {
-        //Prevent default submission of form
-        e.preventDefault();
-        var json = {"name": $('#projectName').val(), "date": $('#workDate').val()}
-        $.post({
-            url: '/project/addProject',
-            dataType: "json",
-            contentType: "application/json; charset=utf-8",
-            data: JSON.stringify(json),
-            success: function (res) {
-                if (Object.is(res['code'], 200)) {
-                    const myModalEl = $('#add-project-modal');
-                    myModalEl.modal("hide");
-                    const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
-                    myModalEl.on('hidden.bs.modal', function () {
-                        // const pro = /*[[${session.project}]]*/ 'project';
-                        const pro = res['data'];
-                        if (pro) {
-                            function alert(message, type) {
-                                var wrapper = document.createElement('div')
-                                wrapper.innerHTML = '<div class="alert alert-' + type + ' d-flex align-items-center alert-dismissible" role="alert">' +
-                                    '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>' +
-                                    '<div>' + message + '</div></div>'
-                                alertPlaceholder.append(wrapper);
-                            $('#liveAlertPlaceholder').fadeTo(2000, 500).slideUp(500, function(){
-                                    $("#liveAlertPlaceholder").slideUp(500);
-                                });
-                            }
+        <!--        add modal-->
+        <div class="modal fade" id="add-project-modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
+             aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <form class="modal-content needs-validation"
+                          method="post" id="addProjectForm">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">新增项目</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="box-body">
+                                <div class="form-group">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text" id="basic-addon1">项目名</span>
+                                        <input type="text" name="projectName" id="projectName" class="form-control"
+                                               placeholder="输入项目名"
+                                               aria-label="Username" aria-describedby="basic-addon1"
+                                               required>
+                                    </div>
+                                </div>
+                                <div class="input-group mb-3">
+                                    <label class="input-group-text" for="workDate">任务时间</label>
+                                    <select class="form-select" id="workDate" name="workDate" required>
+                                        <option th:value="''" selected>Choose...</option>
+                                        <option th:each="m:${monthList}"
+                                                th:value="${m}"
+                                                th:text="${m}"
+                                        >
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="submit" class="btn btn-primary" id="submit">确定</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancle">取消
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!--        分页-->
+        <div th:replace="/fragment/pagination_fragment :: pagination01">
+        </div>
+        <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
+        <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+        <script th:inline="javascript">
 
-                            alert(pro.projectName + '添加成功', 'success')
+            $('button[id=submit]').click(function (e) {
+                //Prevent default submission of form
+                e.preventDefault();
+                const $projectName = $('#projectName');
+                const $workDate = $('#workDate');
+                // 验证添加的数据是否存在
+                $.ajax({
+                    url: '/project/checkProject/',
+                    type: 'get',
+                    data: {
+                        projectName: $projectName.val(),
+                        workDate: $workDate.val()
+                    },
+                    dataType: 'JSON',
+                    success: function (res) {
+                        if (Object.is(res['code'], 400)) {
+                            //    项目已存在
+                            alert(res['msg'], 'warning')
+                        } else {
+                            const json = {"name": $projectName.val(), "date": $workDate.val()};
+                            $.ajax({
+                                url: '/project/addProject',
+                                type: 'post',
+                                dataType: "json",
+                                contentType: "application/json; charset=utf-8",
+                                data: JSON.stringify(json),
+                                success: function (res) {
+                                    if (Object.is(res['code'], 200)) {
+                                        const myModalEl = $('#add-project-modal');
+                                        myModalEl.modal("hide");
+                                        // $("#add-project-modal .close").click();
+                                        // 模态框关闭
+                                        myModalEl.on('hidden.bs.modal', function () {
+                                            // const pro = /*[[${session.project}]]*/ 'project';
+                                            const pro = res['data'];
+                                            if (pro) {
+                                                alert(pro.projectName + '添加成功', 'success')
+                                            }
+                                        })
+                                    }
+                                }
+                            })
                         }
-                    })
+                    }
+                })
+
+            })
+
+            function alert(message, type) {
+                let svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>';
+                switch (type) {
+                    case 'warning':
+                        svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>';
+                        break;
+                    case "danger":
+                        svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>';
+                        break;
                 }
+                const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = '<div class="alert alert-' + type + ' d-flex align-items-center alert-dismissible" role="alert">' +
+                    svg_str + '<div>' + message + '</div></div>'
+                alertPlaceholder.append(wrapper);
+                $('#liveAlertPlaceholder').fadeTo(2000, 500).slideUp(500, function () {
+                    $("#liveAlertPlaceholder").slideUp(500);
+                });
+                location.reload();
             }
-        })
-    })
-
-
-    // 更新项目状态
-    function updateStatus(projectId, workDate) {
-        $.ajax({
-            url: '/task/updateProject/',
-            type: 'POST',
-            data: {
-                projectId: projectId,
-                workDate: workDate
-            },
-            dataType: 'JSON',
-            success: function (arg) {
-                // console.log( arg['result']);
-                const msg = arg['msg'];
-                if (Object.is(arg['code'], 200)) {
-                    iziToast.show({
-                            // title: 'Success',
-                            message: msg,
-                            position: 'topRight',
-                            timeout: 2000,
-                            color: 'green'
-                        }
-                    );
-                } else {
-                    iziToast.show({
-                            // title: 'Success',
-                            message: arg['msg'],
-                            position: 'topRight',
-                            timeout: 2000,
-                            color: 'red'
-                        }
-                    );
-                }
-            }
-        })
-    }
-</script>
-</body>
+        </script>
+    </body>
 </html>
