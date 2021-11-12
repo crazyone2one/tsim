@@ -67,7 +67,7 @@ public class DefaultController {
         // 新增bug
         final List<Map<String, Object>> newBugCount = commonMapper.findMapBySql(countQuery.replace("{whereSQL}", "where bug_status='1'"));
         model.addAttribute("newBugCount", JacksonUtils.convertToString(getSeries(newBugCount)));
-        return "dashboard";
+        return "index";
     }
 
     private List<Map<String, Object>> getSeries(List<Map<String, Object>> xAxData) {

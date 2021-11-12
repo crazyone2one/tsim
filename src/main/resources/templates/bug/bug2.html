@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>TSIM @ BUG</title>
+        <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+        <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
+        <link rel="stylesheet" th:href="@{/plugins/sb-admin-2.min.css}">
+        <link rel="stylesheet" th:href="@{/plugins/hover.css}">
+        <!--        toast插件-->
+        <link rel="stylesheet" th:href="@{/plugins/iziToast.min.css}">
+        <meta name="author" content="11‘s papa">
+    </head>
+    <body>
+        <!-- Page Wrapper -->
+        <div id="wrapper">
+
+            <!-- 左侧菜单 -->
+            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+                <!-- Sidebar - Brand -->
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                    <div class="sidebar-brand-icon rotate-n-15">
+                        <i class="bi bi-emoji-laughing"></i>
+                    </div>
+                    <div class="sidebar-brand-text mx-3">TSIM <sup>2</sup></div>
+                </a>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider my-0">
+
+                <!-- Nav Item - Dashboard -->
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/dashboard}">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Dashboard</span></a>
+                </li>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+
+                <!-- Nav Item - Pages Collapse Menu -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#collapseTwo" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseTwo">
+                        <i class="bi bi-layers-half"></i>
+                        <span>项目管理</span>
+                    </a>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" th:href="@{/project/projectList}">项目管理</a>
+                            <a class="collapse-item" th:href="@{/task/list}">任务汇总</a>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- Nav Item - Utilities Collapse Menu -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#collapseUtilities" data-bs-toggle="collapse"
+                       aria-expanded="false" aria-controls="collapseUtilities">
+                        <i class="bi bi-layers-half"></i>
+                        <span>测试用例管理</span>
+                    </a>
+                    <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                         data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <!--                            <h6 class="collapse-header">Custom Utilities:</h6>-->
+                            <a class="collapse-item" th:href="@{/case/case_list}">测试用例</a>
+                            <!--                            <a class="collapse-item" th:href="@{/story/list}">测试需求管理</a>-->
+                            <a class="collapse-item" href="#">测试需求管理</a>
+                            <!--                            <a class="collapse-item" th:href="@{/plan/list}">测试计划管理</a>-->
+                            <a class="collapse-item" href="#">测试计划管理</a>
+                            <a class="collapse-item" href="#">Other</a>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- Nav Item - Charts -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/bug/list}">
+                        <i class="bi bi-bug"></i>
+                        <span>问题单(BUG)</span></a>
+                </li>
+
+                <!-- Nav Item - Tables -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-question-circle"></i>
+                        <span>other</span></a>
+                </li>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">
+
+                <!-- Sidebar Toggler (Sidebar) -->
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle border-0" id="sidebarToggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                </div>
+
+            </ul>
+            <!-- 左侧菜单结束 -->
+
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+
+                <!-- Main Content -->
+                <div id="content">
+
+                    <!-- 右侧顶部导航栏 -->
+                    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                        <!-- Sidebar Toggle (Topbar) -->
+                        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                            <i class="fa fa-bars"></i>
+                        </button>
+
+                        <!-- Topbar Search -->
+                        <!--                        <form-->
+                        <!--                                class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">-->
+                        <!--                            <div class="input-group">-->
+                        <!--                                <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."-->
+                        <!--                                       aria-label="Search" aria-describedby="basic-addon2">-->
+                        <!--                                <div class="input-group-append">-->
+                        <!--                                    <button class="btn btn-primary" type="button">-->
+                        <!--                                        <i class="fas fa-search fa-sm"></i>-->
+                        <!--                                    </button>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                        </form>-->
+
+                        <!-- Topbar Navbar -->
+                        <ul class="navbar-nav ml-auto">
+                            <!-- Nav Item - Alerts -->
+                            <li class="nav-item dropdown no-arrow mx-1">
+                                <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-bell"></i>
+                                    <!-- Counter - Alerts -->
+                                    <span class="badge badge-danger badge-counter">3+</span>
+                                </a>
+                                <!-- Dropdown - Alerts -->
+                                <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                     aria-labelledby="alertsDropdown">
+                                    <h6 class="dropdown-header">
+                                        Alerts Center
+                                    </h6>
+                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                        <div class="mr-3">
+                                            <div class="icon-circle bg-primary">
+                                                <i class="fas fa-file-alt text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="small text-gray-500">December 12, 2019</div>
+                                            <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                        </div>
+                                    </a>
+                                    <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                                </div>
+                            </li>
+
+                            <div class="topbar-divider d-none d-sm-block"></div>
+
+                            <!-- Nav Item - User Information -->
+                            <li class="nav-item dropdown no-arrow">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span th:text="${session.account.username}"></span>
+                                    <!--                                    <img class="img-profile rounded-circle"-->
+                                    <!--                                         src="img/undraw_profile.svg">-->
+                                </a>
+                                <!-- Dropdown - User Information -->
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                     aria-labelledby="userDropdown">
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Profile
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Settings
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Activity Log
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Logout
+                                    </a>
+                                </div>
+                            </li>
+
+                        </ul>
+
+                    </nav>
+                    <!-- 右侧顶部导航栏结束 -->
+
+                    <!-- Begin Page Content 右侧页面内容 -->
+                    <div class="container-fluid">
+                        <!--操作栏-->
+                        <div class="card pt-2">
+                            <div class="card-body">
+                                <form th:action="@{list}" method="get">
+                                    <div class="row">
+                                        <div class="input-group mb-3" style="width: 15%">
+                                            <span class="input-group-text" id="basic-addon1">所属项目</span>
+                                            <input type="text" class="form-control" name="projectId" placeholder="项目名称（模糊查询）" aria-label="projectId"
+                                                   aria-describedby="basic-addon1">
+                                        </div>
+                                        <div class="input-group mb-3" style="width: 15%">
+                                            <span class="input-group-text" id="basic-addon2">所属模块</span>
+                                            <input type="text" class="form-control" name="moduleId" placeholder="模块名称（模糊查询）" aria-label="moduleId"
+                                                   aria-describedby="basic-addon2">
+                                        </div>
+                                        <div class="input-group mb-3 " style="width: 15%">
+                                            <span class="input-group-text" id="basic-addon3">问题描述</span>
+                                            <input type="text" class="form-control" name="title" placeholder="问题描述（模糊查询）" aria-label="title"
+                                                   aria-describedby="basic-addon3">
+                                        </div>
+                                        <select class="form-select mb-3" style="width: 6%" aria-label="severity" name="severity">
+                                            <option th:value="' '" selected>严重程度</option>
+                                            <option value="1">轻微</option>
+                                            <option value="2">一般</option>
+                                            <option value="3">严重</option>
+                                            <option value="4">致命</option>
+                                        </select>
+                                        <select class="form-select mb-3" style="width: 6%" aria-label="bugStatus" name="bugStatus">
+                                            <option th:value="' '" selected>问题状态</option>
+                                            <option value="1">新建</option>
+                                            <option value="2">挂起</option>
+                                            <option value="3">已提交</option>
+                                            <option value="4">已解决</option>
+                                            <option value="5">非bug</option>
+                                        </select>
+                                        <div class="col-lg-2 col-md-4 col-sm-6">
+                                            <button type="submit" class="btn hvr-grow"><i class="bi bi-search" style="color: cornflowerblue"></i></button>
+                                            <button type="button" class="btn hvr-grow"
+                                                    data-bs-toggle="modal" data-bs-target="#add-bug-modal"><i class="bi bi-plus-circle" style="color: cornflowerblue"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <!--        toast-->
+                        <div id="toast-div"></div>
+                        <!-- 添加问题单Modal弹框 -->
+                        <div th:replace="~{bug/add_bug_modal::addBugFragment}"></div>
+                        <!--            列表数据-->
+                        <div>
+                            <table class="table table-hover">
+                                <thead>
+                                <tr class="text-center">
+                                    <th scope="col">#</th>
+                                    <th scope="col">所属项目</th>
+                                    <th scope="col">所属模块</th>
+                                    <th scope="col">功能点</th>
+                                    <th scope="col">问题描述</th>
+                                    <th scope="col">严重程度</th>
+                                    <th scope="col">问题状态</th>
+                                    <th scope="col">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="text-center" th:each="temp,stat:${iPage.records}">
+                                    <input name="id" type="hidden" class="form-control"
+                                           th:value="${temp.id}" id="id">
+                                    <td th:text="${stat.index+1}"></td>
+                                    <td th:text="${temp.project.projectName}"></td>
+                                    <td th:text="${temp.module.moduleName}"></td>
+                                    <td th:text="${temp.func}"></td>
+                                    <td th:text="${temp.title}"></td>
+                                    <td th:switch="${temp.severity}">
+                                        <span th:case="1" th:text="轻微"></span>
+                                        <span th:case="2" th:text="一般"></span>
+                                        <span th:case="3" th:text="严重"></span>
+                                        <span th:case="4" th:text="致命"></span>
+                                    </td>
+                                    <td th:switch="${temp.bugStatus}">
+                                        <span th:case="1" th:text="新建"></span>
+                                        <span th:case="2" th:text="挂起"></span>
+                                        <span th:case="3" th:text="已提交"></span>
+                                        <span th:case="4" th:text="已解决"></span>
+                                        <span th:case="5" th:text="非bug"></span>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn" id="bug-detail"
+                                           data-bs-toggle="modal" data-bs-target="#bug-detail-modal"><i
+                                                class="bi bi-eye hvr-grow" style="color: cornflowerblue"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="查看详情"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--        分页-->
+                    <div th:replace="/fragment/pagination_fragment :: pagination01"></div>
+                    <div th:replace="/bug/detail_modal :: detailBugFragment"></div>
+                    <!-- /.container-fluid -->
+
+                </div>
+                <!-- End of Main Content -->
+
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; Your Website 2021</span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
+
+            </div>
+            <!-- End of Content Wrapper -->
+
+        </div>
+        <!-- End of Page Wrapper -->
+
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                        <a class="btn btn-primary" th:href="@{/user/exit}">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
+        <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/sb-admin-2.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/iziToast.min.js}"></script>
+        <script th:src="@{/js/fragment/add_bug.js}"></script>
+        <script>
+            const detail_modal = document.getElementById('bug-detail-modal');
+            detail_modal.addEventListener('show.bs.modal', function (event) {
+                const button = $(event.relatedTarget);
+                const bug_id = button.closest('tr').find("#id").attr('value');
+                $.ajax({
+                        url: '/bug/bugDetail/',
+                        type: 'post',
+                        data: {
+                            bugId: bug_id,
+                        },
+                        dataType: 'JSON',
+                        // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                        success: function (arg) {
+                            console.log(arg['data']);
+                            $("#projectCode-d").val(arg['data'].project.projectName);
+                            $("#module-d").val(arg['data'].module.moduleName);
+                            $("#title-d").val(arg['data'].title);
+                            $("#function-d").val(arg['data'].func);
+                            $("#owner-d").val(arg['data'].testerEntity.username);
+                            let _severity = "";
+                            switch (arg['data'].severity) {
+                                case "1":
+                                    _severity = "轻微";
+                                    break
+                                case '2':
+                                    _severity = "一般";
+                                    break
+                                case '3':
+                                    _severity = "严重";
+                                    break
+                                case '4':
+                                    _severity = "致命";
+                                    break
+                            }
+                            $("#severity-d").val(_severity);
+                            let _status = "";
+                            switch (arg['data'].bugStatus) {
+                                case "1":
+                                    _status = "新建";
+                                    break
+                                case '2':
+                                    _status = "挂起";
+                                    break
+                                case '3':
+                                    _status = "已提交";
+                                    break
+                                case '4':
+                                    _status = "已解决";
+                                    break
+                                case '5':
+                                    _status = "非bug";
+                                    break
+                            }
+                            $("#status-d").val(_status);
+                            $("#remark-d").val(arg['data'].note);
+                        }
+                    }
+                )
+            });
+        </script>
+    </body>
+</html>

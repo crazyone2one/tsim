@@ -60,7 +60,7 @@ public class TestStoryController {
         model.addAttribute("redirecting", "/story/list?pageCurrent=");
         model.addAttribute("monthList", DateUtils.currentYearMonth());
         model.addAttribute("projects", projectService.findByPartialProjectName(""));
-        return "story/story_list";
+        return "story/story2";
     }
 
     @PostMapping(value = "/save")

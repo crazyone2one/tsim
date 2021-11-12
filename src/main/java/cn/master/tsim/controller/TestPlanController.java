@@ -66,7 +66,7 @@ public class TestPlanController {
         model.addAttribute("projects", projectService.findByPartialProjectName(""));
         model.addAttribute("storyList", storyService.listStory());
         model.addAttribute("redirecting", "/plan/list?pageCurrent=");
-        return "plan/plan_list";
+        return "plan/plan2";
     }
 
     @PostMapping(value = "/save")

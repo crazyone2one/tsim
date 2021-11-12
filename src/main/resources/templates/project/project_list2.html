@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>TSIM @ PROJECT</title>
+        <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
+        <link rel="bookmark" th:href="@{/favicon.ico}" type="image/x-icon"/>
+        <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+        <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
+        <link rel="stylesheet" th:href="@{/plugins/sb-admin-2.min.css}">
+        <link rel="stylesheet" th:href="@{/plugins/hover.css}">
+        <meta name="author" content="11‘s papa">
+    </head>
+    <body id="page-top">
+        <!-- Page Wrapper -->
+        <div id="wrapper">
+
+            <!-- 左侧菜单 -->
+            <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+                <!-- Sidebar - Brand -->
+                <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+                    <div class="sidebar-brand-icon rotate-n-15">
+                        <i class="bi bi-emoji-laughing"></i>
+                    </div>
+                    <div class="sidebar-brand-text mx-3">TSIM <sup>2</sup></div>
+                </a>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider my-0">
+
+                <!-- Nav Item - Dashboard -->
+                <li class="nav-item active">
+                    <a class="nav-link" th:href="@{/dashboard}">
+                        <i class="bi bi-speedometer2"></i>
+                        <span>Dashboard</span></a>
+                </li>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider">
+
+                <!-- Nav Item - Pages Collapse Menu -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#collapseTwo" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseTwo">
+                        <i class="bi bi-layers-half"></i>
+                        <span>项目管理</span>
+                    </a>
+                    <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <a class="collapse-item" th:href="@{/project/projectList}">项目管理</a>
+                            <a class="collapse-item" th:href="@{/task/list}">任务汇总</a>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- Nav Item - Utilities Collapse Menu -->
+                <li class="nav-item">
+                    <a class="nav-link collapsed" href="#collapseUtilities" data-bs-toggle="collapse"
+                       aria-expanded="false" aria-controls="collapseUtilities">
+                        <i class="bi bi-layers-half"></i>
+                        <span>测试用例管理</span>
+                    </a>
+                    <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
+                         data-parent="#accordionSidebar">
+                        <div class="bg-white py-2 collapse-inner rounded">
+                            <!--                            <h6 class="collapse-header">Custom Utilities:</h6>-->
+                            <a class="collapse-item" th:href="@{/case/case_list}">测试用例</a>
+<!--                            <a class="collapse-item" th:href="@{/story/list}">测试需求管理</a>-->
+                            <a class="collapse-item" href="#">测试需求管理</a>
+<!--                            <a class="collapse-item" th:href="@{/plan/list}">测试计划管理</a>-->
+                            <a class="collapse-item" href="#">测试计划管理</a>
+                            <a class="collapse-item" href="#">Other</a>
+                        </div>
+                    </div>
+                </li>
+
+                <!-- Nav Item - Charts -->
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/bug/list}">
+                        <i class="bi bi-bug"></i>
+                        <span>问题单(BUG)</span></a>
+                </li>
+
+                <!-- Nav Item - Tables -->
+                <li class="nav-item">
+                    <a class="nav-link" href="#">
+                        <i class="bi bi-question-circle"></i>
+                        <span>other</span></a>
+                </li>
+
+                <!-- Divider -->
+                <hr class="sidebar-divider d-none d-md-block">
+
+                <!-- Sidebar Toggler (Sidebar) -->
+                <div class="text-center d-none d-md-inline">
+                    <button class="rounded-circle border-0" id="sidebarToggle">
+                        <i class="bi bi-list"></i>
+                    </button>
+                </div>
+
+            </ul>
+            <!-- 左侧菜单结束 -->
+
+            <!-- Content Wrapper -->
+            <div id="content-wrapper" class="d-flex flex-column">
+
+                <!-- Main Content -->
+                <div id="content">
+
+                    <!-- 右侧顶部导航栏 -->
+                    <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
+
+                        <!-- Sidebar Toggle (Topbar) -->
+                        <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                            <i class="fa fa-bars"></i>
+                        </button>
+
+                        <!-- Topbar Search -->
+                        <!--                        <form-->
+                        <!--                                class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">-->
+                        <!--                            <div class="input-group">-->
+                        <!--                                <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."-->
+                        <!--                                       aria-label="Search" aria-describedby="basic-addon2">-->
+                        <!--                                <div class="input-group-append">-->
+                        <!--                                    <button class="btn btn-primary" type="button">-->
+                        <!--                                        <i class="fas fa-search fa-sm"></i>-->
+                        <!--                                    </button>-->
+                        <!--                                </div>-->
+                        <!--                            </div>-->
+                        <!--                        </form>-->
+
+                        <!-- Topbar Navbar -->
+                        <ul class="navbar-nav ml-auto">
+                            <!-- Nav Item - Alerts -->
+                            <li class="nav-item dropdown no-arrow mx-1">
+                                <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="bi bi-bell"></i>
+                                    <!-- Counter - Alerts -->
+                                    <span class="badge badge-danger badge-counter">3+</span>
+                                </a>
+                                <!-- Dropdown - Alerts -->
+                                <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                     aria-labelledby="alertsDropdown">
+                                    <h6 class="dropdown-header">
+                                        Alerts Center
+                                    </h6>
+                                    <a class="dropdown-item d-flex align-items-center" href="#">
+                                        <div class="mr-3">
+                                            <div class="icon-circle bg-primary">
+                                                <i class="fas fa-file-alt text-white"></i>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="small text-gray-500">December 12, 2019</div>
+                                            <span class="font-weight-bold">A new monthly report is ready to download!</span>
+                                        </div>
+                                    </a>
+                                    <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
+                                </div>
+                            </li>
+
+                            <!-- Nav Item - Messages -->
+                            <!--                            <li class="nav-item dropdown no-arrow mx-1">-->
+                            <!--                                <a class="nav-link dropdown-toggle" href="#" id="messagesDropdown" role="button"-->
+                            <!--                                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">-->
+                            <!--                                    <i class="fas fa-envelope fa-fw"></i>-->
+                            <!--                                    &lt;!&ndash; Counter - Messages &ndash;&gt;-->
+                            <!--                                    <span class="badge badge-danger badge-counter">7</span>-->
+                            <!--                                </a>-->
+                            <!--                                &lt;!&ndash; Dropdown - Messages &ndash;&gt;-->
+                            <!--                                <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated&#45;&#45;grow-in"-->
+                            <!--                                     aria-labelledby="messagesDropdown">-->
+                            <!--                                    <h6 class="dropdown-header">-->
+                            <!--                                        Message Center-->
+                            <!--                                    </h6>-->
+                            <!--                                    <a class="dropdown-item d-flex align-items-center" href="#">-->
+                            <!--                                        <div class="dropdown-list-image mr-3">-->
+                            <!--                                            <img class="rounded-circle" src="img/undraw_profile_1.svg"-->
+                            <!--                                                 alt="...">-->
+                            <!--                                            <div class="status-indicator bg-success"></div>-->
+                            <!--                                        </div>-->
+                            <!--                                        <div class="font-weight-bold">-->
+                            <!--                                            <div class="text-truncate">Hi there! I am wondering if you can help me with a-->
+                            <!--                                                problem I've been having.</div>-->
+                            <!--                                            <div class="small text-gray-500">Emily Fowler · 58m</div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </a>-->
+                            <!--                                    <a class="dropdown-item d-flex align-items-center" href="#">-->
+                            <!--                                        <div class="dropdown-list-image mr-3">-->
+                            <!--                                            <img class="rounded-circle" src="img/undraw_profile_2.svg"-->
+                            <!--                                                 alt="...">-->
+                            <!--                                            <div class="status-indicator"></div>-->
+                            <!--                                        </div>-->
+                            <!--                                        <div>-->
+                            <!--                                            <div class="text-truncate">I have the photos that you ordered last month, how-->
+                            <!--                                                would you like them sent to you?</div>-->
+                            <!--                                            <div class="small text-gray-500">Jae Chun · 1d</div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </a>-->
+                            <!--                                    <a class="dropdown-item d-flex align-items-center" href="#">-->
+                            <!--                                        <div class="dropdown-list-image mr-3">-->
+                            <!--                                            <img class="rounded-circle" src="img/undraw_profile_3.svg"-->
+                            <!--                                                 alt="...">-->
+                            <!--                                            <div class="status-indicator bg-warning"></div>-->
+                            <!--                                        </div>-->
+                            <!--                                        <div>-->
+                            <!--                                            <div class="text-truncate">Last month's report looks great, I am very happy with-->
+                            <!--                                                the progress so far, keep up the good work!</div>-->
+                            <!--                                            <div class="small text-gray-500">Morgan Alvarez · 2d</div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </a>-->
+                            <!--                                    <a class="dropdown-item d-flex align-items-center" href="#">-->
+                            <!--                                        <div class="dropdown-list-image mr-3">-->
+                            <!--                                            <img class="rounded-circle" src="https://source.unsplash.com/Mv9hjnEUHR4/60x60"-->
+                            <!--                                                 alt="...">-->
+                            <!--                                            <div class="status-indicator bg-success"></div>-->
+                            <!--                                        </div>-->
+                            <!--                                        <div>-->
+                            <!--                                            <div class="text-truncate">Am I a good boy? The reason I ask is because someone-->
+                            <!--                                                told me that people say this to all dogs, even if they aren't good...</div>-->
+                            <!--                                            <div class="small text-gray-500">Chicken the Dog · 2w</div>-->
+                            <!--                                        </div>-->
+                            <!--                                    </a>-->
+                            <!--                                    <a class="dropdown-item text-center small text-gray-500" href="#">Read More Messages</a>-->
+                            <!--                                </div>-->
+                            <!--                            </li>-->
+
+                            <div class="topbar-divider d-none d-sm-block"></div>
+
+                            <!-- Nav Item - User Information -->
+                            <li class="nav-item dropdown no-arrow">
+                                <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                                   data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    <span th:text="${session.account.username}"></span>
+                                    <!--                                    <img class="img-profile rounded-circle"-->
+                                    <!--                                         src="img/undraw_profile.svg">-->
+                                </a>
+                                <!-- Dropdown - User Information -->
+                                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                                     aria-labelledby="userDropdown">
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Profile
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Settings
+                                    </a>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Activity Log
+                                    </a>
+                                    <div class="dropdown-divider"></div>
+                                    <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                                        <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
+                                        Logout
+                                    </a>
+                                </div>
+                            </li>
+
+                        </ul>
+
+                    </nav>
+                    <!-- 右侧顶部导航栏结束 -->
+
+                    <!-- Begin Page Content 右侧页面内容 -->
+                    <div class="container-fluid">
+                        <div id="liveAlertPlaceholder">
+                        </div>
+                        <!--操作栏-->
+                        <div class="card pt-2">
+                            <div class="card-body">
+                                <form th:action="@{projectList}" method="get">
+                                    <div class="row">
+                                        <div class="input-group mb-3" style="width: 15%">
+                                            <span class="input-group-text">所属项目</span>
+                                            <input type="text" class="form-control" name="projectName" placeholder="项目名称（模糊查询）"
+                                                   aria-label="projectId"
+                                                   aria-describedby="basic-addon1">
+                                        </div>
+                                        <div class="input-group mb-3" style="width: 15%">
+                                            <label class="input-group-text" for="workDate-search">任务时间</label>
+                                            <select class="form-select" aria-label="priority" name="workDate" id="workDate-search">
+                                                <option th:each="m:${monthList}"
+                                                        th:value="${m}"
+                                                        th:text="${m}"
+                                                        th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}">
+                                            </select>
+                                        </div>
+                                        <div class="col-lg-2 col-md-4 col-sm-6">
+                                            <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
+                                                                                          style="color: cornflowerblue"></i>
+                                            </button>
+                                            <button type="button" class="btn hvr-grow" data-bs-toggle="modal"
+                                                    data-bs-target="#add-project-modal"><i
+                                                    class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                        <div>
+                            <table class="table table-hover">
+                                <thead>
+                                <tr class="text-center">
+                                    <th scope="col">#</th>
+                                    <th scope="col">项目名</th>
+                                    <th scope="col">任务时间</th>
+                                    <th scope="col">关联模块</th>
+                                    <th scope="col">关联测试用例</th>
+                                    <th scope="col">关联bug</th>
+                                    <!--                        <th scope="col">是否完成</th>-->
+                                    <!--                            <th scope="col">操作</th>-->
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="temp,stat:${iPage.records}" class="text-center">
+                                    <input name="id" type="hidden" class="form-control"
+                                           th:value="${temp.id}" id="id">
+                                    <td th:text="${stat.index+1}"></td>
+                                    <td th:text="${temp.projectName}"></td>
+                                    <td th:text="${temp.issueDate}"></td>
+                                    <td>
+                                        <a href="#"
+                                           th:text="${temp.refModuleCount}"></a>
+                                    </td>
+                                    <td>
+                                        <a href="#"
+                                           th:text="${temp.refCaseCount}"></a>
+                                    </td>
+                                    <td>
+                                        <a href="#"
+                                           th:text="${temp.refBugCount}"></a>
+                                    </td>
+                                    <!--                        <td th:switch="${temp.finishStatus}">-->
+                                    <!--                            <div class="form-check form-switch">-->
+                                    <!--                                        <span th:case="1">-->
+                                    <!--                                            <input class="form-check-input" type="checkbox" id="un-del-1" checked-->
+                                    <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
+                                    <!--                                        <label class="form-check-label" for="un-del-1"></label>-->
+                                    <!--                                        </span>-->
+                                    <!--                                <span th:case="2">-->
+                                    <!--                                            <input class="form-check-input" type="checkbox" id="un-del-2" checked-->
+                                    <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
+                                    <!--                                        <label class="form-check-label" for="un-del-2"></label>-->
+                                    <!--                                        </span>-->
+                                    <!--                                <span th:case="3">-->
+                                    <!--                                            <input class="form-check-input" type="checkbox" id="un-del-3" checked-->
+                                    <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
+                                    <!--                                        <label class="form-check-label" for="un-del-3"></label>-->
+                                    <!--                                        </span>-->
+                                    <!--                                <span th:case="0">-->
+                                    <!--                                            <input class="form-check-input" type="checkbox" id="del"-->
+                                    <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
+                                    <!--                                        <label class="form-check-label" for="del"></label>-->
+                                    <!--                                        </span>-->
+                                    <!--                            </div>-->
+                                    <!--                        </td>-->
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--        add modal-->
+                    <div class="modal fade" id="add-project-modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
+                         aria-hidden="true" data-bs-backdrop="static">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content">
+                                <form class="modal-content needs-validation"
+                                      method="post" id="addProjectForm">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="staticBackdropLabel">新增项目</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <div class="box-body">
+                                            <div class="form-group">
+                                                <div class="input-group mb-3">
+                                                    <span class="input-group-text" id="basic-addon1">项目名</span>
+                                                    <input type="text" name="projectName" id="projectName" class="form-control"
+                                                           placeholder="输入项目名"
+                                                           aria-label="Username" aria-describedby="basic-addon1"
+                                                           required>
+                                                </div>
+                                            </div>
+                                            <div class="input-group mb-3">
+                                                <label class="input-group-text" for="workDate">任务时间</label>
+                                                <select class="form-select" id="workDate" name="workDate" required>
+                                                    <option th:value="''" selected>Choose...</option>
+                                                    <option th:each="m:${monthList}"
+                                                            th:value="${m}"
+                                                            th:text="${m}"
+                                                    >
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="submit" class="btn btn-primary" id="submit">确定</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancle">取消
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <!--        分页-->
+                    <div th:replace="/fragment/pagination_fragment :: pagination01">
+                    </div>
+                    <!-- /.container-fluid -->
+
+                </div>
+                <!-- End of Main Content -->
+
+                <!-- Footer -->
+                <footer class="sticky-footer bg-white">
+                    <div class="container my-auto">
+                        <div class="copyright text-center my-auto">
+                            <span>Copyright &copy; Your Website 2021</span>
+                        </div>
+                    </div>
+                </footer>
+                <!-- End of Footer -->
+
+            </div>
+            <!-- End of Content Wrapper -->
+
+        </div>
+        <!-- End of Page Wrapper -->
+
+        <!-- Scroll to Top Button-->
+        <a class="scroll-to-top rounded" href="#page-top">
+            <i class="fas fa-angle-up"></i>
+        </a>
+
+        <!-- Logout Modal-->
+        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+             aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">×</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                        <a class="btn btn-primary" th:href="@{/user/exit}">Logout</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
+        <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/sb-admin-2.min.js}"></script>
+        <script th:inline="javascript">
+
+            $('button[id=submit]').click(function (e) {
+                //Prevent default submission of form
+                e.preventDefault();
+                const $projectName = $('#projectName');
+                const $workDate = $('#workDate');
+                // 验证添加的数据是否存在
+                $.ajax({
+                    url: '/project/checkProject/',
+                    type: 'get',
+                    data: {
+                        projectName: $projectName.val(),
+                        workDate: $workDate.val()
+                    },
+                    dataType: 'JSON',
+                    success: function (res) {
+                        if (Object.is(res['code'], 400)) {
+                            //    项目已存在
+                            alert(res['msg'], 'warning')
+                        } else {
+                            const json = {"name": $projectName.val(), "date": $workDate.val()};
+                            $.ajax({
+                                url: '/project/addProject',
+                                type: 'post',
+                                dataType: "json",
+                                contentType: "application/json; charset=utf-8",
+                                data: JSON.stringify(json),
+                                success: function (res) {
+                                    if (Object.is(res['code'], 200)) {
+                                        const myModalEl = $('#add-project-modal');
+                                        myModalEl.modal("hide");
+                                        // $("#add-project-modal .close").click();
+                                        // 模态框关闭
+                                        myModalEl.on('hidden.bs.modal', function () {
+                                            // const pro = /*[[${session.project}]]*/ 'project';
+                                            const pro = res['data'];
+                                            if (pro) {
+                                                alert(pro.projectName + '添加成功', 'success')
+                                            }
+                                        })
+                                    }
+                                }
+                            })
+                        }
+                    }
+                })
+
+            })
+
+            function alert(message, type) {
+                let svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>';
+                switch (type) {
+                    case 'warning':
+                        svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>';
+                        break;
+                    case "danger":
+                        svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>';
+                        break;
+                }
+                const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = '<div class="alert alert-' + type + ' d-flex align-items-center alert-dismissible" role="alert">' +
+                    svg_str + '<div>' + message + '</div></div>'
+                alertPlaceholder.append(wrapper);
+                $('#liveAlertPlaceholder').fadeTo(2000, 500).slideUp(500, function () {
+                    $("#liveAlertPlaceholder").slideUp(500);
+                });
+                location.reload();
+            }
+        </script>
+    </body>
+</html>

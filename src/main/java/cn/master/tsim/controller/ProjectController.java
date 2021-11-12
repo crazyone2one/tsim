@@ -55,7 +55,7 @@ public class ProjectController {
         model.addAttribute("iPage", iPage);
         model.addAttribute("redirecting", "/project/projectList?pageCurrent=");
         model.addAttribute("monthList", DateUtils.currentYearMonth());
-        return "project/project_list";
+        return "project/project_list2";
     }
 
     /**

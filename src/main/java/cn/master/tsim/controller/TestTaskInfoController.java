@@ -43,7 +43,7 @@ public class TestTaskInfoController {
         model.addAttribute("redirecting", "/task/list?pageCurrent=");
         model.addAttribute("monthList", DateUtils.currentYearMonth());
         model.addAttribute("users", Constants.userMaps);
-        return "task/task_info_list";
+        return "task/task_info";
     }
 
     /**

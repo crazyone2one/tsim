@@ -62,7 +62,7 @@ public class TestCaseController {
         model.addAttribute("redirecting", "/case/case_list?pageCurrent=");
         model.addAttribute("monthList", DateUtils.currentYearMonth());
         model.addAttribute("projectNames", Constants.projectNames);
-        return "test-case/case_list_2";
+        return "test-case/case_list2";
     }
 
     @PostMapping(value = "/save")
@@ -140,7 +140,7 @@ public class TestCaseController {
                 reader.finish();
             }
         }
-        return "redirect:/case/case_list";
+        return "redirect:/case/case_list2";
     }
 
     @PostMapping(value = "/queryCase")

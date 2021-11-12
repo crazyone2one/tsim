@@ -50,7 +50,7 @@ public class TestBugController {
         model.addAttribute("iPage", iPage);
         model.addAttribute("users", Constants.userMaps);
         model.addAttribute("redirecting", "/bug/list?pageCurrent=");
-        return "bug/bug_list";
+        return "bug/bug2";
     }
 
     /**
