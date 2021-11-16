@@ -37,7 +37,7 @@ public class TestTaskInfoController {
 
     @GetMapping("/list")
     public String taskList(TestTaskInfo taskInfo, Model model, @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
-                           @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
+                           @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
         final IPage<TestTaskInfo> iPage = taskInfoService.taskInfoPage(taskInfo, pageCurrent, pageSize);
         model.addAttribute("iPage", iPage);
         model.addAttribute("redirecting", "/task/list?pageCurrent=");

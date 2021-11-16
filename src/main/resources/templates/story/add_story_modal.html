@@ -38,10 +38,9 @@
                                         <textarea type="text" class="form-control" id="add-description-name"
                                                   name="description" placeholder="输入需求内容描述"></textarea>
                                     </div>
-                                    <div class="input-group col-md-3">
+                                    <div class="input-group mb-3">
                                         <label for="workDate" class="input-group-text">需求日期</label>
-                                        <select class="form-select" name="workDate" id="workDate"
-                                                required>
+                                        <select class="form-select" name="workDate" id="workDate" required>
                                             <option th:each="m:${monthList}"
                                                     th:value="${m}"
                                                     th:text="${m}"

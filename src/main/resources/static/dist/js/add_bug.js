@@ -10,26 +10,9 @@ function saveBug() {
             dataType: 'JSON',
             success: function (arg) {
                 if (Object.is(arg['code'], 200)) {
-                    iziToast.show({
-                            // title: 'Success',
-                            message: arg['msg'],
-                            position: 'topRight',
-                            timeout: 2000,
-                            color: 'green'
-                        }
-                    );
-                    // 数据添加成功后关闭弹框
-                    $("#add-bug-modal").modal('hide');
-                    location.reload();
+                    alert(arg['msg'], 'success')
                 } else {
-                    iziToast.show({
-                            // title: 'Success',
-                            message: arg['msg'],
-                            position: 'topRight',
-                            timeout: 2000,
-                            color: 'red'
-                        }
-                    );
+                    alert(arg['msg'], 'warning');
                 }
             }
         });
@@ -46,10 +29,7 @@ function saveBug() {
                 dataType: 'JSON',
                 // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                 success: function (result) {
-                    console.log(result);
-                    // 数据添加成功后关闭弹框
-                    $("#add-bug-modal").modal('hide');
-                    location.reload();
+                    alert(arg['msg'], 'success')
                 }
             }
         )

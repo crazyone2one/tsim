@@ -42,20 +42,14 @@ public interface TestCaseService extends IService<TestCase> {
     IPage<TestCase> pageList(TestCase testCase, Integer pageCurrent, Integer pageSize);
 
     /**
-     * 测试计划关联测试用例，根据项目查询相应的测试用例
+     * 测试计划关联测试用例，查询相应的测试用例
      *
-     *
-     * @param projectId   项目id
-     * @param workDate
-     * @param pageCurrent 分页
-     * @param pageSize    分页
+     * @param params 参数
      * @return com.baomidou.mybatisplus.core.metadata.IPage<cn.master.tsim.entity.TestCase>
      */
-    IPage<TestCase> pageByProject(String projectId, String workDate, Integer pageCurrent, Integer pageSize);
+    IPage<TestCase> loadCaseByPlan(Map<String, Object> params);
 
     Map<String, Integer> caseCountByStatus(String projectId, String moduleId);
-
-    Map<String, Map<String, Integer>> caseCountByStatus();
 
     TestCase getById(String caseId);
 

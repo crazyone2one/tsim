@@ -7,7 +7,6 @@ import cn.master.tsim.entity.TestTaskInfo;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
-import cn.master.tsim.util.StreamUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
 
@@ -50,7 +50,7 @@ public class ProjectController {
      */
     @GetMapping(value = "/projectList")
     public String projectList(HttpServletRequest request, Model model, @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
-                              @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize, Project project) {
+                              @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, Project project) {
         final IPage<Project> iPage = projectService.projectListPages(project, pageCurrent, pageSize);
         model.addAttribute("iPage", iPage);
         model.addAttribute("redirecting", "/project/projectList?pageCurrent=");
@@ -66,13 +66,14 @@ public class ProjectController {
      */
     @PostMapping(value = "/addProject")
     @ResponseBody
-    public ResponseResult addProject(HttpServletRequest request, Project project) {
+    public ResponseResult addProject(HttpServletRequest request) {
         try {
-            Map<String, Object> paramsFromRequest = StreamUtils.getParamsFromRequest(request);
-            project.setProjectName(String.valueOf(paramsFromRequest.get("name")));
-            project.setWorkDate(String.valueOf(paramsFromRequest.get("date")));
-            final Project project1 = projectService.addProject(project, request);
-//            request.getSession().setAttribute("project", project1);
+            final String name = request.getParameter("name");
+            final String date = request.getParameter("date");
+            Map<String, String> infoMap = new LinkedHashMap<>();
+            infoMap.put("name", name);
+            infoMap.put("date", date);
+            final Project project1 = projectService.addProject(request,infoMap);
             return ResponseUtils.success(project1);
         } catch (Exception e) {
             log.info(e.getMessage());
@@ -91,12 +92,12 @@ public class ProjectController {
     public ResponseResult checkProject(HttpServletRequest request) {
         final ResponseResult success = ResponseUtils.success("数据查询成功");
         try {
-            final Map<String, String[]> parameterMap = request.getParameterMap();
-            final String workDate = parameterMap.get("workDate")[0];
-            final Project checkProject = projectService.checkProject(parameterMap.get("projectName")[0], workDate);
+            final String name = request.getParameter("name");
+            final String date = request.getParameter("date");
+            final Project checkProject = projectService.checkProject(name, date);
             if (Objects.nonNull(checkProject)) {
                 for (TestTaskInfo projectTask : checkProject.getProjectTasks()) {
-                    if (Objects.equals(projectTask.getIssueDate(), workDate)) {
+                    if (Objects.equals(projectTask.getIssueDate(), date)) {
                         return ResponseUtils.error(400, "该月份已存在项目", checkProject);
                     }
                 }

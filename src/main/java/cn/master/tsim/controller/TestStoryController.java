@@ -14,7 +14,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
+import java.util.Objects;
 
 /**
  * <p>
@@ -49,13 +49,11 @@ public class TestStoryController {
     @GetMapping("/list")
     public String allStory(TestStory story, Model model,
                            @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
-                           @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
+                           @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
         final IPage<TestStory> iPage = service.pageList(story, pageCurrent, pageSize);
-        final List<TestStory> pageRecords = iPage.getRecords();
-        pageRecords.forEach(temp->{
+        iPage.getRecords().forEach(temp -> {
             temp.setProjectId(projectService.getProjectById(temp.getProjectId()).getProjectName());
         });
-        model.addAttribute("records", pageRecords);
         model.addAttribute("iPage", iPage);
         model.addAttribute("redirecting", "/story/list?pageCurrent=");
         model.addAttribute("monthList", DateUtils.currentYearMonth());
@@ -65,23 +63,37 @@ public class TestStoryController {
 
     @PostMapping(value = "/save")
     @ResponseBody
-    public ResponseResult saveStory(HttpServletRequest request,TestStory story) {
+    public ResponseResult saveStory(HttpServletRequest request) {
         try {
-            final TestStory testStory = service.saveStory(request, story);
+            final TestStory testStory = service.saveStory(request);
             return ResponseUtils.success("数据添加成功", testStory);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据添加失败", e.getMessage());
         }
     }
 
+    @GetMapping(value = "/uniqueStory")
+    @ResponseBody
+    public ResponseResult uniqueStory(HttpServletRequest request) {
+        try {
+            final TestStory story = service.getStory(request.getParameter("description"), request.getParameter("date"), "");
+            if (Objects.nonNull(story)) {
+                return ResponseUtils.error(401, "存在相同测试需求", story);
+            }
+            return ResponseUtils.success();
+        } catch (Exception e) {
+            return ResponseUtils.error(400, "数据查询失败", e.getMessage());
+        }
+    }
+
     @PostMapping(value = "/updateStoryStatus")
     @ResponseBody
-    public ResponseResult updateStoryStatus(@RequestBody String source) {
+    public ResponseResult updateStoryStatus(HttpServletRequest request) {
         try {
-            final TestStory story = service.updateStory(source.split("=")[1]);
-            return ResponseUtils.success("数据修改成功", story);
-        }catch (Exception e) {
-            return ResponseUtils.error(400, "数据修改失败", e.getMessage());
+            final TestStory story = service.updateStory(request.getParameter("id"));
+            return ResponseUtils.success("需求状态修改成功", story);
+        } catch (Exception e) {
+            return ResponseUtils.error(400, "需求状态修改失败", e.getMessage());
         }
     }
 }

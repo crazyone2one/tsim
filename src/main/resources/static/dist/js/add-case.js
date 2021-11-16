@@ -32,7 +32,7 @@ function removeCaseStep(obj) {
     if (x.length > 1) {
         $(obj).parent("a").parent("div").parent("div").remove();
     } else {
-        alter("至少保留一条", 'warning')
+        alert("至少保留一条", 'warning')
     }
 }
 
@@ -60,24 +60,9 @@ function sub() {
         dataType: 'JSON',
         success: function (arg) {
             if (Object.is(arg['code'], 200)) {
-                iziToast.show({
-                        // title: 'Success',
-                        message: arg['msg'],
-                        position: 'topRight',
-                        timeout: 2000,
-                        color: 'green'
-                    }
-                );
-                location.reload();
+                alert(arg['msg'], 'success');
             } else {
-                iziToast.show({
-                        // title: 'Success',
-                        message: arg['msg'],
-                        position: 'topRight',
-                        timeout: 2000,
-                        color: 'red'
-                    }
-                );
+                alert(arg['msg'], 'warning');
             }
         }
     });

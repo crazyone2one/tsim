@@ -1,8 +1,10 @@
 package cn.master.tsim.service.impl;
 
-import cn.master.tsim.entity.*;
+import cn.master.tsim.entity.Module;
+import cn.master.tsim.entity.PlanCaseRef;
+import cn.master.tsim.entity.Project;
+import cn.master.tsim.entity.TestCase;
 import cn.master.tsim.mapper.TestCaseMapper;
-import cn.master.tsim.mapper.TestTaskInfoMapper;
 import cn.master.tsim.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -15,7 +17,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -31,17 +32,17 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     private final ProjectService projectService;
     private final ModuleService moduleService;
     private final TestCaseStepsService stepsService;
-    private final TestTaskInfoMapper taskInfoMapper;
-    private final ProjectCaseRefService caseRefService;
+    @Autowired
+    private PlanCaseRefService refService;
+    @Autowired
+    private TestPlanService planService;
 
 
     @Autowired
-    public TestCaseServiceImpl(ProjectService projectService, ModuleService moduleService, TestCaseStepsService stepsService, TestTaskInfoMapper taskInfoMapper, ProjectCaseRefService caseRefService) {
+    public TestCaseServiceImpl(ProjectService projectService, ModuleService moduleService, TestCaseStepsService stepsService) {
         this.projectService = projectService;
         this.moduleService = moduleService;
         this.stepsService = stepsService;
-        this.taskInfoMapper = taskInfoMapper;
-        this.caseRefService = caseRefService;
     }
 
     @Override
@@ -49,7 +50,8 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         final String projectId = request.getParameter("projectId");
         final String moduleId = request.getParameter("moduleId");
         final int priority = Integer.parseInt(request.getParameter("priority"));
-        final Project project = projectService.addProject(projectId, request);
+        // // TODO: 2021/11/16 0016 未查询到对应的项目数据时新增项目
+        final Project project = projectService.getProjectByName(projectId);
         final Module module = moduleService.addModule(projectId, moduleId, request);
         TestCase build = TestCase.builder().active(0).projectId(project.getId()).moduleId(module.getId())
                 .name(request.getParameter("name"))
@@ -62,24 +64,25 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 .createDate(new Date()).build();
         final int insert = baseMapper.insert(build);
         stepsService.saveStep(request, build);
-        final String workDate = request.getParameter("workDate");
-//        查询project-case-ref表是否有该项目对应月份相关的测试用例
-        final List<ProjectCaseRef> caseRefs = caseRefService.queryRefList(project.getId(), workDate);
-        if (CollectionUtils.isNotEmpty(caseRefs)) {
-            // 存在对应数据，不包括当前添加的测试用例
-            final List<ProjectCaseRef> collect = caseRefs.stream().filter(t -> Objects.equals(t.getCaseId(), build.getId())).collect(Collectors.toList());
-            if (CollectionUtils.isEmpty(collect)) {
-                caseRefService.addRefItem(project.getId(), build.getId(), workDate);
-                final TestTaskInfo taskInfo = taskInfoMapper.queryInfoByIdAndDate(project.getId(), workDate);
-                taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + insert);
-                taskInfoMapper.updateById(taskInfo);
-            }
-        } else {
-            caseRefService.addRefItem(project.getId(), build.getId(), workDate);
-            final TestTaskInfo taskInfo = taskInfoMapper.queryInfoByIdAndDate(project.getId(), workDate);
-            taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + insert);
-            taskInfoMapper.updateById(taskInfo);
-        }
+/*保存测试用例时，不增加关联关系，只保存测试用例数据*/
+//        final String workDate = request.getParameter("workDate");
+////        查询project-case-ref表是否有该项目对应月份相关的测试用例
+//        final List<ProjectCaseRef> caseRefs = caseRefService.queryRefList(project.getId(), workDate);
+//        if (CollectionUtils.isNotEmpty(caseRefs)) {
+//            // 存在对应数据，不包括当前添加的测试用例
+//            final List<ProjectCaseRef> collect = caseRefs.stream().filter(t -> Objects.equals(t.getCaseId(), build.getId())).collect(Collectors.toList());
+//            if (CollectionUtils.isEmpty(collect)) {
+//                caseRefService.addRefItem(project.getId(), build.getId(), workDate);
+//                final TestTaskInfo taskInfo = taskInfoMapper.queryInfoByIdAndDate(project.getId(), workDate);
+//                taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + insert);
+//                taskInfoMapper.updateById(taskInfo);
+//            }
+//        } else {
+//            caseRefService.addRefItem(project.getId(), build.getId(), workDate);
+//            final TestTaskInfo taskInfo = taskInfoMapper.queryInfoByIdAndDate(project.getId(), workDate);
+//            taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + insert);
+//            taskInfoMapper.updateById(taskInfo);
+//        }
         return build;
     }
 
@@ -149,16 +152,20 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     }
 
     @Override
-    public IPage<TestCase> pageByProject(String projectId, String workDate, Integer pageCurrent, Integer pageSize) {
-        final List<ProjectCaseRef> projectCaseRefs = caseRefService.queryRefList(projectId, workDate);
+    public IPage<TestCase> loadCaseByPlan(Map<String, Object> params) {
+        final int pn = Integer.parseInt(String.valueOf(params.get("pn")));
+        final String planId = String.valueOf(params.get("planId"));
+        /*1. 查询项目相关的测试用例*/
+        final IPage<PlanCaseRef> ref = refService.loadRefRecords(null, params);
         List<String> caseIds = new LinkedList<>();
-        projectCaseRefs.forEach(r->caseIds.add(r.getCaseId()));
+        ref.getRecords().forEach(r -> caseIds.add(r.getCaseId()));
+        /*2. 查询所有的测试用例*/
         QueryWrapper<TestCase> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(TestCase::getProjectId, projectService.getProjectById(projectId).getId());
+        wrapper.lambda().eq(TestCase::getProjectId, projectService.getProjectById(planService.getById(planId).getProjectId()).getId());
         final Page<TestCase> page = baseMapper.selectPage(
-                new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
+                new Page<>(Objects.equals(pn, 0) ? 1 : pn, Objects.equals(10, 0) ? 15 : 10),
                 wrapper);
-        page.getRecords().forEach(r->{
+        page.getRecords().forEach(r -> {
             if (caseIds.stream().anyMatch(c -> c.equals(r.getId()))) {
                 r.setRefFlag(true);
 //                caseRefService.addRefItem(projectId, r.getId(), workDate);
@@ -176,15 +183,6 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         map.put("total", baseMapper.selectCount(wrapper));
         // TODO: 2021/9/30 0030 已执行状态的测试用例
         return map;
-    }
-
-    @Override
-    public Map<String, Map<String, Integer>> caseCountByStatus() {
-        Map<String, Map<String, Integer>> result = new LinkedHashMap<>();
-        baseMapper.selectList(new QueryWrapper<TestCase>().lambda().select(TestCase::getProjectId)).forEach(t -> {
-            result.put(t.getProjectId(), caseCountByStatus(t.getProjectId(), null));
-        });
-        return result;
     }
 
     @Override

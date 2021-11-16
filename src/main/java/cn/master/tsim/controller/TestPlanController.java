@@ -82,12 +82,12 @@ public class TestPlanController {
 
     @PostMapping(value = "/updatePlanStatus")
     @ResponseBody
-    public ResponseResult updateStoryStatus(@RequestBody String source) {
+    public ResponseResult updateStoryStatus(HttpServletRequest request) {
         try {
-            final TestPlan testPlan = planService.updatePlan(source.split("=")[1]);
-            return ResponseUtils.success("数据修改成功", testPlan);
+            final TestPlan testPlan = planService.updatePlan(request.getParameter("id"));
+            return ResponseUtils.success("测试计划状态修改成功", testPlan);
         } catch (Exception e) {
-            return ResponseUtils.error(400, "数据修改失败", e.getMessage());
+            return ResponseUtils.error(400, "测试计划状态修改失败", e.getMessage());
         }
     }
 

@@ -18,8 +18,21 @@ public interface TestPlanService extends IService<TestPlan> {
 
     IPage<TestPlan> pageList(TestPlan plan, Integer pageCurrent, Integer pageSize);
 
+    /**
+     * 保存测试计划数据
+     *
+     * @param request HttpServletRequest
+     * @param plan    TestPlan
+     * @return cn.master.tsim.entity.TestPlan
+     */
     TestPlan savePlan(HttpServletRequest request, TestPlan plan);
 
-    TestPlan updatePlan(String argument);
+    /**
+     * 更新测试计划状态
+     *
+     * @param planId 测试计划数据id
+     * @return cn.master.tsim.entity.TestPlan
+     */
+    TestPlan updatePlan(String planId);
 
 }

@@ -1,16 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>TSIM @ BUG</title>
-        <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-        <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
-        <link rel="stylesheet" th:href="@{/plugins/sb-admin-2.min.css}">
-        <link rel="stylesheet" th:href="@{/plugins/hover.css}">
-        <!--        toast插件-->
-        <link rel="stylesheet" th:href="@{/plugins/iziToast.min.css}">
-        <meta name="author" content="11‘s papa">
+        <th:block th:include="/fragment/head_footer :: header('TSIM @ BUG')"/>
     </head>
     <body>
         <!-- Page Wrapper -->
@@ -32,34 +23,36 @@
 
                     <!-- Begin Page Content 右侧页面内容 -->
                     <div class="container-fluid">
+                        <div id="liveAlertPlaceholder">
+                        </div>
                         <!--操作栏-->
                         <div class="card pt-2">
                             <div class="card-body">
                                 <form th:action="@{list}" method="get">
                                     <div class="row">
-                                        <div class="input-group mb-3" style="width: 15%">
+                                        <div class="input-group mb-3" style="width: fit-content">
                                             <span class="input-group-text" id="basic-addon1">所属项目</span>
                                             <input type="text" class="form-control" name="projectId" placeholder="项目名称（模糊查询）" aria-label="projectId"
                                                    aria-describedby="basic-addon1">
                                         </div>
-                                        <div class="input-group mb-3" style="width: 15%">
+                                        <div class="input-group mb-3" style="width: fit-content">
                                             <span class="input-group-text" id="basic-addon2">所属模块</span>
                                             <input type="text" class="form-control" name="moduleId" placeholder="模块名称（模糊查询）" aria-label="moduleId"
                                                    aria-describedby="basic-addon2">
                                         </div>
-                                        <div class="input-group mb-3 " style="width: 15%">
+                                        <div class="input-group mb-3 " style="width: fit-content">
                                             <span class="input-group-text" id="basic-addon3">问题描述</span>
                                             <input type="text" class="form-control" name="title" placeholder="问题描述（模糊查询）" aria-label="title"
                                                    aria-describedby="basic-addon3">
                                         </div>
-                                        <select class="form-select mb-3" style="width: 6%" aria-label="severity" name="severity">
+                                        <select class="form-select mb-3" style="width: fit-content" aria-label="severity" name="severity">
                                             <option th:value="' '" selected>严重程度</option>
                                             <option value="1">轻微</option>
                                             <option value="2">一般</option>
                                             <option value="3">严重</option>
                                             <option value="4">致命</option>
                                         </select>
-                                        <select class="form-select mb-3" style="width: 6%" aria-label="bugStatus" name="bugStatus">
+                                        <select class="form-select mb-3" style="width: fit-content" aria-label="bugStatus" name="bugStatus">
                                             <option th:value="' '" selected>问题状态</option>
                                             <option value="1">新建</option>
                                             <option value="2">挂起</option>
@@ -139,13 +132,7 @@
                 <!-- End of Main Content -->
 
                 <!-- Footer -->
-                <footer class="sticky-footer bg-white">
-                    <div class="container my-auto">
-                        <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2021</span>
-                        </div>
-                    </div>
-                </footer>
+                <div th:replace="/fragment/head_footer::#footer"></div>
                 <!-- End of Footer -->
 
             </div>
@@ -153,11 +140,6 @@
 
         </div>
         <!-- End of Page Wrapper -->
-
-        <!-- Scroll to Top Button-->
-        <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-        </a>
         <!-- Logout Modal-->
         <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
              aria-hidden="true">
@@ -180,9 +162,33 @@
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/sb-admin-2.min.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/iziToast.min.js}"></script>
+<!--        <script type="text/javascript" th:src="@{/plugins/iziToast.min.js}"></script>-->
         <script th:src="@{/dist/js/add_bug.js}"></script>
         <script>
+            function alert(message, type) {
+                $('#liveAlertPlaceholder').empty();
+                let svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>';
+                switch (type) {
+                    case 'warning':
+                        svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>';
+                        break;
+                    case "danger":
+                        svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>';
+                        break;
+                }
+                const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = '<div class="alert alert-' + type + ' d-flex align-items-center alert-dismissible" role="alert">' +
+                    svg_str + '<div>' + message + '</div></div>'
+                alertPlaceholder.append(wrapper);
+                $('#liveAlertPlaceholder').fadeTo(2000, 500).slideUp(500, function () {
+                    $("#liveAlertPlaceholder").slideUp(500);
+                });
+                // $('#liveAlertPlaceholder').remove();
+                if (Object.is(type, 'success')) {
+                    location.reload();
+                }
+            }
             const detail_modal = document.getElementById('bug-detail-modal');
             detail_modal.addEventListener('show.bs.modal', function (event) {
                 const button = $(event.relatedTarget);

@@ -113,11 +113,9 @@ public class TestCaseController {
     public ResponseResult loadCaseByProject(HttpServletRequest request) {
         try {
             final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
-            final String projectId = String.valueOf(params.get("projectId"));
             final String planId = String.valueOf(params.get("planId"));
-            final String workDate = String.valueOf(params.get("workDate"));
-            final int pn = Integer.parseInt(String.valueOf(params.get("pn")));
-            final IPage<TestCase> casePage = caseService.pageByProject(projectId, workDate, pn, 10);
+            params.put("pageSize", 10);
+            final IPage<TestCase> casePage = caseService.loadCaseByPlan(params);
             request.getSession().setAttribute("planId", planId);
             return ResponseUtils.success("数据查询成功", casePage);
         } catch (Exception e) {

@@ -43,4 +43,6 @@ public interface PlanCaseRefService extends IService<PlanCaseRef> {
      * @return com.baomidou.mybatisplus.core.metadata.IPage<cn.master.tsim.entity.PlanCaseRef>
      */
     IPage<PlanCaseRef> loadRefRecords(HttpServletRequest request, Map<String, Object> params);
+
+    IPage<PlanCaseRef> loadRefByPlanId(String planId, Integer pn, Integer pageSize);
 }

@@ -1,16 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>TSIM @ STORY</title>
-        <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-        <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
-        <link rel="stylesheet" th:href="@{/plugins/sb-admin-2.min.css}">
-        <link rel="stylesheet" th:href="@{/plugins/hover.css}">
-        <!--        toast插件-->
-        <link rel="stylesheet" th:href="@{/plugins/iziToast.min.css}">
-        <meta name="author" content="11‘s papa">
+        <th:block th:include="/fragment/head_footer :: header('TSIM @ BUG')"/>
     </head>
     <body>
         <!-- Page Wrapper -->
@@ -32,34 +23,45 @@
 
                     <!-- Begin Page Content 右侧页面内容 -->
                     <div class="container-fluid">
+                        <div id="liveAlertPlaceholder">
+                        </div>
                         <!--操作栏-->
                         <div class="card pt-2">
                             <div class="card-body">
-                                <form th:action="@{list}" method="get">
+                                <form th:action="@{list}">
                                     <div class="row">
-                                        <div class="input-group mb-3" style="width: 15%">
+                                        <div class="input-group mb-3" style="width: fit-content">
                                             <span class="input-group-text" id="basic-addon1">所属项目</span>
-                                            <input type="text" class="form-control" placeholder="项目名称" aria-label="projectId"
+                                            <input type="text" class="form-control" placeholder="项目名称"
+                                                   aria-label="projectId"
                                                    aria-describedby="basic-addon1" id="project-s" list="proStuff">
                                             <datalist id="proStuff">
-                                                <option th:each="s:${projects}" th:data-value="${s.id}">[[${s.projectName}]]</option>
+                                                <option th:each="s:${projects}" th:data-value="${s.id}">
+                                                    [[${s.projectName}]]
+                                                </option>
                                             </datalist>
                                             <input type="hidden" name="projectId" id="projectId">
                                         </div>
-                                        <div class="input-group mb-3 " style="width: 15%">
+                                        <div class="input-group mb-3 " style="width: fit-content">
                                             <span class="input-group-text" id="basic-addon3">需求内容</span>
-                                            <input type="text" class="form-control" name="description" placeholder="内容（模糊查询）" aria-label="name"
+                                            <input type="text" class="form-control" name="description"
+                                                   placeholder="根据需求内容查询" aria-label="name"
                                                    aria-describedby="basic-addon3">
                                         </div>
-                                        <select class="form-select mb-3" style="width: 6%" aria-label="active" name="active">
+                                        <select class="form-select mb-3" style="width: fit-content" aria-label="active"
+                                                name="delFlag">
                                             <option th:value="''">完成状态</option>
-                                            <option value="0">有效</option>
-                                            <option value="1">无效</option>
+                                            <option value="1">已完成</option>
+                                            <option value="0">未完成</option>
                                         </select>
                                         <div class="col-lg-2 col-md-4 col-sm-6">
-                                            <button type="submit" class="btn hvr-grow"><i class="bi bi-search" style="color: cornflowerblue"></i></button>
+                                            <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
+                                                                                          style="color: cornflowerblue"></i>
+                                            </button>
                                             <button type="button" class="btn"
-                                                    data-bs-toggle="modal" data-bs-target="#add-story-modal"><i class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
+                                                    data-bs-toggle="modal" data-bs-target="#add-story-modal"><i
+                                                    class="bi bi-plus-circle hvr-grow"
+                                                    style="color: cornflowerblue"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -74,12 +76,13 @@
                                     <th scope="col">#</th>
                                     <th scope="col">所属项目</th>
                                     <th scope="col">需求内容</th>
-                                    <th scope="col" th:width="60px">完成状态</th>
+                                    <th scope="col">完成状态</th>
+                                    <th scope="col">需求时间</th>
                                     <th scope="col">操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr class="text-center" th:each="temp,stat:${records}">
+                                <tr class="text-center" th:each="temp,stat:${iPage.records}">
                                     <input name="id" type="hidden" class="form-control"
                                            th:value="${temp.id}" id="id">
                                     <td th:text="${stat.index+1}"></td>
@@ -99,6 +102,7 @@
                                 </span>
                                         </div>
                                     </td>
+                                    <td th:text="${temp.workDate}"></td>
                                     <td>
                                     </td>
                                 </tr>
@@ -118,13 +122,7 @@
                 <!-- End of Main Content -->
 
                 <!-- Footer -->
-                <footer class="sticky-footer bg-white">
-                    <div class="container my-auto">
-                        <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2021</span>
-                        </div>
-                    </div>
-                </footer>
+                <div th:replace="/fragment/head_footer :: #footer"></div>
                 <!-- End of Footer -->
 
             </div>
@@ -161,44 +159,72 @@
         <script type="text/javascript" th:src="@{/plugins/sb-admin-2.min.js}"></script>
         <script>
             // 保存项目
-            $('#submit').click(function () {
-                const data = $("#addStoryForm").serialize();
+            $('button[id=submit]').click(function () {
+                const $projectName = $('#projectId-a');
+                const $description = $('#add-description-name');
+                const $workDate = $('#workDate');
+
                 $.ajax({
-                    url: "/story/save",
-                    type: 'POST',
-                    data: data,
-                    dataType: 'JSON',
-                    success: function (arg) {
-                        const msg = arg['msg'];
-                        if (Object.is(arg['code'], 200)) {
-                            toastInfo(msg, 'success');
-                            window.location.reload();
+                    url: "/story/uniqueStory",
+                    type: 'get',
+                    // contentType: "application/json; charset=utf-8",
+                    data: {
+                        name: $projectName.val(),
+                        description: $description.val(),
+                        date: $workDate.val()
+                    },
+                    success: function (result) {
+                        if (Object.is(result['code'], 401)) {
+                            //    项目已存在
+                            alert(result['msg'], 'warning');
                         } else {
-                            toastInfo(msg, 'danger');
+                            const json = {
+                                "name": $projectName.val(),
+                                "date": $workDate.val(),
+                                "description": $description.val()
+                            };
+                            $.ajax({
+                                url: "/story/save",
+                                type: 'POST',
+                                contentType: "application/json; charset=utf-8",
+                                data: JSON.stringify(json),
+                                dataType: 'JSON',
+                                success: function (arg) {
+                                    const msg = arg['msg'];
+                                    if (Object.is(arg['code'], 200)) {
+                                        alert(msg, 'success');
+                                    } else {
+                                        alert(msg, 'danger');
+                                    }
+                                }
+                            });
                         }
                     }
-                });
+                })
+
             })
+
             // 更新项目状态
             function updateStatus(projectId) {
                 $.ajax({
                     url: '/story/updateStoryStatus/',
                     type: 'POST',
                     data: {
-                        projectId: projectId
+                        id: projectId
                     },
                     dataType: 'JSON',
                     success: function (arg) {
                         // console.log( arg['result']);
                         const msg = arg['msg'];
                         if (Object.is(arg['code'], 200)) {
-                            toastInfo(msg, 'success');
+                            alert(msg, 'success');
                         } else {
-                            toastInfo(msg, 'danger');
+                            alert(msg, 'danger');
                         }
                     }
                 })
             }
+
             // 查询条件：项目
             $('#project-s').change(function () {
                 const input_select = $("#project-s").val();
@@ -230,10 +256,34 @@
                             break
                         }
                     }
-                }else {
+                } else {
                     $('#projectId-h').val(input_select);
                 }
             })
+
+            function alert(message, type) {
+                $('#liveAlertPlaceholder').empty();
+                let svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>';
+                switch (type) {
+                    case 'warning':
+                        svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>';
+                        break;
+                    case "danger":
+                        svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>';
+                        break;
+                }
+                const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = '<div class="alert alert-' + type + ' d-flex align-items-center alert-dismissible" role="alert">' +
+                    svg_str + '<div>' + message + '</div></div>'
+                alertPlaceholder.append(wrapper);
+                $('#liveAlertPlaceholder').fadeTo(2000, 500).slideUp(500, function () {
+                    $("#liveAlertPlaceholder").slideUp(500);
+                });
+                if (Object.is(type, "success")) {
+                    location.reload();
+                }
+            }
         </script>
     </body>
 </html>

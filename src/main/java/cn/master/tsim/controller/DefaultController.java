@@ -84,18 +84,6 @@ public class DefaultController {
         return "demo/demo";
     }
 
-    @PostMapping(value = "/addPro")
-    @ResponseBody
-    public ResponseResult addPro(HttpServletRequest request, TestStory story) {
-        try {
-            for (int i = 0; i < 10; i++) {
-                projectService.addProject("测试项目数据" + StringUtils.randomCode(6), request);
-            }
-            return ResponseUtils.success("数据添加成功", null);
-        } catch (Exception e) {
-            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
-        }
-    }
 
     @PostMapping(value = "/addStory")
     @ResponseBody
@@ -105,7 +93,7 @@ public class DefaultController {
                 final List<Project> projects = projectService.findByPartialProjectName("");
                 final Project project = projects.get(new Random().nextInt(projects.size()));
                 final TestStory build = TestStory.builder().projectId(project.getProjectName()).description("测试需求数据" + StringUtils.randomCode(6)).workDate("2021-10").build();
-                storyService.saveStory(request, build);
+                storyService.saveStory(request);
             }
             return ResponseUtils.success("数据添加成功", null);
         } catch (Exception e) {

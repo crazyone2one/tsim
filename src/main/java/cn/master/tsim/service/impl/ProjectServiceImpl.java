@@ -3,7 +3,6 @@ package cn.master.tsim.service.impl;
 import cn.master.tsim.entity.*;
 import cn.master.tsim.mapper.ProjectMapper;
 import cn.master.tsim.service.*;
-import cn.master.tsim.util.StreamUtils;
 import cn.master.tsim.util.UuidUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -64,11 +63,9 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
-    public Project addProject(String projectName, HttpServletRequest request) {
-        final String method = request.getMethod();
-        final Map<String, Object> objectMap = StreamUtils.getParamsFromRequest(request);
-        final String name = String.valueOf(objectMap.get("name"));
-        final String date = String.valueOf(objectMap.get("date"));
+    public Project addProject(HttpServletRequest request, Map<String, String> proInfoMap) {
+        final String name = proInfoMap.get("name");
+        final String date = proInfoMap.get("date");
         /*1. 根据名称是否可查询到相关的项目*/
         final Project project = checkProject(name, date);
         if (Objects.nonNull(project)) {

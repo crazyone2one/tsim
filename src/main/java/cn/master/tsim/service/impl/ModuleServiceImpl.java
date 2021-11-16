@@ -61,7 +61,7 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module> impleme
     @Override
     public Module getModuleByName(String proName, String moduleName, HttpServletRequest request) {
         return baseMapper.selectOne(new QueryWrapper<Module>().lambda()
-                .eq(StringUtils.isNotBlank(proName), Module::getProjectId, projectService.addProject(proName, request).getId())
+                .eq(StringUtils.isNotBlank(proName), Module::getProjectId, projectService.getProjectByName(proName))
                 .eq(StringUtils.isNotBlank(moduleName), Module::getModuleName, moduleName));
     }
 
@@ -84,7 +84,7 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module> impleme
         final Module build = Module.builder()
                 .moduleName(moduleName)
                 .moduleCode(UuidUtils.generate())
-                .projectId(projectService.addProject(projectName, request).getId())
+                .projectId(projectService.getProjectByName(projectName).getId())
                 .createDate(new Date())
                 .delFlag(0)
                 .build();

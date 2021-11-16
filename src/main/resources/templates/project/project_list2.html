@@ -1,16 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>TSIM @ PROJECT</title>
-        <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
-        <link rel="bookmark" th:href="@{/favicon.ico}" type="image/x-icon"/>
-        <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-        <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
-        <link rel="stylesheet" th:href="@{/plugins/sb-admin-2.min.css}">
-        <link rel="stylesheet" th:href="@{/plugins/hover.css}">
-        <meta name="author" content="11‘s papa">
+        <th:block th:include="/fragment/head_footer :: header('TSIM @ BUG')"/>
     </head>
     <body id="page-top">
         <!-- Page Wrapper -->
@@ -39,19 +30,19 @@
                             <div class="card-body">
                                 <form th:action="@{projectList}" method="get">
                                     <div class="row">
-                                        <div class="input-group mb-3" style="width: 15%">
+                                        <div class="input-group mb-3" style="width: fit-content">
                                             <span class="input-group-text">所属项目</span>
                                             <input type="text" class="form-control" name="projectName" placeholder="项目名称（模糊查询）"
                                                    aria-label="projectId"
                                                    aria-describedby="basic-addon1">
                                         </div>
-                                        <div class="input-group mb-3" style="width: 15%">
+                                        <div class="input-group mb-3" style="width: fit-content">
                                             <label class="input-group-text" for="workDate-search">任务时间</label>
                                             <select class="form-select" aria-label="priority" name="workDate" id="workDate-search">
+                                                <option th:value="''" selected>选择任务时间</option>
                                                 <option th:each="m:${monthList}"
                                                         th:value="${m}"
-                                                        th:text="${m}"
-                                                        th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}">
+                                                        th:text="${m}">
                                             </select>
                                         </div>
                                         <div class="col-lg-2 col-md-4 col-sm-6">
@@ -154,7 +145,7 @@
                                             <div class="input-group mb-3">
                                                 <label class="input-group-text" for="workDate">任务时间</label>
                                                 <select class="form-select" id="workDate" name="workDate" required>
-                                                    <option th:value="''" selected>Choose...</option>
+                                                    <option th:value="''" selected>选择任务时间</option>
                                                     <option th:each="m:${monthList}"
                                                             th:value="${m}"
                                                             th:text="${m}"
@@ -164,7 +155,7 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary" id="submit">确定</button>
+                                        <button type="submit" class="btn btn-primary" id="submit">保存</button>
                                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancle">取消
                                         </button>
                                     </div>
@@ -181,13 +172,8 @@
                 <!-- End of Main Content -->
 
                 <!-- Footer -->
-                <footer class="sticky-footer bg-white">
-                    <div class="container my-auto">
-                        <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2021</span>
-                        </div>
-                    </div>
-                </footer>
+                <div th:replace="/fragment/head_footer :: footer">
+                </div>
                 <!-- End of Footer -->
 
             </div>
@@ -235,8 +221,9 @@
                     url: '/project/checkProject/',
                     type: 'get',
                     data: {
-                        projectName: $projectName.val(),
-                        workDate: $workDate.val()
+                        name: $projectName.val(),
+                        date: $workDate.val()
+                        // serialize
                     },
                     dataType: 'JSON',
                     success: function (res) {
@@ -244,13 +231,15 @@
                             //    项目已存在
                             alert(res['msg'], 'warning')
                         } else {
-                            const json = {"name": $projectName.val(), "date": $workDate.val()};
                             $.ajax({
                                 url: '/project/addProject',
                                 type: 'post',
                                 dataType: "json",
-                                contentType: "application/json; charset=utf-8",
-                                data: JSON.stringify(json),
+                                data: {
+                                    name: $projectName.val(),
+                                    date: $workDate.val()
+                                    // serialize
+                                },
                                 success: function (res) {
                                     if (Object.is(res['code'], 200)) {
                                         const myModalEl = $('#add-project-modal');
@@ -274,6 +263,7 @@
             })
 
             function alert(message, type) {
+                $('#liveAlertPlaceholder').empty();
                 let svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>';
                 switch (type) {
                     case 'warning':
@@ -291,7 +281,10 @@
                 $('#liveAlertPlaceholder').fadeTo(2000, 500).slideUp(500, function () {
                     $("#liveAlertPlaceholder").slideUp(500);
                 });
-                location.reload();
+                // $('#liveAlertPlaceholder').remove();
+                if (Object.is(type, 'success')) {
+                    location.reload();
+                }
             }
         </script>
     </body>

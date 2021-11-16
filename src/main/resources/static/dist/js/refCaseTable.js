@@ -34,8 +34,10 @@ function build_run_case_table(planId, pn) {
             dataType: 'JSON',
             // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
             success: function (arg) {
-                load_run_case_info(arg['data'].records);
-                build_page_info(arg['data'], "#page-nav-area");
+                if (Object.is(200, arg['code'])) {
+                    load_run_case_info(arg['data'].records);
+                    build_page_info(arg['data'], "#page-nav-area");
+                }
             }
         }
     )
@@ -115,6 +117,9 @@ function loadCase(res) {
     $('#refCaseTable > tbody').html("");
     const tbody = $('#refCaseTable').find('tbody');
     for (let i = 0; i < res.length; i++) {
+        if (res[i].refFlag) {
+            continue;
+        }
         const id = res[i].id;
         const new_tr = $("<tr></tr>").addClass("text-center")
         const title_td = $("<td></td>").attr("style", "overflow: hidden; white-space: nowrap; text-overflow: ellipsis; max-width: 100px");
@@ -204,26 +209,9 @@ $('#sub-ref').click(function () {
         contentType: "application/json",
         success: function (arg) {
             if (Object.is(arg['code'], 200)) {
-                iziToast.show({
-                        // title: 'Success',
-                        message: arg['msg'],
-                        position: 'topRight',
-                        timeout: 2000,
-                        color: 'green'
-                    }
-                );
-                // 数据添加成功后关闭弹框
-                $("#ref-case-modal").modal('hide');
-                location.reload();
+                alert(arg['msg'], 'success');
             } else {
-                iziToast.show({
-                        // title: 'Success',
-                        message: arg['msg'],
-                        position: 'topRight',
-                        timeout: 2000,
-                        color: 'red'
-                    }
-                );
+                alert(arg['msg'], 'warning');
             }
         }
     })

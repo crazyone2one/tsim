@@ -53,11 +53,11 @@ public interface ProjectService extends IService<Project> {
     /**
      * 添加项目
      *
-     * @param projectName 项目名称
-     * @param request
+     * @param request HttpServletRequest
+     * @param proInfoMap 项目信息
      * @return int
      */
-    Project addProject(String projectName, HttpServletRequest request);
+    Project addProject(HttpServletRequest request, Map<String, String> proInfoMap);
 
     Project addProject(Project project, HttpServletRequest request);
 

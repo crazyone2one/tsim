@@ -64,8 +64,8 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     }
 
     @Override
-    public TestPlan updatePlan(String argument) {
-        final TestPlan testPlan = baseMapper.selectById(argument);
+    public TestPlan updatePlan(String planId) {
+        final TestPlan testPlan = baseMapper.selectById(planId);
         testPlan.setDelFlag(Objects.equals(testPlan.getDelFlag(), 0) ? 1 : 0);
         testPlan.setUpdateDate(new Date());
         baseMapper.updateById(testPlan);

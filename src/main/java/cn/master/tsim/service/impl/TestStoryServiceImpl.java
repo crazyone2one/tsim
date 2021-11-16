@@ -5,6 +5,7 @@ import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.mapper.TestStoryMapper;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestStoryService;
+import cn.master.tsim.util.StreamUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -14,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <p>
@@ -60,29 +58,33 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     }
 
     @Override
-    public TestStory saveStory(HttpServletRequest request, TestStory story) {
-        final Project project = projectService.addProject(story.getProjectId(), request);
-        final TestStory testStory = getStory(story.getDescription(), project.getId());
+    public TestStory saveStory(HttpServletRequest request) {
+        final Map<String, Object> objectMap = StreamUtils.getParamsFromRequest(request);
+        final String description = String.valueOf(objectMap.get("description"));
+        final String date = String.valueOf(objectMap.get("date"));
+        final Project project = projectService.getProjectByName(String.valueOf(objectMap.get("name")));
+        final TestStory testStory = getStory(description, date, project.getId());
         if (Objects.nonNull(testStory)) {
             return testStory;
         }
-        TestStory build = TestStory.builder().projectId(project.getId()).description(story.getDescription()).workDate(story.getWorkDate())
+        TestStory build = TestStory.builder().projectId(project.getId()).description(description).workDate(date)
                 .delFlag(0).createDate(new Date()).build();
         baseMapper.insert(build);
         return build;
     }
 
     @Override
-    public TestStory getStory(String storyName, String proId) {
+    public TestStory getStory(String description, String workDate, String proId) {
         QueryWrapper<TestStory> wrapper = new QueryWrapper<>();
 //        完全匹配
-        wrapper.lambda().eq(StringUtils.isNotBlank(storyName), TestStory::getDescription, storyName);
-        wrapper.lambda().eq(StringUtils.isNotBlank(proId), TestStory::getProjectId, proId);
-        final TestStory story = baseMapper.selectOne(wrapper);
-        if (Objects.nonNull(story)) {
-            story.setProject(projectService.getProjectById(story.getProjectId()));
-        }
-        return story;
+        wrapper.lambda().eq(StringUtils.isNotBlank(description), TestStory::getDescription, description);
+        wrapper.lambda().eq(StringUtils.isNotBlank(workDate), TestStory::getWorkDate, workDate);
+        // 验证所属项目
+//        wrapper.lambda().eq(StringUtils.isNotBlank(proId), TestStory::getProjectId, proId);
+        //        if (Objects.nonNull(story)) {
+//            story.setProject(projectService.getProjectById(story.getProjectId()));
+//        }
+        return baseMapper.selectOne(wrapper);
     }
 
     @Override
@@ -95,8 +97,8 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     }
 
     @Override
-    public TestStory updateStory(String argument) {
-        final TestStory story = baseMapper.selectById(argument);
+    public TestStory updateStory(String storyId) {
+        final TestStory story = baseMapper.selectById(storyId);
         story.setDelFlag(Objects.equals(story.getDelFlag(), 0) ? 1 : 0);
         story.setUpdateDate(new Date());
         baseMapper.updateById(story);

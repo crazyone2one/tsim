@@ -97,4 +97,11 @@ public class PlanCaseRefServiceImpl extends ServiceImpl<PlanCaseRefMapper, PlanC
         });
         return planCaseRefPage;
     }
+
+    @Override
+    public IPage<PlanCaseRef> loadRefByPlanId(String planId, Integer pn, Integer pageSize) {
+        QueryWrapper<PlanCaseRef> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(StringUtils.isNotBlank(planId), PlanCaseRef::getPlanId, planId);
+        return baseMapper.selectPage(new Page<>(Objects.equals(pn, 0) ? 1 : pageSize, Objects.equals(pageSize, 0) ? 10 : pageSize),wrapper);
+    }
 }

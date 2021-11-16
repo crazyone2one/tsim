@@ -1,16 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>TSIM @ PLAN</title>
-        <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-        <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
-        <link rel="stylesheet" th:href="@{/plugins/sb-admin-2.min.css}">
-        <link rel="stylesheet" th:href="@{/plugins/hover.css}">
-        <!--        toast插件-->
-        <link rel="stylesheet" th:href="@{/plugins/iziToast.min.css}">
-        <meta name="author" content="11‘s papa">
+        <th:block th:include="/fragment/head_footer :: header('TSIM @ BUG')"/>
     </head>
     <body>
         <!-- Page Wrapper -->
@@ -32,34 +23,41 @@
 
                     <!-- Begin Page Content 右侧页面内容 -->
                     <div class="container-fluid">
+                        <div id="liveAlertPlaceholder">
+                        </div>
                         <!--操作栏-->
                         <div class="card pt-2">
                             <div class="card-body">
                                 <form th:action="@{list}" method="get">
                                     <div class="row">
-                                        <div class="input-group mb-3" style="width: 15%">
+                                        <div class="input-group mb-3" style="width: fit-content">
                                             <span class="input-group-text" id="project">所属项目</span>
-                                            <input type="text" class="form-control" name="projectName" placeholder="项目名称"
-                                                   list="proStuff" aria-label="project" aria-describedby="project" id="project-s">
+                                            <input type="text" class="form-control" name="projectName"
+                                                   placeholder="项目名称"
+                                                   list="proStuff" aria-label="project" aria-describedby="project"
+                                                   id="project-s">
                                             <datalist id="proStuff">
-                                                <option th:each="s:${projects}" th:data-value="${s.id}">[[${s.projectName}]]
+                                                <option th:each="s:${projects}" th:data-value="${s.id}">
+                                                    [[${s.projectName}]]
                                                 </option>
                                             </datalist>
                                             <input type="hidden" name="projectId" id="projectId">
                                         </div>
-                                        <div class="input-group mb-3 " style="width: 15%">
+                                        <div class="input-group mb-3 " style="width: fit-content">
                                             <span class="input-group-text">测试计划名称</span>
                                             <input type="text" class="form-control" name="name" placeholder="测试计划名称"
                                                    aria-label="name"
                                                    aria-describedby="basic-addon3">
                                         </div>
-                                        <div class="input-group mb-3 " style="width: 15%">
+                                        <div class="input-group mb-3 " style="width: fit-content">
                                             <span class="input-group-text">测试计划描述</span>
-                                            <input type="text" class="form-control" name="description" placeholder="测试计划描述（模糊查询）"
+                                            <input type="text" class="form-control" name="description"
+                                                   placeholder="测试计划描述（模糊查询）"
                                                    aria-label="name"
                                                    aria-describedby="basic-addon3">
                                         </div>
-                                        <select class="form-select mb-3" style="width: 6%" aria-label="active" name="delFlag">
+                                        <select class="form-select mb-3" style="width: fit-content" aria-label="active"
+                                                name="delFlag">
                                             <option th:value="''">结束状态</option>
                                             <option value="0">未结束</option>
                                             <option value="1">已结束</option>
@@ -70,7 +68,8 @@
                                             </button>
                                             <button type="button" class="btn"
                                                     data-bs-toggle="modal" data-bs-target="#add-plan-modal"><i
-                                                    class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
+                                                    class="bi bi-plus-circle hvr-grow"
+                                                    style="color: cornflowerblue"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -97,7 +96,8 @@
                                            th:value="${temp.id}" id="id">
                                     <input name="workDate" type="hidden" th:value="${temp.workDate}" id="workDate"/>
                                     <td th:text="${stat.index+1}"></td>
-                                    <td th:value="${temp.project.id}" th:text="${temp.project.projectName}" th:id="project"></td>
+                                    <td th:value="${temp.project.id}" th:text="${temp.project.projectName}"
+                                        th:id="project"></td>
                                     <td th:value="${temp.story.id}" th:text="${temp.story.description}"></td>
                                     <td th:text="${temp.name}"></td>
                                     <td th:text="${temp.description}"></td>
@@ -147,13 +147,7 @@
                 <!-- End of Main Content -->
 
                 <!-- Footer -->
-                <footer class="sticky-footer bg-white">
-                    <div class="container my-auto">
-                        <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2021</span>
-                        </div>
-                    </div>
-                </footer>
+                <div th:replace="/fragment/head_footer::#footer"></div>
                 <!-- End of Footer -->
 
             </div>
@@ -188,7 +182,7 @@
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/sb-admin-2.min.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/iziToast.min.js}"></script>
+<!--        <script type="text/javascript" th:src="@{/plugins/iziToast.min.js}"></script>-->
         <script th:inline="javascript" th:src="@{/dist/js/build_page_info.js}"></script>
         <script th:inline="javascript" th:src="@{/dist/js/refCaseTable.js}"></script>
         <script th:src="@{/dist/js/add_bug.js}"></script>
@@ -203,26 +197,9 @@
                     dataType: 'JSON',
                     success: function (arg) {
                         if (Object.is(arg['code'], 200)) {
-                            iziToast.show({
-                                    // title: 'Success',
-                                    message: arg['msg'],
-                                    position: 'topRight',
-                                    timeout: 2000,
-                                    color: 'green'
-                                }
-                            );
-                            // 数据添加成功后关闭弹框
-                            $("#add-plan-modal").modal('hide');
-                            location.reload();
+                            alert(arg['msg'], 'success');
                         } else {
-                            iziToast.show({
-                                    // title: 'Success',
-                                    message: arg['msg'],
-                                    position: 'topRight',
-                                    timeout: 2000,
-                                    color: 'red'
-                                }
-                            );
+                            alert(arg['msg'], 'warning');
                         }
                     }
                 });
@@ -234,29 +211,14 @@
                     url: '/plan/updatePlanStatus/',
                     type: 'POST',
                     data: {
-                        projectId: projectId
+                        id: projectId
                     },
                     dataType: 'JSON',
                     success: function (arg) {
                         if (Object.is(arg['code'], 200)) {
-                            iziToast.show({
-                                    // title: 'Success',
-                                    message: arg['msg'],
-                                    position: 'topRight',
-                                    timeout: 2000,
-                                    color: 'green'
-                                }
-                            );
-                            location.reload();
+                            alert(arg['msg'], 'success');
                         } else {
-                            iziToast.show({
-                                    // title: 'Success',
-                                    message: arg['msg'],
-                                    position: 'topRight',
-                                    timeout: 2000,
-                                    color: 'red'
-                                }
-                            );
+                            alert(arg['msg'], 'warning');
                         }
                     }
                 })
@@ -275,6 +237,31 @@
                     }
                 }
             })
+
+            function alert(message, type) {
+                $('#liveAlertPlaceholder').empty();
+                let svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>';
+                switch (type) {
+                    case 'warning':
+                        svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>';
+                        break;
+                    case "danger":
+                        svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>';
+                        break;
+                }
+                const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
+                const wrapper = document.createElement('div');
+                wrapper.innerHTML = '<div class="alert alert-' + type + ' d-flex align-items-center alert-dismissible" role="alert">' +
+                    svg_str + '<div>' + message + '</div></div>'
+                alertPlaceholder.append(wrapper);
+                $('#liveAlertPlaceholder').fadeTo(2000, 500).slideUp(500, function () {
+                    $("#liveAlertPlaceholder").slideUp(500);
+                });
+                // $('#liveAlertPlaceholder').remove();
+                if (Object.is(type, 'success')) {
+                    location.reload();
+                }
+            }
         </script>
     </body>
 </html>

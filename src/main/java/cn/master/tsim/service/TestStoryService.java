@@ -19,14 +19,36 @@ public interface TestStoryService extends IService<TestStory> {
 
     IPage<TestStory> pageList(TestStory story, Integer pageCurrent, Integer pageSize);
 
-    TestStory saveStory(HttpServletRequest request, TestStory story);
+    /**
+     * 保存需求数据
+     *
+     * @param request HttpServletRequest
+     * @return cn.master.tsim.entity.TestStory
+     */
+    TestStory saveStory(HttpServletRequest request);
 
-    TestStory getStory(String storyName, String proId);
+    /**
+     * 查询需求数据
+     *
+     * @param description 需求内容
+     * @param workDate    需求时间
+     * @param proId       项目id
+     * @return cn.master.tsim.entity.TestStory
+     */
+    TestStory getStory(String description, String workDate, String proId);
+
     TestStory searchStoryById(String storyId);
 
-    TestStory updateStory(String argument);
+    /**
+     * 更新需求状态
+     *
+     * @param storyId story id
+     * @return cn.master.tsim.entity.TestStory
+     */
+    TestStory updateStory(String storyId);
 
     List<TestStory> listStoryByProjectId(String projectName);
+
     List<TestStory> listStory();
 
     List<TestStory> listStoryByProjectAndWorkDate(String projectId, String workDate);

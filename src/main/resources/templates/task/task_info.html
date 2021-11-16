@@ -1,16 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>TSIM @ TASK</title>
-        <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-        <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
-        <link rel="stylesheet" th:href="@{/plugins/sb-admin-2.min.css}">
-        <link rel="stylesheet" th:href="@{/plugins/hover.css}">
-        <!--        toast插件-->
-        <link rel="stylesheet" th:href="@{/plugins/iziToast.min.css}">
-        <meta name="author" content="11‘s papa">
+        <th:block th:include="/fragment/head_footer :: header('TSIM @ BUG')"/>
     </head>
     <body>
         <!-- Page Wrapper -->
@@ -37,13 +28,14 @@
                             <div class="card-body">
                                 <form th:action="@{list}" method="get">
                                     <div class="row">
-                                        <div class="input-group mb-3" style="width: 15%">
+                                        <div class="input-group mb-3" style="width: fit-content">
                                             <span class="input-group-text">所属项目</span>
-                                            <input type="text" class="form-control" name="projectId" placeholder="项目名称（模糊查询）"
+                                            <input type="text" class="form-control" name="projectId"
+                                                   placeholder="项目名称（模糊查询）"
                                                    aria-label="projectId"
                                                    aria-describedby="basic-addon1">
                                         </div>
-                                        <div class="input-group mb-3" style="width: 12%">
+                                        <div class="input-group mb-3" style="width: fit-content">
                                             <label class="input-group-text" for="finishStatus">完成状态</label>
                                             <select class="form-select" name="finishStatus" id="finishStatus">
                                                 <option th:value="''" selected>完成状态</option>
@@ -53,7 +45,7 @@
                                                 <option value="3">已回测</option>
                                             </select>
                                         </div>
-                                        <div class="input-group mb-3" style="width: 12%">
+                                        <div class="input-group mb-3" style="width: fit-content">
                                             <label class="input-group-text" for="workDate-search">任务时间</label>
                                             <select class="form-select" name="issueDate" id="workDate-search">
                                                 <option th:value="''" selected>任务时间</option>
@@ -68,7 +60,8 @@
                                             </button>
                                             <button type="button" class="btn"
                                                     data-bs-toggle="modal" data-bs-target="#add-story-modal"><i
-                                                    class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
+                                                    class="bi bi-plus-circle hvr-grow"
+                                                    style="color: cornflowerblue"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -77,40 +70,40 @@
                         </div>
                         <!--            列表数据-->
                         <div>
-                            <table class="table table-hover ">
+                            <table class="table table-bordered table-hover">
                                 <thead>
                                 <tr class="text-center">
-                                    <th class="border-end" rowspan="2" th:width="60px">#</th>
-                                    <th class="border-end " rowspan="2" th:width="130px">项目名称</th>
-                                    <th class="border-end " rowspan="2" th:width="130px">任务描述</th>
-                                    <th class="border-end" colspan="2">用例数量</th>
-                                    <th class="border-end" colspan="5">提交bug</th>
-                                    <th class="border-end" colspan="5">回测bug</th>
-                                    <th class="border-end" colspan="2">测试文档</th>
-                                    <th class="border-end" rowspan="2" th:width="98px">是否有需求</th>
-                                    <th class="border-end" rowspan="2" th:width="100px">完成状态</th>
-                                    <th class="border-end" rowspan="2" th:width="100px">是否交付</th>
-                                    <th class="border-end" rowspan="2" th:width="100px">测试人员</th>
-                                    <th class="border-end" rowspan="2" th:width="100px">备注</th>
-                                    <th class="border-end" rowspan="2" th:width="100px">月份</th>
-                                    <th class="border-end" rowspan="2" th:width="50px"><i class="bi-tools"></i>
+                                    <th rowspan="2" th:width="60px">#</th>
+                                    <th rowspan="2" th:width="130px">项目名称</th>
+                                    <th rowspan="2" th:width="130px">任务描述</th>
+                                    <th colspan="2">用例数量</th>
+                                    <th colspan="5">提交bug</th>
+                                    <th colspan="5">回测bug</th>
+                                    <th colspan="2">测试文档</th>
+                                    <th rowspan="2" th:width="98px">是否有需求</th>
+                                    <th rowspan="2" th:width="100px">完成状态</th>
+                                    <th rowspan="2" th:width="100px">是否交付</th>
+                                    <th rowspan="2" th:width="100px">测试人员</th>
+                                    <th rowspan="2" th:width="100px">备注</th>
+                                    <th rowspan="2" th:width="100px">月份</th>
+                                    <th rowspan="2" th:width="50px"><i class="bi-tools"></i>
                                     </th>
                                 </tr>
-                                <tr>
-                                    <th class="border-end" th:width="50px">新建</th>
-                                    <th class="border-end" th:width="50px">执行</th>
-                                    <th class="border-end" th:width="50px">致命</th>
-                                    <th class="border-end" th:width="50px">严重</th>
-                                    <th class="border-end" th:width="50px">一般</th>
-                                    <th class="border-end" th:width="50px">轻微</th>
-                                    <th class="border-end" th:width="50px">总计</th>
-                                    <th class="border-end" th:width="50px">致命</th>
-                                    <th class="border-end" th:width="50px">严重</th>
-                                    <th class="border-end" th:width="50px">一般</th>
-                                    <th class="border-end" th:width="50px">轻微</th>
-                                    <th class="border-end" th:width="50px">总计</th>
-                                    <th class="border-end" th:width="82px">bug文档</th>
-                                    <th class="border-end" th:width="82px">测试报告</th>
+                                <tr class="text-center" style="font-size: 2px;">
+                                    <th th:width="50px">新建</th>
+                                    <th th:width="50px">执行</th>
+                                    <th th:width="50px">致命</th>
+                                    <th th:width="50px">严重</th>
+                                    <th th:width="50px">一般</th>
+                                    <th th:width="50px">轻微</th>
+                                    <th th:width="50px">总计</th>
+                                    <th th:width="50px">致命</th>
+                                    <th th:width="50px">严重</th>
+                                    <th th:width="50px">一般</th>
+                                    <th th:width="50px">轻微</th>
+                                    <th th:width="50px">总计</th>
+                                    <th th:width="82px">bug文档</th>
+                                    <th th:width="82px">测试报告</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -275,13 +268,7 @@
                 <!-- End of Main Content -->
 
                 <!-- Footer -->
-                <footer class="sticky-footer bg-white">
-                    <div class="container my-auto">
-                        <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2021</span>
-                        </div>
-                    </div>
-                </footer>
+                <div th:replace="/fragment/head_footer :: #footer"></div>
                 <!-- End of Footer -->
 
             </div>

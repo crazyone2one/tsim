@@ -1,5 +1,6 @@
 <!-- 左侧菜单 -->
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar" th:fragment="accordionSidebar">
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar"
+    th:fragment="accordionSidebar">
 
     <!-- Sidebar - Brand -->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
@@ -24,7 +25,8 @@
 
     <!-- Nav Item - Pages Collapse Menu -->
     <li class="nav-item">
-        <a class="nav-link collapsed" href="#collapseTwo" data-bs-toggle="collapse" aria-expanded="false" aria-controls="collapseTwo">
+        <a class="nav-link collapsed" href="#collapseTwo" data-bs-toggle="collapse" aria-expanded="false"
+           aria-controls="collapseTwo">
             <i class="bi bi-layers-half"></i>
             <span>项目管理</span>
         </a>
@@ -46,12 +48,12 @@
         <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"
              data-parent="#accordionSidebar">
             <div class="bg-white py-2 collapse-inner rounded">
-                <!--                            <h6 class="collapse-header">Custom Utilities:</h6>-->
+
+                <a class="collapse-item" th:href="@{/story/list}">测试需求管理</a>
+                <!--                <a class="collapse-item" href="#">测试需求管理</a>-->
+                <a class="collapse-item" th:href="@{/plan/list}">测试计划管理</a>
+                <!--                <a class="collapse-item" href="#">测试计划管理</a>-->
                 <a class="collapse-item" th:href="@{/case/case_list}">测试用例</a>
-                <!--                            <a class="collapse-item" th:href="@{/story/list}">测试需求管理</a>-->
-                <a class="collapse-item" href="#">测试需求管理</a>
-                <!--                            <a class="collapse-item" th:href="@{/plan/list}">测试计划管理</a>-->
-                <a class="collapse-item" href="#">测试计划管理</a>
                 <a class="collapse-item" href="#">Other</a>
             </div>
         </div>
