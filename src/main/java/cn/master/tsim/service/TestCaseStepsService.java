@@ -24,7 +24,15 @@ public interface TestCaseStepsService extends IService<TestCaseSteps> {
      *
      * @param request  HttpServletRequest
      * @param testCase 测试用例数据
-     * @return cn.master.tsim.entity.TestCaseSteps
      */
-    TestCaseSteps saveStep(HttpServletRequest request, TestCase testCase);
+    void saveStep(HttpServletRequest request, TestCase testCase);
+
+    /**
+     * 保存测试步骤数据
+     *
+     * @param caseId  测试用例数据id
+     * @param steps   步骤集合
+     * @param results 结果集合
+     */
+    void saveStep(String caseId, String[] steps, String[] results);
 }

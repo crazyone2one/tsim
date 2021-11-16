@@ -27,6 +27,14 @@ public interface TestCaseService extends IService<TestCase> {
      */
     TestCase saveCase(HttpServletRequest request, TestCase testCase);
 
+    /**
+     * 导入数据
+     *
+     * @param request
+     * @param cases
+     */
+    void importCase(HttpServletRequest request, List<TestCase> cases);
+
     List<TestCase> listTestCase(TestCase testCase, String projectId, String moduleId);
 
     void updateCase(String caseId);

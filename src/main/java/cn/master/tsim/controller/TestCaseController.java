@@ -25,6 +25,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
@@ -124,21 +125,23 @@ public class TestCaseController {
     }
 
     @PostMapping(value = "/upload")
-    public String uploadCase(MultipartFile file, Model model) {
+    public String uploadCase(HttpServletRequest request,MultipartFile file, Model model) {
         ExcelReader reader = null;
         try {
+            final String fileName = System.currentTimeMillis() + file.getOriginalFilename();
+            final String distFileName = request.getServletContext().getRealPath("") + "upload" + File.separator + fileName;
+            log.info(distFileName);
             reader = EasyExcel.read(file.getInputStream(), TestCase.class, new TestCaseListener(caseService)).build();
             reader.read(EasyExcel.readSheet(0).build());
             model.addAttribute("msg", "success");
         } catch (IOException e) {
             e.printStackTrace();
-            model.addAttribute("msg", "failed");
         } finally {
             if (Objects.nonNull(reader)) {
                 reader.finish();
             }
         }
-        return "redirect:/case/case_list2";
+        return "redirect:/case/case_list";
     }
 
     @PostMapping(value = "/queryCase")

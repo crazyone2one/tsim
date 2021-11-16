@@ -87,6 +87,26 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     }
 
     @Override
+    public void importCase(HttpServletRequest request, List<TestCase> cases) {
+        // TODO: 2021/11/16 0016 mapper里面新增一个方法batchInsert,所有数据一次性插入
+        for (TestCase c : cases) {
+            if (c.isRefFlag()) {
+                continue;
+            }
+            final Project project = projectService.getProjectByName(c.getProjectId());
+            final Module module = moduleService.addModule(c.getProjectId(), c.getModuleId(), request);
+            final TestCase build = TestCase.builder().active(0).projectId(project.getId()).moduleId(module.getId())
+                    .name(c.getName()).description(c.getDescription()).precondition(c.getPrecondition())
+                    .testMode(0).priority(c.getPriority()).stepStore(c.getStepStore())
+                    .resultStore(c.getResultStore()).createDate(new Date()).build();
+            baseMapper.insert(build);
+            final String[] steps = c.getStepStore().split("\\n");
+            final String[] results = c.getResultStore().split("\\n");
+            stepsService.saveStep(build.getId(), steps, results);
+        }
+    }
+
+    @Override
     public List<TestCase> listTestCase(TestCase testCase, String projectId, String moduleId) {
         QueryWrapper<TestCase> wrapper = new QueryWrapper<>();
         List<String> tempProjectId = new LinkedList<>();

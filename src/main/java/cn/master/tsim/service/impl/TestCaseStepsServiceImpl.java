@@ -34,11 +34,11 @@ public class TestCaseStepsServiceImpl extends ServiceImpl<TestCaseStepsMapper, T
     }
 
     @Override
-    public TestCaseSteps saveStep(HttpServletRequest request, TestCase testCase) {
+    public void saveStep(HttpServletRequest request, TestCase testCase) {
         final Map<String, String[]> parameterMap = request.getParameterMap();
         final String[] steps = parameterMap.get("caseSteps[]");
         final String[] results = parameterMap.get("caseExpectedResults[]");
-        TestCaseSteps build = new TestCaseSteps();
+        TestCaseSteps build;
         for (int i = 0; i < steps.length; i++) {
             build = TestCaseSteps.builder().caseId(testCase.getId())
                     .caseOrder(i)
@@ -46,6 +46,17 @@ public class TestCaseStepsServiceImpl extends ServiceImpl<TestCaseStepsMapper, T
                     .build();
             baseMapper.insert(build);
         }
-        return build;
+    }
+
+    @Override
+    public void saveStep(String caseId, String[] steps, String[] results) {
+        TestCaseSteps build;
+        for (int i = 0; i < steps.length; i++) {
+            build = TestCaseSteps.builder().caseId(caseId)
+                    .caseOrder(i)
+                    .caseStep(steps[i]).caseStepResult(results[i]).active(0).createDate(new Date())
+                    .build();
+            baseMapper.insert(build);
+        }
     }
 }

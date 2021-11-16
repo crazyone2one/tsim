@@ -110,5 +110,6 @@ public class TestCase implements Serializable {
     private List<TestCaseSteps> caseSteps;
 
     @TableField(exist = false)
+    @ExcelProperty(value = "是否已导入", index = 8)
     private boolean refFlag;
 }
