@@ -2,6 +2,7 @@ package cn.master.tsim.controller;
 
 
 import cn.master.tsim.common.Constants;
+import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Module;
 import cn.master.tsim.entity.Project;
@@ -20,13 +21,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.URLConnection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -154,6 +156,39 @@ public class TestCaseController {
         } catch (Exception e) {
             log.info(e.getMessage());
             return ResponseUtils.error(400, "数据修改失败", e.getMessage());
+        }
+    }
+
+    @RequestMapping("/download/{fileName:.+}")
+    @ResponseBody
+    public ResponseResult downloadTemplate(HttpServletRequest request, HttpServletResponse response, @PathVariable("fileName") String fileName) {
+        final String filePath = Objects.requireNonNull(this.getClass().getClassLoader().getResource("export")).getPath()+"/";
+        File file = new File(filePath + fileName);
+        try {
+            if (file.exists()) {
+                String mimeType = URLConnection.guessContentTypeFromName(file.getName());
+                if (mimeType == null) {
+                    //unknown mimetype so set the mimetype to application/octet-stream
+                    mimeType = "application/octet-stream";
+                }
+                response.setContentType(mimeType);
+                /**
+                 * Here we have mentioned it to show inline
+                 */
+                response.setHeader("Content-Disposition", "inline; filename=\"" + file.getName() + "\"");
+
+                //Here we have mentioned it to show as attachment
+                //response.setHeader("Content-Disposition", String.format("attachment; filename=\"" + file.getName() + "\""));
+                response.setContentLength((int) file.length());
+                InputStream inputStream = new BufferedInputStream(new FileInputStream(file));
+                FileCopyUtils.copy(inputStream, response.getOutputStream());
+                return ResponseUtils.success("模板下载成功");
+            } else {
+                return ResponseUtils.error(ResponseCode.ERROR_404.getCode(), "模板不存在");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return ResponseUtils.error("模板下载失败");
         }
     }
 }

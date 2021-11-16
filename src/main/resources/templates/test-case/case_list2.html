@@ -62,8 +62,8 @@
                                                     data-bs-toggle="modal" data-bs-target="#add-case-modal"><i
                                                     class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
                                             </button>
-                                            <!--                                // 导出数据-->
-                                            <a class="btn btn-light mb-3 mb-lg-0 hvr-grow" onclick="exportExcel()">
+                                            <!--                                // 导出模板数据-->
+                                            <a class="btn btn-light mb-3 mb-lg-0 hvr-grow" th:href="@{/case/download/test-case-template.xlsx}">
                                                 <i class="bi bi-download"></i>
                                             </a>
                                             <!--                                //导入数据-->
@@ -220,29 +220,6 @@
                         caseId: caseId
                     },
                     dataType: 'JSON',
-                    success: function (arg) {
-                        // console.log( arg['result']);
-                        const msg = arg['msg'];
-                        if (Object.is(arg['code'], 200)) {
-                            alert(msg, 'success');
-                        } else {
-                            alert(msg, 'danger');
-                        }
-                    }
-                })
-            }
-
-            function upload_case() {
-                const formData = new FormData(document.getElementById('singleFileUploadInput'));
-                // const file = $('#singleFileUploadInput').get(0).files[0];
-                // formData.append("file", file);
-                $.ajax({
-                    url: '/case/upload/',
-                    type: 'POST',
-                    data: formData,
-                    // dataType: 'JSON',
-                    contentType: false,
-                    processData: false,
                     success: function (arg) {
                         // console.log( arg['result']);
                         const msg = arg['msg'];
