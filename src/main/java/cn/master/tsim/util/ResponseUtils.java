@@ -57,6 +57,13 @@ public class ResponseUtils {
         return resp;
     }
 
+    public static ResponseResult error(Integer code, String message) {
+        ResponseResult resp = new ResponseResult();
+        resp.setCode(code);
+        resp.setMsg(message);
+        return resp;
+    }
+
     public static ResponseResult error(Integer code, String message, Object object) {
         ResponseResult resp = new ResponseResult();
         resp.setCode(code);
