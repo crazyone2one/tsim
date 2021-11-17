@@ -10,66 +10,9 @@
     <!--        Button with data-bs-target-->
     <!--    </button>-->
     <!--    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">-->
-    <div class="container-fluid">
-        <!--        <div id="alerts">-->
-        <!--            <ul class="nav nav-pills">-->
-        <!--                &lt;!&ndash; Nav Item - Alerts &ndash;&gt;-->
-        <!--                <li class="nav-item dropdown no-arrow mx-1">-->
-        <!--                    <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"-->
-        <!--                       data-bs-toggle="dropdown" aria-expanded="false">-->
-        <!--                        <i class="bi bi-bell"></i>-->
-        <!--                        &lt;!&ndash; Counter - Alerts &ndash;&gt;-->
-        <!--                        <span class="badge badge-danger badge-counter">3+</span>-->
-        <!--                    </a>-->
-        <!--                    &lt;!&ndash; Dropdown - Alerts &ndash;&gt;-->
-        <!--                    <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated&#45;&#45;grow-in"-->
-        <!--                         aria-labelledby="alertsDropdown">-->
-        <!--                        <h6 class="dropdown-header">-->
-        <!--                            Alerts Center-->
-        <!--                        </h6>-->
-        <!--                        <a class="dropdown-item d-flex align-items-center" href="#">-->
-        <!--                            <div class="mr-3">-->
-        <!--                                <div class="icon-circle bg-primary">-->
-        <!--                                    <i class="fas fa-file-alt text-white"></i>-->
-        <!--                                </div>-->
-        <!--                            </div>-->
-        <!--                            <div>-->
-        <!--                                <div class="small text-gray-500">December 12, 2019</div>-->
-        <!--                                <span class="font-weight-bold">A new monthly report is ready to download!</span>-->
-        <!--                            </div>-->
-        <!--                        </a>-->
-        <!--                        <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>-->
-        <!--                    </div>-->
-        <!--                </li>-->
-        <!--            </ul>-->
-        <!--        </div>-->
-        <div class="offset-11" id="user-info">
-            <ul class="nav nav-pills">
-                <!-- Nav Item - User Information -->
-                <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-                       data-bs-toggle="dropdown" aria-expanded="false">
-                        <span th:text="${session.account.username}"></span>
-                    </a>
-                    <!-- Dropdown - User Information -->
-                    <ul class="dropdown-menu shadow" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="#">Profile</a></li>
-                        <li><a class="dropdown-item" href="#">Settings</a></li>
-                        <li>
-                            <hr class="dropdown-divider">
-                        </li>
-                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
-                            Logout
-                        </a></li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
 </header>
 <!--菜单-->
 <nav id="sidebarMenu" class="col-md-2 col-lg-2 d-md-block bg-light sidebar collapse" th:fragment="sidebarMenu">
-
     <div class="position-sticky pt-5" id="navbarNavDropdown">
         <ul class="nav flex-column">
             <!-- Nav Item - Dashboard -->
@@ -119,6 +62,74 @@
         </ul>
     </div>
 </nav>
+<!--菜单样式2-->
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="width: 280px;" th:fragment="sidebarMenu2">
+    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">
+        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>
+        <span class="fs-4">Sidebar</span>
+    </a>
+    <hr>
+    <ul class="nav nav-pills flex-column mb-auto">
+        <li>
+            <a th:class="${flag=='dashboard'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/dashboard}">
+                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
+                Dashboard
+            </a>
+        </li>
+        <li>
+            <a th:class="${flag=='project'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/project/list}">
+                <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
+                项目管理
+            </a>
+        </li>
+        <li>
+            <a th:class="${flag=='task'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/task/list}">
+                <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+                任务汇总
+            </a>
+        </li>
+        <li>
+            <a th:class="${flag=='story'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/story/list}">
+                <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+                测试需求管理
+            </a>
+        </li>
+        <li>
+            <a th:class="${flag=='plan'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/plan/list}">
+                <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+                测试计划管理
+            </a>
+        </li>
+        <li>
+            <a th:class="${flag=='case'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/case/list}">
+                <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+                测试用例
+            </a>
+        </li>
+        <li>
+            <a th:class="${flag=='bug'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/bug/list}">
+                <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
+                问题单(BUG)
+            </a>
+        </li>
+    </ul>
+    <hr>
+    <div class="dropdown">
+        <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+<!--            <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">-->
+            <i class="rounded-circle me-2 bi bi-person" style="font-size: 1.5rem"></i>
+            <strong th:text="${session.account.username}">11‘s papa</strong>
+        </a>
+        <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
+            <li><a class="dropdown-item" href="#">Settings</a></li>
+            <li><a class="dropdown-item" href="#">Profile</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                Logout
+            </a></li>
+        </ul>
+    </div>
+</div>
 <!--head信息-->
 <head th:fragment="common_header(title)">
     <meta charset="UTF-8">
