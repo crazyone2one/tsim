@@ -8,7 +8,7 @@
         <div id="wrapper">
 
             <!-- 左侧菜单 -->
-            <ul th:replace="/fragment/sidebar-left :: #accordionSidebar"></ul>
+            <ul th:replace="/fragment/commons :: sidebar(active='project')"></ul>
             <!-- 左侧菜单结束 -->
 
             <!-- Content Wrapper -->
@@ -18,7 +18,7 @@
                 <div id="content">
 
                     <!-- 右侧顶部导航栏 -->
-                    <nav th:replace="/fragment/topbar::#top-bar"></nav>
+                    <nav th:replace="/fragment/commons :: top-bar"></nav>
                     <!-- 右侧顶部导航栏结束 -->
 
                     <!-- Begin Page Content 右侧页面内容 -->
@@ -164,16 +164,14 @@
                         </div>
                     </div>
                     <!--        分页-->
-                    <div th:replace="/fragment/pagination_fragment :: pagination01">
-                    </div>
+                    <div th:replace="/fragment/commons :: pagination01"></div>
                     <!-- /.container-fluid -->
 
                 </div>
                 <!-- End of Main Content -->
 
                 <!-- Footer -->
-                <div th:replace="/fragment/head_footer :: footer">
-                </div>
+                <div th:replace="/fragment/commons :: footer"></div>
                 <!-- End of Footer -->
 
             </div>

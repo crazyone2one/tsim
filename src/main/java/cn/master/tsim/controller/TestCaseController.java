@@ -127,7 +127,7 @@ public class TestCaseController {
     }
 
     @PostMapping(value = "/upload")
-    public String uploadCase(HttpServletRequest request,MultipartFile file, Model model) {
+    public String uploadCase(HttpServletRequest request, MultipartFile file, Model model) {
         ExcelReader reader = null;
         try {
             final String fileName = System.currentTimeMillis() + file.getOriginalFilename();
@@ -159,10 +159,17 @@ public class TestCaseController {
         }
     }
 
+    /**
+     * 测试用例模板导出
+     *
+     * @param response HttpServletResponse
+     * @param fileName fileName
+     * @return cn.master.tsim.common.ResponseResult
+     */
     @RequestMapping("/download/{fileName:.+}")
     @ResponseBody
-    public ResponseResult downloadTemplate(HttpServletRequest request, HttpServletResponse response, @PathVariable("fileName") String fileName) {
-        final String filePath = Objects.requireNonNull(this.getClass().getClassLoader().getResource("export")).getPath()+"/";
+    public ResponseResult downloadTemplate(HttpServletResponse response, @PathVariable("fileName") String fileName) {
+        final String filePath = Objects.requireNonNull(this.getClass().getClassLoader().getResource("export")).getPath() + "/";
         File file = new File(filePath + fileName);
         try {
             if (file.exists()) {

@@ -1,23 +1,14 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>TSIM</title>
-        <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
-        <link rel="bookmark" th:href="@{/favicon.ico}" type="image/x-icon"/>
-        <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-        <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
-        <link rel="stylesheet" th:href="@{/plugins/sb-admin-2.min.css}">
-        <link rel="stylesheet" th:href="@{/plugins/hover.css}">
-        <meta name="author" content="11‘s papa">
+        <th:block th:include="/fragment/head_footer :: header('TSIM @ DASHBOARD')"/>
     </head>
     <body id="page-top">
         <!-- Page Wrapper -->
         <div id="wrapper">
 
             <!-- 左侧菜单 -->
-            <ul th:replace="/fragment/sidebar-left :: #accordionSidebar"></ul>
+            <ul th:replace="/fragment/commons :: sidebar(active='dashboard')"></ul>
             <!-- 左侧菜单结束 -->
 
             <!-- Content Wrapper -->
@@ -27,7 +18,7 @@
                 <div id="content">
 
                     <!-- 右侧顶部导航栏 -->
-                    <nav th:replace="/fragment/topbar::#top-bar"></nav>
+                    <nav th:replace="/fragment/commons :: top-bar"></nav>
                     <!-- 右侧顶部导航栏结束 -->
 
                     <!-- Begin Page Content 右侧页面内容 -->
@@ -365,13 +356,7 @@
                 <!-- End of Main Content -->
 
                 <!-- Footer -->
-                <footer class="sticky-footer bg-white">
-                    <div class="container my-auto">
-                        <div class="copyright text-center my-auto">
-                            <span>Copyright &copy; Your Website 2021</span>
-                        </div>
-                    </div>
-                </footer>
+                <div th:replace="/fragment/commons :: footer"></div>
                 <!-- End of Footer -->
 
             </div>
