@@ -56,16 +56,16 @@ public class TestCaseController {
         this.caseService = caseService;
     }
 
-    @GetMapping("/case_list")
+    @GetMapping("/list")
     public String allTests(HttpServletRequest request, TestCase testCase, Model model,
                            @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
                            @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
         final IPage<TestCase> iPage = caseService.pageList(testCase, pageCurrent, pageSize);
         model.addAttribute("iPage", iPage);
-        model.addAttribute("redirecting", "/case/case_list?pageCurrent=");
+        model.addAttribute("redirecting", "/case/list?pageCurrent=");
         model.addAttribute("monthList", DateUtils.currentYearMonth());
         model.addAttribute("projectNames", Constants.projectNames);
-        return "test-case/case_list2";
+        return "test-case/case_list";
     }
 
     @PostMapping(value = "/save")
@@ -143,7 +143,7 @@ public class TestCaseController {
                 reader.finish();
             }
         }
-        return "redirect:/case/case_list";
+        return "redirect:/case/list";
     }
 
     @PostMapping(value = "/queryCase")

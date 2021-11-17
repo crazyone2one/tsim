@@ -1,217 +1,139 @@
-<!--顶部导航栏-->
-<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow" th:fragment="top-bar">
-    <!-- Sidebar Toggle (Topbar) -->
-    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
-        <i class="fa fa-bars"></i>
-    </button>
-
-    <!-- Topbar Search -->
-    <!--                        <form-->
-    <!--                                class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">-->
-    <!--                            <div class="input-group">-->
-    <!--                                <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."-->
-    <!--                                       aria-label="Search" aria-describedby="basic-addon2">-->
-    <!--                                <div class="input-group-append">-->
-    <!--                                    <button class="btn btn-primary" type="button">-->
-    <!--                                        <i class="fas fa-search fa-sm"></i>-->
-    <!--                                    </button>-->
-    <!--                                </div>-->
-    <!--                            </div>-->
-    <!--                        </form>-->
-
-    <!-- Topbar Navbar -->
-    <ul class="navbar-nav ml-auto">
-        <!-- Nav Item - Alerts -->
-        <li class="nav-item dropdown no-arrow mx-1">
-            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
-               data-bs-toggle="dropdown" aria-expanded="false">
-                <i class="bi bi-bell"></i>
-                <!-- Counter - Alerts -->
-                <span class="badge badge-danger badge-counter">3+</span>
-            </a>
-            <!-- Dropdown - Alerts -->
-            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                 aria-labelledby="alertsDropdown">
-                <h6 class="dropdown-header">
-                    Alerts Center
-                </h6>
-                <a class="dropdown-item d-flex align-items-center" href="#">
-                    <div class="mr-3">
-                        <div class="icon-circle bg-primary">
-                            <i class="fas fa-file-alt text-white"></i>
-                        </div>
-                    </div>
-                    <div>
-                        <div class="small text-gray-500">December 12, 2019</div>
-                        <span class="font-weight-bold">A new monthly report is ready to download!</span>
-                    </div>
-                </a>
-                <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>
-            </div>
-        </li>
-        <div class="topbar-divider d-none d-sm-block"></div>
-        <!-- Nav Item - User Information -->
-        <li class="nav-item dropdown no-arrow">
-            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
-               data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <span th:text="${session.account.username}"></span>
-                <!--                                    <img class="img-profile rounded-circle"-->
-                <!--                                         src="img/undraw_profile.svg">-->
-            </a>
-            <!-- Dropdown - User Information -->
-            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
-                 aria-labelledby="userDropdown">
-                <a class="dropdown-item" href="#">
-                    <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Profile
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Settings
-                </a>
-                <a class="dropdown-item" href="#">
-                    <i class="fas fa-list fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Activity Log
-                </a>
-                <div class="dropdown-divider"></div>
-                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
-                    <i class="fas fa-sign-out-alt fa-sm fa-fw mr-2 text-gray-400"></i>
-                    Logout
-                </a>
-            </div>
-        </li>
-    </ul>
-</nav>
-<!-- 左侧菜单 -->
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" th:fragment="sidebar">
-    <!-- Sidebar - Brand -->
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+<!--header-->
+<header class="navbar navbar-light sticky-top bg-light flex-md-nowrap p-0 shadow" th:fragment="top-header">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#" th:href="@{/dashboard}">
         <div class="sidebar-brand-icon rotate-n-15">
             <i class="bi bi-emoji-laughing"></i>
         </div>
         <div class="sidebar-brand-text mx-3">TSIM <sup>2</sup></div>
     </a>
-
-    <!-- Divider -->
-    <hr class="sidebar-divider my-0">
-
-    <!-- Nav Item - Dashboard -->
-    <li class="nav-item">
-        <a th:class="${active=='dashboard'?'nav-link active':'nav-link'}" th:href="@{/dashboard}">
-            <i class="bi bi-speedometer2"></i>
-            <span>Dashboard</span></a>
-    </li>
-
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-
-    <!-- Nav Item - Pages Collapse Menu -->
-    <!--    <li class="nav-item">-->
-    <!--        <a class="nav-link collapsed" href="#collapseTwo" data-bs-toggle="collapse" aria-expanded="false"-->
-    <!--           aria-controls="collapseTwo">-->
-    <!--            <i class="bi bi-layers-half"></i>-->
-    <!--            <span>项目管理</span>-->
-    <!--        </a>-->
-    <!--        <div id="collapseTwo" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionSidebar">-->
-    <!--            <div class="bg-white py-2 collapse-inner rounded">-->
-    <!--                <a class="collapse-item" th:href="@{/project/projectList}">项目管理</a>-->
-    <!--                <a class="collapse-item" th:href="@{/task/list}">任务汇总</a>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </li>-->
-    <!-- Nav Item - 项目管理 -->
-    <li class="nav-item">
-        <a th:class="${active=='project'?'nav-link active':'nav-link'}" th:href="@{/project/projectList}">
-            <i class="bi bi-bug"></i>
-            <span>项目管理</span></a>
-    </li>
-    <!-- Nav Item - 任务汇总 -->
-    <li class="nav-item">
-        <a th:class="${active=='task'?'nav-link active':'nav-link'}" th:href="@{/task/list}">
-            <i class="bi bi-bug"></i>
-            <span>任务汇总</span></a>
-    </li>
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-    <!-- Nav Item - Utilities Collapse Menu -->
-    <!--    <li class="nav-item">-->
-    <!--        <a class="nav-link collapsed" href="#collapseUtilities" data-bs-toggle="collapse"-->
-    <!--           aria-expanded="false" aria-controls="collapseUtilities">-->
-    <!--            <i class="bi bi-layers-half"></i>-->
-    <!--            <span>测试用例管理</span>-->
-    <!--        </a>-->
-    <!--        <div id="collapseUtilities" class="collapse" aria-labelledby="headingUtilities"-->
-    <!--             data-parent="#accordionSidebar">-->
-    <!--            <div class="bg-white py-2 collapse-inner rounded">-->
-
-    <!--                <a class="collapse-item" th:href="@{/story/list}">测试需求管理</a>-->
-    <!--                &lt;!&ndash;                <a class="collapse-item" href="#">测试需求管理</a>&ndash;&gt;-->
-    <!--                <a class="collapse-item" th:href="@{/plan/list}">测试计划管理</a>-->
-    <!--                &lt;!&ndash;                <a class="collapse-item" href="#">测试计划管理</a>&ndash;&gt;-->
-    <!--                <a class="collapse-item" th:href="@{/case/case_list}">测试用例</a>-->
-    <!--                <a class="collapse-item" href="#">Other</a>-->
-    <!--            </div>-->
-    <!--        </div>-->
-    <!--    </li>-->
-    <!-- Nav Item - 测试需求管理 -->
-    <li class="nav-item">
-        <a th:class="${active=='story'?'nav-link active':'nav-link'}" th:href="@{/story/list}">
-            <i class="bi bi-bug"></i>
-            <span>测试需求管理</span></a>
-    </li>
-    <!-- Nav Item - 测试计划管理 -->
-    <li class="nav-item">
-        <a th:class="${active=='plan'?'nav-link active':'nav-link'}" th:href="@{/plan/list}">
-            <i class="bi bi-bug"></i>
-            <span>测试计划管理</span></a>
-    </li>
-    <!-- Nav Item - 测试用例 -->
-    <li class="nav-item">
-        <a th:class="${active=='case'?'nav-link active':'nav-link'}" th:href="@{/case/case_list}">
-            <i class="bi bi-bug"></i>
-            <span>测试用例</span></a>
-    </li>
-    <!-- Divider -->
-    <hr class="sidebar-divider">
-    <!-- Nav Item - 问题单 -->
-    <li class="nav-item">
-        <a th:class="${active=='bug'?'nav-link active':'nav-link'}" th:href="@{/bug/list}">
-            <i class="bi bi-bug"></i>
-            <span>问题单(BUG)</span></a>
-    </li>
-
-    <!-- Divider -->
-    <hr class="sidebar-divider d-none d-md-block">
-
-    <!-- Sidebar Toggler (Sidebar) -->
-    <div class="text-center d-none d-md-inline">
-        <button class="rounded-circle border-0" id="sidebarToggle">
-            <i class="bi bi-list"></i>
-        </button>
-    </div>
-
-</ul>
-<!-- 左侧菜单结束 -->
-<head th:fragment="header(title)">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title th:text="${title}"></title>
-    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
-    <link rel="stylesheet" th:href="@{/plugins/sb-admin-2.min.css}">
-    <link rel="stylesheet" th:href="@{/plugins/hover.css}">
-    <!--        toast插件-->
-    <!--        <link rel="stylesheet" th:href="@{/plugins/iziToast.min.css}">-->
-    <meta name="author" content="11‘s papa">
-</head>
-
-<!-- Footer -->
-<footer class="sticky-footer bg-white" th:fragment="footer">
-    <div class="container my-auto">
-        <div class="copyright text-center my-auto">
-            <span>Copyright &copy; TSIM 2021</span>
+    <!--    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">-->
+    <!--        Button with data-bs-target-->
+    <!--    </button>-->
+    <!--    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">-->
+    <div class="container-fluid">
+        <!--        <div id="alerts">-->
+        <!--            <ul class="nav nav-pills">-->
+        <!--                &lt;!&ndash; Nav Item - Alerts &ndash;&gt;-->
+        <!--                <li class="nav-item dropdown no-arrow mx-1">-->
+        <!--                    <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"-->
+        <!--                       data-bs-toggle="dropdown" aria-expanded="false">-->
+        <!--                        <i class="bi bi-bell"></i>-->
+        <!--                        &lt;!&ndash; Counter - Alerts &ndash;&gt;-->
+        <!--                        <span class="badge badge-danger badge-counter">3+</span>-->
+        <!--                    </a>-->
+        <!--                    &lt;!&ndash; Dropdown - Alerts &ndash;&gt;-->
+        <!--                    <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated&#45;&#45;grow-in"-->
+        <!--                         aria-labelledby="alertsDropdown">-->
+        <!--                        <h6 class="dropdown-header">-->
+        <!--                            Alerts Center-->
+        <!--                        </h6>-->
+        <!--                        <a class="dropdown-item d-flex align-items-center" href="#">-->
+        <!--                            <div class="mr-3">-->
+        <!--                                <div class="icon-circle bg-primary">-->
+        <!--                                    <i class="fas fa-file-alt text-white"></i>-->
+        <!--                                </div>-->
+        <!--                            </div>-->
+        <!--                            <div>-->
+        <!--                                <div class="small text-gray-500">December 12, 2019</div>-->
+        <!--                                <span class="font-weight-bold">A new monthly report is ready to download!</span>-->
+        <!--                            </div>-->
+        <!--                        </a>-->
+        <!--                        <a class="dropdown-item text-center small text-gray-500" href="#">Show All Alerts</a>-->
+        <!--                    </div>-->
+        <!--                </li>-->
+        <!--            </ul>-->
+        <!--        </div>-->
+        <div class="offset-11" id="user-info">
+            <ul class="nav nav-pills">
+                <!-- Nav Item - User Information -->
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                       data-bs-toggle="dropdown" aria-expanded="false">
+                        <span th:text="${session.account.username}"></span>
+                    </a>
+                    <!-- Dropdown - User Information -->
+                    <ul class="dropdown-menu shadow" aria-labelledby="userDropdown">
+                        <li><a class="dropdown-item" href="#">Profile</a></li>
+                        <li><a class="dropdown-item" href="#">Settings</a></li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                            Logout
+                        </a></li>
+                    </ul>
+                </li>
+            </ul>
         </div>
     </div>
+</header>
+<!--菜单-->
+<nav id="sidebarMenu" class="col-md-2 col-lg-2 d-md-block bg-light sidebar collapse" th:fragment="sidebarMenu">
+
+    <div class="position-sticky pt-5" id="navbarNavDropdown">
+        <ul class="nav flex-column">
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item">
+                <a th:class="${active=='dashboard'?'nav-link active':'nav-link'}" href="#" th:href="@{/dashboard}">
+                    <!--                    <i class="bi bi-speedometer2"></i>-->
+                    <span data-feather="home"></span>Dashboard</a>
+            </li>
+            <!-- Nav Item - 项目管理 -->
+            <li class="nav-item">
+                <a th:class="${active=='project'?'nav-link active':'nav-link'}" href="#" th:href="@{/project/list}">
+                    <i class="bi bi-card-list"></i>
+                    <span>项目管理</span></a>
+            </li>
+            <!-- Nav Item - 任务汇总 -->
+            <li class="nav-item">
+                <a th:class="${active=='task'?'nav-link active':'nav-link'}" href="#" th:href="@{/task/list}">
+                    <i class="bi bi-card-list"></i>
+                    <span>任务汇总</span></a>
+            </li>
+            <!-- Nav Item - 测试需求管理 -->
+            <li class="nav-item">
+                <a th:class="${active=='story'?'nav-link active':'nav-link'}" href="#" th:href="@{/story/list}">
+                    <i class="bi bi-card-list"></i>
+                    <span>测试需求管理</span></a>
+            </li>
+            <!-- Nav Item - 测试计划管理 -->
+            <li class="nav-item">
+                <a th:class="${active=='plan'?'nav-link active':'nav-link'}" href="#" th:href="@{/plan/list}">
+                    <i class="bi bi-card-list"></i>
+                    <span>测试计划管理</span></a>
+            </li>
+            <!-- Nav Item - 测试用例 -->
+            <li class="nav-item">
+                <a th:class="${active=='case'?'nav-link active':'nav-link'}" href="#" th:href="@{/case/list}">
+                    <i class="bi bi-card-list"></i>
+                    <span>测试用例</span></a>
+            </li>
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+            <!-- Nav Item - 问题单 -->
+            <li class="nav-item">
+                <a th:class="${active=='bug'?'nav-link active':'nav-link'}" href="#" th:href="@{/bug/list}">
+                    <i class="bi bi-card-list"></i>
+                    <span>问题单(BUG)</span></a>
+            </li>
+        </ul>
+    </div>
+</nav>
+<!--head信息-->
+<head th:fragment="common_header(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:replace="${title}"></title>
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
+    <link rel="stylesheet" th:href="@{/plugins/hover.css}">
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" th:href="@{/dist/css/common.css}">
+    <meta name="author" content="11‘s papa">
+</head>
+<!-- Footer -->
+<footer id="footer" class="py-3 my-4" th:fragment="footer">
+    <p class="text-center text-muted">Copyright &copy; TSIM 2021</p>
 </footer>
 <!-- End of Footer -->
 <!--分页-->
@@ -242,4 +164,22 @@
             </li>
         </ul>
     </nav>
+</div>
+<!-- Logout Modal-->
+<div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+     aria-hidden="true" th:fragment="logout">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
+                <button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                </button>
+            </div>
+            <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
+                <a class="btn btn-primary" th:href="@{/user/exit}">Logout</a>
+            </div>
+        </div>
+    </div>
 </div>

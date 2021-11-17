@@ -48,14 +48,14 @@ public class ProjectController {
      * @param project     Project
      * @return java.lang.String
      */
-    @GetMapping(value = "/projectList")
+    @GetMapping(value = "/list")
     public String projectList(HttpServletRequest request, Model model, @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
                               @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, Project project) {
         final IPage<Project> iPage = projectService.projectListPages(project, pageCurrent, pageSize);
         model.addAttribute("iPage", iPage);
-        model.addAttribute("redirecting", "/project/projectList?pageCurrent=");
+        model.addAttribute("redirecting", "/project/list?pageCurrent=");
         model.addAttribute("monthList", DateUtils.currentYearMonth());
-        return "project/project_list2";
+        return "project/project_list";
     }
 
     /**

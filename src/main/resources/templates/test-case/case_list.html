@@ -1,28 +1,25 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <th:block th:include="/fragment/head_footer :: header('TSIM @ BUG')"/>
+    <head th:replace="/fragment/commons :: common_header(~{::title})">
+        <title>TSIM @ CASE</title>
     </head>
     <body id="page-top">
-        <!-- Page Wrapper -->
-        <div id="wrapper">
 
-            <!-- 左侧菜单 -->
-            <ul th:replace="/fragment/commons :: sidebar(active='case')"></ul>
-            <!-- 左侧菜单结束 -->
+        <header th:replace="/fragment/commons :: top-header">
+        </header>
 
-            <!-- Content Wrapper -->
-            <div id="content-wrapper" class="d-flex flex-column">
-                <!-- Main Content -->
-                <div id="content">
-                    <!-- 右侧顶部导航栏 -->
-                    <nav th:replace="/fragment/commons :: top-bar"></nav>
+        <div class="container-fluid">
+            <div class="row">
+                <nav id="sidebarMenu" th:replace="/fragment/commons :: sidebarMenu(active='case')">
+                </nav>
+
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                     <!-- 右侧顶部导航栏结束 -->
-                    <div class="container-fluid">
+                    <div>
                         <div id="liveAlertPlaceholder">
                         </div>
                         <!--操作栏-->
-                        <div class="card pt-2">
+                        <div class="pt-2 border-bottom">
                             <div class="card-body">
                                 <form th:action="@{case_list}" method="get">
                                     <div class="row">
@@ -140,72 +137,20 @@
                     <div th:replace="~{test-case/uploadCase::uploadModal}"></div>
                     <!--        分页-->
                     <div th:replace="/fragment/commons :: pagination01"></div>
-                </div>
-                <!-- Footer -->
-                <div th:replace="/fragment/commons :: footer"></div>
-                <!-- End of Footer -->
+                </main>
+
             </div>
-            <!-- End of Content Wrapper -->
-
         </div>
-        <!-- End of Page Wrapper -->
-
-        <!-- Scroll to Top Button-->
-        <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-        </a>
-
+        <footer th:replace="/fragment/commons :: footer"></footer>
         <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" th:href="@{/user/exit}">Logout</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/sb-admin-2.min.js}"></script>
+        <script type="text/javascript" th:src="@{/dist/js/common.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/complete.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/iziToast.min.js}"></script>
         <script type="text/javascript" th:src="@{/dist/js/add-case.js}"></script>
         <script type="text/javascript" th:src="@{/dist/js/case.edit.detail.js}"></script>
         <script th:inline="javascript">
-            function alert(message, type) {
-                $('#liveAlertPlaceholder').empty();
-                let svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>';
-                switch (type) {
-                    case 'warning':
-                        svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#exclamation-triangle-fill"/></svg>';
-                        break;
-                    case "danger":
-                        svg_str = '<svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>';
-                        break;
-                }
-                const alertPlaceholder = document.getElementById('liveAlertPlaceholder');
-                const wrapper = document.createElement('div');
-                wrapper.innerHTML = '<div class="alert alert-' + type + ' d-flex align-items-center alert-dismissible" role="alert">' +
-                    svg_str + '<div>' + message + '</div></div>'
-                alertPlaceholder.append(wrapper);
-                $('#liveAlertPlaceholder').fadeTo(2000, 500).slideUp(500, function () {
-                    $("#liveAlertPlaceholder").slideUp(500);
-                });
-                // $('#liveAlertPlaceholder').remove();
-                if (Object.is(type, 'success')) {
-                    location.reload();
-                }
-            }
             const pro_name_tags = /*[[${projectNames}]]*/ 'projectNames';
             console.log(pro_name_tags);
             /*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/

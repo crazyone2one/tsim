@@ -1,30 +1,21 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <th:block th:include="/fragment/head_footer :: header('TSIM @ TASK')"/>
+    <head th:replace="/fragment/commons :: common_header(~{::title})">
+        <title>TSIM @ TASK</title>
     </head>
     <body>
-        <!-- Page Wrapper -->
-        <div id="wrapper">
+        <header th:replace="/fragment/commons :: top-header">
+        </header>
 
-            <!-- 左侧菜单 -->
-            <ul th:replace="/fragment/commons :: sidebar(active='task')"></ul>
-            <!-- 左侧菜单结束 -->
-
-            <!-- Content Wrapper -->
-            <div id="content-wrapper" class="d-flex flex-column">
-
-                <!-- Main Content -->
-                <div id="content">
-
-                    <!-- 右侧顶部导航栏 -->
-                    <nav th:replace="/fragment/commons :: top-bar"></nav>
-                    <!-- 右侧顶部导航栏结束 -->
-
+        <div class="container-fluid">
+            <div class="row">
+                <nav id="sidebarMenu" th:replace="/fragment/commons :: sidebarMenu(active='task')">
+                </nav>
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
                     <!-- Begin Page Content 右侧页面内容 -->
-                    <div class="container-fluid">
+                    <div>
                         <!--操作栏-->
-                        <div class="card pt-2">
+                        <div class="pt-2 border-bottom">
                             <div class="card-body">
                                 <form th:action="@{list}" method="get">
                                     <div class="row">
@@ -259,49 +250,15 @@
                             </table>
                         </div>
                     </div>
-
                     <!--        分页-->
                     <div th:replace="/fragment/commons :: pagination01"></div>
-                    <!-- /.container-fluid -->
-
-                </div>
-                <!-- End of Main Content -->
-
-                <!-- Footer -->
-                <div th:replace="/fragment/commons :: footer"></div>
-                <!-- End of Footer -->
-
+                </main>
             </div>
-            <!-- End of Content Wrapper -->
-
         </div>
-        <!-- End of Page Wrapper -->
-
-        <!-- Scroll to Top Button-->
-        <a class="scroll-to-top rounded" href="#page-top">
-            <i class="fas fa-angle-up"></i>
-        </a>
+        <footer th:replace="/fragment/commons :: footer"></footer>
         <!-- Logout Modal-->
-        <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">Ready to Leave?</h5>
-                        <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
-                            <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-                    <div class="modal-body">Select "Logout" below if you are ready to end your current session.</div>
-                    <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">Cancel</button>
-                        <a class="btn btn-primary" th:href="@{/user/exit}">Logout</a>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/sb-admin-2.min.js}"></script>
     </body>
 </html>

@@ -1,133 +1,138 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head th:replace="/fragment/commons :: common_header(~{::title})">
         <title>TSIM @ BUG</title>
-        <link rel="icon" th:href="@{/favicon.ico}" type="image/x-icon"/>
-        <link rel="bookmark" th:href="@{/favicon.ico}" type="image/x-icon"/>
-        <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-        <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
-        <link rel="stylesheet" th:href="@{/plugins/hover.css}">
-        <!--        toast插件-->
-        <link rel="stylesheet" th:href="@{/plugins/iziToast.min.css}">
-        <meta name="author" content="11‘s papa">
     </head>
     <body>
-        <div class="container-fluid" role="navigation" th:include="/navbar/nav_1 :: nav1"></div>
+
+        <header th:replace="/fragment/commons :: top-header">
+        </header>
+
         <div class="container-fluid">
-            <!--操作栏-->
-            <div class="card pt-2">
-                <div class="card-body">
-                    <form th:action="@{list}" method="get">
-                        <div class="row">
-                            <div class="input-group mb-3" style="width: 15%">
-                                <span class="input-group-text" id="basic-addon1">所属项目</span>
-                                <input type="text" class="form-control" name="projectId" placeholder="项目名称（模糊查询）" aria-label="projectId"
-                                       aria-describedby="basic-addon1">
-                            </div>
-                            <div class="input-group mb-3" style="width: 15%">
-                                <span class="input-group-text" id="basic-addon2">所属模块</span>
-                                <input type="text" class="form-control" name="moduleId" placeholder="模块名称（模糊查询）" aria-label="moduleId"
-                                       aria-describedby="basic-addon2">
-                            </div>
-                            <div class="input-group mb-3 " style="width: 15%">
-                                <span class="input-group-text" id="basic-addon3">问题描述</span>
-                                <input type="text" class="form-control" name="title" placeholder="问题描述（模糊查询）" aria-label="title"
-                                       aria-describedby="basic-addon3">
-                            </div>
-                            <select class="form-select mb-3" style="width: 6%" aria-label="severity" name="severity">
-                                <option th:value="' '" selected>严重程度</option>
-                                <option value="1">轻微</option>
-                                <option value="2">一般</option>
-                                <option value="3">严重</option>
-                                <option value="4">致命</option>
-                            </select>
-                            <select class="form-select mb-3" style="width: 6%" aria-label="bugStatus" name="bugStatus">
-                                <option th:value="' '" selected>问题状态</option>
-                                <option value="1">新建</option>
-                                <option value="2">挂起</option>
-                                <option value="3">已提交</option>
-                                <option value="4">已解决</option>
-                                <option value="5">非bug</option>
-                            </select>
-                            <div class="col-lg-2 col-md-4 col-sm-6">
-                                <button type="submit" class="btn hvr-grow"><i class="bi bi-search" style="color: cornflowerblue"></i></button>
-                                <button type="button" class="btn hvr-grow"
-                                        data-bs-toggle="modal" data-bs-target="#add-bug-modal"><i class="bi bi-plus-circle" style="color: cornflowerblue"></i>
-                                </button>
+            <div class="row">
+                <nav id="sidebarMenu" th:replace="/fragment/commons :: sidebarMenu(active='bug')">
+                </nav>
+
+                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                    <!-- Begin Page Content 右侧页面内容 -->
+                    <div class="container-fluid">
+                        <div id="liveAlertPlaceholder">
+                        </div>
+                        <!--操作栏-->
+                        <div class="pt-2 border-bottom">
+                            <div class="card-body">
+                                <form th:action="@{list}" method="get">
+                                    <div class="row">
+                                        <div class="input-group mb-3" style="width: fit-content">
+                                            <span class="input-group-text" id="basic-addon1">所属项目</span>
+                                            <input type="text" class="form-control" name="projectId" placeholder="项目名称（模糊查询）" aria-label="projectId"
+                                                   aria-describedby="basic-addon1">
+                                        </div>
+                                        <div class="input-group mb-3" style="width: fit-content">
+                                            <span class="input-group-text" id="basic-addon2">所属模块</span>
+                                            <input type="text" class="form-control" name="moduleId" placeholder="模块名称（模糊查询）" aria-label="moduleId"
+                                                   aria-describedby="basic-addon2">
+                                        </div>
+                                        <div class="input-group mb-3 " style="width: fit-content">
+                                            <span class="input-group-text" id="basic-addon3">问题描述</span>
+                                            <input type="text" class="form-control" name="title" placeholder="问题描述（模糊查询）" aria-label="title"
+                                                   aria-describedby="basic-addon3">
+                                        </div>
+                                        <select class="form-select mb-3" style="width: fit-content" aria-label="severity" name="severity">
+                                            <option th:value="' '" selected>严重程度</option>
+                                            <option value="1">轻微</option>
+                                            <option value="2">一般</option>
+                                            <option value="3">严重</option>
+                                            <option value="4">致命</option>
+                                        </select>
+                                        <select class="form-select mb-3" style="width: fit-content" aria-label="bugStatus" name="bugStatus">
+                                            <option th:value="' '" selected>问题状态</option>
+                                            <option value="1">新建</option>
+                                            <option value="2">挂起</option>
+                                            <option value="3">已提交</option>
+                                            <option value="4">已解决</option>
+                                            <option value="5">非bug</option>
+                                        </select>
+                                        <div class="col-lg-2 col-md-4 col-sm-6">
+                                            <button type="submit" class="btn hvr-grow"><i class="bi bi-search" style="color: cornflowerblue"></i></button>
+                                            <button type="button" class="btn hvr-grow"
+                                                    data-bs-toggle="modal" data-bs-target="#add-bug-modal"><i class="bi bi-plus-circle" style="color: cornflowerblue"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
                         </div>
-                    </form>
-                </div>
-            </div>
-            <!--        toast-->
-            <div id="toast-div"></div>
-            <!-- 添加问题单Modal弹框 -->
-            <div th:replace="~{bug/add_bug_modal::addBugFragment}"></div>
-            <!--            列表数据-->
-            <div>
-                <table class="table table-hover">
-                    <thead>
-                    <tr class="text-center">
-                        <th scope="col">#</th>
-                        <th scope="col">所属项目</th>
-                        <th scope="col">所属模块</th>
-                        <th scope="col">功能点</th>
-                        <th scope="col">问题描述</th>
-                        <th scope="col">严重程度</th>
-                        <th scope="col">问题状态</th>
-                        <th scope="col">操作</th>
-                    </tr>
-                    </thead>
-                    <tbody>
-                    <tr class="text-center" th:each="temp,stat:${iPage.records}">
-                        <input name="id" type="hidden" class="form-control"
-                               th:value="${temp.id}" id="id">
-                        <td th:text="${stat.index+1}"></td>
-                        <td th:text="${temp.project.projectName}"></td>
-                        <td th:text="${temp.module.moduleName}"></td>
-                        <td th:text="${temp.func}"></td>
-                        <td th:text="${temp.title}"></td>
-                        <td th:switch="${temp.severity}">
-                            <span th:case="1" th:text="轻微"></span>
-                            <span th:case="2" th:text="一般"></span>
-                            <span th:case="3" th:text="严重"></span>
-                            <span th:case="4" th:text="致命"></span>
-                        </td>
-                        <td th:switch="${temp.bugStatus}">
-                            <span th:case="1" th:text="新建"></span>
-                            <span th:case="2" th:text="挂起"></span>
-                            <span th:case="3" th:text="已提交"></span>
-                            <span th:case="4" th:text="已解决"></span>
-                            <span th:case="5" th:text="非bug"></span>
-                        </td>
-                        <td>
-                            <a type="button" class="btn" id="bug-detail"
-                               data-bs-toggle="modal" data-bs-target="#bug-detail-modal"><i
-                                    class="bi bi-eye hvr-grow" style="color: cornflowerblue"
-                                    data-bs-toggle="tooltip" data-bs-placement="top" title="查看详情"></i>
-                            </a>
-                        </td>
-                    </tr>
-                    </tbody>
-                </table>
+                        <!-- 添加问题单Modal弹框 -->
+                        <div th:replace="~{bug/add_bug_modal::addBugFragment}"></div>
+                        <!--            列表数据-->
+                        <div>
+                            <table class="table table-hover">
+                                <thead>
+                                <tr class="text-center">
+                                    <th scope="col">#</th>
+                                    <th scope="col">所属项目</th>
+                                    <th scope="col">所属模块</th>
+                                    <th scope="col">功能点</th>
+                                    <th scope="col">问题描述</th>
+                                    <th scope="col">严重程度</th>
+                                    <th scope="col">问题状态</th>
+                                    <th scope="col">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="text-center" th:each="temp,stat:${iPage.records}">
+                                    <input name="id" type="hidden" class="form-control"
+                                           th:value="${temp.id}" id="id">
+                                    <td th:text="${stat.index+1}"></td>
+                                    <td th:text="${temp.project.projectName}"></td>
+                                    <td th:text="${temp.module.moduleName}"></td>
+                                    <td th:text="${temp.func}"></td>
+                                    <td th:text="${temp.title}"></td>
+                                    <td th:switch="${temp.severity}">
+                                        <span th:case="1" th:text="轻微"></span>
+                                        <span th:case="2" th:text="一般"></span>
+                                        <span th:case="3" th:text="严重"></span>
+                                        <span th:case="4" th:text="致命"></span>
+                                    </td>
+                                    <td th:switch="${temp.bugStatus}">
+                                        <span th:case="1" th:text="新建"></span>
+                                        <span th:case="2" th:text="挂起"></span>
+                                        <span th:case="3" th:text="已提交"></span>
+                                        <span th:case="4" th:text="已解决"></span>
+                                        <span th:case="5" th:text="非bug"></span>
+                                    </td>
+                                    <td>
+                                        <a type="button" class="btn" id="bug-detail"
+                                           data-bs-toggle="modal" data-bs-target="#bug-detail-modal"><i
+                                                class="bi bi-eye hvr-grow" style="color: cornflowerblue"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="查看详情"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <!--        分页-->
+                    <div th:replace="/fragment/commons :: pagination01"></div>
+                    <div th:replace="/bug/detail_modal :: detailBugFragment"></div>
+                </main>
             </div>
         </div>
-        <!--        分页-->
-        <div th:replace="/fragment/pagination_fragment :: pagination01"></div>
-        <div th:replace="/bug/detail_modal :: detailBugFragment"></div>
+        <footer th:replace="/fragment/commons :: footer"></footer>
+        <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
-        <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.min.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/iziToast.min.js}"></script>
-        <script th:src="@{/js/fragment/add_bug.js}"></script>
+        <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+        <script type="text/javascript" th:src="@{/dist/js/common.js}"></script>
+        <script th:src="@{/dist/js/add_bug.js}"></script>
         <script>
             const detail_modal = document.getElementById('bug-detail-modal');
             detail_modal.addEventListener('show.bs.modal', function (event) {
                 const button = $(event.relatedTarget);
                 const bug_id = button.closest('tr').find("#id").attr('value');
                 $.ajax({
-                        url: '/bug/bugDetail/',
+                        url: '/bug/detail/',
                         type: 'post',
                         data: {
                             bugId: bug_id,

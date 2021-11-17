@@ -50,7 +50,7 @@ public class TestBugController {
         model.addAttribute("iPage", iPage);
         model.addAttribute("users", Constants.userMaps);
         model.addAttribute("redirecting", "/bug/list?pageCurrent=");
-        return "bug/bug2";
+        return "bug/bug_list";
     }
 
     /**
@@ -76,7 +76,7 @@ public class TestBugController {
      * @param request HttpServletRequest
      * @return cn.master.tsim.common.ResponseResult
      */
-    @PostMapping("/bugDetail")
+    @PostMapping("/detail")
     @ResponseBody
     public ResponseResult bugDetail(HttpServletRequest request) {
         try {
