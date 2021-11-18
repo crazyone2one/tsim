@@ -10,7 +10,7 @@
             <div class="row">
                 <nav id="sidebarMenu" th:replace="/fragment/commons :: sidebarMenu2(flag='project')">
                 </nav>
-                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <main class="col-md-10 ms-sm-auto px-md-4">
                     <!-- Begin Page Content 右侧页面内容 -->
                     <div>
                         <div id="liveAlertPlaceholder">
@@ -18,7 +18,7 @@
                         <!--操作栏-->
                         <div class="pt-2 border-bottom">
                             <div class="card-body">
-                                <form th:action="@{projectList}" method="get">
+                                <form th:action="@{list}" method="get">
                                     <div class="row">
                                         <div class="input-group mb-3" style="width: fit-content">
                                             <span class="input-group-text">所属项目</span>

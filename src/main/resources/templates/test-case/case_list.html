@@ -13,7 +13,7 @@
                 <nav id="sidebarMenu" th:replace="/fragment/commons :: sidebarMenu2(flag='case')">
                 </nav>
 
-                <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <main class="col-md-10 ms-sm-auto px-md-4">
                     <!-- 右侧顶部导航栏结束 -->
                     <div>
                         <div id="liveAlertPlaceholder">
@@ -149,7 +149,7 @@
         <script type="text/javascript" th:src="@{/dist/js/common.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/complete.js}"></script>
         <script type="text/javascript" th:src="@{/dist/js/add-case.js}"></script>
-        <script type="text/javascript" th:src="@{/dist/js/case.edit.detail.js}"></script>
+        <script type="text/javascript" th:src="@{/dist/js/case-edit-detail.js}"></script>
         <script th:inline="javascript">
             const pro_name_tags = /*[[${projectNames}]]*/ 'projectNames';
             console.log(pro_name_tags);
