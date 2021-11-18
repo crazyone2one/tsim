@@ -1,5 +1,5 @@
 /*
-* 加载分页信息
+* 加载弹框中分页信息
 * @param res : 数据
 * @param nav_selector : 定位信息
 * **/
