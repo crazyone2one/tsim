@@ -119,6 +119,7 @@ public class ProjectController {
         try {
             final ResponseResult responseResult = projectService.generateReport(request, response, id, workDate);
             model.addAttribute("success", true);
+            response.sendRedirect("/project/list");
         } catch (Exception e) {
             result = ResponseUtils.error("报告生成失败");
             model.addAttribute("fail", true);
