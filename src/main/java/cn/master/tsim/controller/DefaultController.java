@@ -21,10 +21,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 /**
  * @author Created by 11's papa on 2021/09/23
@@ -46,10 +43,13 @@ public class DefaultController {
         this.userService = userService;
     }
 
-    @RequestMapping({"", "/", "/index"})
+    @RequestMapping({"", "/", "/index","/dashboard"})
     public String index(Model model, HttpServletRequest request) {
         Tester user = (Tester) request.getSession().getAttribute("account");
-        model.addAttribute("account", user);
+        if (Objects.nonNull(user)) {
+            model.addAttribute("account", user);
+            return "index";
+        }
         return "login";
     }
 
