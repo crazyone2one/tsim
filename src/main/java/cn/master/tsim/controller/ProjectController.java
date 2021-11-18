@@ -15,6 +15,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -73,7 +74,7 @@ public class ProjectController {
             Map<String, String> infoMap = new LinkedHashMap<>();
             infoMap.put("name", name);
             infoMap.put("date", date);
-            final Project project1 = projectService.addProject(request,infoMap);
+            final Project project1 = projectService.addProject(request, infoMap);
             return ResponseUtils.success(project1);
         } catch (Exception e) {
             log.info(e.getMessage());
@@ -107,6 +108,22 @@ public class ProjectController {
             return ResponseUtils.error(400, "数据查询错误", e.getMessage());
         }
         return success;
+    }
+
+    @RequestMapping(value = "/generateReport/{id}/{workDate}")
+    @ResponseBody
+    public ResponseResult generateReport(HttpServletRequest request, HttpServletResponse response, Model model,
+                                         @PathVariable("id") String id,
+                                         @PathVariable("workDate") String workDate) {
+        ResponseResult result = ResponseUtils.success("报告生成成功");
+        try {
+            final ResponseResult responseResult = projectService.generateReport(request, response, id, workDate);
+            model.addAttribute("success", true);
+        } catch (Exception e) {
+            result = ResponseUtils.error("报告生成失败");
+            model.addAttribute("fail", true);
+        }
+        return result;
     }
 }
 

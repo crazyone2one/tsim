@@ -1,10 +1,12 @@
 package cn.master.tsim.service;
 
+import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Project;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
 
@@ -53,7 +55,7 @@ public interface ProjectService extends IService<Project> {
     /**
      * 添加项目
      *
-     * @param request HttpServletRequest
+     * @param request    HttpServletRequest
      * @param proInfoMap 项目信息
      * @return int
      */
@@ -80,5 +82,16 @@ public interface ProjectService extends IService<Project> {
 
 
     Map<String, Project> projectMap();
+
+    /**
+     * 生成测试报告
+     *
+     * @param request
+     * @param response
+     * @param id
+     * @param workDate
+     * @return cn.master.tsim.common.ResponseResult
+     */
+    ResponseResult generateReport(HttpServletRequest request, HttpServletResponse response, String id, String workDate);
 
 }

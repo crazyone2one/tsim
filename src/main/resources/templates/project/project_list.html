@@ -14,6 +14,14 @@
                     <!-- Begin Page Content 右侧页面内容 -->
                     <div>
                         <div id="liveAlertPlaceholder">
+                            <div class="alert alert-warning d-flex align-items-center alert-dismissible" role="alert" th:if="${fail}">
+                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#check-circle-fill"/></svg>
+                                <div>生成报告失败</div>
+                            </div>
+                            <div class="alert alert-warning d-flex align-items-center alert-dismissible" role="alert" th:if="${success}">
+                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#check-circle-fill"/></svg>
+                                <div>生成报告失败</div>
+                            </div>
                         </div>
                         <!--操作栏-->
                         <div class="pt-2 border-bottom">
@@ -22,13 +30,15 @@
                                     <div class="row">
                                         <div class="input-group mb-3" style="width: fit-content">
                                             <span class="input-group-text">所属项目</span>
-                                            <input type="text" class="form-control" name="projectName" placeholder="项目名称（模糊查询）"
+                                            <input type="text" class="form-control" name="projectName"
+                                                   placeholder="项目名称（模糊查询）"
                                                    aria-label="projectId"
                                                    aria-describedby="basic-addon1">
                                         </div>
                                         <div class="input-group mb-3" style="width: fit-content">
                                             <label class="input-group-text" for="workDate-search">任务时间</label>
-                                            <select class="form-select" aria-label="priority" name="workDate" id="workDate-search">
+                                            <select class="form-select" aria-label="priority" name="workDate"
+                                                    id="workDate-search">
                                                 <option th:value="''" selected>选择任务时间</option>
                                                 <option th:each="m:${monthList}"
                                                         th:value="${m}"
@@ -41,7 +51,8 @@
                                             </button>
                                             <button type="button" class="btn hvr-grow" data-bs-toggle="modal"
                                                     data-bs-target="#add-project-modal"><i
-                                                    class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
+                                                    class="bi bi-plus-circle hvr-grow"
+                                                    style="color: cornflowerblue"></i>
                                             </button>
                                         </div>
                                     </div>
@@ -59,7 +70,7 @@
                                     <th scope="col">关联测试用例</th>
                                     <th scope="col">关联bug</th>
                                     <!--                        <th scope="col">是否完成</th>-->
-                                    <!--                            <th scope="col">操作</th>-->
+                                    <th scope="col">操作</th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -105,13 +116,19 @@
                                     <!--                                        </span>-->
                                     <!--                            </div>-->
                                     <!--                        </td>-->
+                                    <td>
+                                        <a href="#" th:style="${temp.reportDoc} ? 'pointer-events: none' : ''"
+                                           th:href="@{'/project/generateReport/'+${temp.id}+'/'+${temp.issueDate}}">生成报告</a>
+                                        <a href="#">下载报告</a>
+                                    </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
                     <!--        add modal-->
-                    <div class="modal fade" id="add-project-modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
+                    <div class="modal fade" id="add-project-modal" tabindex="-1" role="dialog"
+                         aria-labelledby="ModalTitle"
                          aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
@@ -119,14 +136,16 @@
                                       method="post" id="addProjectForm">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="staticBackdropLabel">新增项目</h5>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <div class="box-body">
                                             <div class="form-group">
                                                 <div class="input-group mb-3">
                                                     <span class="input-group-text" id="basic-addon1">项目名</span>
-                                                    <input type="text" name="projectName" id="projectName" class="form-control"
+                                                    <input type="text" name="projectName" id="projectName"
+                                                           class="form-control"
                                                            placeholder="输入项目名"
                                                            aria-label="Username" aria-describedby="basic-addon1"
                                                            required>
@@ -146,7 +165,8 @@
                                     </div>
                                     <div class="modal-footer">
                                         <button type="submit" class="btn btn-primary" id="submit">保存</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="cancle">取消
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
+                                                id="cancle">取消
                                         </button>
                                     </div>
                                 </form>

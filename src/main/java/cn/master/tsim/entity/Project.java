@@ -84,4 +84,6 @@ public class Project implements Serializable {
     private Integer refCaseCount;
     @TableField(exist = false)
     private Integer refBugCount;
+    @TableField(exist = false)
+    private boolean reportDoc;
 }

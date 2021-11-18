@@ -47,4 +47,6 @@ public interface TestTaskInfoService extends IService<TestTaskInfo> {
      * @return cn.master.tsim.entity.TestTaskInfo
      */
     TestTaskInfo updateItemStatue(HttpServletRequest request);
+
+    boolean checkReportDoc(String projectId, String workDate);
 }

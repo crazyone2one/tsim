@@ -20,7 +20,7 @@
     </sql>
 
     <select id="queryList" resultMap="BaseResultMap">
-        SELECT a.*, b.`issue_date`, b.finish_status
+        SELECT a.*, b.`issue_date`, b.finish_status,b.report_doc
         from t_project a
                      inner join t_task_info b on a.id = b.project_id
         <trim prefix="where" prefixOverrides="and|or">

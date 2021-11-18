@@ -115,4 +115,15 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
         baseMapper.updateById(info);
         return info;
     }
+
+    @Override
+    public boolean checkReportDoc(String projectId, String workDate) {
+        QueryWrapper<TestTaskInfo> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(TestTaskInfo::getProjectId, projectId).eq(TestTaskInfo::getIssueDate, workDate);
+        final TestTaskInfo taskInfo = baseMapper.selectOne(wrapper);
+        if (Objects.nonNull(taskInfo)) {
+            return taskInfo.isReportDoc();
+        }
+        return false;
+    }
 }

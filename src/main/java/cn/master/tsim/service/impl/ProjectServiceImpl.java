@@ -1,8 +1,12 @@
 package cn.master.tsim.service.impl;
 
+import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.*;
 import cn.master.tsim.mapper.ProjectMapper;
 import cn.master.tsim.service.*;
+import cn.master.tsim.util.DateUtils;
+import cn.master.tsim.util.FreemarkerUtils;
+import cn.master.tsim.util.ResponseUtils;
 import cn.master.tsim.util.UuidUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -14,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -152,6 +157,37 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         baseMapper.selectList(new QueryWrapper<>()).forEach(temp -> {
             result.put(temp.getId(), temp);
         });
+        return result;
+    }
+
+    @Override
+    public ResponseResult generateReport(HttpServletRequest request, HttpServletResponse response, String id, String workDate) {
+        ResponseResult result = ResponseUtils.success("报告生成成功");
+        try {
+            final String projectName = getProjectById(id).getProjectName();
+            request.setAttribute("projectName", projectName);
+            List<Map<String, Object>> list = new LinkedList<>();
+            for (int i = 1; i < 5; i++) {
+                Map<String, Object> testContent = new LinkedHashMap<>();
+                testContent.put("index", i);
+                testContent.put("modal", "xxx");
+                testContent.put("result", "通过");
+                testContent.put("bugCount", i);
+                testContent.put("tester", "xxxx");
+                testContent.put("date", "2021/11");
+                list.add(testContent);
+            }
+            Map<String, Object> data = new LinkedHashMap<>();
+            data.put("projectName", projectName);
+            data.put("username", "xxx");
+            data.put("date", DateUtils.parse2String(new Date(),"yyyy-MM-dd"));
+            data.put("pass_status", "通过");
+            data.put("jf_status", "可以");
+            data.put("testContent", list);
+            FreemarkerUtils.generateWord(request, response, data, "project_report_template");
+        } catch (Exception e) {
+            result = ResponseUtils.error(400, "报告生成失败", e.getMessage());
+        }
         return result;
     }
 
