@@ -24,8 +24,9 @@ public class FreemarkerUtils {
      * @param response     HttpServletResponse
      * @param dataMap      填充数据
      * @param templateName 模板名称
+     * @return String 报告名称
      */
-    public static void generateWord(HttpServletRequest request, HttpServletResponse response, Map<String, Object> dataMap, String templateName) {
+    public static String generateWord(HttpServletRequest request, HttpServletResponse response, Map<String, Object> dataMap, String templateName) {
         try {
             request.setCharacterEncoding("UTF-8");
             response.setCharacterEncoding("UTF-8");
@@ -40,14 +41,16 @@ public class FreemarkerUtils {
             Template temp = cfg.getTemplate(templateName + ".ftl");
             /* Merge data-model with template */
             // TODO: 2021/11/18 0018 使用相对路径
-            File outFile = new File("E:\\Projects\\demo\\" + request.getAttribute("projectName")
-                    + DateUtils.parse2String(new Date(), "yyyyMMddHHmmss") + ".doc");
+            String fileName = request.getAttribute("projectName") + DateUtils.parse2String(new Date(), "yyyyMMddHHmmss");
+            File outFile = new File("E:\\Projects\\demo\\" + fileName + ".doc");
             Writer out = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outFile), StandardCharsets.UTF_8));
             temp.process(dataMap, out);
             out.close();
             request.removeAttribute("projectName");
+            return fileName;
         } catch (TemplateException | IOException e) {
             e.printStackTrace();
+            return "";
         }
     }
 }

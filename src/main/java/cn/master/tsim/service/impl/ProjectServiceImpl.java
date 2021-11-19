@@ -41,6 +41,8 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     private TestTaskInfoService taskInfoService;
     @Autowired
     SystemService systemService;
+    @Autowired
+    DocInfoService docInfoService;
 
     @Override
     public List<Project> findByPartialProjectName(String searchString) {
@@ -184,7 +186,15 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
             data.put("pass_status", "通过");
             data.put("jf_status", "可以");
             data.put("testContent", list);
-            FreemarkerUtils.generateWord(request, response, data, "project_report_template");
+//            保存文件系统到数据库
+            DocInfo docInfo = new DocInfo();
+            docInfo.setDocFlag("report");
+            docInfo.setDocName(FreemarkerUtils.generateWord(request, response, data, "project_report_template"));
+            docInfo.setDocPath("");
+            DocInfo saveDocInfo = docInfoService.saveDocInfo(request, docInfo);
+//            更新task表中测试报告字段值
+            TestTaskInfo taskInfo = TestTaskInfo.builder().reportDoc(saveDocInfo.getId()).build();
+            taskInfoService.updateTask(request,taskInfo);
         } catch (Exception e) {
             result = ResponseUtils.error(400, "报告生成失败", e.getMessage());
         }
