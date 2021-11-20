@@ -65,7 +65,7 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
             //            设置任务描述为需求内容
             List<TestStory> storyList = storyService.listStoryByProjectAndWorkDate(t.getProjectId(), t.getIssueDate());
             t.setSummaryDesc(CollectionUtils.isNotEmpty(storyList) ? storyList.get(0).getDescription() : "");
-            t.setReqDoc(CollectionUtils.isNotEmpty(storyList));
+//            t.setReqDoc(CollectionUtils.isNotEmpty(storyList));
             t.setProjectId(projectService.getProjectById(t.getProjectId()).getProjectName());
         });
         return testTaskInfoPage;
@@ -117,12 +117,17 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
     }
 
     @Override
+    public void updateTask(HttpServletRequest request, TestTaskInfo taskInfo) {
+        baseMapper.updateById(taskInfo);
+    }
+
+    @Override
     public boolean checkReportDoc(String projectId, String workDate) {
         QueryWrapper<TestTaskInfo> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(TestTaskInfo::getProjectId, projectId).eq(TestTaskInfo::getIssueDate, workDate);
         final TestTaskInfo taskInfo = baseMapper.selectOne(wrapper);
         if (Objects.nonNull(taskInfo)) {
-            return taskInfo.isReportDoc();
+            return StringUtils.isNotBlank(taskInfo.getReportDoc());
         }
         return false;
     }

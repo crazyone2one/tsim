@@ -48,5 +48,7 @@ public interface TestTaskInfoService extends IService<TestTaskInfo> {
      */
     TestTaskInfo updateItemStatue(HttpServletRequest request);
 
+    void updateTask(HttpServletRequest request, TestTaskInfo taskInfo);
+
     boolean checkReportDoc(String projectId, String workDate);
 }
