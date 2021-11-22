@@ -1,8 +1,9 @@
-# tsim
-testcase issue bug manage  
 ![GitHub](https://img.shields.io/github/license/crazyone2one/tsim)
 ![echarts](https://img.shields.io/badge/echarts-5.1.2-green.svg)
-![bootstrap](https://img.shields.io/badge/bootstrap-5.1.1-green.svg)
+![bootstrap](https://img.shields.io/badge/bootstrap-5.1.1-green.svg)  
+# tsim
+测试用例、项目、缺陷管理系统。
+
 ## 技术选型
 * 核心框架 spring boot (2.5.4)  
 * 持久层 mybatis-plus(3.4.1)
