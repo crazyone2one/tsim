@@ -15,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.util.Map;
 
 /**
  * <p>
@@ -62,6 +64,13 @@ public class TestTaskInfoController {
             log.info(e.getMessage());
             return ResponseUtils.error(400, "项目状态修改失败", e.getMessage());
         }
+    }
+
+    @RequestMapping(value = "/editTask/{id}/")
+    public ResponseResult editTask(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) {
+        final Map<String, String[]> parameterMap = request.getParameterMap();
+        log.info(id);
+        return null;
     }
 }
 

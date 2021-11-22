@@ -1,0 +1,60 @@
+<!-- Button trigger modal -->
+<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Launch demo modal
+</button>
+
+<!-- Modal -->
+<div class="modal fade" id="editSummaryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" th:fragment="task-edit">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <form>
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">更新任务信息</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row g-3 align-items-center">
+                        <div class="col-md-4">
+                            <label for="projectCode-d" class="form-label">项目名称</label>
+                            <input name="projectId" id="projectCode-d" type="text"
+                                   class="form-control" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="module-d" class="form-label">模块</label>
+                            <input name="moduleId" id="module-d" type="text" class="form-control" readonly>
+                        </div>
+                        <div class="col-md-4">
+                            <label for="function-d" class="form-label">功能点</label>
+                            <input name="func" id="function-d" type="text"
+                                   class="form-control" readonly>
+                        </div>
+                        <div class="col-md-12">
+                            <label for="title-d" class="form-label">标题(问题描述)</label>
+                            <textarea name="title" id="title-d" type="text"
+                                      class="form-control" rows="2"></textarea>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="severity-d" class="form-label">严重程度</label>
+                            <input name="severity" id="severity-d" type="text"
+                                   class="form-control" readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="status-d" class="form-label">bug状态</label>
+                            <input name="status" id="status-d" type="text"
+                                   class="form-control" readonly>
+                        </div>
+                        <div class="col-md-3">
+                            <label for="owner-d" class="form-label">测试人员</label>
+                            <input name="severity" id="owner-d" type="text"
+                                   class="form-control" readonly>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="task-edit-save">保存</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

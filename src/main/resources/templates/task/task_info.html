@@ -241,7 +241,8 @@
                                     <td th:text="${tempItem.issueDate}"></td>
                                     <td>
                                         <a class="btn btn-sm" data-bs-toggle="modal"
-                                           data-bs-target="#editSummaryModal">
+                                           data-bs-target="#editSummaryModal" th:attr="data-taskId=${tempItem.id}"
+                                           id="editBtn">
                                             <i class="bi bi-pencil-square"></i>
                                         </a>
                                     </td>
@@ -254,11 +255,29 @@
                     <div th:replace="/fragment/commons :: pagination01"></div>
                 </main>
             </div>
+            <div th:replace="/task/task_edit :: task-edit"></div>
         </div>
         <footer th:replace="/fragment/commons :: footer"></footer>
         <!-- Logout Modal-->
         <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+        <script>
+            $("#task-edit-save").click(function () {
+                const task_id = $("#editBtn").data("taskId")
+                $.ajax({
+                    url: '/task/editTask/' + task_id,
+                    type: 'post',
+                    data: {
+                        name: "",
+                        // serialize
+                    },
+                    dataType: 'JSON',
+                    success: function (res) {
+                        console.log(res);
+                    }
+                })
+            })
+        </script>
     </body>
 </html>
