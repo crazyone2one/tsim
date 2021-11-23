@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -81,31 +82,15 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
     @Override
     public Map<String, Integer> bugMapByProject(String projectId, String bugStatus) {
         Map<String, Integer> result = new LinkedHashMap<>();
-        Integer level1 = 0;
-        Integer level2 = 0;
-        Integer level3 = 0;
-        Integer level4 = 0;
         QueryWrapper<TestBug> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(TestBug::getProjectId, projectId).eq(TestBug::getBugStatus, bugStatus);
-        for (TestBug b : baseMapper.selectList(wrapper)) {
-            if (Objects.equals("1", b.getSeverity())) {
-                level1++;
-            }
-            if (Objects.equals("2", b.getSeverity())) {
-                level2++;
-            }
-            if (Objects.equals("3", b.getSeverity())) {
-                level3++;
-            }
-            if (Objects.equals("4", b.getSeverity())) {
-                level4++;
-            }
-        }
-        result.put("level1", level1);
-        result.put("level2", level2);
-        result.put("level3", level3);
-        result.put("level4", level4);
-        result.put("total", level1 + level2 + level3 + level4);
+        List<TestBug> bugs = baseMapper.selectList(wrapper);
+        Map<Integer, Integer> collect = bugs.stream().collect(Collectors.groupingBy(TestBug::getSeverity, Collectors.summingInt(p -> 1)));
+        result.put("level1", collect.getOrDefault(1, 0));
+        result.put("level2", collect.getOrDefault(2, 0));
+        result.put("level3", collect.getOrDefault(3, 0));
+        result.put("level4", collect.getOrDefault(4, 0));
+        result.put("total", collect.values().stream().mapToInt(Integer::intValue).sum());
         return result;
     }
 
