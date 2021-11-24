@@ -80,7 +80,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         wrapper.lambda().eq(StringUtils.isNotBlank(description), TestStory::getDescription, description);
         wrapper.lambda().eq(StringUtils.isNotBlank(workDate), TestStory::getWorkDate, workDate);
         // 验证所属项目
-//        wrapper.lambda().eq(StringUtils.isNotBlank(proId), TestStory::getProjectId, proId);
+        wrapper.lambda().eq(StringUtils.isNotBlank(proId), TestStory::getProjectId, proId);
         //        if (Objects.nonNull(story)) {
 //            story.setProject(projectService.getProjectById(story.getProjectId()));
 //        }
