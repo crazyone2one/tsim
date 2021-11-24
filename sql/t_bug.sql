@@ -36,3 +36,9 @@ CREATE TABLE `t_bug` (
   `update_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT '修改时间',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='问题单(bug)表';
+
+
+
+ALTER TABLE t_bug MODIFY COLUMN bug_status INT DEFAULT 1 NOT NULL COMMENT '状态（1,新增 2，挂起 3，已提交 4，已解决 5 非bug）';
+ALTER TABLE t_bug MODIFY COLUMN severity INT DEFAULT 1 NOT NULL COMMENT '严重程度(1:轻微,2:一般,3:严重,4:致命)';
+
