@@ -1,5 +1,6 @@
 package cn.master.tsim.service;
 
+import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.TestBug;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -20,7 +21,7 @@ public interface TestBugService extends IService<TestBug> {
 
     List<TestBug> listBugByProjectId(String projectId);
 
-    TestBug addBug(HttpServletRequest request,TestBug testBug);
+    TestBug addBug(HttpServletRequest request, TestBug testBug);
 
     TestBug updateBug(TestBug testBug);
 
@@ -28,5 +29,12 @@ public interface TestBugService extends IService<TestBug> {
 
     Map<String, Integer> bugMapByProject(String projectId, String bugStatus);
 
-    TestBug getBugById(String id);
+    /**
+     * 查询bug信息
+     *
+     * @param id bug id
+     * @return cn.master.tsim.common.ResponseResult
+     * @author 11's papa
+     */
+    ResponseResult getBugById(String id);
 }

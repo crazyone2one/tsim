@@ -6,7 +6,6 @@ import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.TestBug;
 import cn.master.tsim.service.TestBugService;
 import cn.master.tsim.util.ResponseUtils;
-import cn.master.tsim.util.StreamUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -15,7 +14,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Map;
 
 /**
  * <p>
@@ -76,16 +74,10 @@ public class TestBugController {
      * @param request HttpServletRequest
      * @return cn.master.tsim.common.ResponseResult
      */
-    @PostMapping("/detail")
+    @RequestMapping("/detail/{id}")
     @ResponseBody
-    public ResponseResult bugDetail(HttpServletRequest request) {
-        try {
-            final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
-            final TestBug bug = bugService.getBugById(String.valueOf(params.get("bugId")));
-            return ResponseUtils.success("数据添加成功", bug);
-        } catch (Exception e) {
-            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
-        }
+    public ResponseResult bugDetail(HttpServletRequest request, @PathVariable String id) {
+        return bugService.getBugById(id);
     }
 }
 

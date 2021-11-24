@@ -1,6 +1,7 @@
 package cn.master.tsim.service.impl;
 
 import cn.master.tsim.common.Constants;
+import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Module;
 import cn.master.tsim.entity.TestBug;
 import cn.master.tsim.mapper.TestBugMapper;
@@ -8,6 +9,7 @@ import cn.master.tsim.service.ModuleService;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestBugService;
 import cn.master.tsim.util.DateUtils;
+import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -95,12 +97,16 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
     }
 
     @Override
-    public TestBug getBugById(String id) {
-        final TestBug testBug = baseMapper.selectById(id);
-        testBug.setProject(posService.getProjectById(testBug.getProjectId()));
-        testBug.setModule(moduleService.getModuleById(testBug.getModuleId()));
-        testBug.setTesterEntity(Constants.userMaps.get(testBug.getTester()));
-        return testBug;
+    public ResponseResult getBugById(String id) {
+        try {
+            final TestBug testBug = baseMapper.selectById(id);
+            testBug.setProject(posService.getProjectById(testBug.getProjectId()));
+            testBug.setModule(moduleService.getModuleById(testBug.getModuleId()));
+            testBug.setTesterEntity(Constants.userMaps.get(testBug.getTester()));
+            return ResponseUtils.success("数据查询成功", testBug);
+        } catch (Exception e) {
+            return ResponseUtils.error(400, "数据查询失败", e.getMessage());
+        }
     }
 
     private QueryWrapper<TestBug> getTestBugQueryWrapper(TestBug bug) {
