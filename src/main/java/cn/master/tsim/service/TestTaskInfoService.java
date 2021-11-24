@@ -1,5 +1,6 @@
 package cn.master.tsim.service;
 
+import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Project;
 import cn.master.tsim.entity.TestTaskInfo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -51,4 +52,14 @@ public interface TestTaskInfoService extends IService<TestTaskInfo> {
     void updateTask(HttpServletRequest request, TestTaskInfo taskInfo);
 
     boolean checkReportDoc(String projectId, String workDate);
+
+    /**
+     * 查询任务数据
+     *
+     * @param id 任务id
+     * @return cn.master.tsim.common.ResponseResult
+     * @author 11's papa
+     */
+
+    ResponseResult getTask(String id);
 }

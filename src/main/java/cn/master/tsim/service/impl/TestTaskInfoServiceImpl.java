@@ -1,5 +1,7 @@
 package cn.master.tsim.service.impl;
 
+import cn.master.tsim.common.ResponseCode;
+import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Project;
 import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.entity.TestTaskInfo;
@@ -7,6 +9,7 @@ import cn.master.tsim.entity.Tester;
 import cn.master.tsim.mapper.TestTaskInfoMapper;
 import cn.master.tsim.service.*;
 import cn.master.tsim.util.JacksonUtils;
+import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -64,7 +67,8 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
             t.setFixBug(bugService.bugMapByProject(t.getProjectId(), "4"));
             //            设置任务描述为需求内容
             List<TestStory> storyList = storyService.listStoryByProjectAndWorkDate(t.getProjectId(), t.getIssueDate());
-            t.setSummaryDesc(CollectionUtils.isNotEmpty(storyList) ? storyList.get(0).getDescription() : "");
+//            未关联需求时使用本来的内容
+            t.setSummaryDesc(CollectionUtils.isNotEmpty(storyList) ? storyList.get(0).getDescription() : t.getSummaryDesc());
 //            t.setReqDoc(CollectionUtils.isNotEmpty(storyList));
             t.setProjectId(projectService.getProjectById(t.getProjectId()).getProjectName());
         });
@@ -130,5 +134,23 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
             return StringUtils.isNotBlank(taskInfo.getReportDoc());
         }
         return false;
+    }
+
+    @Override
+    public ResponseResult getTask(String id) {
+        ResponseResult success;
+        try {
+            TestTaskInfo taskInfo = baseMapper.selectById(id);
+            taskInfo.setSubBug(bugService.bugMapByProject(taskInfo.getProjectId(), "1"));
+            taskInfo.setFixBug(bugService.bugMapByProject(taskInfo.getProjectId(), "4"));
+            TestStory story = storyService.getStory("", taskInfo.getIssueDate(), taskInfo.getProjectId());
+            taskInfo.setReqDoc(Objects.nonNull(story) ? story.getDescription() : "");
+
+            taskInfo.setProjectId(projectService.getProjectById(taskInfo.getProjectId()).getProjectName());
+            success = ResponseUtils.success("数据查询成功", taskInfo);
+        } catch (NullPointerException e) {
+            return ResponseUtils.error(ResponseCode.ERROR_500.getCode(), ResponseCode.ERROR_500.getMessage());
+        }
+        return success;
     }
 }

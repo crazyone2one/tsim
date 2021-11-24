@@ -66,11 +66,17 @@ public class TestTaskInfoController {
         }
     }
 
-    @RequestMapping(value = "/editTask/{id}/")
-    public ResponseResult editTask(HttpServletRequest request, HttpServletResponse response, @PathVariable("id") String id) {
+    @RequestMapping(value = "/editTask")
+    @ResponseBody
+    public ResponseResult editTask(HttpServletRequest request, HttpServletResponse response) {
         final Map<String, String[]> parameterMap = request.getParameterMap();
-        log.info(id);
         return null;
+    }
+
+    @RequestMapping(value = "/getTask/{id}")
+    @ResponseBody
+    public ResponseResult getTask(HttpServletRequest request, HttpServletResponse response, @PathVariable String id) {
+        return taskInfoService.getTask(id);
     }
 }
 

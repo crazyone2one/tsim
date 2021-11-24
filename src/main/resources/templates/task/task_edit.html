@@ -4,8 +4,8 @@
 </button>
 
 <!-- Modal -->
-<div class="modal fade" id="editSummaryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" th:fragment="task-edit">
-    <div class="modal-dialog">
+<div class="modal fade" id="editSummaryModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" data-bs-backdrop="static" th:fragment="task-edit">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <form>
                 <div class="modal-header">
@@ -14,39 +14,139 @@
                 </div>
                 <div class="modal-body">
                     <div class="row g-3 align-items-center">
-                        <div class="col-md-4">
-                            <label for="projectCode-d" class="form-label">项目名称</label>
-                            <input name="projectId" id="projectCode-d" type="text"
-                                   class="form-control" readonly>
+                        <div class="mb-3 row">
+                            <label for="projectName" class="col-sm-3 col-form-label">项目名称</label>
+                            <div class="col-sm-9">
+                                <input type="text" readonly class="form-control-plaintext" id="projectName" value="email@example.com">
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <label for="module-d" class="form-label">模块</label>
-                            <input name="moduleId" id="module-d" type="text" class="form-control" readonly>
+                        <div class="mb-3 row">
+                            <label for="projectDesc" class="col-sm-3 col-form-label">任务描述</label>
+                            <div class="col-sm-9">
+                                <input type="text" readonly class="form-control-plaintext" name="summaryDesc" id="projectDesc" value="email@example.com">
+                            </div>
                         </div>
-                        <div class="col-md-4">
-                            <label for="function-d" class="form-label">功能点</label>
-                            <input name="func" id="function-d" type="text"
-                                   class="form-control" readonly>
+                        <div class="mb-3 row">
+                            <label for="new-case" class="col-sm-3 col-form-label">新建用例</label>
+                            <div class="col-sm-3">
+                                <input type="text" readonly class="form-control-plaintext" id="new-case" value="email@example.com">
+                            </div>
+                            <label for="ex-case" class="col-sm-3 col-form-label">执行用例</label>
+                            <div class="col-sm-3">
+                                <input type="text" readonly class="form-control-plaintext" id="ex-case" value="email@example.com">
+                            </div>
                         </div>
-                        <div class="col-md-12">
-                            <label for="title-d" class="form-label">标题(问题描述)</label>
-                            <textarea name="title" id="title-d" type="text"
-                                      class="form-control" rows="2"></textarea>
+                        <div class="mt-3 ms-0 row border position-relative text-on-div-border" title="提交bug">
+<!--                            <label for="label" class="visually-hidden">提交bug</label>-->
+<!--                            <input type="text" readonly class="form-control-plaintext" id="label" value="提交bug">-->
+                            <div class="row" style="width: 20%;color: red">
+                                <label for="new-level4" class="col-sm-6 col-form-label text-center">致命</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly class="form-control-plaintext text-center" id="new-level4" value="100" style="color: red">
+                                </div>
+                            </div>
+                            <div class="row" style="width: 20%">
+                                <label for="new-level3" class="col-sm-6 col-form-label text-center">严重</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly class="form-control-plaintext text-center" id="new-level3" value="100">
+                                </div>
+                            </div>
+                            <div class="row" style="width: 20%">
+                                <label for="new-level2" class="col-sm-6 col-form-label text-center">一般</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly class="form-control-plaintext text-center" id="new-level2" value="100">
+                                </div>
+                            </div>
+                            <div class="row" style="width: 20%">
+                                <label for="new-level1" class="col-sm-6 col-form-label text-center">轻微</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly class="form-control-plaintext text-center" id="new-level1" value="100">
+                                </div>
+                            </div>
+                            <div class="row" style="width: 20%"><label for="new-sum" class="col-sm-6 col-form-label text-center">总计</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly class="form-control-plaintext text-center" id="new-sum" value="100">
+                                </div></div>
                         </div>
-                        <div class="col-md-3">
-                            <label for="severity-d" class="form-label">严重程度</label>
-                            <input name="severity" id="severity-d" type="text"
-                                   class="form-control" readonly>
+                        <div class="mt-3 ms-0 row border position-relative text-on-div-border" title="回测bug">
+<!--                            <label for="label1" class="visually-hidden">回测bug</label>-->
+<!--                            <input type="text" readonly class="form-control-plaintext" id="label1" value="回测bug">-->
+                            <div class="row" style="width: 20%">
+                                <label for="ex-level4" class="col-sm-6 col-form-label text-center">致命</label>
+                                <div class="col-sm-6" style="width: 20%;color: red">
+                                    <input type="text" readonly class="form-control-plaintext text-center" id="ex-level4" value="100">
+                                </div>
+                            </div>
+                            <div class="row" style="width: 20%">
+                                <label for="ex-level3" class="col-sm-6 col-form-label text-center">严重</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly class="form-control-plaintext text-center" id="ex-level3" value="100">
+                                </div>
+                            </div>
+                            <div class="row" style="width: 20%">
+                                <label for="ex-level2" class="col-sm-6 col-form-label text-center">一般</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly class="form-control-plaintext text-center" id="ex-level2" value="100">
+                                </div>
+                            </div>
+                            <div class="row" style="width: 20%">
+                                <label for="ex-level1" class="col-sm-6 col-form-label text-center">轻微</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly class="form-control-plaintext text-center" id="ex-level1" value="100">
+                                </div>
+                            </div>
+                            <div class="row" style="width: 20%">
+                                <label for="ex-count" class="col-sm-6 col-form-label text-center">总计</label>
+                                <div class="col-sm-6">
+                                    <input type="text" readonly class="form-control-plaintext text-center" id="ex-count" value="100">
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <label for="status-d" class="form-label">bug状态</label>
-                            <input name="status" id="status-d" type="text"
-                                   class="form-control" readonly>
+                        <div class="mt-3 row">
+                            <div class="row col-sm-4">
+                                <label for="bug-doc" class="col-sm-6 col-form-label">bug文档</label>
+                                <div class="col-sm-6" style="white-space: nowrap">
+<!--                                    <input type="text" readonly class="form-control-plaintext" id="bug-doc" value="bug文档">-->
+                                    <a class="form-control-plaintext" id="bug-doc" th:text="bug文档" href="#"></a>
+                                </div>
+                            </div>
+                            <div class="row col-sm-4">
+                                <label for="report-doc" class="col-sm-6 col-form-label">测试报告</label>
+                                <div class="col-sm-6" style="white-space: nowrap">
+<!--                                    <input type="text" readonly class="form-control-plaintext" id="report-doc" value="测试报告">-->
+                                    <a class="form-control-plaintext" id="report-doc" th:text="测试报告" href="#"></a>
+                                </div>
+                            </div>
+                            <div class="row col-sm-4">
+                                <label for="story-1" class="col-sm-5 col-form-label">关联需求</label>
+                                <div class="col-sm-7" style="white-space: nowrap">
+<!--                                    <input type="text" readonly class="form-control-plaintext" id="story-1" value="需求名称">-->
+                                    <a class="form-control-plaintext" id="story-1" th:text="需求名称" href="#"></a>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            <label for="owner-d" class="form-label">测试人员</label>
-                            <input name="severity" id="owner-d" type="text"
-                                   class="form-control" readonly>
+                        <div class="mt-3 row">
+                            <div class="row">
+                                <div class="input-group input-group-sm col">
+                                    <label for="finish-status" class="input-group-text">完成状态</label>
+                                    <select class="form-select" id="finish-status">
+                                        <option th:text="未开始"></option>
+                                        <option th:text="进行中"></option>
+                                        <option th:text="已结束"></option>
+                                    </select>
+                                </div>
+                                <div class="input-group input-group-sm col">
+                                    <label for="jiaofu-status" class="input-group-text">是否交付</label>
+                                    <select class="form-select" id="jiaofu-status">
+                                        <option th:text="已交付"></option>
+                                        <option th:text="未交付"></option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <span class="input-group-text">备注</span>
+                            <textarea class="form-control" aria-label="备注"></textarea>
                         </div>
                     </div>
                 </div>
