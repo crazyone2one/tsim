@@ -1,5 +1,10 @@
 package cn.master.tsim.service;
 
+import cn.master.tsim.common.ResponseResult;
+import org.springframework.web.multipart.MultipartFile;
+
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * @author Created by 11's papa on 2021/10/12
  * @version 1.0.0
@@ -26,4 +31,14 @@ public interface SystemService {
      * 刷新项目名称缓存
      */
     void refreshProjectName();
+
+    /**
+     * 上传文件
+     *
+     * @param request HttpServletRequest
+     * @param file    上传的文件
+     * @return cn.master.tsim.common.ResponseResult
+     * @author 11's papa
+     */
+    ResponseResult uploadFile(HttpServletRequest request, MultipartFile file);
 }
