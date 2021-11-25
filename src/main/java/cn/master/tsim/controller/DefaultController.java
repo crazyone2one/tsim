@@ -1,27 +1,25 @@
 package cn.master.tsim.controller;
 
 import cn.master.tsim.common.ResponseResult;
-import cn.master.tsim.entity.Project;
-import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.entity.Tester;
 import cn.master.tsim.mapper.CommonMapper;
-import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestStoryService;
 import cn.master.tsim.service.TesterService;
 import cn.master.tsim.util.JacksonUtils;
 import cn.master.tsim.util.ResponseUtils;
-import cn.master.tsim.util.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * @author Created by 11's papa on 2021/09/23
@@ -31,19 +29,17 @@ import java.util.*;
 @Controller
 public class DefaultController {
     private final CommonMapper commonMapper;
-    private final ProjectService projectService;
     private final TesterService userService;
     @Autowired
     TestStoryService storyService;
 
     @Autowired
-    public DefaultController(CommonMapper commonMapper, ProjectService projectService, TesterService userService) {
+    public DefaultController(CommonMapper commonMapper, TesterService userService) {
         this.commonMapper = commonMapper;
-        this.projectService = projectService;
         this.userService = userService;
     }
 
-    @RequestMapping({"", "/", "/index","/dashboard"})
+    @RequestMapping({"", "/", "/index", "/dashboard"})
     public String index(Model model, HttpServletRequest request) {
         Tester user = (Tester) request.getSession().getAttribute("account");
         if (Objects.nonNull(user)) {
@@ -77,28 +73,6 @@ public class DefaultController {
             objectMap.put("data", dateString.split(","));
         }
         return xAxi;
-    }
-
-    @GetMapping("/demo")
-    public String demo(HttpServletRequest request) {
-        return "demo/demo";
-    }
-
-
-    @PostMapping(value = "/addStory")
-    @ResponseBody
-    public ResponseResult addStory(HttpServletRequest request) {
-        try {
-            for (int i = 0; i < 10; i++) {
-                final List<Project> projects = projectService.findByPartialProjectName("");
-                final Project project = projects.get(new Random().nextInt(projects.size()));
-                final TestStory build = TestStory.builder().projectId(project.getProjectName()).description("测试需求数据" + StringUtils.randomCode(6)).workDate("2021-10").build();
-                storyService.saveStory(request);
-            }
-            return ResponseUtils.success("数据添加成功", null);
-        } catch (Exception e) {
-            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
-        }
     }
 
     @GetMapping(value = "/loadUser")
