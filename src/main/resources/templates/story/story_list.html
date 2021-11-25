@@ -139,7 +139,8 @@
                             const json = {
                                 "name": $projectName.val(),
                                 "date": $workDate.val(),
-                                "description": $description.val()
+                                "description": $description.val(),
+                                "doc": $('#attachmentId').val()
                             };
                             $.ajax({
                                 url: "/story/save",
@@ -216,6 +217,30 @@
                     }
                 } else {
                     $('#projectId-h').val(input_select);
+                }
+            })
+
+            /**自动上传文件*/
+            $("[type='file']").bind("change",function () {
+                let files = this.files;
+                if (files.length) {
+                    let file = files[0];
+                    let name = file.name;
+                    let formData = new FormData();
+                    formData.append("file", file);
+                    formData.append("name", name);
+                    $.ajax({
+                        url: "/story/upload",
+                        type: 'post',
+                        data: formData,
+                        processData: false,
+                        contentType: false,
+                        success: function (result) {
+                            console.log(result);
+                            console.log(result.data);
+                            $('#attachmentId').val(result.data)
+                        }
+                    })
                 }
             })
         </script>

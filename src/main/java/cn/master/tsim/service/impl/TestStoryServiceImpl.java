@@ -1,18 +1,27 @@
 package cn.master.tsim.service.impl;
 
+import cn.master.tsim.common.ResponseCode;
+import cn.master.tsim.common.ResponseResult;
+import cn.master.tsim.entity.DocInfo;
 import cn.master.tsim.entity.Project;
 import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.mapper.TestStoryMapper;
+import cn.master.tsim.service.DocInfoService;
 import cn.master.tsim.service.ProjectService;
+import cn.master.tsim.service.SystemService;
 import cn.master.tsim.service.TestStoryService;
+import cn.master.tsim.util.JacksonUtils;
+import cn.master.tsim.util.ResponseUtils;
 import cn.master.tsim.util.StreamUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -27,11 +36,14 @@ import java.util.*;
  */
 @Service
 public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory> implements TestStoryService {
-    private final ProjectService projectService;
-
     @Autowired
-    public TestStoryServiceImpl(ProjectService projectService) {
-        this.projectService = projectService;
+    private  ProjectService projectService;
+    @Autowired
+     SystemService systemService;
+    private final DocInfoService docInfoService;
+    @Autowired
+    public TestStoryServiceImpl(DocInfoService docInfoService) {
+        this.docInfoService = docInfoService;
     }
 
     @Override
@@ -67,8 +79,9 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         if (Objects.nonNull(testStory)) {
             return testStory;
         }
+        String doc = String.valueOf(objectMap.get("doc"));
         TestStory build = TestStory.builder().projectId(project.getId()).description(description).workDate(date)
-                .delFlag(0).createDate(new Date()).build();
+                .docId(doc).delFlag(0).createDate(new Date()).build();
         baseMapper.insert(build);
         return build;
     }
@@ -121,5 +134,23 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         wrapper.lambda().eq(TestStory::getProjectId, projectId);
         wrapper.lambda().eq(StringUtils.isNotBlank(workDate), TestStory::getWorkDate, workDate);
         return baseMapper.selectList(wrapper);
+    }
+
+    @Override
+    public ResponseResult upload(HttpServletRequest request, MultipartFile file) {
+        try {
+            ResponseResult result = systemService.uploadFile(request, file);
+            if (Objects.equals(ResponseCode.SUCCESS.getCode(), result.getCode())) {
+                Map<String, String> map = JacksonUtils.convertValue(result.getData(), new TypeReference<Map<String, String>>() {
+                });
+                map.put("flag", "story");
+                map.put("docPath", "");
+                DocInfo docInfo = docInfoService.saveDocInfo(request, map);
+                result.setData(docInfo.getId());
+            }
+            return result;
+        } catch (Exception e) {
+            return ResponseUtils.error(e.getMessage());
+        }
     }
 }

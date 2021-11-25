@@ -1,8 +1,10 @@
 package cn.master.tsim.service;
 
+import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.TestStory;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
@@ -52,4 +54,6 @@ public interface TestStoryService extends IService<TestStory> {
     List<TestStory> listStory();
 
     List<TestStory> listStoryByProjectAndWorkDate(String projectId, String workDate);
+
+    ResponseResult upload(HttpServletRequest request, MultipartFile file);
 }

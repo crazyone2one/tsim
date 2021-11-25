@@ -29,3 +29,7 @@ CREATE TABLE `t_story` (
   `update_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'updateDate',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='需求表';
+
+
+ALTER TABLE t_story ADD doc_id varchar(36) NULL COMMENT '文件id';
+ALTER TABLE t_story CHANGE doc_id doc_id varchar(36) NULL AFTER work_date;

@@ -50,6 +50,8 @@ public class TestStory implements Serializable {
      */
     @TableField("work_date")
     private String workDate;
+    @TableField("doc_id")
+    private String docId;
 
     /**
      * 完成状态(0:未结束，1：已结束)

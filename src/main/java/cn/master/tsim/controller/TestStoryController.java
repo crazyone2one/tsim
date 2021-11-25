@@ -4,6 +4,7 @@ package cn.master.tsim.controller;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.service.ProjectService;
+import cn.master.tsim.service.SystemService;
 import cn.master.tsim.service.TestStoryService;
 import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
@@ -12,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Objects;
@@ -30,11 +32,13 @@ public class TestStoryController {
 
     private final TestStoryService service;
     private final ProjectService projectService;
+    private final SystemService systemService;
 
     @Autowired
-    public TestStoryController(TestStoryService service, ProjectService projectService) {
+    public TestStoryController(TestStoryService service, ProjectService projectService, SystemService systemService) {
         this.service = service;
         this.projectService = projectService;
+        this.systemService = systemService;
     }
 
     /**
@@ -95,6 +99,11 @@ public class TestStoryController {
         } catch (Exception e) {
             return ResponseUtils.error(400, "需求状态修改失败", e.getMessage());
         }
+    }
+    @RequestMapping("/upload")
+    @ResponseBody
+    public ResponseResult upload(HttpServletRequest request, MultipartFile file) {
+        return service.upload(request, file);
     }
 }
 
