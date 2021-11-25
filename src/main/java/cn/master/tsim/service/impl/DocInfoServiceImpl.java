@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.Map;
 
 /**
  * <p>
@@ -24,6 +25,15 @@ public class DocInfoServiceImpl extends ServiceImpl<DocInfoMapper, DocInfo> impl
     public DocInfo saveDocInfo(HttpServletRequest request, DocInfo docInfo) {
         DocInfo build = DocInfo.builder().docName(docInfo.getDocName())
                 .docFlag(docInfo.getDocFlag()).docPath(docInfo.getDocPath()).delFlag(0)
+                .createDate(new Date()).build();
+        baseMapper.insert(build);
+        return build;
+    }
+
+    @Override
+    public DocInfo saveDocInfo(HttpServletRequest request, Map<String, String> docInfo) {
+        DocInfo build = DocInfo.builder().docName(docInfo.get("newFileName"))
+                .docFlag(docInfo.get("flag")).docPath(docInfo.get("docPath")).delFlag(0)
                 .createDate(new Date()).build();
         baseMapper.insert(build);
         return build;

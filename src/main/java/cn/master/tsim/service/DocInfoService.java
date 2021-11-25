@@ -4,6 +4,7 @@ import cn.master.tsim.entity.DocInfo;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * <p>
@@ -16,4 +17,5 @@ import javax.servlet.http.HttpServletRequest;
 public interface DocInfoService extends IService<DocInfo> {
 
     DocInfo saveDocInfo(HttpServletRequest request, DocInfo docInfo);
+    DocInfo saveDocInfo(HttpServletRequest request, Map<String,String> docInfo);
 }
