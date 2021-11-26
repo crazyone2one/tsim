@@ -39,19 +39,19 @@ public class SystemServiceImpl implements SystemService {
     private TesterMapper testerMapper;
     @Autowired
     @Lazy
-    private  ProjectService projectService;
+    private ProjectService projectService;
 
     public SystemServiceImpl(FileProperties properties) {
         // 4:日期作为目录隔离文件 // 日期目录：20211125
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd");
         String datePath = dateFormat.format(new Date());
         // 5:最终文件的上传目录
-        String realPath = "/files/"+ datePath;
+        String realPath = "/files/" + datePath;
         this.fileStorageLocation = Paths.get(properties.getUploadDir() + realPath).toAbsolutePath().normalize();
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (IOException e) {
-            throw new RuntimeException("文件夹创建失败",e);
+            throw new RuntimeException("文件夹创建失败", e);
         }
     }
 
@@ -111,6 +111,7 @@ public class SystemServiceImpl implements SystemService {
     }
 
     private final Path fileStorageLocation;
+
     @Override
     public ResponseResult storeFile(HttpServletRequest request, MultipartFile file) {
         Map<String, String> resultMap = new LinkedHashMap<>();
@@ -127,14 +128,14 @@ public class SystemServiceImpl implements SystemService {
             String newFileName = UUID.randomUUID() + suffix;
             resultMap.put("docName", fileName);
             resultMap.put("uuidName", newFileName);
-            resultMap.put("flag", request.getAttribute("docFlag").toString());
+            resultMap.put("flag", Objects.nonNull(request.getAttribute("docFlag")) ? request.getAttribute("docFlag").toString() : "undefine");
             request.removeAttribute("docFlag");
             Path targetLocation = this.fileStorageLocation.resolve(newFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             String location = this.fileStorageLocation + "/" + newFileName;
-            System.out.println(location );
+            System.out.println(location);
             resultMap.put("docPath", location);
-            return ResponseUtils.success("文件上传成功",resultMap);
+            return ResponseUtils.success("文件上传成功", resultMap);
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseUtils.error("文件保存失败");
