@@ -21,6 +21,10 @@ spring:
     time-zone: Asia/Shanghai
     locale: zh_CN
     default-property-inclusion: non_empty
+  servlet:
+    multipart:
+      max-request-size: 5GB # 上传文件总的最大值
+      max-file-size: 1GB # 单个文件最大值
 
 logging:
   level:
@@ -32,3 +36,6 @@ server:
     session:
       timeout: 7200  # session时长
   port: 1024  # 端口测试
+
+file:
+  upload-dir: ./upload
