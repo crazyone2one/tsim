@@ -141,15 +141,15 @@ public class SystemServiceImpl implements SystemService {
     }
 
     @Override
-    public void downloadFile(HttpServletRequest request, HttpServletResponse response, String fileName) {
+    public void downloadFile(HttpServletRequest request, HttpServletResponse response, String fileName, String uuidName) {
         try {
-            String downloadUri = this.fileStorageLocation + "/" + fileName;
+            String downloadUri = this.fileStorageLocation + "/" + uuidName;
             // 读文件
             File file = new File(downloadUri);
             // 重置response
             response.reset();
             // ContentType，即告诉客户端所发送的数据属于什么类型
-            response.setContentType("application/octet-stream; charset=UTF-8");
+//            response.setContentType("application/octet-stream; charset=UTF-8");
             // 获得文件的长度
             response.setHeader("Content-Length", String.valueOf(file.length()));
             response.setHeader("Content-disposition", "attachment;fileName=" + fileName);

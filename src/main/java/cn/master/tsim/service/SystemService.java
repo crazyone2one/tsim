@@ -43,5 +43,13 @@ public interface SystemService {
      */
     ResponseResult storeFile(HttpServletRequest request, MultipartFile file);
 
-    void downloadFile(HttpServletRequest request, HttpServletResponse response, String fileName);
+    /**
+     * 文件下载功能
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @param fileName 文件名称
+     * @param uuidName 文件上传时生成的uuid名称
+     */
+    void downloadFile(HttpServletRequest request, HttpServletResponse response, String fileName, String uuidName);
 }
