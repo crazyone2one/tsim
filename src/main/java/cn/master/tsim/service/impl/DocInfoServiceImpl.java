@@ -32,10 +32,15 @@ public class DocInfoServiceImpl extends ServiceImpl<DocInfoMapper, DocInfo> impl
 
     @Override
     public DocInfo saveDocInfo(HttpServletRequest request, Map<String, String> docInfo) {
-        DocInfo build = DocInfo.builder().docName(docInfo.get("newFileName"))
+        DocInfo build = DocInfo.builder().docName(docInfo.get("docName")).uuidName(docInfo.get("uuidName"))
                 .docFlag(docInfo.get("flag")).docPath(docInfo.get("docPath")).delFlag(0)
                 .createDate(new Date()).build();
         baseMapper.insert(build);
         return build;
+    }
+
+    @Override
+    public DocInfo queryDocById(String id) {
+        return baseMapper.selectById(id);
     }
 }

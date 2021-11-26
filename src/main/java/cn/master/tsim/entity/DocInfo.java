@@ -38,6 +38,8 @@ public class DocInfo implements Serializable {
      */
     @TableField("doc_name")
     private String docName;
+    @TableField("uuid_name")
+    private String uuidName;
 
     /**
      * 文件类型

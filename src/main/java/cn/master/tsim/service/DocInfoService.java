@@ -18,4 +18,6 @@ public interface DocInfoService extends IService<DocInfo> {
 
     DocInfo saveDocInfo(HttpServletRequest request, DocInfo docInfo);
     DocInfo saveDocInfo(HttpServletRequest request, Map<String,String> docInfo);
+
+    DocInfo queryDocById(String id);
 }

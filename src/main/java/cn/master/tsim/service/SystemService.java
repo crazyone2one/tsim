@@ -4,6 +4,7 @@ import cn.master.tsim.common.ResponseResult;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * @author Created by 11's papa on 2021/10/12
@@ -40,5 +41,7 @@ public interface SystemService {
      * @return cn.master.tsim.common.ResponseResult
      * @author 11's papa
      */
-    ResponseResult uploadFile(HttpServletRequest request, MultipartFile file);
+    ResponseResult storeFile(HttpServletRequest request, MultipartFile file);
+
+    void downloadFile(HttpServletRequest request, HttpServletResponse response, String fileName);
 }
