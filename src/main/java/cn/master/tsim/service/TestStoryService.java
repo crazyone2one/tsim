@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 /**
@@ -55,5 +56,23 @@ public interface TestStoryService extends IService<TestStory> {
 
     List<TestStory> listStoryByProjectAndWorkDate(String projectId, String workDate);
 
+    /**
+     * 上传需求文件
+     *
+     * @param request HttpServletRequest
+     * @param file    文件
+     * @return cn.master.tsim.common.ResponseResult
+     */
     ResponseResult upload(HttpServletRequest request, MultipartFile file);
+
+    /**
+     * 下载需求文件
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @param fileName 文件名称
+     * @param uuidName uuid名称
+     * @return cn.master.tsim.common.ResponseResult
+     */
+    ResponseResult downloadFile(HttpServletRequest request, HttpServletResponse response, String fileName, String uuidName);
 }

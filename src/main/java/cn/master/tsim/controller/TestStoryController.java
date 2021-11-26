@@ -4,7 +4,6 @@ package cn.master.tsim.controller;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.service.ProjectService;
-import cn.master.tsim.service.SystemService;
 import cn.master.tsim.service.TestStoryService;
 import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
@@ -16,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 /**
@@ -32,13 +32,11 @@ public class TestStoryController {
 
     private final TestStoryService service;
     private final ProjectService projectService;
-    private final SystemService systemService;
 
     @Autowired
-    public TestStoryController(TestStoryService service, ProjectService projectService, SystemService systemService) {
+    public TestStoryController(TestStoryService service, ProjectService projectService) {
         this.service = service;
         this.projectService = projectService;
-        this.systemService = systemService;
     }
 
     /**
@@ -100,10 +98,26 @@ public class TestStoryController {
             return ResponseUtils.error(400, "需求状态修改失败", e.getMessage());
         }
     }
+
     @RequestMapping("/upload")
     @ResponseBody
     public ResponseResult upload(HttpServletRequest request, MultipartFile file) {
         return service.upload(request, file);
+    }
+
+    /**
+     * 下载文件
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @param fileName 文件名称
+     * @param uuidName uuid名称
+     * @return cn.master.tsim.common.ResponseResult
+     */
+    @RequestMapping("/download/{fileName}/{uuidName}")
+    @ResponseBody
+    public ResponseResult download(HttpServletRequest request, HttpServletResponse response, @PathVariable String fileName, @PathVariable String uuidName) {
+        return service.downloadFile(request, response, fileName, uuidName);
     }
 }
 

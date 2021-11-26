@@ -81,9 +81,9 @@
                             <td th:text="${temp.projectId}"></td>
                             <td th:text="${temp.description}"></td>
                             <td>
-                                <a th:text="${#strings.isEmpty(temp.docId)} ? '未上传需求文档' : ${temp.docInfo.docName}"
-                                   th:style="${#strings.isEmpty(temp.docId)} ? 'pointer-events: none' : ''"
-                                ></a>
+                                <a th:href="${#strings.isEmpty(temp.docId)}?'@{/story/download/'+'':'/story/download/'+${temp.docInfo.docName}+'/'+${temp.docInfo.uuidName}"
+                                   th:text="${#strings.isEmpty(temp.docId)} ? '未上传需求文档' : ${temp.docInfo.docName}"
+                                   th:style="${#strings.isEmpty(temp.docId)} ? 'pointer-events: none' : ''"></a>
                             </td>
                             <td >
                                 <div class="form-check form-switch d-inline-block">

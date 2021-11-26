@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.*;
 
 /**
@@ -157,6 +158,17 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
             return result;
         } catch (Exception e) {
             return ResponseUtils.error(e.getMessage());
+        }
+    }
+
+    @Override
+    public ResponseResult downloadFile(HttpServletRequest request, HttpServletResponse response, String fileName, String uuidName) {
+        try {
+            systemService.downloadFile(request, response, fileName, uuidName);
+//            response.sendRedirect("/story/list");
+            return ResponseUtils.success("文件下载成功");
+        } catch (Exception e) {
+            return ResponseUtils.error("文件下载失败");
         }
     }
 }
