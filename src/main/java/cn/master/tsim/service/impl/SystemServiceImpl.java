@@ -120,7 +120,6 @@ public class SystemServiceImpl implements SystemService {
         try {
             // 1:真实的文件名称
             String fileName = file.getOriginalFilename();
-            resultMap.put("fileName", fileName);
             // 2:截取后的文件名称
             assert fileName != null;
             String suffix = fileName.substring(fileName.lastIndexOf("."));
@@ -128,6 +127,8 @@ public class SystemServiceImpl implements SystemService {
             String newFileName = UUID.randomUUID() + suffix;
             resultMap.put("docName", fileName);
             resultMap.put("uuidName", newFileName);
+            resultMap.put("flag", request.getAttribute("docFlag").toString());
+            request.removeAttribute("docFlag");
             Path targetLocation = this.fileStorageLocation.resolve(newFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             String location = this.fileStorageLocation + "/" + newFileName;
