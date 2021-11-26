@@ -102,6 +102,7 @@ public class TestStoryController {
     @RequestMapping("/upload")
     @ResponseBody
     public ResponseResult upload(HttpServletRequest request, MultipartFile file) {
+        request.setAttribute("docFlag","story");
         return service.upload(request, file);
     }
 
@@ -116,7 +117,8 @@ public class TestStoryController {
      */
     @RequestMapping("/download/{fileName}/{uuidName}")
     @ResponseBody
-    public ResponseResult download(HttpServletRequest request, HttpServletResponse response, @PathVariable String fileName, @PathVariable String uuidName) {
+    public ResponseResult download(HttpServletRequest request, HttpServletResponse response,
+                                   @PathVariable String fileName, @PathVariable String uuidName) {
         return service.downloadFile(request, response, fileName, uuidName);
     }
 }

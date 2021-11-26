@@ -151,7 +151,6 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
             if (Objects.equals(ResponseCode.SUCCESS.getCode(), result.getCode())) {
                 Map<String, String> map = JacksonUtils.convertValue(result.getData(), new TypeReference<Map<String, String>>() {
                 });
-                map.put("flag", "story");
                 DocInfo docInfo = docInfoService.saveDocInfo(request, map);
                 result.setData(docInfo.getId());
             }
