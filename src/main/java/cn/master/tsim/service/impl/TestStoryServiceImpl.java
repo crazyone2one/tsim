@@ -64,9 +64,15 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
             wrapper.lambda().eq(TestStory::getDelFlag, story.getDelFlag());
         }
         wrapper.lambda().orderByAsc(TestStory::getDelFlag);
-        return baseMapper.selectPage(
+        Page<TestStory> storyPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
+        storyPage.getRecords().forEach(t->{
+            if (StringUtils.isNotBlank(t.getDocId())) {
+                t.setDocInfo(docInfoService.queryDocById(t.getDocId()));
+            }
+        });
+        return storyPage;
     }
 
     @Override
@@ -75,7 +81,8 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         final String description = String.valueOf(objectMap.get("description"));
         final String date = String.valueOf(objectMap.get("date"));
         final Project project = projectService.getProjectByName(String.valueOf(objectMap.get("name")));
-        final TestStory testStory = getStory(description, date, project.getId());
+        // FIXME: 2021/11/26 npe
+        final TestStory testStory = getStory(description, date, Objects.nonNull(project) ? project.getId() : "");
         if (Objects.nonNull(testStory)) {
             return testStory;
         }
@@ -139,12 +146,11 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     @Override
     public ResponseResult upload(HttpServletRequest request, MultipartFile file) {
         try {
-            ResponseResult result = systemService.uploadFile(request, file);
+            ResponseResult result = systemService.storeFile(request, file);
             if (Objects.equals(ResponseCode.SUCCESS.getCode(), result.getCode())) {
                 Map<String, String> map = JacksonUtils.convertValue(result.getData(), new TypeReference<Map<String, String>>() {
                 });
                 map.put("flag", "story");
-                map.put("docPath", "");
                 DocInfo docInfo = docInfoService.saveDocInfo(request, map);
                 result.setData(docInfo.getId());
             }
