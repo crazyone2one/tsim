@@ -1,7 +1,7 @@
 ![GitHub](https://img.shields.io/github/license/crazyone2one/tsim)
 ![echarts](https://img.shields.io/badge/echarts-5.1.2-green.svg)
 ![bootstrap](https://img.shields.io/badge/bootstrap-5.1.1-green.svg)  
-# tsim
+# tsim   
 测试用例、项目、缺陷管理系统。
 
 ## 技术选型
@@ -22,10 +22,12 @@
 > 项目管理模块
 >> - [x] 添加
 >> - [x] 查询  
+>> - [x] 生产报告功能  
 > 
 > 测试需求  
 >> - [x] 添加  
->> - [ ] other 
+>> - [x] 查询
+>> - [x] 增加需求文件上传/下载功能
 > 
 > 测试计划  
 >> - [x] 添加
