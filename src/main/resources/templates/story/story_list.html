@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="/fragment/commons :: common_header(~{::title})">
+<head th:replace="/fragment/commons :: common_header(~{::title},~{})">
     <title>TSIM @ STORY</title>
 </head>
 <body>
@@ -61,6 +61,10 @@
                 </div>
                 <!--            列表数据-->
                 <div>
+                    <div>
+                        <button type="button" class="btn btn-sm btn-outline-info" disabled>添加需求文件</button>
+                        <button type="button" class="btn btn-sm btn-outline-danger" disabled>删除需求文件</button>
+                    </div>
                     <table class="table table-hover">
                         <thead>
                         <tr class="text-center">
@@ -68,8 +72,8 @@
                             <th scope="col">所属项目</th>
                             <th scope="col">需求内容描述</th>
                             <th scope="col">关联文档</th>
-                            <th scope="col">完成状态</th>
                             <th scope="col">需求时间</th>
+                            <th scope="col">完成状态</th>
                             <th scope="col">操作</th>
                         </tr>
                         </thead>
@@ -85,6 +89,7 @@
                                    th:text="${#strings.isEmpty(temp.docId)} ? '未上传需求文档' : ${temp.docInfo.docName}"
                                    th:style="${#strings.isEmpty(temp.docId)} ? 'pointer-events: none' : ''"></a>
                             </td>
+                            <td th:text="${temp.workDate}"></td>
                             <td >
                                 <div class="form-check form-switch d-inline-block">
                                     <input class="form-check-input" type="checkbox" id="status"
@@ -93,8 +98,8 @@
                                     <label class="form-check-label" for="status"></label>
                                 </div>
                             </td>
-                            <td th:text="${temp.workDate}"></td>
                             <td>
+
                             </td>
                         </tr>
                         </tbody>
