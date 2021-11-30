@@ -35,16 +35,16 @@
                                                    aria-label="projectId"
                                                    aria-describedby="basic-addon1">
                                         </div>
-                                        <div class="input-group mb-3" style="width: fit-content">
-                                            <label class="input-group-text" for="workDate-search">任务时间</label>
-                                            <select class="form-select" aria-label="priority" name="workDate"
-                                                    id="workDate-search">
-                                                <option th:value="''" selected>选择任务时间</option>
-                                                <option th:each="m:${monthList}"
-                                                        th:value="${m}"
-                                                        th:text="${m}">
-                                            </select>
-                                        </div>
+<!--                                        <div class="input-group mb-3" style="width: fit-content">-->
+<!--                                            <label class="input-group-text" for="workDate-search">任务时间</label>-->
+<!--                                            <select class="form-select" aria-label="priority" name="workDate"-->
+<!--                                                    id="workDate-search">-->
+<!--                                                <option th:value="''" selected>选择任务时间</option>-->
+<!--                                                <option th:each="m:${monthList}"-->
+<!--                                                        th:value="${m}"-->
+<!--                                                        th:text="${m}">-->
+<!--                                            </select>-->
+<!--                                        </div>-->
                                         <div class="col-lg-2 col-md-4 col-sm-6">
                                             <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
                                                                                           style="color: cornflowerblue"></i>
@@ -65,7 +65,7 @@
                                 <tr class="text-center">
                                     <th scope="col">#</th>
                                     <th scope="col">项目名</th>
-                                    <th scope="col">任务时间</th>
+<!--                                    <th scope="col">任务时间</th>-->
                                     <th scope="col">关联模块</th>
                                     <th scope="col">关联测试用例</th>
                                     <th scope="col">关联bug</th>
@@ -79,7 +79,7 @@
                                            th:value="${temp.id}" id="id">
                                     <td th:text="${stat.index+1}"></td>
                                     <td th:text="${temp.projectName}"></td>
-                                    <td th:text="${temp.issueDate}"></td>
+<!--                                    <td th:text="${temp.issueDate}"></td>-->
                                     <td>
                                         <a href="#"
                                            th:text="${temp.refModuleCount}"></a>
@@ -132,7 +132,7 @@
                          aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <form class="modal-content needs-validation"
+                                <form class="modal-content needs-validation" th:action="@{/project/addProject}"
                                       method="post" id="addProjectForm">
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="staticBackdropLabel">新增项目</h5>
@@ -164,10 +164,8 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary" id="submit">保存</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"
-                                                id="cancle">取消
-                                        </button>
+                                        <button type="submit" class="btn btn-primary">保存</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
                                     </div>
                                 </form>
                             </div>
@@ -183,57 +181,5 @@
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
         <script type="text/javascript" th:src="@{/dist/js/common.js}"></script>
-        <script th:inline="javascript">
-            $('button[id=submit]').click(function (e) {
-                //Prevent default submission of form
-                e.preventDefault();
-                const $projectName = $('#projectName');
-                const $workDate = $('#workDate');
-                // 验证添加的数据是否存在
-                $.ajax({
-                    url: '/project/checkProject/',
-                    type: 'get',
-                    data: {
-                        name: $projectName.val(),
-                        date: $workDate.val()
-                        // serialize
-                    },
-                    dataType: 'JSON',
-                    success: function (res) {
-                        if (Object.is(res['code'], 400)) {
-                            //    项目已存在
-                            alert(res['msg'], 'warning')
-                        } else {
-                            $.ajax({
-                                url: '/project/addProject',
-                                type: 'post',
-                                dataType: "json",
-                                data: {
-                                    name: $projectName.val(),
-                                    date: $workDate.val()
-                                    // serialize
-                                },
-                                success: function (res) {
-                                    if (Object.is(res['code'], 200)) {
-                                        const myModalEl = $('#add-project-modal');
-                                        myModalEl.modal("hide");
-                                        // $("#add-project-modal .close").click();
-                                        // 模态框关闭
-                                        myModalEl.on('hidden.bs.modal', function () {
-                                            // const pro = /*[[${session.project}]]*/ 'project';
-                                            const pro = res['data'];
-                                            if (pro) {
-                                                alert(pro.projectName + '添加成功', 'success')
-                                            }
-                                        })
-                                    }
-                                }
-                            })
-                        }
-                    }
-                })
-
-            })
-        </script>
     </body>
 </html>

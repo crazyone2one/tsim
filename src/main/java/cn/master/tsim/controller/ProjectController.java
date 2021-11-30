@@ -16,8 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -67,15 +65,15 @@ public class ProjectController {
      */
     @PostMapping(value = "/addProject")
     @ResponseBody
-    public ResponseResult addProject(HttpServletRequest request) {
+    public ResponseResult addProject(HttpServletRequest request, HttpServletResponse response, Project project) {
         try {
-            final String name = request.getParameter("name");
-            final String date = request.getParameter("date");
-            Map<String, String> infoMap = new LinkedHashMap<>();
-            infoMap.put("name", name);
-            infoMap.put("date", date);
-            final Project project1 = projectService.addProject(request, infoMap);
-            return ResponseUtils.success(project1);
+            if (Objects.nonNull(projectService.getProjectByName(project.getProjectName()))) {
+                response.sendRedirect("/project/list");
+                return ResponseUtils.error(400, "项目[" + project.getProjectName() + "]已存在");
+            }
+            final Project addProject = projectService.addProject(request, project);
+            response.sendRedirect("/project/list");
+            return ResponseUtils.success(addProject);
         } catch (Exception e) {
             log.info(e.getMessage());
             return ResponseUtils.error(400, "数据查询错误", e.getMessage());

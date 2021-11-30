@@ -16,6 +16,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -68,15 +69,15 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
             //            设置任务描述为需求内容
             List<TestStory> storyList = storyService.listStoryByProjectAndWorkDate(t.getProjectId(), t.getIssueDate());
 //            未关联需求时使用本来的内容
-            t.setSummaryDesc(CollectionUtils.isNotEmpty(storyList) ? storyList.get(0).getDescription() : t.getSummaryDesc());
-//            t.setReqDoc(CollectionUtils.isNotEmpty(storyList));
+//            t.setSummaryDesc(CollectionUtils.isNotEmpty(storyList) ? storyList.get(0).getDescription() : t.getSummaryDesc());
+            t.setReqDoc(CollectionUtils.isNotEmpty(storyList) ? storyList.get(0).getDescription() : "");
             t.setProjectId(projectService.getProjectById(t.getProjectId()).getProjectName());
         });
         return testTaskInfoPage;
     }
 
     @Override
-    public TestTaskInfo addItem(Project project, HttpServletRequest request, String workDate) {
+    public TestTaskInfo addItem(HttpServletRequest request, Project project, String workDate, String storyDesc) {
         // TODO: 2021/11/1 0001 保存项目信息时，暂设置负责人为当前登录用户 。后期优化为可配置
         Tester tester = new Tester();
         final Object account = request.getSession().getAttribute("account");
@@ -84,11 +85,11 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
             tester = JacksonUtils.convertToClass(JacksonUtils.convertToString(account), Tester.class);
         }
         assert tester != null;
-        final TestTaskInfo taskInfo = getItemByProject(request, project, workDate);
+        final TestTaskInfo taskInfo = getItemByProject(request, project, workDate, storyDesc);
         if (Objects.nonNull(taskInfo)) {
             return taskInfo;
         }
-        final TestTaskInfo build = TestTaskInfo.builder().projectId(project.getId())
+        final TestTaskInfo build = TestTaskInfo.builder().projectId(project.getId()).summaryDesc(storyDesc)
                 .createCaseCount(caseService.caseCountByStatus(project.getId(), "").get("total"))
                 .finishStatus("1")
                 .tester(tester.getId())
@@ -100,10 +101,11 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
     }
 
     @Override
-    public TestTaskInfo getItemByProject(HttpServletRequest request, Project project, String workDate) {
+    public TestTaskInfo getItemByProject(HttpServletRequest request, Project project, String workDate, String storyDesc) {
         QueryWrapper<TestTaskInfo> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(TestTaskInfo::getProjectId, project.getId());
         wrapper.lambda().eq(TestTaskInfo::getIssueDate, workDate);
+        wrapper.lambda().eq(TestTaskInfo::getSummaryDesc, storyDesc);
         return baseMapper.selectOne(wrapper);
     }
 
@@ -150,6 +152,8 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
             success = ResponseUtils.success("数据查询成功", taskInfo);
         } catch (NullPointerException e) {
             return ResponseUtils.error(ResponseCode.ERROR_500.getCode(), ResponseCode.ERROR_500.getMessage());
+        } catch (TooManyResultsException e) {
+            return ResponseUtils.error(ResponseCode.BODY_NOT_MATCH.getCode(), ResponseCode.BODY_NOT_MATCH.getMessage());
         }
         return success;
     }

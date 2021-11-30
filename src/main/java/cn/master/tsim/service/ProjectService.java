@@ -8,7 +8,6 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Map;
 
 /**
  * <p>
@@ -53,15 +52,13 @@ public interface ProjectService extends IService<Project> {
     Project checkProject(String projectName, String workDate);
 
     /**
-     * 添加项目
+     * 添加项目数据
      *
-     * @param request    HttpServletRequest
-     * @param proInfoMap 项目信息
-     * @return int
+     * @param request HttpServletRequest
+     * @param project Project
+     * @return cn.master.tsim.entity.Project
      */
-    Project addProject(HttpServletRequest request, Map<String, String> proInfoMap);
-
-    Project addProject(Project project, HttpServletRequest request);
+    Project addProject(HttpServletRequest request, Project project);
 
     /**
      * 更新项目状态
@@ -80,8 +77,6 @@ public interface ProjectService extends IService<Project> {
      */
     IPage<Project> projectListPages(Project project, Integer pageCurrent, Integer pageSize);
 
-
-    Map<String, Project> projectMap();
 
     /**
      * 生成测试报告

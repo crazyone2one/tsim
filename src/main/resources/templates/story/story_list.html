@@ -68,6 +68,7 @@
                     <table class="table table-hover">
                         <thead>
                         <tr class="text-center">
+                            <th scope="col"></th>
                             <th scope="col">#</th>
                             <th scope="col">所属项目</th>
                             <th scope="col">需求内容描述</th>
@@ -79,8 +80,14 @@
                         </thead>
                         <tbody>
                         <tr class="text-center" th:each="temp,stat:${iPage.records}">
-                            <input name="id" type="hidden" class="form-control"
-                                   th:value="${temp.id}" id="id">
+                            <td>
+                                <label class="checkbox">
+                                    <input type="checkbox" th:value="${temp.id}">
+                                    <input name="id" type="hidden" class="form-control"
+                                           th:value="${temp.id}" id="id">
+                                </label>
+                            </td>
+
                             <td th:text="${stat.index+1}"></td>
                             <td th:text="${temp.projectId}"></td>
                             <td th:text="${temp.description}"></td>

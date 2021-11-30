@@ -53,9 +53,6 @@ public class TestStoryController {
                            @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
                            @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
         final IPage<TestStory> iPage = service.pageList(story, pageCurrent, pageSize);
-        iPage.getRecords().forEach(temp -> {
-            temp.setProjectId(projectService.getProjectById(temp.getProjectId()).getProjectName());
-        });
         model.addAttribute("iPage", iPage);
         model.addAttribute("redirecting", "/story/list?pageCurrent=");
         model.addAttribute("monthList", DateUtils.currentYearMonth());
@@ -70,7 +67,7 @@ public class TestStoryController {
             final TestStory testStory = service.saveStory(request);
             return ResponseUtils.success("数据添加成功", testStory);
         } catch (Exception e) {
-            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
+            return ResponseUtils.error(400, "数据添加失败", e.getCause().getMessage());
         }
     }
 

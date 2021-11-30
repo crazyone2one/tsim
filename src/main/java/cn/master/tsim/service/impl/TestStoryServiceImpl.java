@@ -6,10 +6,7 @@ import cn.master.tsim.entity.DocInfo;
 import cn.master.tsim.entity.Project;
 import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.mapper.TestStoryMapper;
-import cn.master.tsim.service.DocInfoService;
-import cn.master.tsim.service.ProjectService;
-import cn.master.tsim.service.SystemService;
-import cn.master.tsim.service.TestStoryService;
+import cn.master.tsim.service.*;
 import cn.master.tsim.util.JacksonUtils;
 import cn.master.tsim.util.ResponseUtils;
 import cn.master.tsim.util.StreamUtils;
@@ -41,6 +38,8 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     private  ProjectService projectService;
     @Autowired
      SystemService systemService;
+    @Autowired
+    TestTaskInfoService taskInfoService;
     private final DocInfoService docInfoService;
     @Autowired
     public TestStoryServiceImpl(DocInfoService docInfoService) {
@@ -72,6 +71,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
             if (StringUtils.isNotBlank(t.getDocId())) {
                 t.setDocInfo(docInfoService.queryDocById(t.getDocId()));
             }
+            t.setProjectId(projectService.getProjectById(t.getProjectId()).getProjectName());
         });
         return storyPage;
     }
@@ -79,7 +79,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     @Override
     public TestStory saveStory(HttpServletRequest request) {
         final Map<String, Object> objectMap = StreamUtils.getParamsFromRequest(request);
-        final String description = String.valueOf(objectMap.get("description"));
+        final String description = String.valueOf(objectMap.get("description")).trim();
         final String date = String.valueOf(objectMap.get("date"));
         final Project project = projectService.getProjectByName(String.valueOf(objectMap.get("name")));
         // FIXME: 2021/11/26 npe
@@ -91,6 +91,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         TestStory build = TestStory.builder().projectId(project.getId()).description(description).workDate(date)
                 .docId(doc).delFlag(0).createDate(new Date()).build();
         baseMapper.insert(build);
+        taskInfoService.addItem(request, project, date, description);
         return build;
     }
 

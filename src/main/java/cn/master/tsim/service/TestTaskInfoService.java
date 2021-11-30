@@ -23,12 +23,13 @@ public interface TestTaskInfoService extends IService<TestTaskInfo> {
     /**
      * 保存 任务汇总信息
      *
-     * @param project
      * @param request
+     * @param project
      * @param workDate
+     * @param storyDesc
      * @return cn.master.tsim.entity.TestTaskInfo
      */
-    TestTaskInfo addItem(Project project, HttpServletRequest request, String workDate);
+    TestTaskInfo addItem(HttpServletRequest request, Project project, String workDate, String storyDesc);
 
     /**
      * 获取单个任务汇总信息
@@ -36,10 +37,11 @@ public interface TestTaskInfoService extends IService<TestTaskInfo> {
      * @param request  HttpServletRequest
      * @param project  Project
      * @param workDate workDate
+     * @param storyDesc
      * @return cn.master.tsim.entity.TestTaskInfo
      */
 
-    TestTaskInfo getItemByProject(HttpServletRequest request, Project project, String workDate);
+    TestTaskInfo getItemByProject(HttpServletRequest request, Project project, String workDate, String storyDesc);
 
     /**
      * 更新任务完成状态
