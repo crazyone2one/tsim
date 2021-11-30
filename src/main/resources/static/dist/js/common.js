@@ -42,3 +42,28 @@ const removeProperty = (target, propertyToRemove) => {
     const {[propertyToRemove]: _, ...newTarget} = target
     return newTarget
 }
+
+/**
+ * 输入框自动提示
+ * @param url 数据加载地址
+ * @param idSelector id选择器
+ */
+function autoComplete(url, idSelector) {
+    const dataAttr = [];
+    $.ajax({
+        url: url,
+        success: function (result) {
+            if (Object.is(result['code'], 200)) {
+                if (result['data']) {
+                    for (let i = 0; i < result['data'].length; i++) {
+                        let temp = {label: result['data'][i].projectName, value: result['data'][i].id}
+                        dataAttr.push(temp)
+                    }
+                }
+            }
+        }
+    });
+    const pro = new Autocomplete(document.getElementById(idSelector), {
+        data: dataAttr
+    })
+}
