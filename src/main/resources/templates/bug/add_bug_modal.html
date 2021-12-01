@@ -23,25 +23,22 @@
                             <div class="row g-3 align-items-center">
                                 <div class="col-md-4">
                                     <label for="projectCode" class="form-label">项目名称</label>
-                                    <input name="projectId" id="projectCode" type="text"
-                                           class="form-control" placeholder value list="proList"
+                                    <input  id="projectCode" type="text"
+                                           class="form-control" placeholder="录入项目名称"
                                            required>
-                                    <datalist id="proList">
-                                        <option th:each="pro:${proMap}" th:value="${pro.value.projectName}"
-                                                th:text="${pro.value.projectName}"></option>
-                                    </datalist>
+                                    <input type="hidden" name="projectId" id="b-a-p">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="module" class="form-label">模块</label>
-                                    <input name="moduleId" id="module" type="text" class="form-control"
-                                           placeholder value
+                                    <input  id="module" type="text" class="form-control"
+                                           placeholder="录入模块名称"
                                            required>
+                                    <input type="hidden" name="moduleId" id="b-a-m">
                                 </div>
                                 <div class="col-md-4">
                                     <label for="functionDesc" class="form-label">功能点</label>
                                     <input name="func" id="functionDesc" type="text"
-                                           class="form-control" placeholder
-                                           value
+                                           class="form-control" placeholder=""
                                            required>
                                 </div>
                                 <div class="col-md-12">

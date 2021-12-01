@@ -2,7 +2,6 @@ package cn.master.tsim.service.impl;
 
 import cn.master.tsim.common.Constants;
 import cn.master.tsim.common.ResponseResult;
-import cn.master.tsim.entity.Module;
 import cn.master.tsim.entity.TestBug;
 import cn.master.tsim.mapper.TestBugMapper;
 import cn.master.tsim.service.ModuleService;
@@ -49,9 +48,8 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
 
     @Override
     public TestBug addBug(HttpServletRequest request, TestBug testBug) {
-        final Module module = moduleService.addModule(testBug.getProjectId(), testBug.getModuleId(), request);
-        testBug.setProjectId(module.getProjectId());
-        testBug.setModuleId(module.getId());
+        testBug.setProjectId(testBug.getProjectId());
+        testBug.setModuleId(testBug.getModuleId());
         testBug.setCreateDate(new Date());
         if (StringUtils.isBlank(testBug.getWorkDate())) {
             testBug.setWorkDate(DateUtils.parse2String(new Date(), "yyyy-MM"));
