@@ -59,9 +59,9 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module> impleme
     }
 
     @Override
-    public Module getModuleByName(String proName, String moduleName, HttpServletRequest request) {
+    public Module getModuleByName(HttpServletRequest request, String projectId, String moduleName) {
         return baseMapper.selectOne(new QueryWrapper<Module>().lambda()
-                .eq(StringUtils.isNotBlank(proName), Module::getProjectId, projectService.getProjectByName(proName))
+                .eq(StringUtils.isNotBlank(projectId), Module::getProjectId, projectId)
                 .eq(StringUtils.isNotBlank(moduleName), Module::getModuleName, moduleName));
     }
 
@@ -76,18 +76,13 @@ public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module> impleme
     }
 
     @Override
-    public Module addModule(String projectName, String moduleName, HttpServletRequest request) {
-        final Module module = getModuleByName(projectName, moduleName, request);
+    public Module addModule(HttpServletRequest request, String projectId, String moduleName) {
+        final Module module = getModuleByName(request, projectId, moduleName);
         if (Objects.nonNull(module)) {
             return module;
         }
-        final Module build = Module.builder()
-                .moduleName(moduleName)
-                .moduleCode(UuidUtils.generate())
-                .projectId(projectService.getProjectByName(projectName).getId())
-                .createDate(new Date())
-                .delFlag(0)
-                .build();
+        final Module build = Module.builder().moduleName(moduleName).moduleCode(UuidUtils.generate())
+                .projectId(projectId).createDate(new Date()).delFlag(0).build();
         baseMapper.insert(build);
         return build;
     }

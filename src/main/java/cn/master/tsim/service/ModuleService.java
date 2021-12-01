@@ -24,11 +24,11 @@ public interface ModuleService extends IService<Module> {
     Module getModuleById(String id);
 
     Module getModuleByName(String moduleName);
-    Module getModuleByName(String proName, String moduleName, HttpServletRequest request);
+    Module getModuleByName(HttpServletRequest request, String projectId, String moduleName);
 
     Module addModule(Module module);
 
-    Module addModule(String projectName, String moduleName, HttpServletRequest request);
+    Module addModule(HttpServletRequest request, String projectId, String moduleName);
 
     List<Module> listModule(String projectId);
 }
