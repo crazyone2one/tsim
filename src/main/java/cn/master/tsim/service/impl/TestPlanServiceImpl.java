@@ -1,8 +1,10 @@
 package cn.master.tsim.service.impl;
 
+import cn.master.tsim.entity.Project;
 import cn.master.tsim.entity.TestPlan;
 import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.mapper.TestPlanMapper;
+import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestPlanService;
 import cn.master.tsim.service.TestStoryService;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -29,6 +31,8 @@ import java.util.Objects;
 public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> implements TestPlanService {
 
     private final TestStoryService storyService;
+    @Autowired
+    private ProjectService projectService;
 
     @Autowired
     public TestPlanServiceImpl(TestStoryService storyService) {
@@ -49,9 +53,15 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
         wrapper.lambda().eq(Objects.nonNull(plan.getDelFlag()), TestPlan::getDelFlag, plan.getDelFlag());
         wrapper.lambda().orderByAsc(TestPlan::getDelFlag);
         wrapper.lambda().orderByAsc(TestPlan::getCreateDate);
-        return baseMapper.selectPage(
+        final Page<TestPlan> iPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
+        iPage.getRecords().forEach(t -> {
+            final Project project = projectService.getProjectById(t.getProjectId());
+            t.setProject(project);
+            t.setStory(storyService.searchStoryById(t.getStoryId()));
+        });
+        return iPage;
     }
 
     @Override
