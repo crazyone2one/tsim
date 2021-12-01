@@ -14,7 +14,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
@@ -66,18 +64,13 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
         testTaskInfoPage.getRecords().forEach(t -> {
             t.setSubBug(bugService.bugMapByProject(t.getProjectId(), "1"));
             t.setFixBug(bugService.bugMapByProject(t.getProjectId(), "4"));
-            //            设置任务描述为需求内容
-            List<TestStory> storyList = storyService.listStoryByProjectAndWorkDate(t.getProjectId(), t.getIssueDate());
-//            未关联需求时使用本来的内容
-//            t.setSummaryDesc(CollectionUtils.isNotEmpty(storyList) ? storyList.get(0).getDescription() : t.getSummaryDesc());
-            t.setReqDoc(CollectionUtils.isNotEmpty(storyList) ? storyList.get(0).getDescription() : "");
             t.setProjectId(projectService.getProjectById(t.getProjectId()).getProjectName());
         });
         return testTaskInfoPage;
     }
 
     @Override
-    public TestTaskInfo addItem(HttpServletRequest request, Project project, String workDate, String storyDesc) {
+    public TestTaskInfo addItem(HttpServletRequest request, Project project, TestStory story) {
         // TODO: 2021/11/1 0001 保存项目信息时，暂设置负责人为当前登录用户 。后期优化为可配置
         Tester tester = new Tester();
         final Object account = request.getSession().getAttribute("account");
@@ -85,15 +78,16 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
             tester = JacksonUtils.convertToClass(JacksonUtils.convertToString(account), Tester.class);
         }
         assert tester != null;
-        final TestTaskInfo taskInfo = getItemByProject(request, project, workDate, storyDesc);
+        final TestTaskInfo taskInfo = getItemByProject(request, project, story);
         if (Objects.nonNull(taskInfo)) {
             return taskInfo;
         }
-        final TestTaskInfo build = TestTaskInfo.builder().projectId(project.getId()).summaryDesc(storyDesc)
+        final TestTaskInfo build = TestTaskInfo.builder().projectId(project.getId()).summaryDesc(story.getDescription())
                 .createCaseCount(caseService.caseCountByStatus(project.getId(), "").get("total"))
                 .finishStatus("1")
+                .reqDoc(StringUtils.isNotBlank(story.getDocId()) ? story.getDocId() : "")
                 .tester(tester.getId())
-                .issueDate(workDate)
+                .issueDate(story.getWorkDate())
                 .createDate(new Date())
                 .build();
         baseMapper.insert(build);
@@ -101,11 +95,11 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
     }
 
     @Override
-    public TestTaskInfo getItemByProject(HttpServletRequest request, Project project, String workDate, String storyDesc) {
+    public TestTaskInfo getItemByProject(HttpServletRequest request, Project project, TestStory story) {
         QueryWrapper<TestTaskInfo> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(TestTaskInfo::getProjectId, project.getId());
-        wrapper.lambda().eq(TestTaskInfo::getIssueDate, workDate);
-        wrapper.lambda().eq(TestTaskInfo::getSummaryDesc, storyDesc);
+        wrapper.lambda().eq(TestTaskInfo::getIssueDate, story.getWorkDate());
+        wrapper.lambda().eq(TestTaskInfo::getSummaryDesc, story.getDescription());
         return baseMapper.selectOne(wrapper);
     }
 
@@ -145,9 +139,8 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
             TestTaskInfo taskInfo = baseMapper.selectById(id);
             taskInfo.setSubBug(bugService.bugMapByProject(taskInfo.getProjectId(), "1"));
             taskInfo.setFixBug(bugService.bugMapByProject(taskInfo.getProjectId(), "4"));
-            TestStory story = storyService.getStory("", taskInfo.getIssueDate(), taskInfo.getProjectId());
-            taskInfo.setReqDoc(Objects.nonNull(story) ? story.getDescription() : "");
-
+//            TestStory story = storyService.getStory("", taskInfo.getIssueDate(), taskInfo.getProjectId());
+//            taskInfo.setReqDoc(Objects.nonNull(story) ? story.getDescription() : "");
             taskInfo.setProjectId(projectService.getProjectById(taskInfo.getProjectId()).getProjectName());
             success = ResponseUtils.success("数据查询成功", taskInfo);
         } catch (NullPointerException e) {

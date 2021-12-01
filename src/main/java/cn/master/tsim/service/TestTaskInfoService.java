@@ -2,6 +2,7 @@ package cn.master.tsim.service;
 
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Project;
+import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.entity.TestTaskInfo;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -25,23 +26,21 @@ public interface TestTaskInfoService extends IService<TestTaskInfo> {
      *
      * @param request
      * @param project
-     * @param workDate
-     * @param storyDesc
+     * @param story
      * @return cn.master.tsim.entity.TestTaskInfo
      */
-    TestTaskInfo addItem(HttpServletRequest request, Project project, String workDate, String storyDesc);
+    TestTaskInfo addItem(HttpServletRequest request, Project project, TestStory story);
 
     /**
      * 获取单个任务汇总信息
      *
      * @param request  HttpServletRequest
      * @param project  Project
-     * @param workDate workDate
-     * @param storyDesc
+     * @param story
      * @return cn.master.tsim.entity.TestTaskInfo
      */
 
-    TestTaskInfo getItemByProject(HttpServletRequest request, Project project, String workDate, String storyDesc);
+    TestTaskInfo getItemByProject(HttpServletRequest request, Project project, TestStory story);
 
     /**
      * 更新任务完成状态

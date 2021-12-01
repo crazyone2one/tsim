@@ -24,7 +24,7 @@
                                 <div class="input-group mb-3" style="width: fit-content">
                                     <span class="input-group-text">所属项目</span>
                                     <input type="text" class="form-control" name="projectId"
-                                           placeholder="项目名称（模糊查询）"
+                                           placeholder="项目名称（模糊查询）" id="p-search"
                                            aria-label="projectId"
                                            aria-describedby="basic-addon1">
                                 </div>
@@ -264,9 +264,10 @@
 <div th:replace="/fragment/commons :: logout"></div>
 <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
 <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
 <script type="text/javascript" th:src="@{/dist/js/common.js}"></script>
 <script>
-
+    autoComplete("/project/queryList", "p-search", 'p', false);
     function editTask(id) {
         $.ajax({
             url: '/task/getTask/' + id,
@@ -285,6 +286,7 @@
 
     function fillContent(taskInfo) {
         $("#projectName").attr("value", taskInfo.projectId);
+        $("#projectDesc").attr("value", taskInfo.summaryDesc);
 
         //提交bug
         $("#new-level4").attr("value", taskInfo.subBug.level4);
@@ -301,11 +303,11 @@
         if ('reqDoc' in taskInfo) {
             console.log(taskInfo.reqDoc);
             $("#story-1").text(taskInfo.reqDoc);
-            $("#projectDesc").attr("value", taskInfo.reqDoc);
+            $("#story-1").attr("value", taskInfo.reqDoc);
         } else {
             $("#story-1").text("暂无关联需求");
             //无关联需求时设置可编辑
-            $("#projectDesc").attr("value", "").removeAttr("readonly");
+            $("#story-1").attr("value", "").removeAttr("readonly");
         }
     }
 
