@@ -31,7 +31,7 @@
                                         <div class="input-group mb-3" style="width: fit-content">
                                             <span class="input-group-text">所属项目</span>
                                             <input type="text" class="form-control" name="projectName"
-                                                   placeholder="项目名称（模糊查询）"
+                                                   placeholder="项目名称（模糊查询）" id="p-search"
                                                    aria-label="projectId"
                                                    aria-describedby="basic-addon1">
                                         </div>
@@ -180,6 +180,10 @@
         <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
         <script type="text/javascript" th:src="@{/dist/js/common.js}"></script>
+        <script>
+            autoComplete("/project/queryList", "p-search",'p', false);
+        </script>
     </body>
 </html>

@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -121,6 +122,18 @@ public class ProjectController {
         } catch (Exception e) {
             result = ResponseUtils.error("报告生成失败");
             model.addAttribute("fail", true);
+        }
+        return result;
+    }
+    @RequestMapping(value = "/queryList")
+    @ResponseBody
+    public ResponseResult queryList(HttpServletRequest request) {
+        ResponseResult result = ResponseUtils.success("数据查询成功");
+        try {
+            final List<Project> projects = projectService.findByPartialProjectName("");
+            result.setData(projects);
+        } catch (Exception e) {
+            ResponseUtils.error("数据查询失败");
         }
         return result;
     }
