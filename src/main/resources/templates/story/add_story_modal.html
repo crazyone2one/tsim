@@ -22,16 +22,9 @@
                                 <div class="box-body">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="basic-addon1">项目名称</span>
-                                        <input id="projectId-a"
-                                               class="form-control"
-                                               required
-                                               placeholder="搜索选择项目..." list="proStuff">
-                                        <datalist id="proStuff">
-                                            <option th:each="s:${projects}" th:data-value="${s.id}">
-                                                [[${s.projectName}]]
-                                            </option>
-                                        </datalist>
-                                        <input type="hidden" name="projectId" id="projectId-h">
+                                        <input type="text" class="form-control" placeholder="输入项目名称"
+                                               aria-label="project" aria-describedby="basic-addon1" id="p-add">
+                                        <input type="hidden" name="projectId" id="s-p-id">
                                     </div>
                                     <div class="mb-3">
                                         <label for="add-description-name" class="form-label">需求内容描述</label>

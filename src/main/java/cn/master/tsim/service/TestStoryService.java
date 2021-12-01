@@ -54,8 +54,6 @@ public interface TestStoryService extends IService<TestStory> {
 
     List<TestStory> listStory();
 
-    List<TestStory> listStoryByProjectAndWorkDate(String projectId, String workDate);
-
     /**
      * 上传需求文件
      *

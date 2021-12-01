@@ -35,12 +35,13 @@ import java.util.*;
 @Service
 public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory> implements TestStoryService {
     @Autowired
-    private  ProjectService projectService;
+    private ProjectService projectService;
     @Autowired
-     SystemService systemService;
+    SystemService systemService;
     @Autowired
     TestTaskInfoService taskInfoService;
     private final DocInfoService docInfoService;
+
     @Autowired
     public TestStoryServiceImpl(DocInfoService docInfoService) {
         this.docInfoService = docInfoService;
@@ -67,7 +68,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         Page<TestStory> storyPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
-        storyPage.getRecords().forEach(t->{
+        storyPage.getRecords().forEach(t -> {
             if (StringUtils.isNotBlank(t.getDocId())) {
                 t.setDocInfo(docInfoService.queryDocById(t.getDocId()));
             }
@@ -81,7 +82,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         final Map<String, Object> objectMap = StreamUtils.getParamsFromRequest(request);
         final String description = String.valueOf(objectMap.get("description")).trim();
         final String date = String.valueOf(objectMap.get("date"));
-        final Project project = projectService.getProjectByName(String.valueOf(objectMap.get("name")));
+        final Project project = projectService.getProjectById(String.valueOf(objectMap.get("name")));
         // FIXME: 2021/11/26 npe
         final TestStory testStory = getStory(description, date, Objects.nonNull(project) ? project.getId() : "");
         if (Objects.nonNull(testStory)) {
@@ -91,7 +92,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         TestStory build = TestStory.builder().projectId(project.getId()).description(description).workDate(date)
                 .docId(doc).delFlag(0).createDate(new Date()).build();
         baseMapper.insert(build);
-        taskInfoService.addItem(request, project, date, description);
+        taskInfoService.addItem(request, project, build);
         return build;
     }
 
@@ -135,14 +136,6 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     @Override
     public List<TestStory> listStory() {
         return baseMapper.selectList(new QueryWrapper<TestStory>().lambda().eq(TestStory::getDelFlag, "0"));
-    }
-
-    @Override
-    public List<TestStory> listStoryByProjectAndWorkDate(String projectId, String workDate) {
-        QueryWrapper<TestStory> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(TestStory::getProjectId, projectId);
-        wrapper.lambda().eq(StringUtils.isNotBlank(workDate), TestStory::getWorkDate, workDate);
-        return baseMapper.selectList(wrapper);
     }
 
     @Override

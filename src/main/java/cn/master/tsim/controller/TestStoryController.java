@@ -16,6 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -117,6 +118,19 @@ public class TestStoryController {
     public ResponseResult download(HttpServletRequest request, HttpServletResponse response,
                                    @PathVariable String fileName, @PathVariable String uuidName) {
         return service.downloadFile(request, response, fileName, uuidName);
+    }
+
+    @RequestMapping(value = "/queryList")
+    @ResponseBody
+    public ResponseResult queryList(HttpServletRequest request) {
+        ResponseResult result = ResponseUtils.success("数据查询成功");
+        try {
+            final List<TestStory> stories = service.listStory();
+            result.setData(stories);
+        } catch (Exception e) {
+            ResponseUtils.error("数据查询失败");
+        }
+        return result;
     }
 }
 
