@@ -47,8 +47,10 @@ const removeProperty = (target, propertyToRemove) => {
  * 输入框自动提示
  * @param url 数据加载地址
  * @param idSelector id选择器
+ * @param flag p--project,m--module
+ * @param needChange 是否需要将value更改为id
  */
-function autoComplete(url, idSelector) {
+function autoComplete(url, idSelector, flag, needChange) {
     const dataAttr = [];
     $.ajax({
         url: url,
@@ -56,14 +58,45 @@ function autoComplete(url, idSelector) {
             if (Object.is(result['code'], 200)) {
                 if (result['data']) {
                     for (let i = 0; i < result['data'].length; i++) {
-                        let temp = {label: result['data'][i].projectName, value: result['data'][i].id}
-                        dataAttr.push(temp)
+                        let temp = {}
+                        switch (flag) {
+                            case "p":
+                                // project
+                                temp = {label: result['data'][i].projectName, value: result['data'][i].id};
+                                break;
+                            case "m":
+                                //module
+                                temp = {label: result['data'][i].moduleName, value: result['data'][i].id};
+                                break;
+                            case "s":
+                                //story
+                                temp = {label: result['data'][i].description, value: result['data'][i].id};
+                                break;
+                        }
+                        dataAttr.push(temp);
                     }
                 }
             }
         }
     });
-    const pro = new Autocomplete(document.getElementById(idSelector), {
-        data: dataAttr
+    new Autocomplete(document.getElementById(idSelector), {
+        data: dataAttr,
+        tsf: needChange
+    });
+}
+
+/**
+ * modal关闭时清空内容
+ * @param modalId
+ * @param formId
+ */
+function resetModal(modalId, formId) {
+    $(modalId).on('hide.bs.modal', function () {
+        document.getElementById(formId).reset();
+        console.log(" hide >> reset modal completed")
+    });
+    $(modalId).on('hidden.bs.modal', function () {
+        document.getElementById(formId).reset();
+        console.log(" hidden >> reset modal completed")
     })
 }
