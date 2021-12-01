@@ -51,8 +51,8 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         final String moduleId = request.getParameter("moduleId");
         final int priority = Integer.parseInt(request.getParameter("priority"));
         // // TODO: 2021/11/16 0016 未查询到对应的项目数据时新增项目
-        final Project project = projectService.getProjectByName(projectId);
-        final Module module = moduleService.addModule(projectId, moduleId, request);
+        final Project project = projectService.getProjectById(projectId);
+        final Module module = moduleService.getModuleById(moduleId);
         TestCase build = TestCase.builder().active(0).projectId(project.getId()).moduleId(module.getId())
                 .name(request.getParameter("name"))
                 .description(request.getParameter("description"))
@@ -94,7 +94,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 continue;
             }
             final Project project = projectService.getProjectByName(c.getProjectId());
-            final Module module = moduleService.addModule(c.getProjectId(), c.getModuleId(), request);
+            final Module module = moduleService.addModule(request, c.getProjectId(), c.getModuleId());
             final TestCase build = TestCase.builder().active(0).projectId(project.getId()).moduleId(module.getId())
                     .name(c.getName()).description(c.getDescription()).precondition(c.getPrecondition())
                     .testMode(0).priority(c.getPriority()).stepStore(c.getStepStore())

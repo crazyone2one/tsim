@@ -31,7 +31,8 @@
                                         </div>
                                         <div class="input-group mb-3" style="width: fit-content">
                                             <span class="input-group-text" id="basic-addon2">所属模块</span>
-                                            <input type="text" class="form-control" name="moduleId" placeholder="模块名称（模糊查询）"
+                                            <input type="text" class="form-control" name="moduleId"
+                                                   placeholder="模块名称（模糊查询）"
                                                    aria-label="moduleId"
                                                    aria-describedby="basic-addon2">
                                         </div>
@@ -41,13 +42,15 @@
                                                    aria-label="name"
                                                    aria-describedby="basic-addon3">
                                         </div>
-                                        <select class="form-select mb-3" style="width: fit-content" aria-label="priority" name="priority">
+                                        <select class="form-select mb-3" style="width: fit-content"
+                                                aria-label="priority" name="priority">
                                             <option th:value="' '" selected>优先级</option>
                                             <option value="0">低</option>
                                             <option value="1">中</option>
                                             <option value="2">高</option>
                                         </select>
-                                        <select class="form-select mb-3" style="width: fit-content" aria-label="active" name="active">
+                                        <select class="form-select mb-3" style="width: fit-content" aria-label="active"
+                                                name="active">
                                             <option value="0">有效</option>
                                             <option value="1">无效</option>
                                         </select>
@@ -57,10 +60,12 @@
                                             </button>
                                             <button type="button" class="btn"
                                                     data-bs-toggle="modal" data-bs-target="#add-case-modal"><i
-                                                    class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"></i>
+                                                    class="bi bi-plus-circle hvr-grow"
+                                                    style="color: cornflowerblue"></i>
                                             </button>
                                             <!--                                // 导出模板数据-->
-                                            <a class="btn btn-light mb-3 mb-lg-0 hvr-grow" th:href="@{/case/download/test-case-template.xlsx}">
+                                            <a class="btn btn-light mb-3 mb-lg-0 hvr-grow"
+                                               th:href="@{/case/download/test-case-template.xlsx}">
                                                 <i class="bi bi-download"></i>
                                             </a>
                                             <!--                                //导入数据-->
@@ -146,15 +151,36 @@
         <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
         <script type="text/javascript" th:src="@{/dist/js/common.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/complete.js}"></script>
         <script type="text/javascript" th:src="@{/dist/js/add-case.js}"></script>
         <script type="text/javascript" th:src="@{/dist/js/case-edit-detail.js}"></script>
         <script th:inline="javascript">
-            const pro_name_tags = /*[[${projectNames}]]*/ 'projectNames';
-            console.log(pro_name_tags);
-            /*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/
-            autocomplete(document.getElementById("p-search"), pro_name_tags);
+            autoComplete("/project/queryList", "p-search", 'p', false);
+
+            $('#add-case-modal').on('shown.bs.modal', function (event) {
+                autoComplete("/project/queryList", "projectId", 'p', true);
+                // myModal.off('shown.bs.modal');//去除绑定
+            })
+            // 查询相关关联的模块
+            $("#moduleId")[0].addEventListener("focus", function () {
+                autoComplete("/module/queryList/" + $("#c-a-p").attr("value"), "moduleId", 'm', true);
+            })
+
+            /*模块不存在时新添加*/
+            $("#moduleId").on("blur", function () {
+                if (Object.is($("#m-a").attr("value"), undefined)) {
+                    $.ajax({
+                        url: "/module/addModule/" + $("#c-a-p").attr("value") + "/" + $("#moduleId").val(),
+                        type: 'post',
+                        success: function (result) {
+                            $("#m-a").attr("value", result['data']);
+                        }
+                    })
+                }
+            });
+
+            resetModal('#add-case-modal', 'add-case-from');
 
             // 更新项目状态
             function updateStatus(caseId) {
@@ -176,6 +202,7 @@
                     }
                 })
             }
+
         </script>
     </body>
 </html>
