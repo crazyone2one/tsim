@@ -39,6 +39,12 @@ public class ProjectCaseRef implements Serializable {
     private String projectId;
 
     /**
+     * storyId
+     */
+    @TableField("story_id")
+    private String storyId;
+
+    /**
      * caseId
      */
     @TableField("case_id")

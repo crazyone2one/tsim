@@ -15,6 +15,16 @@ import java.util.List;
  */
 public interface ProjectCaseRefService extends IService<ProjectCaseRef> {
 
-    int addRefItem(String projectId, String caseId, String workDate);
+    /**
+     * 添加数据
+     *
+     * @param projectId
+     * @param storyId
+     * @param caseId
+     * @param workDate
+     * @return int
+     */
+    int addRefItem(String projectId, String storyId, String caseId, String workDate);
+
     List<ProjectCaseRef> queryRefList(String projectId, String workDate);
 }

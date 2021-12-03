@@ -21,8 +21,8 @@ import java.util.List;
 public class ProjectCaseRefServiceImpl extends ServiceImpl<ProjectCaseRefMapper, ProjectCaseRef> implements ProjectCaseRefService {
 
     @Override
-    public int addRefItem(String projectId, String caseId, String workDate) {
-        final ProjectCaseRef build = ProjectCaseRef.builder().projectId(projectId).caseId(caseId).workDate(workDate).build();
+    public int addRefItem(String projectId, String storyId, String caseId, String workDate) {
+        final ProjectCaseRef build = ProjectCaseRef.builder().projectId(projectId).storyId(storyId).caseId(caseId).workDate(workDate).build();
         return baseMapper.insert(build);
     }
 
