@@ -1,8 +1,10 @@
 ![GitHub](https://img.shields.io/github/license/crazyone2one/tsim)
-![echarts](https://img.shields.io/badge/echarts-5.1.2-green.svg)
-![bootstrap](https://img.shields.io/badge/bootstrap-5.1.1-green.svg)  
+![echarts](https://img.shields.io/badge/echarts-5.1.2-blue.svg)
+![jquery](https://img.shields.io/badge/jquery-3.6.0-blue.svg)  
+![bootstrap](https://img.shields.io/badge/bootstrap-5.1.1-blue.svg)  
 # tsim   
-测试用例、项目、缺陷管理系统。
+测试用例、项目、缺陷管理系统。   
+参照test-link功能流程设计的本系统。
 
 ## 技术选型
 * 核心框架 spring boot (2.5.4)  
