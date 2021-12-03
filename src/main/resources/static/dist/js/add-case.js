@@ -60,10 +60,10 @@ function sub() {
         dataType: 'JSON',
         success: function (arg) {
             if (Object.is(arg['code'], 200)) {
-                alert(arg['msg'], 'success');
-            } else {
-                alert(arg['msg'], 'warning');
+                resetModal("#add-case-modal", "add-case-from");
+                $("#table_refresh").load("/case/reloadTable");
             }
+            showToast(arg['code'], arg['msg']);
         }
     });
 }

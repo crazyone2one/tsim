@@ -1,9 +1,6 @@
 package cn.master.tsim.service.impl;
 
-import cn.master.tsim.entity.Module;
-import cn.master.tsim.entity.PlanCaseRef;
-import cn.master.tsim.entity.Project;
-import cn.master.tsim.entity.TestCase;
+import cn.master.tsim.entity.*;
 import cn.master.tsim.mapper.TestCaseMapper;
 import cn.master.tsim.service.*;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -36,6 +33,10 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     private PlanCaseRefService refService;
     @Autowired
     private TestPlanService planService;
+    @Autowired
+    TestTaskInfoService taskInfoService;
+    @Autowired
+    ProjectCaseRefService projectCaseRefService;
 
 
     @Autowired
@@ -49,6 +50,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     public TestCase saveCase(HttpServletRequest request, TestCase testCase) {
         final String projectId = request.getParameter("projectId");
         final String moduleId = request.getParameter("moduleId");
+        final String storyId = request.getParameter("storyId");
         final int priority = Integer.parseInt(request.getParameter("priority"));
         // // TODO: 2021/11/16 0016 未查询到对应的项目数据时新增项目
         final Project project = projectService.getProjectById(projectId);
@@ -62,27 +64,15 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 .stepStore(request.getParameter("stepStore"))
                 .resultStore(request.getParameter("resultStore"))
                 .createDate(new Date()).build();
-        final int insert = baseMapper.insert(build);
+        baseMapper.insert(build);
         stepsService.saveStep(request, build);
-/*保存测试用例时，不增加关联关系，只保存测试用例数据*/
-//        final String workDate = request.getParameter("workDate");
-////        查询project-case-ref表是否有该项目对应月份相关的测试用例
-//        final List<ProjectCaseRef> caseRefs = caseRefService.queryRefList(project.getId(), workDate);
-//        if (CollectionUtils.isNotEmpty(caseRefs)) {
-//            // 存在对应数据，不包括当前添加的测试用例
-//            final List<ProjectCaseRef> collect = caseRefs.stream().filter(t -> Objects.equals(t.getCaseId(), build.getId())).collect(Collectors.toList());
-//            if (CollectionUtils.isEmpty(collect)) {
-//                caseRefService.addRefItem(project.getId(), build.getId(), workDate);
-//                final TestTaskInfo taskInfo = taskInfoMapper.queryInfoByIdAndDate(project.getId(), workDate);
-//                taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + insert);
-//                taskInfoMapper.updateById(taskInfo);
-//            }
-//        } else {
-//            caseRefService.addRefItem(project.getId(), build.getId(), workDate);
-//            final TestTaskInfo taskInfo = taskInfoMapper.queryInfoByIdAndDate(project.getId(), workDate);
-//            taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + insert);
-//            taskInfoMapper.updateById(taskInfo);
-//        }
+//       关联需求时 t_project_case_ref表增加一条记录
+        if (StringUtils.isNotBlank(storyId)) {
+            final int item = projectCaseRefService.addRefItem(projectId, storyId, build.getId(), "");
+            final TestTaskInfo taskInfo = taskInfoService.queryItem(projectId, storyId);
+            taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + item);
+            taskInfoService.updateTask(request, taskInfo);
+        }
         return build;
     }
 

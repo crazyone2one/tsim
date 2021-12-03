@@ -64,6 +64,8 @@ public class TestCase implements Serializable {
     @ExcelProperty(value = "模块", index = 1)
     private String moduleId;
     @TableField(exist = false)
+    private String storyId;
+    @TableField(exist = false)
     private Module module;
 
     @JsonFormat(pattern = "yyyy-MM-dd")

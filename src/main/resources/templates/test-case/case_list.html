@@ -13,11 +13,9 @@
                 <nav id="sidebarMenu" th:replace="/fragment/commons :: sidebarMenu2(flag='case')">
                 </nav>
 
-                <main class="col-md-10 ms-sm-auto px-md-4">
+                <main class="main-content ms-sm-auto px-md-1 position-relative">
                     <!-- 右侧顶部导航栏结束 -->
                     <div>
-                        <div id="liveAlertPlaceholder">
-                        </div>
                         <!--操作栏-->
                         <div class="pt-2 border-bottom">
                             <div class="card-body">
@@ -80,7 +78,7 @@
                             </div>
                         </div>
                         <!--            列表数据-->
-                        <div>
+                        <div id="table_refresh" th:fragment="table_refresh">
                             <table class="table table-hover">
                                 <thead>
                                 <tr class="text-center">
@@ -142,6 +140,8 @@
                     <div th:replace="~{test-case/uploadCase::uploadModal}"></div>
                     <!--        分页-->
                     <div th:replace="/fragment/commons :: pagination01"></div>
+                    <!--                    toast-->
+                    <div th:replace="/fragment/commons :: toast-div"></div>
                 </main>
 
             </div>
@@ -166,8 +166,12 @@
             $("#moduleId")[0].addEventListener("focus", function () {
                 autoComplete("/module/queryList/" + $("#c-a-p").attr("value"), "moduleId", 'm', true);
             })
+            $("#case-story")[0].addEventListener("focus", function () {
+                autoComplete("/story/queryList/" + $("#c-a-p").attr("value"), "case-story", 's', true);
+            })
 
             /*模块不存在时新添加*/
+            // fixme 使用别的方法，不可以在失去焦点时增加模块信息
             $("#moduleId").on("blur", function () {
                 if (Object.is($("#m-a").attr("value"), undefined)) {
                     $.ajax({
@@ -179,8 +183,6 @@
                     })
                 }
             });
-
-            resetModal('#add-case-modal', 'add-case-from');
 
             // 更新项目状态
             function updateStatus(caseId) {

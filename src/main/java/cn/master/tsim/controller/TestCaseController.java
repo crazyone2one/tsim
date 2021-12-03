@@ -68,6 +68,13 @@ public class TestCaseController {
         return "test-case/case_list";
     }
 
+    @RequestMapping("/reloadTable")
+    public String reloadTable(Model model, TestCase testCase) {
+        final IPage<TestCase> iPage = caseService.pageList(testCase, 0, 0);
+        model.addAttribute("iPage", iPage);
+        return "test-case/case_list :: table_refresh";
+    }
+
     @PostMapping(value = "/save")
     @ResponseBody
     public ResponseResult saveTestCase(HttpServletRequest request) {
