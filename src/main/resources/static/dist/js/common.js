@@ -30,6 +30,21 @@ function alert(message, type) {
 }
 
 /**
+ * 使用bootstrap toast作为消息提示
+ * @param code ajax请求后返回的状态码，用于决定toast的类型
+ * @param msg 提示消息内容
+ */
+function showToast(code, msg) {
+    if (Object.is(200, code)) {
+        $('.toast').addClass("bg-success");
+    } else {
+        $('.toast').addClass("bg-danger");
+    }
+    $(".toast-body").text(msg);
+    $('.toast').toast('show');
+}
+
+/**
  * 从一个对象中 delete 一个属性.使用函数方式创建一个没有此属性的新对象.
  *
  * const toto = { a: 55, b: 66 }
@@ -91,6 +106,7 @@ function autoComplete(url, idSelector, flag, needChange) {
  * @param formId
  */
 function resetModal(modalId, formId) {
+    $(modalId).modal('toggle');
     $(modalId).on('hide.bs.modal', function () {
         document.getElementById(formId).reset();
         console.log(" hide >> reset modal completed")
