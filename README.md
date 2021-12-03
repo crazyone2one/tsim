@@ -1,6 +1,6 @@
 ![GitHub](https://img.shields.io/github/license/crazyone2one/tsim)
 ![echarts](https://img.shields.io/badge/echarts-5.1.2-blue.svg)
-![jquery](https://img.shields.io/badge/jquery-3.6.0-blue.svg)  
+![jquery](https://img.shields.io/badge/jquery-3.6.0-blue.svg)
 ![bootstrap](https://img.shields.io/badge/bootstrap-5.1.1-blue.svg)  
 # tsim   
 测试用例、项目、缺陷管理系统。   
