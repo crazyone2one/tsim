@@ -34,7 +34,7 @@ public class FreemarkerUtils {
             Configuration cfg = new Configuration(Configuration.VERSION_2_3_31);
             //设置编码
             cfg.setDefaultEncoding("UTF-8");
-            cfg.setClassForTemplateLoading(FreemarkerUtils.class, "/template");
+            cfg.setClassForTemplateLoading(FreemarkerUtils.class, "/export");
             cfg.setTemplateExceptionHandler(TemplateExceptionHandler.RETHROW_HANDLER);
 
             /* Get the template (uses cache internally) */
