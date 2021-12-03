@@ -61,6 +61,13 @@ public class TestStoryController {
         return "story/story_list";
     }
 
+    @RequestMapping("/reloadTable")
+    public String reloadTable(Model model, TestStory story) {
+        final IPage<TestStory> iPage = service.pageList(story, 0, 0);
+        model.addAttribute("iPage", iPage);
+        return "story/story_list :: table_refresh";
+    }
+
     @PostMapping(value = "/save")
     @ResponseBody
     public ResponseResult saveStory(HttpServletRequest request) {
@@ -100,7 +107,7 @@ public class TestStoryController {
     @RequestMapping("/upload")
     @ResponseBody
     public ResponseResult upload(HttpServletRequest request, MultipartFile file) {
-        request.setAttribute("docFlag","story");
+        request.setAttribute("docFlag", "story");
         return service.upload(request, file);
     }
 
@@ -126,6 +133,19 @@ public class TestStoryController {
         ResponseResult result = ResponseUtils.success("数据查询成功");
         try {
             final List<TestStory> stories = service.listStory();
+            result.setData(stories);
+        } catch (Exception e) {
+            ResponseUtils.error("数据查询失败");
+        }
+        return result;
+    }
+
+    @RequestMapping(value = "/queryList/{projectId}")
+    @ResponseBody
+    public ResponseResult queryListByProject(HttpServletRequest request, @PathVariable String projectId) {
+        ResponseResult result = ResponseUtils.success("数据查询成功");
+        try {
+            final List<TestStory> stories = service.listStoryByProjectId(projectId);
             result.setData(stories);
         } catch (Exception e) {
             ResponseUtils.error("数据查询失败");

@@ -50,7 +50,7 @@ public interface TestStoryService extends IService<TestStory> {
      */
     TestStory updateStory(String storyId);
 
-    List<TestStory> listStoryByProjectId(String projectName);
+    List<TestStory> listStoryByProjectId(String projectId);
 
     List<TestStory> listStory();
 

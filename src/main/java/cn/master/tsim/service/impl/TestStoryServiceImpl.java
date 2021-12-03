@@ -3,7 +3,6 @@ package cn.master.tsim.service.impl;
 import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.DocInfo;
-import cn.master.tsim.entity.Project;
 import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.mapper.TestStoryMapper;
 import cn.master.tsim.service.*;
@@ -82,17 +81,12 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         final Map<String, Object> objectMap = StreamUtils.getParamsFromRequest(request);
         final String description = String.valueOf(objectMap.get("description")).trim();
         final String date = String.valueOf(objectMap.get("date"));
-        final Project project = projectService.getProjectById(String.valueOf(objectMap.get("name")));
-        // FIXME: 2021/11/26 npe
-        final TestStory testStory = getStory(description, date, Objects.nonNull(project) ? project.getId() : "");
-        if (Objects.nonNull(testStory)) {
-            return testStory;
-        }
+        final String projectId = String.valueOf(objectMap.get("name"));
         String doc = String.valueOf(objectMap.get("doc"));
-        TestStory build = TestStory.builder().projectId(project.getId()).description(description).workDate(date)
+        TestStory build = TestStory.builder().projectId(projectId).description(description).workDate(date)
                 .docId(doc).delFlag(0).createDate(new Date()).build();
         baseMapper.insert(build);
-        taskInfoService.addItem(request, project, build);
+        taskInfoService.addItem(request, projectId, build);
         return build;
     }
 
@@ -129,8 +123,8 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     }
 
     @Override
-    public List<TestStory> listStoryByProjectId(String projectName) {
-        return baseMapper.selectList(new QueryWrapper<TestStory>().lambda().eq(TestStory::getProjectId, projectService.getProjectByName(projectName).getId()));
+    public List<TestStory> listStoryByProjectId(String projectId) {
+        return baseMapper.selectList(new QueryWrapper<TestStory>().lambda().eq(TestStory::getProjectId, projectId));
     }
 
     @Override
