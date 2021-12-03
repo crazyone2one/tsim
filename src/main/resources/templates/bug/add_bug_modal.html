@@ -21,21 +21,27 @@
                         </div>
                         <div class="modal-body">
                             <div class="row g-3 align-items-center">
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label for="projectCode" class="form-label">项目名称</label>
                                     <input  id="projectCode" type="text"
                                            class="form-control" placeholder="录入项目名称"
                                            required>
                                     <input type="hidden" name="projectId" id="b-a-p">
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
                                     <label for="module" class="form-label">模块</label>
                                     <input  id="module" type="text" class="form-control"
                                            placeholder="录入模块名称"
                                            required>
                                     <input type="hidden" name="moduleId" id="b-a-m">
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-6">
+                                    <label for="add-bug-story" class="form-label">关联需求</label>
+                                    <input id="add-bug-story" type="text" class="form-control"
+                                            placeholder="录入需求名称">
+                                    <input type="hidden" name="storyId" id="bug-story-ref">
+                                </div>
+                                <div class="col-md-6">
                                     <label for="functionDesc" class="form-label">功能点</label>
                                     <input name="func" id="functionDesc" type="text"
                                            class="form-control" placeholder=""

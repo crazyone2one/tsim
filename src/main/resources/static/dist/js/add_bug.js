@@ -10,10 +10,10 @@ function saveBug() {
             dataType: 'JSON',
             success: function (arg) {
                 if (Object.is(arg['code'], 200)) {
-                    alert(arg['msg'], 'success')
-                } else {
-                    alert(arg['msg'], 'warning');
+                    resetModal("#add-bug-modal", "add-bug-from");
+                    $("#table_refresh").load("/bug/reloadTable");
                 }
+                showToast(arg['code'], arg['msg']);
             }
         });
     } else {

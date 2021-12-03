@@ -27,7 +27,7 @@ public interface TestBugService extends IService<TestBug> {
 
     IPage<TestBug> pageListBug(TestBug bug, Integer pageCurrent, Integer pageSize);
 
-    Map<String, Integer> bugMapByProject(String projectId, String bugStatus);
+    Map<String, Integer> bugMapByProject(String projectId, String storyId, String bugStatus);
 
     /**
      * 查询bug信息

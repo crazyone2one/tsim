@@ -51,6 +51,13 @@ public class TestBugController {
         return "bug/bug_list";
     }
 
+    @RequestMapping("/reloadTable")
+    public String reloadTable(Model model, TestBug bug) {
+        final IPage<TestBug> iPage = bugService.pageListBug(bug, 0, 0);
+        model.addAttribute("iPage", iPage);
+        return "bug/bug_list :: table_refresh";
+    }
+
     /**
      * 保存bug
      *

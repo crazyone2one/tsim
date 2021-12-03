@@ -2,9 +2,11 @@ package cn.master.tsim.service.impl;
 
 import cn.master.tsim.common.Constants;
 import cn.master.tsim.common.ResponseResult;
+import cn.master.tsim.entity.ProjectBugRef;
 import cn.master.tsim.entity.TestBug;
 import cn.master.tsim.mapper.TestBugMapper;
 import cn.master.tsim.service.ModuleService;
+import cn.master.tsim.service.ProjectBugRefService;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestBugService;
 import cn.master.tsim.util.DateUtils;
@@ -34,11 +36,13 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
 
     private final ProjectService posService;
     private final ModuleService moduleService;
+    private final ProjectBugRefService projectBugRefService;
 
     @Autowired
-    public TestBugServiceImpl(ProjectService posService, ModuleService moduleService) {
+    public TestBugServiceImpl(ProjectService posService, ModuleService moduleService, ProjectBugRefService projectBugRefService) {
         this.posService = posService;
         this.moduleService = moduleService;
+        this.projectBugRefService = projectBugRefService;
     }
 
     @Override
@@ -48,16 +52,18 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
 
     @Override
     public TestBug addBug(HttpServletRequest request, TestBug testBug) {
-        testBug.setProjectId(testBug.getProjectId());
-        testBug.setModuleId(testBug.getModuleId());
-        testBug.setCreateDate(new Date());
-        if (StringUtils.isBlank(testBug.getWorkDate())) {
-            testBug.setWorkDate(DateUtils.parse2String(new Date(), "yyyy-MM"));
-        } else {
-            testBug.setWorkDate(testBug.getWorkDate());
+        final String tempStoryId = testBug.getStoryId();
+        final TestBug build = TestBug.builder()
+                .projectId(testBug.getProjectId()).moduleId(testBug.getModuleId()).title(testBug.getTitle())
+                .severity(testBug.getSeverity()).func(testBug.getFunc()).bugStatus(testBug.getBugStatus()).note(testBug.getNote())
+                .tester(testBug.getTester()).delFlag(0).createDate(new Date())
+                .workDate(StringUtils.isBlank(testBug.getWorkDate()) ? DateUtils.parse2String(new Date(), "yyyy-MM") : testBug.getWorkDate())
+                .build();
+        baseMapper.insert(build);
+        if (StringUtils.isNotBlank(tempStoryId)) {
+            projectBugRefService.addItem(build.getProjectId(), build.getId(), build.getWorkDate(), tempStoryId);
         }
-        baseMapper.insert(testBug);
-        return testBug;
+        return build;
     }
 
     @Override
@@ -80,10 +86,13 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
     }
 
     @Override
-    public Map<String, Integer> bugMapByProject(String projectId, String bugStatus) {
+    public Map<String, Integer> bugMapByProject(String projectId, String storyId, String bugStatus) {
+        final List<ProjectBugRef> bugRefList = projectBugRefService.refList(projectId, null, null, storyId);
+        final List<String> bugList = bugRefList.stream().map(ProjectBugRef::getBugId).collect(Collectors.toList());
         Map<String, Integer> result = new LinkedHashMap<>();
         QueryWrapper<TestBug> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(TestBug::getProjectId, projectId).eq(TestBug::getBugStatus, bugStatus);
+        wrapper.lambda().in(TestBug::getId, bugList);
         List<TestBug> bugs = baseMapper.selectList(wrapper);
         Map<Integer, Integer> collect = bugs.stream().collect(Collectors.groupingBy(TestBug::getSeverity, Collectors.summingInt(p -> 1)));
         result.put("level1", collect.getOrDefault(1, 0));
