@@ -69,13 +69,13 @@
     </div>
 </nav>
 <!--菜单样式2-->
-<div class="d-flex flex-column flex-shrink-0 p-3 bg-light col-md-2" th:fragment="sidebarMenu2">
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="flex: 0 0 auto;width: 13%;" th:fragment="sidebarMenu2">
 <!--    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">-->
 <!--        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>-->
 <!--        <span class="fs-4">Sidebar</span>-->
 <!--    </a>-->
     <hr>
-    <ul class="nav nav-pills flex-column mb-auto">
+    <ul class="nav nav-pills flex-column mb-auto col-md-9">
         <li>
             <a th:class="${flag=='dashboard'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/dashboard}">
                 <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
@@ -127,7 +127,8 @@
     </ul>
     <hr>
     <div class="dropdown">
-        <a href="#" class="d-flex align-items-center link-dark text-decoration-none dropdown-toggle" id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
+        <a href="#" class="d-flex align-items-center link-primary text-decoration-none dropdown-toggle"
+           id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
 <!--            <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">-->
             <i class="rounded-circle me-2 bi bi-person" style="font-size: 1.5rem"></i>
             <strong th:text="${session.account.username}">11‘s papa</strong>
@@ -205,5 +206,16 @@
                 <a class="btn btn-primary" th:href="@{/user/exit}">Logout</a>
             </div>
         </div>
+    </div>
+</div>
+
+<!--                    toast-->
+<div class="toast align-items-center text-white border-0 position-absolute top-0 end-0"
+     role="alert" aria-live="assertive" aria-atomic="true" th:fragment="toast-div">
+    <div class="d-flex">
+        <div class="toast-body">
+            Hello, world! This is a toast message.
+        </div>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
     </div>
 </div>
