@@ -58,12 +58,22 @@ public class TestPlanController {
         return "plan/plan_list";
     }
 
+    @RequestMapping("/reloadTable")
+    public String reloadTable(Model model, TestPlan project) {
+        final IPage<TestPlan> iPage = planService.pageList(project, 0, 0);
+        model.addAttribute("iPage", iPage);
+        return "plan/plan_list :: table_refresh";
+    }
+
     @PostMapping(value = "/save")
     @ResponseBody
-    public ResponseResult savePlan(HttpServletRequest request, TestPlan plan) {
+    public ResponseResult savePlan(HttpServletRequest request,
+                                   @RequestParam("storyId") String storyId,
+                                   @RequestParam("planName") String planName,
+                                   @RequestParam("planDesc") String planDesc
+    ) {
         try {
-            final TestPlan testPlan = planService.savePlan(request, plan);
-            return ResponseUtils.success("数据添加成功", testPlan);
+            return planService.savePlan(request, storyId, planName, planDesc);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据添加失败", e.getMessage());
         }

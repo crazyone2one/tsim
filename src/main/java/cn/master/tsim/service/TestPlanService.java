@@ -1,5 +1,6 @@
 package cn.master.tsim.service;
 
+import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.TestPlan;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -22,10 +23,14 @@ public interface TestPlanService extends IService<TestPlan> {
      * 保存测试计划数据
      *
      * @param request HttpServletRequest
-     * @param plan    TestPlan
+     * @param storyId    需求id
+     * @param planName 计划名称
+     * @param planDesc 计划描述
      * @return cn.master.tsim.entity.TestPlan
      */
-    TestPlan savePlan(HttpServletRequest request, TestPlan plan);
+    ResponseResult savePlan(HttpServletRequest request, String storyId, String planName, String planDesc);
+
+    TestPlan uniquePlan(String storyId, String planName, String planDesc);
 
     /**
      * 更新测试计划状态

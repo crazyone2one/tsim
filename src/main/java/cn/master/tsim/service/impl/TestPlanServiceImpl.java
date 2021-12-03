@@ -1,5 +1,7 @@
 package cn.master.tsim.service.impl;
 
+import cn.master.tsim.common.ResponseCode;
+import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Project;
 import cn.master.tsim.entity.TestPlan;
 import cn.master.tsim.entity.TestStory;
@@ -7,6 +9,7 @@ import cn.master.tsim.mapper.TestPlanMapper;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestPlanService;
 import cn.master.tsim.service.TestStoryService;
+import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -65,12 +68,22 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     }
 
     @Override
-    public TestPlan savePlan(HttpServletRequest request, TestPlan plan) {
-        final TestStory story = storyService.searchStoryById(plan.getStoryId());
-        TestPlan build = TestPlan.builder().description(plan.getDescription()).name(plan.getName())
+    public ResponseResult savePlan(HttpServletRequest request, String storyId, String planName, String planDesc) {
+        final TestPlan uniquePlan = uniquePlan(storyId, planName, planDesc);
+        if (Objects.nonNull(uniquePlan)) {
+            return ResponseUtils.error(ResponseCode.PARAMS_ERROR.getCode(), "存在相同测试计划");
+        }
+        final TestStory story = storyService.searchStoryById(storyId);
+        TestPlan build = TestPlan.builder().description(planDesc).name(planName)
                 .projectId(story.getProject().getId()).storyId(story.getId()).workDate(story.getWorkDate()).delFlag(0).createDate(new Date()).build();
         baseMapper.insert(build);
-        return build;
+        return ResponseUtils.error(ResponseCode.SUCCESS.getCode(), "数据添加成功", build);
+    }
+
+    @Override
+    public TestPlan uniquePlan(String storyId, String planName, String planDesc) {
+        return baseMapper.selectOne(new QueryWrapper<TestPlan>().lambda()
+                .eq(TestPlan::getStoryId, storyId).eq(TestPlan::getName, planName).eq(TestPlan::getDescription, planDesc));
     }
 
     @Override
