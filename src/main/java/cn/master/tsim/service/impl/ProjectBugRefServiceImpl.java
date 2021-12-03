@@ -13,7 +13,7 @@ import java.util.Objects;
 
 /**
  * <p>
- *  服务实现类
+ * 服务实现类
  * </p>
  *
  * @author 11's papa
@@ -23,33 +23,34 @@ import java.util.Objects;
 public class ProjectBugRefServiceImpl extends ServiceImpl<ProjectBugRefMapper, ProjectBugRef> implements ProjectBugRefService {
 
     @Override
-    public ProjectBugRef addItem(String projectId, String bugId, String workDate) {
-        final ProjectBugRef ref = checkItem(projectId, bugId, workDate);
+    public ProjectBugRef addItem(String projectId, String bugId, String workDate, String storyId) {
+        final ProjectBugRef ref = checkItem(projectId, bugId, workDate, storyId);
         if (Objects.nonNull(ref)) {
             return ref;
         }
-        final ProjectBugRef build = ProjectBugRef.builder().projectId(projectId).bugId(bugId).workDate(workDate).build();
+        final ProjectBugRef build = ProjectBugRef.builder().projectId(projectId).storyId(storyId).bugId(bugId).workDate(workDate).build();
         baseMapper.insert(build);
         return build;
     }
 
     @Override
-    public ProjectBugRef checkItem(String projectId, String bugId, String workDate) {
-        QueryWrapper<ProjectBugRef> wrapper = getRefQueryWrapper(projectId, bugId, workDate);
+    public ProjectBugRef checkItem(String projectId, String bugId, String workDate, String storyId) {
+        QueryWrapper<ProjectBugRef> wrapper = getRefQueryWrapper(projectId, bugId, workDate, storyId);
         return baseMapper.selectOne(wrapper);
     }
 
-    private QueryWrapper<ProjectBugRef> getRefQueryWrapper(String projectId, String bugId, String workDate) {
+    private QueryWrapper<ProjectBugRef> getRefQueryWrapper(String projectId, String bugId, String workDate, String storyId) {
         QueryWrapper<ProjectBugRef> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(StringUtils.isNotBlank(projectId), ProjectBugRef::getProjectId, projectId);
-        wrapper.lambda().eq(StringUtils.isNotBlank(bugId), ProjectBugRef::getBugId, bugId);
-        wrapper.lambda().eq(StringUtils.isNotBlank(workDate), ProjectBugRef::getWorkDate, workDate);
+        wrapper.lambda().eq(StringUtils.isNotBlank(projectId), ProjectBugRef::getProjectId, projectId)
+                .eq(StringUtils.isNotBlank(storyId), ProjectBugRef::getStoryId, storyId)
+                .eq(StringUtils.isNotBlank(bugId), ProjectBugRef::getBugId, bugId)
+                .eq(StringUtils.isNotBlank(workDate), ProjectBugRef::getWorkDate, workDate);
         return wrapper;
     }
 
     @Override
-    public List<ProjectBugRef> refList(String projectId, String bugId, String workDate) {
-        QueryWrapper<ProjectBugRef> wrapper = getRefQueryWrapper(projectId, bugId, workDate);
+    public List<ProjectBugRef> refList(String projectId, String bugId, String workDate, String storyId) {
+        QueryWrapper<ProjectBugRef> wrapper = getRefQueryWrapper(projectId, bugId, workDate, storyId);
         return baseMapper.selectList(wrapper);
     }
 }

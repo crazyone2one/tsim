@@ -15,10 +15,9 @@ import java.util.List;
  */
 public interface ProjectBugRefService extends IService<ProjectBugRef> {
 
-    ProjectBugRef addItem(String projectId, String bugId, String workDate);
+    ProjectBugRef addItem(String projectId, String bugId, String workDate, String storyId);
 
-    ProjectBugRef checkItem(String projectId, String bugId, String workDate);
+    ProjectBugRef checkItem(String projectId, String bugId, String workDate, String storyId);
 
-    List<ProjectBugRef> refList(String projectId, String bugId, String workDate);
-
+    List<ProjectBugRef> refList(String projectId, String bugId, String workDate, String storyId);
 }

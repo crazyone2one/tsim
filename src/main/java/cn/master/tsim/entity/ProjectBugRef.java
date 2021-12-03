@@ -32,6 +32,12 @@ public class ProjectBugRef implements Serializable {
     @TableField("project_id")
     private String projectId;
 
+    /**
+     * storyId
+     */
+    @TableField("story_id")
+    private String storyId;
+
     @TableField("bug_id")
     private String bugId;
 
