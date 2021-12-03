@@ -139,3 +139,9 @@ body {
     padding: 0 10px;
     background-color: #fff;
 }
+
+/*自定义内容div宽度*/
+.main-content {
+    flex: 0 0 auto;
+    width: 87%;
+}
