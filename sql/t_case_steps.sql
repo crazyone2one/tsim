@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50732
 File Encoding         : 65001
 
-Date: 2021-11-01 15:29:10
+Date: 2021-12-03 14:13:36
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,7 +25,7 @@ CREATE TABLE `t_case_steps` (
   `case_order` int(11) NOT NULL DEFAULT '-1' COMMENT 'caseOrder',
   `case_step` varchar(255) NOT NULL DEFAULT '' COMMENT 'caseStep',
   `case_step_result` varchar(255) NOT NULL DEFAULT '' COMMENT 'caseStepResult',
-  `active` tinyint(50) NOT NULL DEFAULT '0' COMMENT 'active',
+  `active` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'active',
   `create_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'createDate',
   `update_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'updateDate',
   PRIMARY KEY (`id`)

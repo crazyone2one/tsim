@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50732
 File Encoding         : 65001
 
-Date: 2021-11-01 16:00:52
+Date: 2021-12-03 14:14:09
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -25,6 +25,7 @@ CREATE TABLE `t_plan` (
   `description` varchar(255) NOT NULL DEFAULT '' COMMENT '测试计划描述',
   `project_id` varchar(36) NOT NULL DEFAULT '' COMMENT '项目id',
   `story_id` varchar(36) NOT NULL DEFAULT '' COMMENT '需求id',
+  `work_date` varchar(50) DEFAULT '' COMMENT '任务时间',
   `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除状态（0，有效 1，无效）',
   `group_id` varchar(50) NOT NULL DEFAULT '' COMMENT 'groupId',
   `num` varchar(50) NOT NULL DEFAULT '' COMMENT 'num',

@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50732
 File Encoding         : 65001
 
-Date: 2021-11-01 16:01:49
+Date: 2021-12-03 14:12:52
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -22,6 +22,7 @@ DROP TABLE IF EXISTS `project_bug_ref`;
 CREATE TABLE `project_bug_ref` (
   `id` varchar(36) NOT NULL COMMENT 'id',
   `project_id` varchar(36) NOT NULL DEFAULT '' COMMENT 'projectId',
+  `story_id` varchar(36) DEFAULT NULL COMMENT '需求id',
   `bug_id` varchar(36) NOT NULL DEFAULT '' COMMENT 'bugId',
   `work_date` varchar(50) NOT NULL DEFAULT '' COMMENT 'workDate',
   PRIMARY KEY (`id`)
@@ -36,9 +37,9 @@ CREATE TABLE `t_bug` (
   `project_id` varchar(36) NOT NULL DEFAULT '' COMMENT '项目id',
   `module_id` varchar(36) NOT NULL DEFAULT '' COMMENT '模块 id',
   `title` varchar(100) NOT NULL DEFAULT '' COMMENT '标题',
-  `severity` tinyint(1) NOT NULL DEFAULT '1' COMMENT '严重程度(1:轻微,2:一般,3:严重,4:致命)',
+  `severity` int(11) NOT NULL DEFAULT '1' COMMENT '严重程度(1:轻微,2:一般,3:严重,4:致命)',
   `func` varchar(100) NOT NULL DEFAULT '' COMMENT '功能点',
-  `bug_status` tinyint(1) NOT NULL DEFAULT '1' COMMENT '状态（1,新增 2，挂起 3，已提交 4，已解决 5 非bug）',
+  `bug_status` int(11) NOT NULL DEFAULT '1' COMMENT '状态（1,新增 2，挂起 3，已提交 4，已解决 5 非bug）',
   `note` varchar(100) NOT NULL DEFAULT '' COMMENT '备注内容',
   `tester` varchar(36) NOT NULL DEFAULT '' COMMENT '测试人员',
   `work_date` varchar(50) NOT NULL DEFAULT '' COMMENT 'workDate',
@@ -56,12 +57,12 @@ DROP TABLE IF EXISTS `t_case`;
 CREATE TABLE `t_case` (
   `id` varchar(36) NOT NULL COMMENT 'id',
   `name` varchar(100) NOT NULL DEFAULT '' COMMENT '测试用例标题',
-  `description` varchar(100) NOT NULL DEFAULT '' COMMENT '测试描述',
+  `description` varchar(100) DEFAULT '' COMMENT '测试描述',
   `active` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标志(0=未删除;1=删除)',
   `project_id` varchar(36) NOT NULL DEFAULT '' COMMENT '项目id',
   `module_id` varchar(36) NOT NULL DEFAULT '' COMMENT '模块id',
-  `note` varchar(100) NOT NULL DEFAULT '' COMMENT '备注内容',
-  `precondition` varchar(255) NOT NULL DEFAULT '' COMMENT '测试前提',
+  `note` varchar(100) DEFAULT '' COMMENT '备注内容',
+  `precondition` varchar(255) DEFAULT '' COMMENT '测试前提',
   `step_store` varchar(255) NOT NULL DEFAULT '' COMMENT '测试步骤',
   `result_store` varchar(255) NOT NULL DEFAULT '' COMMENT '预期结果',
   `priority` tinyint(1) NOT NULL DEFAULT '1' COMMENT '优先级(0=低;1=中;2=高)',
@@ -81,11 +82,26 @@ CREATE TABLE `t_case_steps` (
   `case_order` int(11) NOT NULL DEFAULT '-1' COMMENT 'caseOrder',
   `case_step` varchar(255) NOT NULL DEFAULT '' COMMENT 'caseStep',
   `case_step_result` varchar(255) NOT NULL DEFAULT '' COMMENT 'caseStepResult',
-  `active` tinyint(50) NOT NULL DEFAULT '0' COMMENT 'active',
+  `active` tinyint(1) NOT NULL DEFAULT '0' COMMENT 'active',
   `create_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'createDate',
   `update_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'updateDate',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='test_case_steps';
+
+-- ----------------------------
+-- Table structure for t_doc_info
+-- ----------------------------
+DROP TABLE IF EXISTS `t_doc_info`;
+CREATE TABLE `t_doc_info` (
+  `id` varchar(36) NOT NULL COMMENT '主键id',
+  `doc_name` varchar(100) NOT NULL COMMENT '文件名称',
+  `uuid_name` varchar(100) NOT NULL COMMENT 'uuid生成的文件名',
+  `doc_flag` varchar(100) NOT NULL COMMENT '文件类型',
+  `doc_path` varchar(100) NOT NULL COMMENT '文件路径地址',
+  `del_flag` tinyint(4) DEFAULT NULL COMMENT '删除标记 0-未删除 1-已删除',
+  `create_date` datetime DEFAULT NULL COMMENT '创建时间',
+  `update_date` datetime DEFAULT NULL COMMENT '更新时间'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文档信息表';
 
 -- ----------------------------
 -- Table structure for t_module
@@ -112,6 +128,7 @@ CREATE TABLE `t_plan` (
   `description` varchar(255) NOT NULL DEFAULT '' COMMENT '测试计划描述',
   `project_id` varchar(36) NOT NULL DEFAULT '' COMMENT '项目id',
   `story_id` varchar(36) NOT NULL DEFAULT '' COMMENT '需求id',
+  `work_date` varchar(50) DEFAULT '' COMMENT '任务时间',
   `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除状态（0，有效 1，无效）',
   `group_id` varchar(50) NOT NULL DEFAULT '' COMMENT 'groupId',
   `num` varchar(50) NOT NULL DEFAULT '' COMMENT 'num',
@@ -150,6 +167,19 @@ CREATE TABLE `t_project` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='项目表';
 
 -- ----------------------------
+-- Table structure for t_project_case_ref
+-- ----------------------------
+DROP TABLE IF EXISTS `t_project_case_ref`;
+CREATE TABLE `t_project_case_ref` (
+  `id` varchar(36) NOT NULL COMMENT 'id',
+  `project_id` varchar(36) NOT NULL DEFAULT '' COMMENT '项目Id',
+  `story_id` varchar(36) NOT NULL COMMENT '需求id',
+  `case_id` varchar(36) NOT NULL DEFAULT '' COMMENT '测试用例id',
+  `work_date` varchar(10) DEFAULT '' COMMENT 'workDate',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='项目-测试用例关联表';
+
+-- ----------------------------
 -- Table structure for t_story
 -- ----------------------------
 DROP TABLE IF EXISTS `t_story`;
@@ -158,6 +188,7 @@ CREATE TABLE `t_story` (
   `description` varchar(255) NOT NULL DEFAULT '' COMMENT '需求内容',
   `project_id` varchar(36) NOT NULL DEFAULT '' COMMENT '项目id',
   `work_date` varchar(50) NOT NULL DEFAULT '' COMMENT '需求时间',
+  `doc_id` varchar(36) DEFAULT NULL,
   `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '完成状态(0:未结束，1：已结束)',
   `create_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'createDate',
   `update_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'updateDate',
@@ -171,14 +202,15 @@ DROP TABLE IF EXISTS `t_task_info`;
 CREATE TABLE `t_task_info` (
   `id` varchar(36) NOT NULL COMMENT '主键id',
   `project_id` varchar(36) NOT NULL DEFAULT '' COMMENT '项目名称',
-  `summary_desc` varchar(255) NOT NULL DEFAULT '' COMMENT '任务描述',
+  `story_id` varchar(36) NOT NULL COMMENT '需求id',
+  `summary_desc` varchar(255) DEFAULT '' COMMENT '任务描述',
   `create_case_count` int(11) NOT NULL DEFAULT '0' COMMENT '编写用例数量',
   `execute_case_count` int(11) NOT NULL DEFAULT '0' COMMENT '执行测试用例数量',
-  `finish_status` varchar(50) NOT NULL DEFAULT '' COMMENT '完成状态',
+  `finish_status` varchar(50) NOT NULL COMMENT '完成状态',
   `delivery_status` varchar(50) NOT NULL DEFAULT '' COMMENT '交付状态',
   `bug_doc` tinyint(1) DEFAULT NULL,
   `report_doc` tinyint(1) DEFAULT NULL,
-  `req_doc` tinyint(1) DEFAULT NULL,
+  `req_doc` varchar(36) DEFAULT NULL COMMENT '需求文件数据id',
   `tester` varchar(36) NOT NULL DEFAULT '' COMMENT '负责人',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
   `issue_date` varchar(50) NOT NULL DEFAULT '' COMMENT '任务时间',
@@ -194,8 +226,9 @@ DROP TABLE IF EXISTS `t_user`;
 CREATE TABLE `t_user` (
   `id` varchar(255) NOT NULL COMMENT '主键id',
   `account` varchar(255) DEFAULT NULL COMMENT '账号',
-  `password` varchar(255) DEFAULT NULL COMMENT '密码',
-  `del_flag` varchar(255) DEFAULT '0' COMMENT '删除标记（0，未删除，1 删除）',
   `username` varchar(255) DEFAULT NULL COMMENT '真实姓名',
+  `password` varchar(255) DEFAULT NULL COMMENT '密码',
+  `email` varchar(255) DEFAULT NULL COMMENT '邮箱',
+  `del_flag` varchar(255) DEFAULT '0' COMMENT '删除标记（0，未删除，1 删除）',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
