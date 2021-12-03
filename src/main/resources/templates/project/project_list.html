@@ -10,23 +10,13 @@
             <div class="row">
                 <nav id="sidebarMenu" th:replace="/fragment/commons :: sidebarMenu2(flag='project')">
                 </nav>
-                <main class="col-md-10 ms-sm-auto px-md-4">
+                <main class="ms-sm-auto px-md-1 position-relative main-content">
                     <!-- Begin Page Content 右侧页面内容 -->
                     <div>
-                        <div id="liveAlertPlaceholder">
-                            <div class="alert alert-warning d-flex align-items-center alert-dismissible" role="alert" th:if="${fail}">
-                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#check-circle-fill"/></svg>
-                                <div>生成报告失败</div>
-                            </div>
-                            <div class="alert alert-warning d-flex align-items-center alert-dismissible" role="alert" th:if="${success}">
-                                <svg class="bi flex-shrink-0 me-2" width="24" height="24" role="img" aria-label="Warning:"><use xlink:href="#check-circle-fill"/></svg>
-                                <div>生成报告失败</div>
-                            </div>
-                        </div>
                         <!--操作栏-->
                         <div class="pt-2 border-bottom">
                             <div class="card-body">
-                                <form th:action="@{list}" method="get">
+                                <form action="#" th:action="@{list}">
                                     <div class="row">
                                         <div class="input-group mb-3" style="width: fit-content">
                                             <span class="input-group-text">所属项目</span>
@@ -35,16 +25,16 @@
                                                    aria-label="projectId"
                                                    aria-describedby="basic-addon1">
                                         </div>
-<!--                                        <div class="input-group mb-3" style="width: fit-content">-->
-<!--                                            <label class="input-group-text" for="workDate-search">任务时间</label>-->
-<!--                                            <select class="form-select" aria-label="priority" name="workDate"-->
-<!--                                                    id="workDate-search">-->
-<!--                                                <option th:value="''" selected>选择任务时间</option>-->
-<!--                                                <option th:each="m:${monthList}"-->
-<!--                                                        th:value="${m}"-->
-<!--                                                        th:text="${m}">-->
-<!--                                            </select>-->
-<!--                                        </div>-->
+                                        <!--                                        <div class="input-group mb-3" style="width: fit-content">-->
+                                        <!--                                            <label class="input-group-text" for="workDate-search">任务时间</label>-->
+                                        <!--                                            <select class="form-select" aria-label="priority" name="workDate"-->
+                                        <!--                                                    id="workDate-search">-->
+                                        <!--                                                <option th:value="''" selected>选择任务时间</option>-->
+                                        <!--                                                <option th:each="m:${monthList}"-->
+                                        <!--                                                        th:value="${m}"-->
+                                        <!--                                                        th:text="${m}">-->
+                                        <!--                                            </select>-->
+                                        <!--                                        </div>-->
                                         <div class="col-lg-2 col-md-4 col-sm-6">
                                             <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
                                                                                           style="color: cornflowerblue"></i>
@@ -59,13 +49,13 @@
                                 </form>
                             </div>
                         </div>
-                        <div>
+                        <div id="table_refresh" th:fragment="table_refresh">
                             <table class="table table-hover">
                                 <thead>
                                 <tr class="text-center">
                                     <th scope="col">#</th>
                                     <th scope="col">项目名</th>
-<!--                                    <th scope="col">任务时间</th>-->
+                                    <!--                                    <th scope="col">任务时间</th>-->
                                     <th scope="col">关联模块</th>
                                     <th scope="col">关联测试用例</th>
                                     <th scope="col">关联bug</th>
@@ -79,7 +69,7 @@
                                            th:value="${temp.id}" id="id">
                                     <td th:text="${stat.index+1}"></td>
                                     <td th:text="${temp.projectName}"></td>
-<!--                                    <td th:text="${temp.issueDate}"></td>-->
+                                    <!--                                    <td th:text="${temp.issueDate}"></td>-->
                                     <td>
                                         <a href="#"
                                            th:text="${temp.refModuleCount}"></a>
@@ -92,30 +82,6 @@
                                         <a href="#"
                                            th:text="${temp.refBugCount}"></a>
                                     </td>
-                                    <!--                        <td th:switch="${temp.finishStatus}">-->
-                                    <!--                            <div class="form-check form-switch">-->
-                                    <!--                                        <span th:case="1">-->
-                                    <!--                                            <input class="form-check-input" type="checkbox" id="un-del-1" checked-->
-                                    <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
-                                    <!--                                        <label class="form-check-label" for="un-del-1"></label>-->
-                                    <!--                                        </span>-->
-                                    <!--                                <span th:case="2">-->
-                                    <!--                                            <input class="form-check-input" type="checkbox" id="un-del-2" checked-->
-                                    <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
-                                    <!--                                        <label class="form-check-label" for="un-del-2"></label>-->
-                                    <!--                                        </span>-->
-                                    <!--                                <span th:case="3">-->
-                                    <!--                                            <input class="form-check-input" type="checkbox" id="un-del-3" checked-->
-                                    <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
-                                    <!--                                        <label class="form-check-label" for="un-del-3"></label>-->
-                                    <!--                                        </span>-->
-                                    <!--                                <span th:case="0">-->
-                                    <!--                                            <input class="form-check-input" type="checkbox" id="del"-->
-                                    <!--                                                   th:onclick="updateStatus([[${temp.id}]],[[${temp.issueDate}]])">-->
-                                    <!--                                        <label class="form-check-label" for="del"></label>-->
-                                    <!--                                        </span>-->
-                                    <!--                            </div>-->
-                                    <!--                        </td>-->
                                     <td>
                                         <a href="#" th:style="${temp.reportDoc} ? 'pointer-events: none' : ''"
                                            th:href="@{'/project/generateReport/'+${temp.id}+'/'+${temp.issueDate}}">生成报告</a>
@@ -132,8 +98,7 @@
                          aria-hidden="true" data-bs-backdrop="static">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content">
-                                <form class="modal-content needs-validation" th:action="@{/project/addProject}"
-                                      method="post" id="addProjectForm">
+                                <form class="modal-content needs-validation" id="addProjectForm" novalidate>
                                     <div class="modal-header">
                                         <h5 class="modal-title" id="staticBackdropLabel">新增项目</h5>
                                         <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -143,29 +108,33 @@
                                         <div class="box-body">
                                             <div class="form-group">
                                                 <div class="input-group mb-3">
-                                                    <span class="input-group-text" id="basic-addon1">项目名</span>
-                                                    <input type="text" name="projectName" id="projectName"
+                                                    <span class="input-group-text" id="basic-addon1">项目名称</span>
+                                                    <input type="text" name="projectName" id="add-pro"
                                                            class="form-control"
                                                            placeholder="输入项目名"
                                                            aria-label="Username" aria-describedby="basic-addon1"
                                                            required>
+                                                    <div class="invalid-feedback">
+                                                        请输入项目名称.
+                                                    </div>
                                                 </div>
                                             </div>
-                                            <div class="input-group mb-3">
-                                                <label class="input-group-text" for="workDate">任务时间</label>
-                                                <select class="form-select" id="workDate" name="workDate" required>
-                                                    <option th:value="''" selected>选择任务时间</option>
-                                                    <option th:each="m:${monthList}"
-                                                            th:value="${m}"
-                                                            th:text="${m}"
-                                                    >
-                                                </select>
-                                            </div>
+                                            <!--                                            <div class="input-group mb-3">-->
+                                            <!--                                                <label class="input-group-text" for="workDate">任务时间</label>-->
+                                            <!--                                                <select class="form-select" id="workDate" name="workDate" required>-->
+                                            <!--                                                    <option th:value="''" selected>选择任务时间</option>-->
+                                            <!--                                                    <option th:each="m:${monthList}"-->
+                                            <!--                                                            th:value="${m}"-->
+                                            <!--                                                            th:text="${m}"-->
+                                            <!--                                                    >-->
+                                            <!--                                                </select>-->
+                                            <!--                                            </div>-->
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="submit" class="btn btn-primary">保存</button>
-                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                                        <button type="button" class="btn btn-primary" id="save-pro">保存</button>
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消
+                                        </button>
                                     </div>
                                 </form>
                             </div>
@@ -173,6 +142,8 @@
                     </div>
                     <!--        分页-->
                     <div th:replace="/fragment/commons :: pagination01"></div>
+                    <!--                    toast-->
+                    <div th:replace="/fragment/commons :: toast-div"></div>
                 </main>
             </div>
         </div>
@@ -183,7 +154,34 @@
         <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
         <script type="text/javascript" th:src="@{/dist/js/common.js}"></script>
         <script>
-            autoComplete("/project/queryList", "p-search",'p', false);
+            autoComplete("/project/queryList", "p-search", 'p', false);
+            $("#save-pro").click(function () {
+                $.ajax({
+                    url: "/project/checkProject/" + $("#add-pro").val(),
+                    type: "get",
+                    // sync: false,
+                    success: function (data) {
+                        console.log(data);
+                        if (Object.is(200, data['code'])) {
+                            $.ajax({
+                                url: "/project/addProject",
+                                type: "post",
+                                data: {"name": $("#add-pro").val()},
+                                dataType: 'JSON',
+                                // contentType: "application/json; charset=utf-8",
+                                // sync: false,
+                                success: function (result) {
+                                    if (Object.is(200, result['code'])) {
+                                        resetModal("#add-project-modal", "addProjectForm");
+                                        $("#table_refresh").load("/project/reloadTable");
+                                        showToast(result['code'], result['msg']);
+                                    }
+                                }
+                            })
+                        }
+                    }
+                });
+            })
         </script>
     </body>
 </html>

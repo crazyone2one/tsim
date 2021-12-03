@@ -87,6 +87,18 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
+    public Project saveProject(String projectName) {
+        final Project build = Project.builder().projectName(projectName)
+                .projectCode(UuidUtils.generate())
+                .createData(new Date())
+                .delFlag(0)
+                .build();
+        baseMapper.insert(build);
+        systemService.refreshProjectName();
+        return build;
+    }
+
+    @Override
     public void updateProjectStatus(String projectId) {
         final Project project = getProjectById(projectId);
         project.setDelFlag(Objects.equals(project.getDelFlag(), 0) ? 1 : 0);

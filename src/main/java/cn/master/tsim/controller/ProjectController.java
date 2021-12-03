@@ -1,14 +1,15 @@
 package cn.master.tsim.controller;
 
 
+import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Project;
-import cn.master.tsim.entity.TestTaskInfo;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -41,7 +42,6 @@ public class ProjectController {
     /**
      * 加载列表数据
      *
-     * @param request     HttpServletRequest
      * @param model       Model
      * @param pageCurrent pageCurrent
      * @param pageSize    pageSize
@@ -49,7 +49,7 @@ public class ProjectController {
      * @return java.lang.String
      */
     @GetMapping(value = "/list")
-    public String projectList(HttpServletRequest request, Model model, @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
+    public String projectList(Model model, @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
                               @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, Project project) {
         final IPage<Project> iPage = projectService.projectListPages(project, pageCurrent, pageSize);
         model.addAttribute("iPage", iPage);
@@ -59,54 +59,58 @@ public class ProjectController {
     }
 
     /**
+     * 重新加载列表
+     *
+     * @param model   Model
+     * @param project Project
+     * @return java.lang.String
+     */
+    @RequestMapping("/reloadTable")
+    public String reloadTable(Model model, Project project) {
+        final IPage<Project> iPage = projectService.projectListPages(project, 0, 0);
+        model.addAttribute("iPage", iPage);
+        return "project/project_list :: table_refresh";
+    }
+
+    /**
      * 添加项目数据
      *
-     * @param request HttpServletRequest
      * @return java.lang.String
      */
     @PostMapping(value = "/addProject")
     @ResponseBody
-    public ResponseResult addProject(HttpServletRequest request, HttpServletResponse response, Project project) {
+    public ResponseResult addProject(@RequestParam("name") String proName) {
         try {
-            if (Objects.nonNull(projectService.getProjectByName(project.getProjectName()))) {
-                response.sendRedirect("/project/list");
-                return ResponseUtils.error(400, "项目[" + project.getProjectName() + "]已存在");
-            }
-            final Project addProject = projectService.addProject(request, project);
-            response.sendRedirect("/project/list");
-            return ResponseUtils.success(addProject);
+            log.info(proName);
+            final Project addProject = projectService.saveProject(proName);
+            return ResponseUtils.success("数据添加成功", addProject);
         } catch (Exception e) {
             log.info(e.getMessage());
-            return ResponseUtils.error(400, "数据查询错误", e.getMessage());
+            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
         }
     }
 
     /**
      * 验证项目是否已存在
      *
-     * @param request HttpServletRequest
      * @return cn.master.tsim.common.ResponseResult
      */
-    @GetMapping(value = "/checkProject")
+    @GetMapping(value = "/checkProject/{name}")
     @ResponseBody
-    public ResponseResult checkProject(HttpServletRequest request) {
-        final ResponseResult success = ResponseUtils.success("数据查询成功");
+    public ResponseResult checkProject(@PathVariable String name) {
         try {
-            final String name = request.getParameter("name");
-            final String date = request.getParameter("date");
-            final Project checkProject = projectService.checkProject(name, date);
-            if (Objects.nonNull(checkProject)) {
-                for (TestTaskInfo projectTask : checkProject.getProjectTasks()) {
-                    if (Objects.equals(projectTask.getIssueDate(), date)) {
-                        return ResponseUtils.error(400, "该月份已存在项目", checkProject);
-                    }
-                }
+            if (StringUtils.isBlank(name)) {
+                return ResponseUtils.error(ResponseCode.PARAMS_ERROR.getCode(), ResponseCode.PARAMS_ERROR.getMessage());
             }
+            final Project checkProject = projectService.getProjectByName(name);
+            if (Objects.nonNull(checkProject)) {
+                return ResponseUtils.error(400, "[" + name + "]已存在项目", checkProject);
+            }
+            return ResponseUtils.success(name);
         } catch (Exception e) {
             log.info(e.getMessage());
             return ResponseUtils.error(400, "数据查询错误", e.getMessage());
         }
-        return success;
     }
 
     @RequestMapping(value = "/generateReport/{id}/{workDate}")
@@ -125,6 +129,7 @@ public class ProjectController {
         }
         return result;
     }
+
     @RequestMapping(value = "/queryList")
     @ResponseBody
     public ResponseResult queryList(HttpServletRequest request) {

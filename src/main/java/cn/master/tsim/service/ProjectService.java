@@ -60,6 +60,8 @@ public interface ProjectService extends IService<Project> {
      */
     Project addProject(HttpServletRequest request, Project project);
 
+    Project saveProject(String projectName);
+
     /**
      * 更新项目状态
      *
