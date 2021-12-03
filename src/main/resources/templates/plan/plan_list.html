@@ -12,11 +12,9 @@
             <div class="row">
                 <nav id="sidebarMenu" th:replace="/fragment/commons :: sidebarMenu2(flag='plan')">
                 </nav>
-                <main class="col-md-10 ms-sm-auto px-md-4">
+                <main class=" ms-sm-auto px-md-1 position-relative main-content">
                     <!-- Begin Page Content 右侧页面内容 -->
                     <div>
-                        <div id="liveAlertPlaceholder">
-                        </div>
                         <!--操作栏-->
                         <div class="pt-2 border-bottom">
                             <div class="card-body">
@@ -63,7 +61,7 @@
                             </div>
                         </div>
                         <!--            列表数据-->
-                        <div>
+                        <div id="table_refresh" th:fragment="table_refresh">
                             <table class="table table-hover card-footer">
                                 <thead class="table-light">
                                 <tr class="text-center">
@@ -118,9 +116,11 @@
                                 <tfoot></tfoot>
                             </table>
                         </div>
-                        <!--        分页-->
-                        <div th:replace="/fragment/commons :: pagination01"></div>
                     </div>
+                    <!--        分页-->
+                    <div th:replace="/fragment/commons :: pagination01"></div>
+                    <!--                    toast-->
+                    <div th:replace="/fragment/commons :: toast-div"></div>
                 </main>
 
                 <!-- 添加问题单Modal弹框 -->
@@ -151,18 +151,21 @@
             })
             // 保存测试计划
             $('#submitPlan').click(function () {
-                const data = $("#addPlanForm").serialize();
                 $.ajax({
                     url: "/plan/save",
                     type: 'POST',
-                    data: data,
+                    data: {
+                        "storyId": $("#storyId").val(),
+                        "planName": $("#add_plan_name").val(),
+                        "planDesc": $("#add-description-name").val()
+                    },
                     dataType: 'JSON',
                     success: function (arg) {
                         if (Object.is(arg['code'], 200)) {
-                            alert(arg['msg'], 'success');
-                        } else {
-                            alert(arg['msg'], 'warning');
+                            resetModal("#add-plan-modal", "addPlanForm");
+                            $("#table_refresh").load("/plan/reloadTable");
                         }
+                        showToast(arg['code'], arg['msg']);
                     }
                 });
             })
