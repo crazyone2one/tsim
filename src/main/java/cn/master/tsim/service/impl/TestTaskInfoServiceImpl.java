@@ -2,7 +2,6 @@ package cn.master.tsim.service.impl;
 
 import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
-import cn.master.tsim.entity.Project;
 import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.entity.TestTaskInfo;
 import cn.master.tsim.entity.Tester;
@@ -35,17 +34,13 @@ import java.util.Objects;
 @Service
 public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, TestTaskInfo> implements TestTaskInfoService {
     private final ProjectService projectService;
-    private final TestCaseService caseService;
 
     @Autowired
     private TestBugService bugService;
-    @Autowired
-    private TestStoryService storyService;
 
     @Autowired
     public TestTaskInfoServiceImpl(ProjectService projectService, TestCaseService caseService) {
         this.projectService = projectService;
-        this.caseService = caseService;
     }
 
     @Override
@@ -62,15 +57,15 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize),
                 wrapper);
         testTaskInfoPage.getRecords().forEach(t -> {
-            t.setSubBug(bugService.bugMapByProject(t.getProjectId(), "1"));
-            t.setFixBug(bugService.bugMapByProject(t.getProjectId(), "4"));
+            t.setSubBug(bugService.bugMapByProject(t.getProjectId(), t.getStoryId(), "1"));
+            t.setFixBug(bugService.bugMapByProject(t.getProjectId(), t.getStoryId(), "4"));
             t.setProjectId(projectService.getProjectById(t.getProjectId()).getProjectName());
         });
         return testTaskInfoPage;
     }
 
     @Override
-    public TestTaskInfo addItem(HttpServletRequest request, Project project, TestStory story) {
+    public TestTaskInfo addItem(HttpServletRequest request, String projectId, TestStory story) {
         // TODO: 2021/11/1 0001 保存项目信息时，暂设置负责人为当前登录用户 。后期优化为可配置
         Tester tester = new Tester();
         final Object account = request.getSession().getAttribute("account");
@@ -78,12 +73,12 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
             tester = JacksonUtils.convertToClass(JacksonUtils.convertToString(account), Tester.class);
         }
         assert tester != null;
-        final TestTaskInfo taskInfo = getItemByProject(request, project, story);
+        final TestTaskInfo taskInfo = getItemByProject(request, projectId, story);
         if (Objects.nonNull(taskInfo)) {
             return taskInfo;
         }
-        final TestTaskInfo build = TestTaskInfo.builder().projectId(project.getId()).summaryDesc(story.getDescription())
-                .createCaseCount(caseService.caseCountByStatus(project.getId(), "").get("total"))
+        final TestTaskInfo build = TestTaskInfo.builder().projectId(projectId)
+                .storyId(story.getId()).summaryDesc(story.getDescription())
                 .finishStatus("1")
                 .reqDoc(StringUtils.isNotBlank(story.getDocId()) ? story.getDocId() : "")
                 .tester(tester.getId())
@@ -95,10 +90,11 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
     }
 
     @Override
-    public TestTaskInfo getItemByProject(HttpServletRequest request, Project project, TestStory story) {
+    public TestTaskInfo getItemByProject(HttpServletRequest request, String projectId, TestStory story) {
         QueryWrapper<TestTaskInfo> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(TestTaskInfo::getProjectId, project.getId());
+        wrapper.lambda().eq(TestTaskInfo::getProjectId, projectId);
         wrapper.lambda().eq(TestTaskInfo::getIssueDate, story.getWorkDate());
+        wrapper.lambda().eq(TestTaskInfo::getStoryId, story.getId());
         wrapper.lambda().eq(TestTaskInfo::getSummaryDesc, story.getDescription());
         return baseMapper.selectOne(wrapper);
     }
@@ -137,8 +133,8 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
         ResponseResult success;
         try {
             TestTaskInfo taskInfo = baseMapper.selectById(id);
-            taskInfo.setSubBug(bugService.bugMapByProject(taskInfo.getProjectId(), "1"));
-            taskInfo.setFixBug(bugService.bugMapByProject(taskInfo.getProjectId(), "4"));
+            taskInfo.setSubBug(bugService.bugMapByProject(taskInfo.getProjectId(), taskInfo.getStoryId(), "1"));
+            taskInfo.setFixBug(bugService.bugMapByProject(taskInfo.getProjectId(), taskInfo.getStoryId(), "4"));
 //            TestStory story = storyService.getStory("", taskInfo.getIssueDate(), taskInfo.getProjectId());
 //            taskInfo.setReqDoc(Objects.nonNull(story) ? story.getDescription() : "");
             taskInfo.setProjectId(projectService.getProjectById(taskInfo.getProjectId()).getProjectName());
@@ -149,5 +145,11 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
             return ResponseUtils.error(ResponseCode.BODY_NOT_MATCH.getCode(), ResponseCode.BODY_NOT_MATCH.getMessage());
         }
         return success;
+    }
+
+    @Override
+    public TestTaskInfo queryItem(String projectId, String storyId) {
+        return baseMapper.selectOne(new QueryWrapper<TestTaskInfo>()
+                .lambda().eq(TestTaskInfo::getProjectId, projectId).eq(TestTaskInfo::getStoryId, storyId));
     }
 }

@@ -39,7 +39,8 @@ public class TestTaskInfo implements Serializable {
      */
     @TableField("project_id")
     private String projectId;
-
+    @TableField("story_id")
+    private String storyId;
     /**
      * 任务描述
      */
