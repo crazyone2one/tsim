@@ -159,10 +159,8 @@
                                         // alert(msg, 'success');
                                         resetModal("#add-story-modal", "addStoryForm");
                                         $("#table_refresh").load("/story/reloadTable");
-                                        showToast(arg['code'], msg);
-                                    } else {
-                                        showToast(arg['code'], msg);
                                     }
+                                    showToast(arg['code'], msg);
                                 }
                             });
                         }

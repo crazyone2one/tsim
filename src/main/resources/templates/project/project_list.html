@@ -174,8 +174,8 @@
                                     if (Object.is(200, result['code'])) {
                                         resetModal("#add-project-modal", "addProjectForm");
                                         $("#table_refresh").load("/project/reloadTable");
-                                        showToast(result['code'], result['msg']);
                                     }
+                                    showToast(result['code'], result['msg']);
                                 }
                             })
                         }
