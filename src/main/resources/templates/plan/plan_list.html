@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="/fragment/commons :: common_header(~{::title},~{})">
+    <head th:replace="/fragment/commons :: common_header(~{::title},~{::link})">
         <title>TSIM @ PLAN</title>
+        <link rel="stylesheet" th:href="@{/plugins/bst/bootstrap-table.min.css}">
     </head>
     <body>
 
@@ -100,7 +101,7 @@
                                         </div>
                                     </td>
                                     <td class="align-items-md-center">
-                                        <a type="button" class="btn" id="ref-add"
+                                        <a type="button" class="btn" id="ref-add" th:attr="data-id=${temp.id}"
                                            data-bs-toggle="modal" data-bs-target="#ref-case-modal"><i
                                                 class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"
                                                 data-bs-toggle="tooltip" data-bs-placement="top" title="关联测试用例"></i>
@@ -125,7 +126,7 @@
 
                 <!-- 添加问题单Modal弹框 -->
                 <div th:replace="~{plan/add_plan_modal::addPlanFragment}"></div>
-                <div th:replace="~{plan/ref_case_modal::refCaseFragment}"></div>
+                <div th:replace="~{plan/associate_case::ass_case}"></div>
                 <div th:replace="~{plan/ref_run_modal::refRunFragment}"></div>
                 <!-- 添加问题单Modal弹框 -->
                 <div th:replace="~{bug/add_bug_modal::addBugFragment}"></div>
@@ -138,16 +139,68 @@
         <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-editable.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.min.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
         <script type="text/javascript" th:src="@{/dist/js/common.js}"></script>
-        <script th:inline="javascript" th:src="@{/dist/js/pagination-on-modal.js}"></script>
-        <script th:inline="javascript" th:src="@{/dist/js/ref-case-table.js}"></script>
+        <script th:inline="javascript" th:src="@{/dist/js/bs.table.js}"></script>
         <script th:src="@{/dist/js/add_bug.js}"></script>
-        <script>
+        <script th:inline="javascript">
             <!--            查询条件-->
             autoComplete('/project/queryList', 'p-search', 'p', false);
             $('#add-plan-modal').on('shown.bs.modal', function () {
                 autoComplete('/story/queryList', 'storyList', 's', true);
+            })
+            const _planId = $("#ref-add").data("id");
+            /**
+             * 加载表格数据
+             */
+            $('#ref-case-modal').on('shown.bs.modal', function () {
+                const url = "/case/loadCase/" + _planId;
+                const columns = [
+                    {checkbox: true},
+                    {title: 'id', field: 'id', visible: false},
+                    {title: '测试用例标题', field: 'name',},
+                    {title: '测试步骤', field: 'stepStore'},
+                    {title: '逾期结果', field: 'resultStore'},
+                    {title: "优先级", field: 'priority'},
+                    {
+                        field: 'Button',
+                        title: "操作",
+                        align: 'center',
+                        events: operateEvents,
+                        formatter: function (value, row, index) {
+                            return '<button type="button" class="btn btn-danger btn-sm add">添加</button>';
+                        }
+                    }
+                ];
+                InitTable(url, columns);
+            })
+
+            $("#add-case-ref-btn").click(function () {
+                const selections = getSelections();
+                if (selections.length <= 0) {
+                    showToast(201, "先选择数据");
+                }
+                let res = [];
+                for (let i = 0; i < selections.length; i++) {
+                    res.push(selections[i]['id']);
+                }
+                const params = {
+                    planId: _planId,
+                    caseId: res
+                };
+                $.ajax({
+                    url: '/plan/addRefCase/',
+                    type: 'post',
+                    data: JSON.stringify(params),
+                    dataType: 'json',
+                    contentType: "application/json",
+                    success: function (arg) {
+                        showToast(arg['code'], arg['msg']);
+                    }
+                })
             })
             // 保存测试计划
             $('#submitPlan').click(function () {
@@ -188,8 +241,6 @@
                     }
                 })
             }
-
-            resetModal("#add-plan-modal", "addPlanForm")
         </script>
     </body>
 </html>

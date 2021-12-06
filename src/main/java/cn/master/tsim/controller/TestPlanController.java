@@ -117,11 +117,10 @@ public class TestPlanController {
     @ResponseBody
     public ResponseResult addRefCase(HttpServletRequest request) {
         try {
-            final String planId = String.valueOf(request.getSession().getAttribute("planId"));
             final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
             final List<String> list = JacksonUtils.jsonToObject(JacksonUtils.convertToString(params.get("caseId")), new TypeReference<List<String>>() {
             });
-            planCaseRefService.addItemRef(planId, list);
+            planCaseRefService.addItemRef(params.get("planId").toString(), list);
             return ResponseUtils.success();
         } catch (Exception e) {
             return ResponseUtils.error(ResponseCode.BODY_NOT_MATCH.getCode(), "数据添加失败", e.getMessage());

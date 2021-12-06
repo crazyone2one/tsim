@@ -20,6 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -56,7 +57,8 @@ public class PlanCaseRefServiceImpl extends ServiceImpl<PlanCaseRefMapper, PlanC
 //            保存测试计划关联的测试用例时，更新task表中新增测试用例数量
             final TestTaskInfo taskInfo = taskInfoMapper.queryTaskInfoByPlan(planId);
             taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + insert);
-            taskInfoMapper.updateById(taskInfo);
+            taskInfo.setUpdateDate(new Date());
+            taskInfoMapper.update(taskInfo,null);
         }
     }
 

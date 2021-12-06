@@ -175,12 +175,17 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         final Page<TestCase> page = baseMapper.selectPage(
                 new Page<>(Objects.equals(pn, 0) ? 1 : pn, Objects.equals(10, 0) ? 15 : 10),
                 wrapper);
-        page.getRecords().forEach(r -> {
-            if (caseIds.stream().anyMatch(c -> c.equals(r.getId()))) {
-                r.setRefFlag(true);
-//                caseRefService.addRefItem(projectId, r.getId(), workDate);
-            }
-        });
+//        不加载已关联的测试用例数据
+        final List<TestCase> records = page.getRecords();
+        final Iterator<TestCase> iterator = records.iterator();
+        while (iterator.hasNext()) {
+            final TestCase next = iterator.next();
+            caseIds.forEach(c->{
+                if (c.equals(next.getId())) {
+                    iterator.remove();
+                }
+            });
+        }
         return page;
     }
 

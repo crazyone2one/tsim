@@ -29,9 +29,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.net.URLConnection;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <p>
@@ -130,6 +128,23 @@ public class TestCaseController {
             return ResponseUtils.success("数据查询成功", casePage);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据查询错误", e.getMessage());
+        }
+    }
+    @RequestMapping(value = "loadCase/{planId}")
+    @ResponseBody
+    public Map<String, Object> loadCase(HttpServletRequest request, @PathVariable String planId) {
+        Map<String, Object> map = new HashMap<>();
+        try {
+            final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
+            params.put("planId", planId);
+            final IPage<TestCase> casePage = caseService.loadCaseByPlan(params);
+            List<TestCase> cases = new LinkedList<>(casePage.getRecords());
+            map.put("total", casePage.getTotal());
+            map.put("rows", cases);
+            return map;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return map;
         }
     }
 
