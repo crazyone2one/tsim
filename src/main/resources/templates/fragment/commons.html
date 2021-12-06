@@ -11,65 +11,10 @@
     <!--    </button>-->
     <!--    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">-->
 </header>
-<!--菜单-->
-<nav id="sidebarMenu" class="col-md-2 col-lg-2 d-md-block bg-light sidebar collapse" th:fragment="sidebarMenu">
-    <div class="position-sticky pt-5" id="navbarNavDropdown">
-        <ul class="nav flex-column">
-            <!-- Nav Item - Dashboard -->
-            <li class="nav-item">
-                <a th:class="${active=='dashboard'?'nav-link active':'nav-link'}" href="#" th:href="@{/dashboard}">
-                    <!--                    <i class="bi bi-speedometer2"></i>-->
-                    <span data-feather="home"></span>Dashboard</a>
-            </li>
-            <!-- Nav Item - 项目管理 -->
-            <li class="nav-item">
-                <a th:class="${active=='project'?'nav-link active':'nav-link'}" href="#" th:href="@{/project/list}">
-                    <i class="bi bi-card-list"></i>
-                    <span>项目管理</span></a>
-            </li>
-            <!-- Nav Item - 任务汇总 -->
-            <li class="nav-item">
-                <a th:class="${active=='task'?'nav-link active':'nav-link'}" href="#" th:href="@{/task/list}">
-                    <i class="bi bi-card-list"></i>
-                    <span>任务汇总</span></a>
-            </li>
-            <!-- Nav Item - 测试需求管理 -->
-            <li class="nav-item">
-                <a th:class="${active=='story'?'nav-link active':'nav-link'}" href="#" th:href="@{/story/list}">
-                    <i class="bi bi-card-list"></i>
-                    <span>测试需求管理</span></a>
-            </li>
-            <!-- Nav Item - 测试计划管理 -->
-            <li class="nav-item">
-                <a th:class="${active=='plan'?'nav-link active':'nav-link'}" href="#" th:href="@{/plan/list}">
-                    <i class="bi bi-card-list"></i>
-                    <span>测试计划管理</span></a>
-            </li>
-            <!-- Nav Item - 测试用例 -->
-            <li class="nav-item">
-                <a th:class="${active=='case'?'nav-link active':'nav-link'}" href="#" th:href="@{/case/list}">
-                    <i class="bi bi-card-list"></i>
-                    <span>测试用例</span></a>
-            </li>
-            <!-- Divider -->
-            <hr class="sidebar-divider">
-            <!-- Nav Item - 问题单 -->
-            <li class="nav-item">
-                <a th:class="${active=='bug'?'nav-link active':'nav-link'}" href="#" th:href="@{/bug/list}">
-                    <i class="bi bi-card-list"></i>
-                    <span>问题单(BUG)</span></a>
-            </li>
-            <!-- Nav Item - demo -->
-            <li class="nav-item">
-                <a th:class="${active=='demo'?'nav-link active':'nav-link'}" href="#" th:href="@{/story/list1}">
-                    <i class="bi bi-card-list"></i>
-                    <span>Demo</span></a>
-            </li>
-        </ul>
-    </div>
-</nav>
+
 <!--菜单样式2-->
-<div class="d-flex flex-column flex-shrink-0 p-3 bg-light" style="flex: 0 0 auto;width: 13%;" th:fragment="sidebarMenu2">
+<nav ></nav>
+<div class="d-flex flex-column flex-shrink-0 p-3 bg-light " style="flex: 0 0 auto;width: 13%;" th:fragment="sidebarMenu2">
 <!--    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">-->
 <!--        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>-->
 <!--        <span class="fs-4">Sidebar</span>-->
@@ -82,7 +27,7 @@
                 Dashboard
             </a>
         </li>
-        <li>
+        <li class="menu-item">
             <a th:class="${flag=='project'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/project/list}">
                 <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
                 项目管理
