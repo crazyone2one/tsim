@@ -3,55 +3,95 @@
     <head th:replace="/fragment/commons :: common_header(~{::title},~{})">
         <title>TSIM @ CASE</title>
     </head>
-    <body id="page-top">
+    <body id="tsim_body" class="aside-enable">
 
-        <header th:replace="/fragment/commons :: top-header">
-        </header>
-
-        <div class="container-fluid">
-            <div class="row">
-                <nav id="sidebarMenu" th:replace="/fragment/commons :: sidebarMenu2(flag='case')">
-                </nav>
-
-                <main class="main-content ms-sm-auto px-md-1 position-relative">
-                    <!-- 右侧顶部导航栏结束 -->
-                    <div>
-                        <!--操作栏-->
-                        <div class="pt-2 border-bottom">
-                            <div class="card-body">
-                                <form th:action="@{case_list}" method="get">
-                                    <div class="row">
-                                        <div class="input-group mb-3" style="width: fit-content">
-                                            <span class="input-group-text" id="basic-addon1">所属项目</span>
-                                            <input type="text" class="form-control" name="projectId" id="p-search"
-                                                   placeholder="项目名称（模糊查询）" aria-label="projectId"
-                                                   aria-describedby="basic-addon1">
+        <div class="d-flex flex-column flex-root">
+            <!--            begin page-->
+            <div class="page d-flex flex-row flex-column-fluid">
+                <!--                begin side-->
+                <div id="tsim-side" class="aside" data-drawer="true" data-drawer-name="aside">
+                    <!--                    menu-->
+                    <div class="aside-menu flex-column-fluid">
+                        <div th:replace="/fragment/commons :: sidebarMenu2(flag='case')"></div>
+                        <div th:replace="/fragment/commons :: aside_footer"></div>
+                    </div>
+                </div>
+                <div id="tsim_wrapper" class="wrapper d-flex flex-column flex-row-fluid">
+                    <!--                    header-->
+                    <div id="tsim_header" style="" class="header align-items-stretch">
+                        <div class="header-brand">
+                            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#"
+                               th:href="@{/dashboard}">
+                                <div class="sidebar-brand-icon rotate-n-15">
+                                    <i class="bi bi-emoji-laughing"></i>
+                                </div>
+                                <div class="sidebar-brand-text mx-3">TSIM <sup>beta</sup></div>
+                            </a>
+                        </div>
+                        <div class="toolbar">
+                            <div class="container-fluid py-6 py-lg-0 d-flex flex-column flex-sm-row align-items-lg-stretch justify-content-sm-between">
+                                <div class="page-title d-flex flex-column me-5">
+                                    <h1 class="d-flex flex-column text-dark fw-bolder fs-2 mb-0">Case</h1>
+                                    <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 pt-1">
+                                        <li class="breadcrumb-item text-muted">
+                                            <a href="#" class="text-muted text-hover-primary">Home</a>
+                                        </li>
+                                        <li class="breadcrumb-item"><span class="bullet bg-gray-300 w-5px h-2px"></span>
+                                        </li>
+                                        <li class="breadcrumb-item text-muted">case</li>
+                                    </ul>
+                                </div>
+                                <!--                                action group-->
+                                <div class="d-flex align-items-center overflow-auto pt-3 pt-sm-0">
+                                    <div class="header-search me-4">
+                                        <div id="tsim_search" class="d-flex align-items-center"></div>
+                                    </div>
+                                    <div class="d-flex">
+                                        <div class="d-flex align-items-center me-4"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!--                    begin content-->
+                    <div id="tsim_content" class="content d-flex flex-column flex-column-fluid">
+                        <div id="tsim_content_container" class="container-fluid">
+                            <!--操作栏-->
+                            <div class="pt-2 border-bottom">
+                                <div class="card-body">
+                                    <form th:action="@{case_list}" method="get">
+                                        <div class="row">
+                                            <div class="input-group mb-3" style="width:15%">
+                                                <span class="input-group-text" id="basic-addon1">所属项目</span>
+                                                <input type="text" class="form-control" name="projectId" id="p-search"
+                                                       placeholder="项目名称（模糊查询）" aria-label="projectId"
+                                                       aria-describedby="basic-addon1">
+                                            </div>
+                                            <div class="input-group mb-3 col-md-2" style="width:20%">
+                                                <span class="input-group-text" id="basic-addon2">所属模块</span>
+                                                <input type="text" class="form-control" name="moduleId"
+                                                       placeholder="模块名称（模糊查询）"
+                                                       aria-label="moduleId"
+                                                       aria-describedby="basic-addon2">
+                                            </div>
+                                            <div class="input-group mb-3 col-md-2" style="width:20%">
+                                                <span class="input-group-text" id="basic-addon3">测试用例标题</span>
+                                                <input type="text" class="form-control" name="name" placeholder="标题（模糊查询）"
+                                                       aria-label="name"
+                                                       aria-describedby="basic-addon3">
+                                            </div>
+                                            <select class="form-select mb-3 col-md-2" style="width:10%"
+                                                    aria-label="priority" name="priority">
+                                                <option th:value="' '" selected>测试用例优先级</option>
+                                                <option value="0">低</option>
+                                                <option value="1">中</option>
+                                                <option value="2">高</option>
+                                            </select>
+                                            <select class="form-select mb-3 col-md-2" aria-label="active" name="active" style="width:11%">
+                                                <option value="0">有效</option>
+                                                <option value="1">无效</option>
+                                            </select>
                                         </div>
-                                        <div class="input-group mb-3" style="width: fit-content">
-                                            <span class="input-group-text" id="basic-addon2">所属模块</span>
-                                            <input type="text" class="form-control" name="moduleId"
-                                                   placeholder="模块名称（模糊查询）"
-                                                   aria-label="moduleId"
-                                                   aria-describedby="basic-addon2">
-                                        </div>
-                                        <div class="input-group mb-3 " style="width: fit-content">
-                                            <span class="input-group-text" id="basic-addon3">测试用例标题</span>
-                                            <input type="text" class="form-control" name="name" placeholder="标题（模糊查询）"
-                                                   aria-label="name"
-                                                   aria-describedby="basic-addon3">
-                                        </div>
-                                        <select class="form-select mb-3" style="width: fit-content"
-                                                aria-label="priority" name="priority">
-                                            <option th:value="' '" selected>优先级</option>
-                                            <option value="0">低</option>
-                                            <option value="1">中</option>
-                                            <option value="2">高</option>
-                                        </select>
-                                        <select class="form-select mb-3" style="width: fit-content" aria-label="active"
-                                                name="active">
-                                            <option value="0">有效</option>
-                                            <option value="1">无效</option>
-                                        </select>
                                         <div class="col-lg-2 col-md-4 col-sm-6">
                                             <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
                                                                                           style="color: cornflowerblue"></i>
@@ -72,89 +112,88 @@
                                                 <i class="bi bi-upload"></i>
                                             </a>
                                         </div>
-
-                                    </div>
-                                </form>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
-                        <!--            列表数据-->
-                        <div id="table_refresh" th:fragment="table_refresh">
-                            <table class="table table-hover">
-                                <thead>
-                                <tr class="text-center">
-                                    <th scope="col">#</th>
-                                    <th scope="col">所属项目</th>
-                                    <th scope="col">所属模块</th>
-                                    <th scope="col">标题</th>
-                                    <th scope="col">描述</th>
-                                    <th scope="col">前置条件</th>
-                                    <th scope="col">优先级</th>
-                                    <th scope="col">是否有效</th>
-                                    <th scope="col">操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="temp,stat:${iPage.records}" class="text-center">
-                                    <input name="id" type="hidden" class="form-control"
-                                           th:value="${temp.id}" id="id">
-                                    <td th:text="${stat.index+1}"></td>
-                                    <td th:text="${temp.project.projectName}"></td>
-                                    <td th:text="${temp.module.moduleName}"></td>
-                                    <td th:text="${temp.name}"></td>
-                                    <td th:text="${temp.description}"></td>
-                                    <td th:text="${temp.precondition}"></td>
-                                    <td th:switch="${temp.priority}">
-                                        <span th:case="0" th:text="低"></span>
-                                        <span th:case="1" th:text="中"></span>
-                                        <span th:case="2" th:text="高"></span>
-                                    </td>
-                                    <td th:switch="${temp.active}">
-                                        <div class="form-check form-switch">
+                            <!--            列表数据-->
+                            <div id="table_refresh" th:fragment="table_refresh">
+                                <table class="table table-row-dashed table-hover">
+                                    <thead>
+                                    <tr class="fw-bold fs-7 text-danger text-center py-4">
+                                        <th scope="col">#</th>
+                                        <th scope="col">所属项目</th>
+                                        <th scope="col">所属模块</th>
+                                        <th scope="col">标题</th>
+                                        <th scope="col">描述</th>
+                                        <th scope="col">前置条件</th>
+                                        <th scope="col">优先级</th>
+                                        <th scope="col">是否有效</th>
+                                        <th scope="col">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="temp,stat:${iPage.records}" class="text-center">
+                                        <input name="id" type="hidden" class="form-control"
+                                               th:value="${temp.id}" id="id">
+                                        <td th:text="${stat.index+1}"></td>
+                                        <td th:text="${temp.project.projectName}"></td>
+                                        <td th:text="${temp.module.moduleName}"></td>
+                                        <td th:text="${temp.name}"></td>
+                                        <td th:text="${temp.description}">-</td>
+                                        <td th:text="${temp.precondition}">-</td>
+                                        <td th:switch="${temp.priority}">
+                                            <span th:case="0" th:text="低"></span>
+                                            <span th:case="1" th:text="中"></span>
+                                            <span th:case="2" th:text="高"></span>
+                                        </td>
+                                        <td th:switch="${temp.active}">
+                                            <div class="form-check form-switch">
                                 <span th:case="0">
                                     <input class="form-check-input" type="checkbox" id="un-del" checked
                                            th:onclick="updateStatus([[${temp.id}]])">
                                     <label class="form-check-label" for="un-del"></label>
                                 </span>
-                                            <span th:case="1">
+                                                <span th:case="1">
                                     <input class="form-check-input" type="checkbox" id="del"
                                            th:onclick="updateStatus([[${temp.id}]])">
                                     <label class="form-check-label" for="del"></label>
                                 </span>
-                                        </div>
-                                    </td>
-                                    <td>
-                                        <a type="button" class="btn" id="case-detail" data-whatever="detail"
-                                           data-bs-toggle="modal" data-bs-target="#case-detail-modal"><i
-                                                class="bi bi-card-text hvr-grow" style="color: cornflowerblue"
-                                                data-bs-toggle="tooltip" data-bs-placement="top" title="查看详情"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <a type="button" class="btn" id="case-detail" data-whatever="detail"
+                                               data-bs-toggle="modal" data-bs-target="#case-detail-modal"><i
+                                                    class="bi bi-card-text hvr-grow" style="color: cornflowerblue"
+                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="查看详情"></i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
                     </div>
-                    <!-- 添加问题单Modal弹框 -->
-                    <div th:replace="~{test-case/add_case_modal::addCaseFragment}"></div>
-                    <div th:replace="~{test-case/detailModal::caseDetailFragment}"></div>
-                    <div th:replace="~{test-case/uploadCase::uploadModal}"></div>
                     <!--        分页-->
                     <div th:replace="/fragment/commons :: pagination01"></div>
-                    <!--                    toast-->
-                    <div th:replace="/fragment/commons :: toast-div"></div>
-                </main>
-
+                    <div th:replace="/fragment/commons :: footer"></div>
+                </div>
             </div>
         </div>
-        <footer th:replace="/fragment/commons :: footer"></footer>
+
+        <!-- 添加问题单Modal弹框 -->
+        <div th:replace="~{test-case/add_case_modal::addCaseFragment}"></div>
+        <div th:replace="~{test-case/detailModal::caseDetailFragment}"></div>
+        <div th:replace="~{test-case/uploadCase::uploadModal}"></div>
+        <!--                    toast-->
+        <div th:replace="/fragment/commons :: toast-div"></div>
         <!-- Logout Modal-->
         <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
-        <script type="text/javascript" th:src="@{/dist/js/common.js}"></script>
-        <script type="text/javascript" th:src="@{/dist/js/add-case.js}"></script>
-        <script type="text/javascript" th:src="@{/dist/js/case-edit-detail.js}"></script>
+        <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
+        <script type="text/javascript" th:src="@{/global/js/add-case.js}"></script>
+        <script type="text/javascript" th:src="@{/global/js/case-edit-detail.js}"></script>
         <script th:inline="javascript">
             autoComplete("/project/queryList", "p-search", 'p', false);
 
@@ -164,7 +203,7 @@
             })
             // 查询相关关联的模块
             $("#moduleId")[0].addEventListener("focus", function () {
-                autoComplete("/module/queryList/" + $("#c-a-p").attr("value"), "moduleId", 'm', true);
+                autoComplete("/module/queryList/" + $("#c-a-p").attr("value"), "moduleId", 'm', false);
             })
             $("#case-story")[0].addEventListener("focus", function () {
                 autoComplete("/story/queryList/" + $("#c-a-p").attr("value"), "case-story", 's', true);
@@ -172,17 +211,17 @@
 
             /*模块不存在时新添加*/
             // fixme 使用别的方法，不可以在失去焦点时增加模块信息
-            $("#moduleId").on("blur", function () {
-                if (Object.is($("#m-a").attr("value"), undefined)) {
-                    $.ajax({
-                        url: "/module/addModule/" + $("#c-a-p").attr("value") + "/" + $("#moduleId").val(),
-                        type: 'post',
-                        success: function (result) {
-                            $("#m-a").attr("value", result['data']);
-                        }
-                    })
-                }
-            });
+            // $("#moduleId").on("blur", function () {
+            //     if (Object.is($("#m-a").attr("value"), undefined)) {
+            //         $.ajax({
+            //             url: "/module/addModule/" + $("#c-a-p").attr("value") + "/" + $("#moduleId").val(),
+            //             type: 'post',
+            //             success: function (result) {
+            //                 $("#m-a").attr("value", result['data']);
+            //             }
+            //         })
+            //     }
+            // });
 
             // 更新项目状态
             function updateStatus(caseId) {

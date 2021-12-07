@@ -78,5 +78,10 @@ public class TestTaskInfoController {
     public ResponseResult getTask(HttpServletRequest request, HttpServletResponse response, @PathVariable String id) {
         return taskInfoService.getTask(id);
     }
+    @RequestMapping(value = "/checkReport/{id}")
+    @ResponseBody
+    public ResponseResult generateReport(HttpServletRequest request, @PathVariable("id") String id) {
+        return taskInfoService.checkTaskReport(id);
+    }
 }
 

@@ -1,8 +1,4 @@
 
-body {
-    font-size: .875rem;
-}
-
 .feather {
     width: 16px;
     height: 16px;
@@ -12,7 +8,7 @@ body {
 /*
  * Sidebar
  */
-@media (min-width: 768px){
+@media (min-width: 768px) {
     .navbar-vertical.navbar-expand-md.fixed-start {
         left: 0;
         border-width: 0 1px 0 0;
@@ -20,7 +16,7 @@ body {
 }
 
 /*
- * Navbar
+ * 左上角logo
  */
 
 .navbar-brand {
@@ -53,15 +49,6 @@ body {
     box-shadow: 0 0 0 3px rgba(255, 255, 255, .25);
 }
 
-#footer {
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 30px; /*脚部的高度*/
-    background: #6cf;
-    clear: both;
-}
-
 .sidebar-brand {
     height: 4rem;
     text-decoration: none;
@@ -82,6 +69,10 @@ body {
     transform: rotate(-15deg);
 }
 
+/*
+ * 左上角logo结束
+ */
+
 /*div边框上展示文字*/
 .text-on-div-border::before {
     content: attr(title);
@@ -91,15 +82,6 @@ body {
     -webkit-transform: translate(-50%, -50%);
     padding: 0 10px;
     background-color: #fff;
-}
-
-/*自定义内容div宽度*/
-.main-content {
-    flex: 0 0 auto;
-    width: 87%;
-    border: 1px dashed #e8e5dd;
-    box-shadow: none;
-    border-radius: 0.95rem;
 }
 
 .mb-13 {

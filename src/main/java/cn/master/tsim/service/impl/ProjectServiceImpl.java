@@ -128,11 +128,10 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
-    public ResponseResult generateReport(HttpServletRequest request, HttpServletResponse response, String id, String workDate) {
+    public ResponseResult generateReport(HttpServletRequest request, HttpServletResponse response, String id, String workDate, String storyId) {
         ResponseResult result = ResponseUtils.success("报告生成成功");
         try {
-            final String projectName = getProjectById(id).getProjectName();
-            request.setAttribute("projectName", projectName);
+            request.setAttribute("projectName", id);
             List<Map<String, Object>> list = new LinkedList<>();
             for (int i = 1; i < 5; i++) {
                 Map<String, Object> testContent = new LinkedHashMap<>();
@@ -145,21 +144,24 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
                 list.add(testContent);
             }
             Map<String, Object> data = new LinkedHashMap<>();
-            data.put("projectName", projectName);
+            data.put("projectName", id);
             data.put("username", "xxx");
             data.put("date", DateUtils.parse2String(new Date(), "yyyy-MM-dd"));
             data.put("pass_status", "通过");
             data.put("jf_status", "可以");
             data.put("testContent", list);
 //            保存文件系统到数据库
-            DocInfo docInfo = new DocInfo();
-            docInfo.setDocFlag("report");
-            docInfo.setDocName(FreemarkerUtils.generateWord(request, response, data, "project_report_template"));
-            docInfo.setDocPath("");
-            DocInfo saveDocInfo = docInfoService.saveDocInfo(request, docInfo);
+            final String reportName = FreemarkerUtils.generateWord(request, response, data, "project_report_template");
+            Map<String, String> map = new LinkedHashMap<>();
+            map.put("docName", reportName);
+            map.put("uuidName", reportName);
+            map.put("flag", "report");
+            map.put("docPath", "");
+            DocInfo saveDocInfo = docInfoService.saveDocInfo(request, map);
 //            更新task表中测试报告字段值
-            TestTaskInfo taskInfo = TestTaskInfo.builder().reportDoc(saveDocInfo.getId()).build();
-            taskInfoService.updateTask(request, taskInfo);
+            final TestTaskInfo taskInfo1 = taskInfoService.checkReportDoc(id, storyId, workDate);
+            taskInfo1.setReportDoc(saveDocInfo.getId());
+            taskInfoService.updateTask(request, taskInfo1);
         } catch (Exception e) {
             result = ResponseUtils.error(400, "报告生成失败", e.getMessage());
         }

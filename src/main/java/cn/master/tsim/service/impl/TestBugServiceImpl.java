@@ -54,7 +54,9 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
     public TestBug addBug(HttpServletRequest request, TestBug testBug) {
         final String tempStoryId = testBug.getStoryId();
         final TestBug build = TestBug.builder()
-                .projectId(testBug.getProjectId()).moduleId(testBug.getModuleId()).title(testBug.getTitle())
+                .projectId(testBug.getProjectId())
+                .moduleId(moduleService.addModule(request,testBug.getProjectId(),testBug.getModuleId()).getId())
+                .title(testBug.getTitle())
                 .severity(testBug.getSeverity()).func(testBug.getFunc()).bugStatus(testBug.getBugStatus()).note(testBug.getNote())
                 .tester(testBug.getTester()).delFlag(0).createDate(new Date())
                 .workDate(StringUtils.isBlank(testBug.getWorkDate()) ? DateUtils.parse2String(new Date(), "yyyy-MM") : testBug.getWorkDate())

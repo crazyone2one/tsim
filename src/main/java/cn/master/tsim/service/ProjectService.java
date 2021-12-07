@@ -87,8 +87,9 @@ public interface ProjectService extends IService<Project> {
      * @param response
      * @param id
      * @param workDate
+     * @param storyId
      * @return cn.master.tsim.common.ResponseResult
      */
-    ResponseResult generateReport(HttpServletRequest request, HttpServletResponse response, String id, String workDate);
+    ResponseResult generateReport(HttpServletRequest request, HttpServletResponse response, String id, String workDate, String storyId);
 
 }

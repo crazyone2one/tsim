@@ -3,123 +3,166 @@
     <head th:replace="/fragment/commons :: common_header(~{::title},~{})">
         <title>TSIM @ STORY</title>
     </head>
-    <body>
-        <header th:replace="/fragment/commons :: top-header">
-        </header>
-
-        <div class="container-fluid">
-            <div class="row">
-                <nav id="sidebarMenu" th:replace="/fragment/commons :: sidebarMenu2(flag='story')">
-                </nav>
-                <main class="main-content ms-sm-auto px-md-1 position-relative">
-                    <!-- Begin Page Content 右侧页面内容 -->
-                    <div>
-                        <!--操作栏-->
-                        <div class="pt-2 border-bottom">
-                            <div class="card-body">
-                                <form th:action="@{list}">
-                                    <div class="row">
-                                        <div class="input-group mb-3" style="width: fit-content">
-                                            <span class="input-group-text" id="basic-addon1">所属项目</span>
-                                            <input type="text" class="form-control" placeholder="输入项目名称"
-                                                   aria-label="projectId" name="projectId"
-                                                   aria-describedby="basic-addon1" id="p-search">
-                                        </div>
-                                        <div class="input-group mb-3 " style="width: fit-content">
-                                            <span class="input-group-text" id="basic-addon3">需求内容</span>
-                                            <input type="text" class="form-control" name="description"
-                                                   placeholder="输入需求内容" aria-label="name"
-                                                   aria-describedby="basic-addon3">
-                                        </div>
-                                        <select class="form-select mb-3" style="width: fit-content" aria-label="active"
-                                                name="delFlag">
-                                            <option th:value="''">完成状态</option>
-                                            <option value="1">已完成</option>
-                                            <option value="0">未完成</option>
-                                        </select>
-                                        <div class="col-lg-2 col-md-4 col-sm-6">
-                                            <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
-                                                                                          style="color: cornflowerblue"></i>
-                                            </button>
-                                            <button type="button" class="btn"
-                                                    data-bs-toggle="modal" data-bs-target="#add-story-modal"><i
-                                                    class="bi bi-plus-circle hvr-grow"
-                                                    style="color: cornflowerblue"></i>
-                                            </button>
-                                        </div>
+    <body id="tsim_body" class="aside-enable">
+        <div class="d-flex flex-column flex-root">
+            <!--            begin page-->
+            <div class="page d-flex flex-row flex-column-fluid">
+                <!--                begin side-->
+                <div id="tsim-side" class="aside" data-drawer="true" data-drawer-name="aside">
+                    <!--                    menu-->
+                    <div class="aside-menu flex-column-fluid">
+                        <div th:replace="/fragment/commons :: sidebarMenu2(flag='story')"></div>
+                        <div th:replace="/fragment/commons :: aside_footer"></div>
+                    </div>
+                </div>
+                <div id="tsim_wrapper" class="wrapper d-flex flex-column flex-row-fluid">
+                    <!--                    header-->
+                    <div id="tsim_header" style="" class="header align-items-stretch">
+                        <div class="header-brand">
+                            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#"
+                               th:href="@{/dashboard}">
+                                <div class="sidebar-brand-icon rotate-n-15">
+                                    <i class="bi bi-emoji-laughing"></i>
+                                </div>
+                                <div class="sidebar-brand-text mx-3">TSIM <sup>beta</sup></div>
+                            </a>
+                        </div>
+                        <div class="toolbar">
+                            <div class="container-fluid py-6 py-lg-0 d-flex flex-column flex-sm-row align-items-lg-stretch justify-content-sm-between">
+                                <div class="page-title d-flex flex-column me-5">
+                                    <h1 class="d-flex flex-column text-dark fw-bolder fs-2 mb-0">Story</h1>
+                                    <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 pt-1">
+                                        <li class="breadcrumb-item text-muted">
+                                            <a href="#" class="text-muted text-hover-primary">Home</a>
+                                        </li>
+                                        <li class="breadcrumb-item"><span class="bullet bg-gray-300 w-5px h-2px"></span>
+                                        </li>
+                                        <li class="breadcrumb-item text-muted">story</li>
+                                    </ul>
+                                </div>
+                                <!--                                action group-->
+                                <div class="d-flex align-items-center overflow-auto pt-3 pt-sm-0">
+                                    <div class="header-search me-4">
+                                        <div id="tsim_search" class="d-flex align-items-center"></div>
                                     </div>
-                                </form>
+                                    <div class="d-flex">
+                                        <div class="d-flex align-items-center me-4"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <!--            列表数据-->
-                        <div id="table_refresh" th:fragment="table_refresh">
-                            <div>
-                                <button type="button" class="btn btn-sm btn-outline-info" disabled>添加需求文件</button>
-                                <button type="button" class="btn btn-sm btn-outline-danger" disabled>删除需求文件</button>
-                            </div>
-                            <table class="table table-hover">
-                                <thead>
-                                <tr class="text-center">
-                                    <th scope="col"></th>
-                                    <th scope="col">#</th>
-                                    <th scope="col">所属项目</th>
-                                    <th scope="col">需求内容描述</th>
-                                    <th scope="col">关联文档</th>
-                                    <th scope="col">需求时间</th>
-                                    <th scope="col">完成状态</th>
-                                    <th scope="col">操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="text-center" th:each="temp,stat:${iPage.records}">
-                                    <td>
-                                        <label class="checkbox">
-                                            <input type="checkbox" th:value="${temp.id}">
-                                            <input name="id" type="hidden" class="form-control"
-                                                   th:value="${temp.id}" id="id">
-                                        </label>
-                                    </td>
-
-                                    <td th:text="${stat.index+1}"></td>
-                                    <td th:text="${temp.projectId}"></td>
-                                    <td th:text="${temp.description}"></td>
-                                    <td>
-                                        <a th:href="${#strings.isEmpty(temp.docId)}?'@{/story/download/'+'':'/story/download/'+${temp.docInfo.docName}+'/'+${temp.docInfo.uuidName}"
-                                           th:text="${#strings.isEmpty(temp.docId)} ? '未上传需求文档' : ${temp.docInfo.docName}"
-                                           th:style="${#strings.isEmpty(temp.docId)} ? 'pointer-events: none' : ''"></a>
-                                    </td>
-                                    <td th:text="${temp.workDate}"></td>
-                                    <td>
-                                        <div class="form-check form-switch d-inline-block">
-                                            <input class="form-check-input" type="checkbox" id="status"
-                                                   th:checked="${temp.delFlag==0}"
-                                                   th:onclick="updateStatus([[${temp.id}]])">
-                                            <label class="form-check-label" for="status"></label>
+                    </div>
+                    <!--                    begin content-->
+                    <div id="tsim_content" class="content d-flex flex-column flex-column-fluid">
+                        <div id="tsim_content_container" class="container-fluid">
+                            <!--操作栏-->
+                            <div class="pt-2 border-bottom">
+                                <div class="card-body">
+                                    <form th:action="@{list}">
+                                        <div class="row">
+                                            <div class="input-group mb-3" style="width: fit-content">
+                                                <span class="input-group-text" id="basic-addon1">所属项目</span>
+                                                <input type="text" class="form-control" placeholder="输入项目名称"
+                                                       aria-label="projectId" name="projectId"
+                                                       aria-describedby="basic-addon1" id="p-search">
+                                            </div>
+                                            <div class="input-group mb-3 " style="width: fit-content">
+                                                <span class="input-group-text" id="basic-addon3">需求内容</span>
+                                                <input type="text" class="form-control" name="description"
+                                                       placeholder="输入需求内容" aria-label="name"
+                                                       aria-describedby="basic-addon3">
+                                            </div>
+                                            <select class="form-select mb-3" style="width: fit-content" aria-label="active"
+                                                    name="delFlag">
+                                                <option th:value="''">完成状态</option>
+                                                <option value="1">已完成</option>
+                                                <option value="0">未完成</option>
+                                            </select>
+                                            <div class="col-lg-2 col-md-4 col-sm-6">
+                                                <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
+                                                                                              style="color: cornflowerblue"></i>
+                                                </button>
+                                                <button type="button" class="btn"
+                                                        data-bs-toggle="modal" data-bs-target="#add-story-modal"><i
+                                                        class="bi bi-plus-circle hvr-grow"
+                                                        style="color: cornflowerblue"></i>
+                                                </button>
+                                            </div>
                                         </div>
-                                    </td>
-                                    <td>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                                    </form>
+                                </div>
+                            </div>
+                            <!--            列表数据-->
+                            <div id="table_refresh" th:fragment="table_refresh">
+                                <div>
+                                    <button type="button" class="btn btn-sm btn-outline-info" disabled>添加需求文件</button>
+                                    <button type="button" class="btn btn-sm btn-outline-danger" disabled>删除需求文件</button>
+                                </div>
+                                <table class="table table-row-dashed table-hover">
+                                    <thead>
+                                    <tr class="fw-bold fs-7 text-danger text-center py-4">
+                                        <th scope="col"></th>
+                                        <th scope="col">#</th>
+                                        <th scope="col">所属项目</th>
+                                        <th scope="col">需求内容描述</th>
+                                        <th scope="col">关联文档</th>
+                                        <th scope="col">需求时间</th>
+                                        <th scope="col">完成状态</th>
+                                        <th scope="col">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr class="text-center" th:each="temp,stat:${iPage.records}">
+                                        <td>
+                                            <label class="checkbox">
+                                                <input type="checkbox" th:value="${temp.id}">
+                                                <input name="id" type="hidden" class="form-control"
+                                                       th:value="${temp.id}" id="id">
+                                            </label>
+                                        </td>
+
+                                        <td th:text="${stat.index+1}"></td>
+                                        <td th:text="${temp.projectId}"></td>
+                                        <td th:text="${temp.description}"></td>
+                                        <td>
+                                            <a th:href="${#strings.isEmpty(temp.docId)}?'@{/story/download/'+'':'/story/download/'+${temp.docInfo.docName}+'/'+${temp.docInfo.uuidName}"
+                                               th:text="${#strings.isEmpty(temp.docId)} ? '未上传需求文档' : ${temp.docInfo.docName}"
+                                               th:style="${#strings.isEmpty(temp.docId)} ? 'pointer-events: none' : ''"></a>
+                                        </td>
+                                        <td th:text="${temp.workDate}"></td>
+                                        <td>
+                                            <div class="form-check form-switch d-inline-block">
+                                                <input class="form-check-input" type="checkbox" id="status"
+                                                       th:checked="${temp.delFlag==0}"
+                                                       th:onclick="updateStatus([[${temp.id}]])">
+                                                <label class="form-check-label" for="status"></label>
+                                            </div>
+                                        </td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <!-- 添加问题单Modal弹框 -->
-                        <div th:replace="~{story/add_story_modal::addStoryFragment}"></div>
                     </div>
                     <!--        分页-->
                     <div th:replace="/fragment/commons :: pagination01"></div>
-                    <!--                    toast-->
-                    <div th:replace="/fragment/commons :: toast-div"></div>
-                </main>
+                    <div th:replace="/fragment/commons :: footer"></div>
+                </div>
             </div>
         </div>
-        <footer th:replace="/fragment/commons :: footer"></footer>
+
+        <!-- 添加问题单Modal弹框 -->
+        <div th:replace="~{story/add_story_modal::addStoryFragment}"></div>
+        <!--                    toast-->
+        <div th:replace="/fragment/commons :: toast-div"></div>
         <!-- Logout Modal-->
         <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
-        <script type="text/javascript" th:src="@{/dist/js/common.js}"></script>
+        <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
         <script>
             // 保存项目
             $('button[id=submit]').click(function () {

@@ -51,7 +51,7 @@ public interface TestTaskInfoService extends IService<TestTaskInfo> {
 
     void updateTask(HttpServletRequest request, TestTaskInfo taskInfo);
 
-    boolean checkReportDoc(String projectId, String workDate);
+    TestTaskInfo checkReportDoc(String projectId, String storyId, String workDate);
 
     /**
      * 查询任务数据
@@ -62,6 +62,7 @@ public interface TestTaskInfoService extends IService<TestTaskInfo> {
      */
 
     ResponseResult getTask(String id);
+    ResponseResult checkTaskReport(String id);
 
     TestTaskInfo queryItem(String projectId, String storyId);
 }

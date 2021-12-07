@@ -6,86 +6,99 @@
         </div>
         <div class="sidebar-brand-text mx-3">TSIM <sup>beta</sup></div>
     </a>
-    <!--    <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu">-->
-    <!--        Button with data-bs-target-->
-    <!--    </button>-->
-    <!--    <input class="form-control form-control-dark w-100" type="text" placeholder="Search" aria-label="Search">-->
 </header>
 
 <!--菜单样式2-->
-<nav ></nav>
-<div class="d-flex flex-column flex-shrink-0 p-3 bg-light " style="flex: 0 0 auto;width: 13%;" th:fragment="sidebarMenu2">
-<!--    <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto link-dark text-decoration-none">-->
-<!--        <svg class="bi me-2" width="40" height="32"><use xlink:href="#bootstrap"/></svg>-->
-<!--        <span class="fs-4">Sidebar</span>-->
-<!--    </a>-->
-    <hr>
-    <ul class="nav nav-pills flex-column mb-auto col-md-9">
-        <li>
-            <a th:class="${flag=='dashboard'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/dashboard}">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"/></svg>
-                Dashboard
+<div class="hover-scroll-overlay-y px-2 my-5 my-lg-5" id="aside_menu_wrapper" data-scroll="true"
+     style="height: 500px" th:fragment="sidebarMenu2">
+    <div class="menu menu-column menu-title-gray-800 menu-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500 fw-bold"
+         id="aside_menu" data-menu="true">
+        <div class="menu-item">
+            <a href="#" th:class="${flag=='dashboard'?'menu-link active':'menu-link'}" th:href="@{/dashboard}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                <span class="menu-title">Dashboard</span>
             </a>
-        </li>
-        <li class="menu-item">
-            <a th:class="${flag=='project'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/project/list}">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"/></svg>
-                项目管理
+        </div>
+        <div class="menu-item">
+            <a th:class="${flag=='project'?'menu-link active':'menu-link'}" href="#"
+               th:href="@{/project/list}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                <span class="menu-title">项目管理</span>
             </a>
-        </li>
-        <li>
-            <a th:class="${flag=='task'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/task/list}">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-                任务汇总
+        </div>
+        <div class="menu-item">
+            <a th:class="${flag=='task'?'menu-link active':'menu-link link-dark'}" href="#"
+               th:href="@{/task/list}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                <span class="menu-title">任务汇总</span>
             </a>
-        </li>
-        <li>
-            <a th:class="${flag=='story'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/story/list}">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-                测试需求管理
+        </div>
+        <div class="menu-item">
+            <a th:class="${flag=='story'?'menu-link active':'menu-link link-dark'}" href="#"
+               th:href="@{/story/list}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                <span class="menu-title">测试需求管理</span>
             </a>
-        </li>
-        <li>
-            <a th:class="${flag=='plan'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/plan/list}">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-                测试计划管理
+        </div>
+        <div class="menu-item">
+            <a th:class="${flag=='plan'?'menu-link active':'menu-link link-dark'}" href="#"
+               th:href="@{/plan/list}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                <span class="menu-title">测试计划管理</span>
             </a>
-        </li>
-        <li>
-            <a th:class="${flag=='case'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/case/list}">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-                测试用例
+        </div>
+        <div class="menu-item">
+            <a th:class="${flag=='case'?'menu-link active':'menu-link link-dark'}" href="#"
+               th:href="@{/case/list}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                <span class="menu-title">测试用例</span>
             </a>
-        </li>
-        <li>
-            <a th:class="${flag=='bug'?'nav-link link-dark active':'nav-link link-dark'}" href="#" th:href="@{/bug/list}">
-                <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"/></svg>
-                问题单(BUG)
+        </div>
+        <div class="menu-item">
+            <a th:class="${flag=='bug'?'menu-link active':'menu-link link-dark'}" href="#"
+               th:href="@{/bug/list}">
+                                        <span class="menu-bullet">
+                                            <span class="bullet bullet-dot"></span>
+                                        </span>
+                <span class="menu-title">问题单(BUG)</span>
             </a>
-        </li>
-        <!-- Nav Item - demo -->
-<!--        <li class="nav-item">-->
-<!--            <a th:class="${flag=='demo'?'nav-link active':'nav-link'}" href="#" th:href="@{/story/list1}">-->
-<!--                <i class="bi bi-card-list"></i>-->
-<!--                <span>Demo</span></a>-->
-<!--        </li>-->
-    </ul>
-    <hr>
-    <div class="dropdown">
-        <a href="#" class="d-flex align-items-center link-primary text-decoration-none dropdown-toggle"
-           id="dropdownUser2" data-bs-toggle="dropdown" aria-expanded="false">
-<!--            <img src="https://github.com/mdo.png" alt="" width="32" height="32" class="rounded-circle me-2">-->
-            <i class="rounded-circle me-2 bi bi-person" style="font-size: 1.5rem"></i>
-            <strong th:text="${session.account.username}">11‘s papa</strong>
-        </a>
-        <ul class="dropdown-menu text-small shadow" aria-labelledby="dropdownUser2">
-            <li><a class="dropdown-item" href="#">Settings</a></li>
-            <li><a class="dropdown-item" href="#">Profile</a></li>
-            <li><hr class="dropdown-divider"></li>
-            <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
-                Logout
-            </a></li>
-        </ul>
+        </div>
+    </div>
+</div>
+
+<div id="aside_footer" class="aside-footer flex-column-auto pb-5" th:fragment="aside_footer">
+    <div class="aside_user">
+        <div class="aside_user d-flex align-items-sm-center justify-content-center py-5">
+            <div class="me-5"></div>
+            <div class="flex-row-fluid flex-wrap">
+                <div class="d-flex align-items-center flex-stack">
+                    <div class="me-2">
+                        <a href="#" class="text-gray-800 text-hover-primary fs-6 fw-bold lh-0"
+                           th:text="${session.account.username}">11‘s papa</a>
+                    </div>
+                    <a href="#" class="btn btn-icon btn-active-color-primary me-n4" data-bs-toggle="modal"
+                       data-bs-target="#logoutModal">
+                        <span class="svg-icon svg-icon-2 svg-icon-gray-400">
+                            <svg class="bi-box-arrow-in-right" width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none"></svg>
+                        </span>
+                    </a>
+
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <!--head信息-->
@@ -94,20 +107,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:replace="${title}"></title>
     <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+        <link rel="stylesheet" th:href="@{/global/css/style.css}">
+    <!--    <link rel="stylesheet" th:href="@{/global/css/plugins.bundle.css}">-->
     <th:block th:replace="${links}"/>
     <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
     <link rel="stylesheet" th:href="@{/plugins/hover.css}">
     <!-- Custom styles for this template -->
-    <link rel="stylesheet" th:href="@{/dist/css/common.css}">
+    <link rel="stylesheet" th:href="@{/global/css/common.css}">
     <meta name="author" content="11‘s papa">
 </head>
 <!-- Footer -->
-<footer id="footer" class="py-3 my-4" th:fragment="footer">
-    <p class="text-center text-muted">Copyright &copy; TSIM 2021</p>
-</footer>
+<div id="footer" class="footer py-4 d-flex flex-lg-column" th:fragment="footer">
+    <div class="container-fluid d-flex flex-column flex-md-row align-items-center justify-content-between">
+        <div class="text-dark order-2 order-md-1">
+            <span class="text-muted fw-bold me-1">Copyright &copy; <a href="#" class="text-gray-800 text-hover-primary">TSIM</a> 2021</span>
+        </div>
+    </div>
+
+</div>
 <!-- End of Footer -->
 <!--分页-->
-<div id="pagination01" th:fragment="pagination01">
+<div id="pagination01" class="mb-20" th:fragment="pagination01">
     <nav aria-label="Page navigation example">
         <ul class="pagination pagination-sm justify-content-center" th:if="${iPage.pages>0}">
             <li class="page-item">
@@ -154,13 +174,14 @@
     </div>
 </div>
 
-<!--                    toast-->
-<div class="toast align-items-center text-white border-0 position-absolute top-0 end-0"
-     role="alert" aria-live="assertive" aria-atomic="true" th:fragment="toast-div">
+<!-- toast-->
+<div class="toast position-fixed top-0 end-0 p-3 z-index-3" role="alert" aria-live="assertive" aria-atomic="true"
+     th:fragment="toast-div">
     <div class="d-flex">
         <div class="toast-body">
             Hello, world! This is a toast message.
         </div>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"
+                aria-label="Close"></button>
     </div>
 </div>

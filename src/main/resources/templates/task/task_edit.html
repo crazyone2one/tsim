@@ -24,6 +24,7 @@
                             <label for="projectDesc" class="col-sm-3 col-form-label">任务描述</label>
                             <div class="col-sm-9">
                                 <input type="text" readonly class="form-control-plaintext" name="summaryDesc" id="projectDesc" value="email@example.com">
+                                <input type="hidden" id="workDate">
                             </div>
                         </div>
                         <div class="mb-3 row">
@@ -147,6 +148,12 @@
                         <div class="input-group">
                             <span class="input-group-text">备注</span>
                             <textarea class="form-control" aria-label="备注"></textarea>
+                        </div>
+                        <div>
+<!--                            <a href="#" th:style="${temp.reportDoc} ? 'pointer-events: none' : ''"-->
+<!--                               th:href="@{'/project/generateReport/'+${temp.id}+'/'+${temp.issueDate}}">生成报告</a>-->
+                            <a href="#" id="generateReport">生成报告</a>
+                            <a href="#">下载报告</a>
                         </div>
                     </div>
                 </div>

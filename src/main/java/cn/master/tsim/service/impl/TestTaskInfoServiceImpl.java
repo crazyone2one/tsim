@@ -118,14 +118,12 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
     }
 
     @Override
-    public boolean checkReportDoc(String projectId, String workDate) {
+    public TestTaskInfo checkReportDoc(String projectId, String storyId, String workDate) {
         QueryWrapper<TestTaskInfo> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(TestTaskInfo::getProjectId, projectId).eq(TestTaskInfo::getIssueDate, workDate);
-        final TestTaskInfo taskInfo = baseMapper.selectOne(wrapper);
-        if (Objects.nonNull(taskInfo)) {
-            return StringUtils.isNotBlank(taskInfo.getReportDoc());
-        }
-        return false;
+        wrapper.lambda().eq(TestTaskInfo::getProjectId, projectId)
+                .eq(TestTaskInfo::getStoryId,storyId)
+                .eq(TestTaskInfo::getIssueDate, workDate);
+        return baseMapper.selectOne(wrapper);
     }
 
     @Override
@@ -145,6 +143,15 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
             return ResponseUtils.error(ResponseCode.BODY_NOT_MATCH.getCode(), ResponseCode.BODY_NOT_MATCH.getMessage());
         }
         return success;
+    }
+
+    @Override
+    public ResponseResult checkTaskReport(String id) {
+        final TestTaskInfo taskInfo = baseMapper.selectById(id);
+        if (Objects.nonNull(taskInfo) && StringUtils.isNotBlank(taskInfo.getReportDoc())) {
+            return ResponseUtils.error("报告已存在");
+        }
+        return ResponseUtils.success("");
     }
 
     @Override

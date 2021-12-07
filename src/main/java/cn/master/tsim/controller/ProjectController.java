@@ -67,7 +67,7 @@ public class ProjectController {
      */
     @RequestMapping("/reloadTable")
     public String reloadTable(Model model, Project project) {
-        final IPage<Project> iPage = projectService.projectListPages(project, 0, 0);
+        final IPage<Project> iPage = projectService.projectListPages(project, 0, 10);
         model.addAttribute("iPage", iPage);
         return "project/project_list :: table_refresh";
     }
@@ -113,14 +113,14 @@ public class ProjectController {
         }
     }
 
-    @RequestMapping(value = "/generateReport/{id}/{workDate}")
+    @RequestMapping(value = "/generateReport/{id}/{storyId}/{workDate}")
     @ResponseBody
     public ResponseResult generateReport(HttpServletRequest request, HttpServletResponse response, Model model,
                                          @PathVariable("id") String id,
-                                         @PathVariable("workDate") String workDate) {
+                                         @PathVariable("workDate") String workDate, @PathVariable String storyId) {
         ResponseResult result = ResponseUtils.success("报告生成成功");
         try {
-            final ResponseResult responseResult = projectService.generateReport(request, response, id, workDate);
+            final ResponseResult responseResult = projectService.generateReport(request, response, id, workDate,storyId );
             model.addAttribute("success", true);
             response.sendRedirect("/project/list");
         } catch (Exception e) {

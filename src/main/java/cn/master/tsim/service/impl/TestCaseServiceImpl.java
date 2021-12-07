@@ -54,7 +54,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         final int priority = Integer.parseInt(request.getParameter("priority"));
         // // TODO: 2021/11/16 0016 未查询到对应的项目数据时新增项目
         final Project project = projectService.getProjectById(projectId);
-        final Module module = moduleService.getModuleById(moduleId);
+        final Module module = moduleService.addModule(request,projectId,moduleId);
         TestCase build = TestCase.builder().active(0).projectId(project.getId()).moduleId(module.getId())
                 .name(request.getParameter("name"))
                 .description(request.getParameter("description"))

@@ -12,7 +12,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebAppConfig implements WebMvcConfigurer {
 
     private static final String[] CLASSPATH_RESOURCE_LOCATIONS = {"/user/login", "/",
-            "/bootstrap/**", "/dist/**", "/plugins/**","/favicon.ico"};
+            "/bootstrap/**", "/global/**", "/plugins/**","/favicon.ico"};
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

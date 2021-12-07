@@ -22,15 +22,6 @@ import java.util.Map;
 public class DocInfoServiceImpl extends ServiceImpl<DocInfoMapper, DocInfo> implements DocInfoService {
 
     @Override
-    public DocInfo saveDocInfo(HttpServletRequest request, DocInfo docInfo) {
-        DocInfo build = DocInfo.builder().docName(docInfo.getDocName())
-                .docFlag(docInfo.getDocFlag()).docPath(docInfo.getDocPath()).delFlag(0)
-                .createDate(new Date()).build();
-        baseMapper.insert(build);
-        return build;
-    }
-
-    @Override
     public DocInfo saveDocInfo(HttpServletRequest request, Map<String, String> docInfo) {
         DocInfo build = DocInfo.builder().docName(docInfo.get("docName")).uuidName(docInfo.get("uuidName"))
                 .docFlag(docInfo.get("flag")).docPath(docInfo.get("docPath")).delFlag(0)
