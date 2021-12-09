@@ -113,6 +113,16 @@ public class ProjectController {
         }
     }
 
+    @PostMapping(value = "/del/{id}")
+    @ResponseBody
+    public ResponseResult deleteProject(@PathVariable String id) {
+        try {
+            return ResponseUtils.success("数据删除成功", projectService.deleteProject(id));
+        } catch (Exception e) {
+            return ResponseUtils.error(400, "数据删除失败", e.getMessage());
+        }
+    }
+
     @RequestMapping(value = "/generateReport/{id}/{storyId}/{workDate}")
     @ResponseBody
     public ResponseResult generateReport(HttpServletRequest request, HttpServletResponse response, Model model,
@@ -120,7 +130,7 @@ public class ProjectController {
                                          @PathVariable("workDate") String workDate, @PathVariable String storyId) {
         ResponseResult result = ResponseUtils.success("报告生成成功");
         try {
-            final ResponseResult responseResult = projectService.generateReport(request, response, id, workDate,storyId );
+            final ResponseResult responseResult = projectService.generateReport(request, response, id, workDate, storyId);
             model.addAttribute("success", true);
             response.sendRedirect("/project/list");
         } catch (Exception e) {

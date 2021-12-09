@@ -99,6 +99,14 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
+    public int deleteProject(String projectId) {
+        final Project project = getProjectById(projectId);
+        project.setDelFlag(1);
+        project.setUpdateDate(new Date());
+        return baseMapper.updateById(project);
+    }
+
+    @Override
     public void updateProjectStatus(String projectId) {
         final Project project = getProjectById(projectId);
         project.setDelFlag(Objects.equals(project.getDelFlag(), 0) ? 1 : 0);
@@ -109,10 +117,12 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     @Override
     public IPage<Project> projectListPages(Project project, Integer pageCurrent, Integer pageSize) {
         String proName = StringUtils.isNotBlank(project.getProjectName()) ? project.getProjectName().trim() : "";
+        QueryWrapper<Project> wrapper = new QueryWrapper<>();
+        //               根据项目名称模糊查询
+        wrapper.lambda().like(StringUtils.isNotBlank(proName), Project::getProjectName, proName);
+        wrapper.lambda().eq(Project::getDelFlag, 0);
         final IPage<Project> iPage = baseMapper.selectPage(
-                new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize),
-//               根据项目名称模糊查询
-                new QueryWrapper<Project>().lambda().like(StringUtils.isNotBlank(proName), Project::getProjectName, proName));
+                new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize), wrapper);
         iPage.getRecords().forEach(temp -> {
             //            统计关联的模块数量
             final List<Module> modules = moduleService.listModule(temp.getId());

@@ -60,7 +60,21 @@ public interface ProjectService extends IService<Project> {
      */
     Project addProject(HttpServletRequest request, Project project);
 
+    /**
+     * 保存项目数据
+     *
+     * @param projectName 项目名称
+     * @return cn.master.tsim.entity.Project
+     */
     Project saveProject(String projectName);
+
+    /**
+     * 删除项目数据
+     *
+     * @param projectId 项目id
+     * @return int
+     */
+    int deleteProject(String projectId);
 
     /**
      * 更新项目状态

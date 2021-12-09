@@ -70,7 +70,8 @@
                                            th:text="${temp.refBugCount}"></a>
                                     </td>
                                     <td>
-
+                                        <a type="button" class="btn btn-danger btn-sm"
+                                           th:onclick="delPro([[${temp.id}]])" th:attr="data-name=${temp.projectName}">删除</a>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -122,6 +123,24 @@
                 </div>
             </div>
         </div>
+        <!-- Modal -->
+        <div class="modal fade" id="delModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">删除确认框</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        删除数据？
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
+                        <button type="button" class="btn btn-primary" id="delete-pro">删除</button>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
@@ -151,12 +170,33 @@
                                     showToast(result['code'], result['msg']);
                                 }
                             })
-                        }else {
+                        } else {
                             showToast(data['code'], data['msg']);
                         }
                     }
                 });
             })
+
+            /**
+             * 删除项目
+             * @param id
+             */
+            function delPro(id) {
+                $("#delModal").modal('show');
+                $("#delete-pro").click(function () {
+                    $.ajax({
+                        url: "/project/del/" + id,
+                        type: "post",
+                        success: function (result) {
+                            if (Object.is(200, result['code'])) {
+                                resetModal("#delModal", null);
+                                $("#table_refresh").load("/project/reloadTable");
+                            }
+                            showToast(result['code'], result['msg']);
+                        }
+                    })
+                })
+            }
         </script>
     </body>
 </html>
