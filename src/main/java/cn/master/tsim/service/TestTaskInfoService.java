@@ -30,6 +30,8 @@ public interface TestTaskInfoService extends IService<TestTaskInfo> {
      */
     TestTaskInfo addItem(HttpServletRequest request, String projectId, TestStory story);
 
+    TestTaskInfo saveTaskInfo(HttpServletRequest request, String projectId, String description, String workDate);
+
     /**
      * 获取单个任务汇总信息
      *

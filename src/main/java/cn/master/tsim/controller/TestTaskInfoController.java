@@ -75,13 +75,34 @@ public class TestTaskInfoController {
 
     @RequestMapping(value = "/getTask/{id}")
     @ResponseBody
-    public ResponseResult getTask(HttpServletRequest request, HttpServletResponse response, @PathVariable String id) {
+    public ResponseResult getTask(HttpServletRequest request, @PathVariable String id) {
         return taskInfoService.getTask(id);
     }
+
     @RequestMapping(value = "/checkReport/{id}")
     @ResponseBody
     public ResponseResult generateReport(HttpServletRequest request, @PathVariable("id") String id) {
         return taskInfoService.checkTaskReport(id);
+    }
+
+    @PostMapping(value = "/addTask")
+    @ResponseBody
+    public ResponseResult addTask(HttpServletRequest request, @RequestParam("pro") String proId,
+                                  @RequestParam("desc") String description, @RequestParam("workDate") String workDate) {
+        try {
+            final TestTaskInfo taskInfo = taskInfoService.saveTaskInfo(request, proId, description, workDate);
+            return ResponseUtils.success("数据添加成功", taskInfo);
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
+        }
+    }
+
+    @RequestMapping("/reloadTable")
+    public String reloadTable(Model model, TestTaskInfo taskInfo) {
+        final IPage<TestTaskInfo> iPage = taskInfoService.taskInfoPage(taskInfo, 0, 0);
+        model.addAttribute("iPage", iPage);
+        return "task/task_info :: table_refresh";
     }
 }
 

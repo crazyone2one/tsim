@@ -50,7 +50,7 @@ public class ProjectController {
      */
     @GetMapping(value = "/list")
     public String projectList(Model model, @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
-                              @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize, Project project) {
+                              @RequestParam(value = "pageSize", defaultValue = "0") Integer pageSize, Project project) {
         final IPage<Project> iPage = projectService.projectListPages(project, pageCurrent, pageSize);
         model.addAttribute("iPage", iPage);
         model.addAttribute("redirecting", "/project/list?pageCurrent=");
@@ -67,7 +67,7 @@ public class ProjectController {
      */
     @RequestMapping("/reloadTable")
     public String reloadTable(Model model, Project project) {
-        final IPage<Project> iPage = projectService.projectListPages(project, 0, 10);
+        final IPage<Project> iPage = projectService.projectListPages(project, 0, 0);
         model.addAttribute("iPage", iPage);
         return "project/project_list :: table_refresh";
     }

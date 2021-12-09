@@ -83,9 +83,10 @@ public class TestStoryController {
     @ResponseBody
     public ResponseResult uniqueStory(HttpServletRequest request) {
         try {
-            final TestStory story = service.getStory(request.getParameter("description"), request.getParameter("date"), "");
+            final TestStory story = service.getStory(request.getParameter("description"), request.getParameter("date"), request.getParameter("name"));
             if (Objects.nonNull(story)) {
-                return ResponseUtils.error(401, "存在相同测试需求", story);
+                final String projectName = projectService.getProjectById(story.getProjectId()).getProjectName();
+                return ResponseUtils.error(401, projectName + "已关联" + story.getWorkDate() + "月份测试需求:" + story.getDescription(), story);
             }
             return ResponseUtils.success();
         } catch (Exception e) {

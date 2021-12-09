@@ -81,10 +81,24 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
                 .storyId(story.getId()).summaryDesc(story.getDescription())
                 .finishStatus("1")
                 .reqDoc(StringUtils.isNotBlank(story.getDocId()) ? story.getDocId() : "")
+                .deliveryStatus("1")
                 .tester(tester.getId())
                 .issueDate(story.getWorkDate())
                 .createDate(new Date())
                 .build();
+        baseMapper.insert(build);
+        return build;
+    }
+
+    @Override
+    public TestTaskInfo saveTaskInfo(HttpServletRequest request, String projectId, String description, String workDate) {
+        Tester tester = new Tester();
+        final Object account = request.getSession().getAttribute("account");
+        if (Objects.nonNull(account)) {
+            tester = JacksonUtils.convertToClass(JacksonUtils.convertToString(account), Tester.class);
+        }
+        final TestTaskInfo build = TestTaskInfo.builder().projectId(projectId).summaryDesc(description).issueDate(workDate).tester(tester.getId())
+                .finishStatus("1").deliveryStatus("1").createDate(new Date()).build();
         baseMapper.insert(build);
         return build;
     }

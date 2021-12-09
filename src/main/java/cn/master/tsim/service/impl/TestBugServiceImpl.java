@@ -15,6 +15,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -94,7 +95,7 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
         Map<String, Integer> result = new LinkedHashMap<>();
         QueryWrapper<TestBug> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(TestBug::getProjectId, projectId).eq(TestBug::getBugStatus, bugStatus);
-        wrapper.lambda().in(TestBug::getId, bugList);
+        wrapper.lambda().in(CollectionUtils.isNotEmpty(bugList),TestBug::getId, bugList);
         List<TestBug> bugs = baseMapper.selectList(wrapper);
         Map<Integer, Integer> collect = bugs.stream().collect(Collectors.groupingBy(TestBug::getSeverity, Collectors.summingInt(p -> 1)));
         result.put("level1", collect.getOrDefault(1, 0));

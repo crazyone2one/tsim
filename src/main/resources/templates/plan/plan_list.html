@@ -4,167 +4,119 @@
         <title>TSIM @ PLAN</title>
         <link rel="stylesheet" th:href="@{/plugins/bst/bootstrap-table.min.css}">
     </head>
-    <body id="tsim_body" class="aside-enable">
-
-        <div class="d-flex flex-column flex-root">
-            <!--            begin page-->
-            <div class="page d-flex flex-row flex-column-fluid">
-                <!--                begin side-->
-                <div id="tsim-side" class="aside" data-drawer="true" data-drawer-name="aside">
-                    <!--                    menu-->
-                    <div class="aside-menu flex-column-fluid">
-                        <div th:replace="/fragment/commons :: sidebarMenu2(flag='plan')"></div>
-                        <div th:replace="/fragment/commons :: aside_footer"></div>
-                    </div>
-                </div>
-                <div id="tsim_wrapper" class="wrapper d-flex flex-column flex-row-fluid">
-                    <!--                    header-->
-                    <div id="tsim_header" style="" class="header align-items-stretch">
-                        <div class="header-brand">
-                            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#"
-                               th:href="@{/dashboard}">
-                                <div class="sidebar-brand-icon rotate-n-15">
-                                    <i class="bi bi-emoji-laughing"></i>
-                                </div>
-                                <div class="sidebar-brand-text mx-3">TSIM <sup>beta</sup></div>
-                            </a>
-                        </div>
-                        <div class="toolbar">
-                            <div class="container-fluid py-6 py-lg-0 d-flex flex-column flex-sm-row align-items-lg-stretch justify-content-sm-between">
-                                <div class="page-title d-flex flex-column me-5">
-                                    <h1 class="d-flex flex-column text-dark fw-bolder fs-2 mb-0">Plan</h1>
-                                    <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 pt-1">
-                                        <li class="breadcrumb-item text-muted">
-                                            <a href="#" class="text-muted text-hover-primary">Home</a>
-                                        </li>
-                                        <li class="breadcrumb-item"><span class="bullet bg-gray-300 w-5px h-2px"></span>
-                                        </li>
-                                        <li class="breadcrumb-item text-muted">plan</li>
-                                    </ul>
-                                </div>
-                                <!--                                action group-->
-                                <div class="d-flex align-items-center overflow-auto pt-3 pt-sm-0">
-                                    <div class="header-search me-4">
-                                        <div id="tsim_search" class="d-flex align-items-center"></div>
-                                    </div>
-                                    <div class="d-flex">
-                                        <div class="d-flex align-items-center me-4"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!--                    begin content-->
-                    <div id="tsim_content" class="content d-flex flex-column flex-column-fluid">
-                        <div id="tsim_content_container" class="container-fluid">
-                            <!--操作栏-->
-                            <div class="pt-2 border-bottom">
-                                <div class="card-body">
-                                    <form th:action="@{list}" method="get">
-                                        <div class="row">
-                                            <div class="input-group mb-3" style="width: fit-content">
-                                                <span class="input-group-text" id="project">所属项目</span>
-                                                <input type="text" class="form-control" name="projectName"
-                                                       placeholder="项目名称"
-                                                       aria-label="project" aria-describedby="project"
-                                                       id="p-search">
-                                            </div>
-                                            <div class="input-group mb-3 " style="width: fit-content">
-                                                <span class="input-group-text">测试计划名称</span>
-                                                <input type="text" class="form-control" name="name" placeholder="测试计划名称"
-                                                       aria-label="name"
-                                                       aria-describedby="basic-addon3">
-                                            </div>
-                                            <div class="input-group mb-3 " style="width: fit-content">
-                                                <span class="input-group-text">测试计划描述</span>
-                                                <input type="text" class="form-control" name="description"
-                                                       placeholder="测试计划描述（模糊查询）"
-                                                       aria-label="name"
-                                                       aria-describedby="basic-addon3">
-                                            </div>
-                                            <select class="form-select mb-3" style="width: fit-content" aria-label="active"
-                                                    name="delFlag">
-                                                <option th:value="''">结束状态</option>
-                                                <option value="0">未结束</option>
-                                                <option value="1">已结束</option>
-                                            </select>
-                                            <div class="col-lg-2 col-md-4 col-sm-6">
-                                                <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
-                                                                                              style="color: cornflowerblue"></i>
-                                                </button>
-                                                <button type="button" class="btn"
-                                                        data-bs-toggle="modal" data-bs-target="#add-plan-modal"><i
-                                                        class="bi bi-plus-circle hvr-grow"
-                                                        style="color: cornflowerblue"></i>
-                                                </button>
-                                            </div>
+    <body id="tsim_body">
+        <div id="wrapper">
+            <ul th:replace="/fragment/commons :: sidebarMenu(flag='dashboard')"></ul>
+            <div id="content-wrapper" class="d-flex flex-column">
+                <div id="content">
+                    <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
+                    <div class="container-fluid">
+                        <!--操作栏-->
+                        <div class="pt-2 border-bottom">
+                            <div class="card-body">
+                                <form th:action="@{list}" method="get">
+                                    <div class="row">
+                                        <div class="input-group mb-3" style="width: fit-content">
+                                            <span class="input-group-text" id="project">所属项目</span>
+                                            <input type="text" class="form-control" name="projectName"
+                                                   placeholder="项目名称"
+                                                   aria-label="project" aria-describedby="project"
+                                                   id="p-search">
                                         </div>
-                                    </form>
-                                </div>
+                                        <div class="input-group mb-3 " style="width: fit-content">
+                                            <span class="input-group-text">测试计划名称</span>
+                                            <input type="text" class="form-control" name="name" placeholder="测试计划名称"
+                                                   aria-label="name"
+                                                   aria-describedby="basic-addon3">
+                                        </div>
+                                        <div class="input-group mb-3 " style="width: fit-content">
+                                            <span class="input-group-text">测试计划描述</span>
+                                            <input type="text" class="form-control" name="description"
+                                                   placeholder="测试计划描述（模糊查询）"
+                                                   aria-label="name"
+                                                   aria-describedby="basic-addon3">
+                                        </div>
+                                        <select class="form-select mb-3" style="width: fit-content" aria-label="active"
+                                                name="delFlag">
+                                            <option th:value="''">结束状态</option>
+                                            <option value="0">未结束</option>
+                                            <option value="1">已结束</option>
+                                        </select>
+                                        <div class="col-lg-2 col-md-4 col-sm-6">
+                                            <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
+                                                                                          style="color: cornflowerblue"></i>
+                                            </button>
+                                            <button type="button" class="btn"
+                                                    data-bs-toggle="modal" data-bs-target="#add-plan-modal"><i
+                                                    class="bi bi-plus-circle hvr-grow"
+                                                    style="color: cornflowerblue"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-                            <!--            列表数据-->
-                            <div id="table_refresh" th:fragment="table_refresh">
-                                <table class="table table-hover table-row-dashed">
-                                    <thead class="table-light">
-                                    <tr class="fw-bold fs-7 text-danger text-center py-4">
-                                        <th scope="col">#</th>
-                                        <th scope="col">所属项目</th>
-                                        <th scope="col">关联需求</th>
-                                        <th scope="col">测试计划名称</th>
-                                        <th scope="col">测试计划描述</th>
-                                        <th scope="col">结束状态</th>
-                                        <th scope="col">操作</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr class="text-center" th:each="temp,stat:${iPage.records}">
-                                        <input name="id" type="hidden" class="form-control"
-                                               th:value="${temp.id}" id="id">
-                                        <input name="workDate" type="hidden" th:value="${temp.workDate}" id="workDate"/>
-                                        <td th:text="${stat.index+1}"></td>
-                                        <td th:value="${temp.project.id}" th:text="${temp.project.projectName}"
-                                            th:id="project"></td>
-                                        <td th:value="${temp.story.id}" th:text="${temp.story.description}"></td>
-                                        <td th:text="${temp.name}"></td>
-                                        <td th:text="${temp.description}"></td>
-                                        <td th:switch="${temp.delFlag}">
-                                            <div class="form-check form-switch">
+                        </div>
+                        <!--            列表数据-->
+                        <div id="table_refresh" th:fragment="table_refresh">
+                            <table class="table table-hover table-row-dashed">
+                                <thead>
+                                <tr class="fw-bold fs-7 text-danger text-center py-4">
+                                    <th scope="col">#</th>
+                                    <th scope="col">所属项目</th>
+                                    <th scope="col">关联需求</th>
+                                    <th scope="col">测试计划名称</th>
+                                    <th scope="col">测试计划描述</th>
+                                    <th scope="col">结束状态</th>
+                                    <th scope="col">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr class="text-center" th:each="temp,stat:${iPage.records}">
+                                    <input name="id" type="hidden" class="form-control"
+                                           th:value="${temp.id}" id="id">
+                                    <input name="workDate" type="hidden" th:value="${temp.workDate}" id="workDate"/>
+                                    <td th:text="${stat.index+1}"></td>
+                                    <td th:value="${temp.project.id}" th:text="${temp.project.projectName}"
+                                        th:id="project"></td>
+                                    <td th:value="${temp.story.id}" th:text="${temp.story.description}"></td>
+                                    <td th:text="${temp.name}"></td>
+                                    <td th:text="${temp.description}"></td>
+                                    <td th:switch="${temp.delFlag}">
+                                        <div class="form-check form-switch">
                                 <span th:case="0">
                                     <input class="form-check-input" type="checkbox" id="un-del" checked
                                            th:onclick="updateStatus([[${temp.id}]])">
                                     <label class="form-check-label" for="un-del"></label>
                                 </span>
-                                                <span th:case="1">
+                                            <span th:case="1">
                                     <input class="form-check-input" type="checkbox" id="del"
                                            th:onclick="updateStatus([[${temp.id}]])">
                                     <label class="form-check-label" for="del"></label>
                                 </span>
-                                            </div>
-                                        </td>
-                                        <td class="align-items-md-center">
-                                            <a type="button" class="btn" id="ref-add" th:attr="data-id=${temp.id}"
-                                               data-bs-toggle="modal" data-bs-target="#ref-case-modal"><i
-                                                    class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="关联测试用例"></i>
-                                            </a>
-                                            <a type="button" class="btn" id="ref-run"
-                                               data-bs-toggle="modal" data-bs-target="#ref-run-modal"><i
-                                                    class="bi bi-list-check hvr-grow" style="color: cornflowerblue"
-                                                    data-bs-toggle="tooltip" data-bs-placement="top" title="执行测试用例"></i>
-                                            </a>
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                    <tfoot></tfoot>
-                                </table>
-                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="align-items-md-center">
+                                        <a type="button" class="btn" id="ref-add" th:attr="data-id=${temp.id}"
+                                           data-bs-toggle="modal" data-bs-target="#ref-case-modal"><i
+                                                class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="关联测试用例"></i>
+                                        </a>
+                                        <a type="button" class="btn" id="ref-run"
+                                           data-bs-toggle="modal" data-bs-target="#ref-run-modal"><i
+                                                class="bi bi-list-check hvr-grow" style="color: cornflowerblue"
+                                                data-bs-toggle="tooltip" data-bs-placement="top" title="执行测试用例"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                                <tfoot></tfoot>
+                            </table>
                         </div>
+                        <!--        分页-->
+                        <div th:replace="/fragment/commons :: pagination01"></div>
                     </div>
-                    <!--        分页-->
-                    <div th:replace="/fragment/commons :: pagination01"></div>
-                    <div th:replace="/fragment/commons :: footer"></div>
                 </div>
+                <footer th:replace="/fragment/commons :: footer"></footer>
             </div>
         </div>
 

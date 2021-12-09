@@ -1,16 +1,66 @@
-<!--header-->
-<header class="navbar navbar-light sticky-top bg-light flex-md-nowrap p-0 shadow" th:fragment="top-header">
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#" th:href="@{/dashboard}">
-        <div class="sidebar-brand-icon rotate-n-15">
-            <i class="bi bi-emoji-laughing"></i>
-        </div>
-        <div class="sidebar-brand-text mx-3">TSIM <sup>beta</sup></div>
+<!--head信息-->
+<head th:fragment="common_header(title,links)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title th:replace="${title}"></title>
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <link rel="stylesheet" th:href="@{/global/css/common.css}">
+    <th:block th:replace="${links}"/>
+    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
+    <link rel="stylesheet" th:href="@{/plugins/hover.css}">
+    <meta name="author" content="11‘s papa">
+</head>
+<!--菜单-->
+<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" th:fragment="sidebarMenu">
+    <!--header-->
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#" th:href="@{/dashboard}"
+       th:fragment="sidebar-brand">
+        <div class="sidebar-brand-icon rotate-n-15"><i class="bi-emoji-laughing-fill"> </i></div>
+        <div class="sidebar-brand-text mx-3">TSIM<sup>beta</sup></div>
     </a>
-</header>
-
+    <hr class="sidebar-divider my-0">
+    <li class="nav-item">
+        <a href="#" th:class="${flag=='dashboard'?'nav-link active':'nav-link'}" th:href="@{/dashboard}">
+            <span class="align-middle">Dashboard</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="#" th:class="${flag=='project'?'nav-link active':'nav-link'}" th:href="@{/project/list}">
+            <span class="align-middle">项目管理</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="#" th:class="${flag=='task'?'nav-link active':'nav-link'}" th:href="@{/task/list}">
+            <span class="align-middle">任务汇总</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="#" th:class="${flag=='story'?'nav-link active':'nav-link'}" th:href="@{/story/list}">
+            <span class="align-middle">测试需求管理</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="#" th:class="${flag=='plan'?'nav-link active':'nav-link'}" th:href="@{/plan/list}">
+            <span class="align-middle">测试计划管理</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="#" th:class="${flag=='case'?'nav-link active':'nav-link'}" th:href="@{/case/list}">
+            <span class="align-middle">测试用例</span>
+        </a>
+    </li>
+    <li class="nav-item">
+        <a href="#" th:class="${flag=='bug'?'nav-link active':'nav-link'}" th:href="@{/bug/list}">
+            <span class="align-middle">问题单(BUG)</span>
+        </a>
+    </li>
+    <div class="text-center d-none d-md-inline">
+        <button class="rounded-circle border-0" id="sidebarToggle"></button>
+    </div>
+</ul>
 <!--菜单样式2-->
-<div class="hover-scroll-overlay-y px-2 my-5 my-lg-5" id="aside_menu_wrapper" data-scroll="true"
-     style="height: 500px" th:fragment="sidebarMenu2">
+<div class="hover-scroll-overlay-y px-2 my-5 my-lg-5" id="aside_menu_wrapper" style="height: 500px"
+     th:fragment="sidebarMenu2">
     <div class="menu menu-column menu-title-gray-800 menu-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500 fw-bold"
          id="aside_menu" data-menu="true">
         <div class="menu-item">
@@ -78,82 +128,43 @@
     </div>
 </div>
 
-<div id="aside_footer" class="aside-footer flex-column-auto pb-5" th:fragment="aside_footer">
-    <div class="aside_user">
-        <div class="aside_user d-flex align-items-sm-center justify-content-center py-5">
-            <div class="me-5"></div>
-            <div class="flex-row-fluid flex-wrap">
-                <div class="d-flex align-items-center flex-stack">
-                    <div class="me-2">
-                        <a href="#" class="text-gray-800 text-hover-primary fs-6 fw-bold lh-0"
-                           th:text="${session.account.username}">11‘s papa</a>
-                    </div>
-                    <a href="#" class="btn btn-icon btn-active-color-primary me-n4" data-bs-toggle="modal"
-                       data-bs-target="#logoutModal">
-                        <span class="svg-icon svg-icon-2 svg-icon-gray-400">
-                            <svg class="bi-box-arrow-in-right" width="24" height="24" viewBox="0 0 24 24"
-                                 fill="none"></svg>
-                        </span>
-                    </a>
-
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<!--head信息-->
-<head th:fragment="common_header(title,links)">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title th:replace="${title}"></title>
-    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-        <link rel="stylesheet" th:href="@{/global/css/style.css}">
-    <!--    <link rel="stylesheet" th:href="@{/global/css/plugins.bundle.css}">-->
-    <th:block th:replace="${links}"/>
-    <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
-    <link rel="stylesheet" th:href="@{/plugins/hover.css}">
-    <!-- Custom styles for this template -->
-    <link rel="stylesheet" th:href="@{/global/css/common.css}">
-    <meta name="author" content="11‘s papa">
-</head>
 <!-- Footer -->
-<div id="footer" class="footer py-4 d-flex flex-lg-column" th:fragment="footer">
-    <div class="container-fluid d-flex flex-column flex-md-row align-items-center justify-content-between">
-        <div class="text-dark order-2 order-md-1">
-            <span class="text-muted fw-bold me-1">Copyright &copy; <a href="#" class="text-gray-800 text-hover-primary">TSIM</a> 2021</span>
+<footer id="footer" class="sticky-footer bg-white" th:fragment="footer">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>Copyright © TSIM 2021</span>
         </div>
     </div>
 
-</div>
+</footer>
 <!-- End of Footer -->
 <!--分页-->
-<div id="pagination01" class="mb-20" th:fragment="pagination01">
-    <nav aria-label="Page navigation example">
-        <ul class="pagination pagination-sm justify-content-center" th:if="${iPage.pages>0}">
-            <li class="page-item">
-                <a class="page-link" href="#" th:if="${iPage.current == 1}" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-                <a class="page-link" th:href="@{${redirecting} + ${iPage.getCurrent()-1}}"
-                   th:if="${iPage.current > 1}" aria-label="Previous">
-                    <span aria-hidden="true">&laquo;</span>
-                </a>
-            </li>
-            <li th:each="i:${#numbers.sequence(1,iPage.pages)}"
-                th:class="${iPage.current == i} ? 'page-item active' : 'page-item'">
-                <a class="page-link" th:href="@{${redirecting}+${i}}" th:text="${i}">1</a>
-            </li>
-            <li class="page-item">
-                <a class="page-link" href="#" aria-label="Next" th:if="${iPage.current == iPage.pages}">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-                <a class="page-link" th:href="@{${redirecting}+${iPage.getCurrent()+1}}" aria-label="Next"
-                   th:if="${iPage.current < iPage.pages}">
-                    <span aria-hidden="true">&raquo;</span>
-                </a>
-            </li>
-        </ul>
-    </nav>
+<div id="pagination01" class="d-flex flex-stack flex-wrap pt-6" th:fragment="pagination01">
+    <div></div>
+    <ul class="pagination" th:if="${iPage.pages>0}">
+        <li class="page-item">
+            <a class="page-link" href="#" th:if="${iPage.current == 1}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+            <a class="page-link" th:href="@{${redirecting} + ${iPage.getCurrent()-1}}"
+               th:if="${iPage.current > 1}" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        <li th:each="i:${#numbers.sequence(1,iPage.pages)}"
+            th:class="${iPage.current == i} ? 'page-item active' : 'page-item'">
+            <a class="page-link" th:href="@{${redirecting}+${i}}" th:text="${i}">1</a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="#" aria-label="Next" th:if="${iPage.current == iPage.pages}">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+            <a class="page-link" th:href="@{${redirecting}+${iPage.getCurrent()+1}}" aria-label="Next"
+               th:if="${iPage.current < iPage.pages}">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+    </ul>
 </div>
 <!-- Logout Modal-->
 <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
@@ -173,7 +184,6 @@
         </div>
     </div>
 </div>
-
 <!-- toast-->
 <div class="toast position-fixed top-0 end-0 p-3 z-index-3" role="alert" aria-live="assertive" aria-atomic="true"
      th:fragment="toast-div">
@@ -185,3 +195,43 @@
                 aria-label="Close"></button>
     </div>
 </div>
+<!--右侧顶部菜单-->
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow" th:fragment="nav-on-main-top">
+    <button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop">
+        <i class="fa fa-bars"></i>
+    </button>
+    <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
+        <div class="input-group">
+            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+                   aria-label="Search" aria-describedby="basic-addon2">
+            <div class="input-group-append">
+                <button class="btn btn-primary" type="button">
+                    <i class="bi-search"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown no-arrow d-sm-none"></li>
+        <li class="nav-item dropdown no-arrow mx-1"></li>
+        <li class="nav-item dropdown no-arrow mx-1"></li>
+        <div class="topbar-divider d-none d-sm-block"></div>
+        <li class="nav-item dropdown no-arrow show">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
+                <span class="mr-2 d-none d-lg-inline text-gray-600 small" th:text="${session.account.username}">11's papa</span>
+            </a>
+            <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
+                <a class="dropdown-item" href="#">
+                    <i class="bi bi-person mr-2 text-gray-400">Profile</i>
+                </a>
+                <a class="dropdown-item" href="#">
+                    <i class="bi bi-gear mr-2 text-gray-400">Settings</i>
+                </a>
+                <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                    <i class="bi bi-box-arrow-right mr-2 text-gray-400">logout</i>
+                </a>
+            </div>
+        </li>
+    </ul>
+</nav>

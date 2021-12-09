@@ -43,6 +43,8 @@ public interface SystemService {
      */
     ResponseResult storeFile(HttpServletRequest request, MultipartFile file);
 
+    void saveFile(HttpServletRequest request, String fileName);
+
     /**
      * 文件下载功能
      *

@@ -110,7 +110,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     public IPage<Project> projectListPages(Project project, Integer pageCurrent, Integer pageSize) {
         String proName = StringUtils.isNotBlank(project.getProjectName()) ? project.getProjectName().trim() : "";
         final IPage<Project> iPage = baseMapper.selectPage(
-                new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
+                new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize),
 //               根据项目名称模糊查询
                 new QueryWrapper<Project>().lambda().like(StringUtils.isNotBlank(proName), Project::getProjectName, proName));
         iPage.getRecords().forEach(temp -> {

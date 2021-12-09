@@ -3,87 +3,58 @@
     <head th:replace="/fragment/commons :: common_header(~{::title},~{})">
         <title>TSIM @ Dashboard</title>
     </head>
-<!--    begin body-->
-    <body id="tsim_body" class="aside-enable">
-        <div class="d-flex flex-column flex-root">
-<!--            begin page-->
-            <div class="page d-flex flex-row flex-column-fluid">
-<!--                begin side-->
-                <div id="tsim-side" class="aside" data-drawer="true" data-drawer-name="aside">
-<!--                    menu-->
-                    <div class="aside-menu flex-column-fluid">
-                        <div th:replace="/fragment/commons :: sidebarMenu2(flag='dashboard')"></div>
-                        <div th:replace="/fragment/commons :: aside_footer"></div>
-                    </div>
-                </div>
-                <div id="tsim_wrapper" class="wrapper d-flex flex-column flex-row-fluid">
-<!--                    header-->
-                    <div id="tsim_header" style="" class="header align-items-stretch">
-                        <div class="header-brand">
-                            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#" th:href="@{/dashboard}">
-                                <div class="sidebar-brand-icon rotate-n-15">
-                                    <i class="bi bi-emoji-laughing"></i>
-                                </div>
-                                <div class="sidebar-brand-text mx-3">TSIM <sup>beta</sup></div>
-                            </a>
-                        </div>
-                        <div class="toolbar">
-                            <div class="container-fluid py-6 py-lg-0 d-flex flex-column flex-sm-row align-items-lg-stretch justify-content-sm-between">
-                                <div class="page-title d-flex flex-column me-5">
-                                    <h1 class="d-flex flex-column text-dark fw-bolder fs-2 mb-0">Dashboard</h1>
-                                    <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 pt-1">
-                                        <li class="breadcrumb-item text-muted">
-                                            <a href="#" class="text-muted text-hover-primary">Home</a>
-                                        </li>
-                                        <li class="breadcrumb-item"><span class="bullet bg-gray-300 w-5px h-2px"></span> </li>
-                                        <li class="breadcrumb-item text-muted">Dashboard</li>
-                                    </ul>
-                                </div>
-<!--                                action group-->
-                                <div class="d-flex align-items-center overflow-auto pt-3 pt-sm-0">
-                                    <div class="header-search me-4">
-                                        <div id="tsim_search" class="d-flex align-items-center"></div>
-                                    </div>
-                                    <div class="d-flex">
-                                        <div class="d-flex align-items-center me-4"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-<!--                    begin content-->
-                    <div id="tsim_content" class="content d-flex flex-column flex-column-fluid">
-                        <div id="tsim_content_container" class="container-fluid">
-                            <div class="row g-5 g-xxl-10">
-                                <div class="col-xxl-6 mb-xxl-10">
-                                    <div class="card card-flush h-xl-100">
-                                        <div class="card-header pt-5">
-                                            <h3 class="card-title align-items-start flex-column">cccccc</h3>
-                                        </div>
-                                        <div class="card-body pt-0 px-0">
-                                            <div id="issueStatistics" class="min-h-auto ps-4 pe-6 mb-3" style="height: 300px;min-height: 315px" data-negative-color="rgba(150,142,126,0.2"></div>
+    <!--    begin body-->
+    <body id="tsim_body" class="">
+        <div id="wrapper">
+            <ul th:replace="/fragment/commons :: sidebarMenu(flag='dashboard')"></ul>
+            <div id="content-wrapper" class="d-flex flex-column">
+                <div id="content">
+                    <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="col-xxl-6 mb-xxl-10">
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                        <h6 class="m-0 font-weight-bold text-primary">ccccc1</h6>
+                                        <div class="dropdown no-arrow">
+
                                         </div>
                                     </div>
-                                </div>
-                                <div class="col-xxl-6 mb-xxl-10">
-                                    <div class="card card-flush h-xl-100">
-                                        <div class="card-header pt-5">
-                                            <h3 class="card-title align-items-start flex-column">cccccc</h3>
-                                        </div>
-                                        <div class="card-body pt-0 px-0">
-                                            <div id="demo1" class="min-h-auto ps-4 pe-6 mb-3" style="height: 300px;min-height: 315px" data-negative-color="rgba(150,142,126,0.2"></div>
+                                    <div class="card-body">
+                                        <div class="chart-area">
+                                            <div id="issueStatistics" class="min-h-auto ps-4 pe-6 mb-3"
+                                                 style="height: 300px;min-height: 315px"
+                                                 data-negative-color="rgba(150,142,126,0.2"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            <input type="hidden" th:value="${xAxisList}" id="xAxisList">
-                            <input type="hidden" th:value="${newBugCount}" id="yAxisList">
+                            <div class="col-xxl-6 mb-xxl-10">
+                                <div class="card shadow mb-4">
+                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                        <h6 class="m-0 font-weight-bold text-primary">ccccc1</h6>
+                                        <div class="dropdown no-arrow">
+
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="chart-area">
+                                            <div id="demo1" class="min-h-auto ps-4 pe-6 mb-3"
+                                                 style="height: 300px;min-height: 315px"
+                                                 data-negative-color="rgba(150,142,126,0.2"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
+                        <input type="hidden" th:value="${xAxisList}" id="xAxisList">
+                        <input type="hidden" th:value="${newBugCount}" id="yAxisList">
                     </div>
                 </div>
+                <footer th:replace="/fragment/commons :: footer"></footer>
             </div>
         </div>
-<!--        <footer th:replace="/fragment/commons :: footer"></footer>-->
+        <!--        <footer th:replace="/fragment/commons :: footer"></footer>-->
         <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/echarts.min.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>

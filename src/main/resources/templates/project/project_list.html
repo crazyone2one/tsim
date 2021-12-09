@@ -3,134 +3,88 @@
     <head th:replace="/fragment/commons :: common_header(~{::title},~{})">
         <title>TSIM @ PROJECT</title>
     </head>
-    <body id="tsim_body" class="aside-enable">
-        <div class="d-flex flex-column flex-root">
-            <!--            begin page-->
-            <div class="page d-flex flex-row flex-column-fluid">
-                <!--                begin side-->
-                <div id="tsim-side" class="aside" data-drawer="true" data-drawer-name="aside">
-                    <!--                    menu-->
-                    <div class="aside-menu flex-column-fluid">
-                        <div th:replace="/fragment/commons :: sidebarMenu2(flag='project')"></div>
-                        <div th:replace="/fragment/commons :: aside_footer"></div>
-                    </div>
-                </div>
-                <div id="tsim_wrapper" class="wrapper d-flex flex-column flex-row-fluid">
-                    <!--                    header-->
-                    <div id="tsim_header" style="" class="header align-items-stretch">
-                        <div class="header-brand">
-                            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#"
-                               th:href="@{/dashboard}">
-                                <div class="sidebar-brand-icon rotate-n-15">
-                                    <i class="bi bi-emoji-laughing"></i>
-                                </div>
-                                <div class="sidebar-brand-text mx-3">TSIM <sup>beta</sup></div>
-                            </a>
-                        </div>
-                        <div class="toolbar">
-                            <div class="container-fluid py-6 py-lg-0 d-flex flex-column flex-sm-row align-items-lg-stretch justify-content-sm-between">
-                                <div class="page-title d-flex flex-column me-5">
-                                    <h1 class="d-flex flex-column text-dark fw-bolder fs-2 mb-0">Project</h1>
-                                    <ul class="breadcrumb breadcrumb-separatorless fw-bold fs-7 pt-1">
-                                        <li class="breadcrumb-item text-muted">
-                                            <a href="#" class="text-muted text-hover-primary">Home</a>
-                                        </li>
-                                        <li class="breadcrumb-item"><span class="bullet bg-gray-300 w-5px h-2px"></span>
-                                        </li>
-                                        <li class="breadcrumb-item text-muted">project</li>
-                                    </ul>
-                                </div>
-                                <!--                                action group-->
-                                <div class="d-flex align-items-center overflow-auto pt-3 pt-sm-0">
-                                    <div class="header-search me-4">
-                                        <div id="tsim_search" class="d-flex align-items-center"></div>
-                                    </div>
-                                    <div class="d-flex">
-                                        <div class="d-flex align-items-center me-4"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <!--                    begin content-->
-                    <div id="tsim_content" class="content d-flex flex-column flex-column-fluid">
-                        <div id="tsim_content_container" class="container-fluid">
-                            <div class="pt-2 border-bottom">
-                                <div class="card-body">
-                                    <form action="#" th:action="@{list}">
-                                        <div class="row">
-                                            <div class="input-group mb-3" style="width: fit-content">
-                                                <span class="input-group-text">所属项目</span>
-                                                <input type="text" class="form-control" name="projectName"
-                                                       placeholder="项目名称（模糊查询）" id="p-search"
-                                                       aria-label="projectId"
-                                                       aria-describedby="basic-addon1">
-                                            </div>
-                                            <div class="col-lg-2 col-md-4 col-sm-6">
-                                                <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
-                                                                                              style="color: cornflowerblue"></i>
-                                                </button>
-                                                <button type="button" class="btn hvr-grow" data-bs-toggle="modal"
-                                                        data-bs-target="#add-project-modal"><i
-                                                        class="bi bi-plus-circle hvr-grow"
-                                                        style="color: cornflowerblue"></i>
-                                                </button>
-                                            </div>
+    <body id="tsim_body">
+        <div id="wrapper">
+            <ul th:replace="/fragment/commons :: sidebarMenu(flag='dashboard')"></ul>
+            <div id="content-wrapper" class="d-flex flex-column">
+                <div id="content">
+                    <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
+                    <div class="container-fluid">
+                        <div class="pt-2 border-bottom">
+                            <div class="card-body">
+                                <form action="#" th:action="@{list}">
+                                    <div class="row">
+                                        <div class="input-group mb-3" style="width: fit-content">
+                                            <span class="input-group-text">所属项目</span>
+                                            <input type="text" class="form-control" name="projectName"
+                                                   placeholder="项目名称（模糊查询）" id="p-search"
+                                                   aria-label="projectId"
+                                                   aria-describedby="basic-addon1">
                                         </div>
-                                    </form>
-                                </div>
+                                        <div class="col-lg-2 col-md-4 col-sm-6">
+                                            <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
+                                                                                          style="color: cornflowerblue"></i>
+                                            </button>
+                                            <button type="button" class="btn hvr-grow" data-bs-toggle="modal"
+                                                    data-bs-target="#add-project-modal"><i
+                                                    class="bi bi-plus-circle hvr-grow"
+                                                    style="color: cornflowerblue"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
                             </div>
-
-                            <div id="table_refresh" th:fragment="table_refresh">
-                                <table class="table table-row-dashed table-hover">
-                                    <thead>
-                                    <tr class="fw-bold fs-7 text-danger text-center py-4">
-                                        <th scope="col">#</th>
-                                        <th scope="col">项目名</th>
-                                        <!--                                    <th scope="col">任务时间</th>-->
-                                        <th scope="col">关联模块</th>
-                                        <th scope="col">关联测试用例</th>
-                                        <th scope="col">关联bug</th>
-                                        <!--                        <th scope="col">是否完成</th>-->
-                                        <th scope="col">操作</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr th:each="temp,stat:${iPage.records}" class="text-center">
-                                        <input name="id" type="hidden" class="form-control"
-                                               th:value="${temp.id}" id="id">
-                                        <td th:text="${stat.index+1}"></td>
-                                        <td th:text="${temp.projectName}"></td>
-                                        <!--                                    <td th:text="${temp.issueDate}"></td>-->
-                                        <td>
-                                            <a href="#"
-                                               th:text="${temp.refModuleCount}"></a>
-                                        </td>
-                                        <td>
-                                            <a href="#"
-                                               th:text="${temp.refCaseCount}"></a>
-                                        </td>
-                                        <td>
-                                            <a href="#"
-                                               th:text="${temp.refBugCount}"></a>
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <!--        分页-->
-<!--                            <div th:replace="/fragment/commons :: pagination01"></div>-->
                         </div>
+
+                        <div id="table_refresh" th:fragment="table_refresh">
+                            <table class="table table-row-dashed table-hover">
+                                <thead>
+                                <tr class="fw-bold fs-7 text-danger text-center py-4">
+                                    <th scope="col">#</th>
+                                    <th scope="col">项目名</th>
+                                    <!--                                    <th scope="col">任务时间</th>-->
+                                    <th scope="col">关联模块</th>
+                                    <th scope="col">关联测试用例</th>
+                                    <th scope="col">关联bug</th>
+                                    <!--                        <th scope="col">是否完成</th>-->
+                                    <th scope="col">操作</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="temp,stat:${iPage.records}" class="text-center">
+                                    <input name="id" type="hidden" class="form-control"
+                                           th:value="${temp.id}" id="id">
+                                    <td th:text="${stat.index+1}"></td>
+                                    <td th:text="${temp.projectName}"></td>
+                                    <!--                                    <td th:text="${temp.issueDate}"></td>-->
+                                    <td>
+                                        <a href="#"
+                                           th:text="${temp.refModuleCount}"></a>
+                                    </td>
+                                    <td>
+                                        <a href="#"
+                                           th:text="${temp.refCaseCount}"></a>
+                                    </td>
+                                    <td>
+                                        <a href="#"
+                                           th:text="${temp.refBugCount}"></a>
+                                    </td>
+                                    <td>
+
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div th:replace="/fragment/commons :: pagination01"></div>
                     </div>
-                    <!--        分页-->
-                    <div th:replace="/fragment/commons :: pagination01"></div>
-                    <div th:replace="/fragment/commons :: footer"></div>
                 </div>
+                <footer th:replace="/fragment/commons :: footer"></footer>
             </div>
+
         </div>
+        <!--                    toast-->
+        <div th:replace="/fragment/commons :: toast-div"></div>
         <div class="modal fade" id="add-project-modal" tabindex="-1" role="dialog"
              aria-labelledby="ModalTitle"
              aria-hidden="true" data-bs-backdrop="static">
@@ -197,6 +151,8 @@
                                     showToast(result['code'], result['msg']);
                                 }
                             })
+                        }else {
+                            showToast(data['code'], data['msg']);
                         }
                     }
                 });

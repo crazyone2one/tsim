@@ -116,7 +116,7 @@ public class SystemServiceImpl implements SystemService {
     public ResponseResult storeFile(HttpServletRequest request, MultipartFile file) {
         Map<String, String> resultMap = new LinkedHashMap<>();
         if (Objects.isNull(file)) {
-            return ResponseUtils.success("select a file");
+            return ResponseUtils.error("select a file");
         }
         try {
             // 1:真实的文件名称
@@ -139,6 +139,16 @@ public class SystemServiceImpl implements SystemService {
         } catch (Exception e) {
             e.printStackTrace();
             return ResponseUtils.error("文件保存失败");
+        }
+    }
+
+    @Override
+    public void saveFile(HttpServletRequest request, String fileName) {
+        try {
+            Path targetLocation = this.fileStorageLocation.resolve(fileName);
+            final InputStream inputStream = Files.newInputStream(targetLocation);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

@@ -3,18 +3,18 @@
     <head>
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>add</title>
-        <meta name="author" content="11‘s papa">
+        <title>Title</title>
     </head>
     <body>
-        <div th:fragment="addStoryFragment">
-            <div class="modal fade" id="add-story-modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
+
+        <div th:fragment="addTaskFragment">
+            <div class="modal fade" id="add-task-modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
                  aria-hidden="true" data-bs-backdrop="static">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <form class="modal-content needs-validation" id="addStoryForm" autocomplete="off">
+                        <form class="modal-content needs-validation" id="addTaskForm" autocomplete="off">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="staticBackdropLabel">新增需求</h5>
+                                <h5 class="modal-title" id="staticBackdropLabel">新增任务</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                             </div>
@@ -23,20 +23,16 @@
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="basic-addon1">项目名称</span>
                                         <input type="text" class="form-control" placeholder="输入项目名称"
-                                               aria-label="project" aria-describedby="basic-addon1" id="p-add">
+                                               aria-label="project" aria-describedby="basic-addon1" id="t-add">
                                         <input type="hidden" name="projectId" id="s-p-id">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="add-description-name" class="form-label">需求内容描述</label>
+                                        <label for="add-description-name" class="form-label">任务内容描述</label>
                                         <textarea type="text" class="form-control" id="add-description-name"
-                                                  name="description" placeholder="输入需求内容描述"></textarea>
+                                                  name="description" placeholder="输入任务内容描述"></textarea>
                                     </div>
-                                    <div class=" mb-3">
-                                        <input class="form-control" type="file" name="file" id="formFile">
-                                    </div>
-                                    <input type="hidden" name="docId" id="attachmentId">
                                     <div class="input-group mb-3">
-                                        <label for="workDate" class="input-group-text">需求日期</label>
+                                        <label for="workDate" class="input-group-text">任务日期</label>
                                         <select class="form-select" name="workDate" id="workDate" required>
                                             <option th:each="m:${monthList}"
                                                     th:value="${m}"
@@ -49,7 +45,7 @@
 
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" id="submit">确定</button>
+                                <button type="button" class="btn btn-primary" th:onclick="saveTask()">确定</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消
                                 </button>
                             </div>

@@ -1,5 +1,6 @@
 package cn.master.tsim.entity;
 
+import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
@@ -37,6 +38,7 @@ public class TestTaskInfo implements Serializable {
     /**
      * 项目名称
      */
+    @ExcelProperty(value = "项目名称", index = 0)
     @TableField("project_id")
     private String projectId;
     @TableField("story_id")
@@ -44,18 +46,21 @@ public class TestTaskInfo implements Serializable {
     /**
      * 任务描述
      */
+    @ExcelProperty(value = "任务描述", index = 1)
     @TableField("summary_desc")
     private String summaryDesc;
 
     /**
      * 编写用例数量
      */
+    @ExcelProperty({"用例数量", "编写用例"})
     @TableField("create_case_count")
     private Integer createCaseCount;
 
     /**
      * 执行测试用例数量
      */
+    @ExcelProperty({"用例数量", "执行用例"})
     @TableField("execute_case_count")
     private Integer executeCaseCount;
 
@@ -63,42 +68,49 @@ public class TestTaskInfo implements Serializable {
      * bug文档
      */
     @TableField("bug_doc")
+    @ExcelProperty({"测试文档", "bug文档"})
     private String bugDoc;
 
     /**
      * 测试报告
      */
     @TableField("report_doc")
+    @ExcelProperty({"测试文档", "测试报告"})
     private String reportDoc;
 
     /**
      * 需求文档
      */
     @TableField("req_doc")
+    @ExcelProperty(value = "是否有需求")
     private String reqDoc;
 
     /**
-     * 完成状态
+     * 完成状态（0-已完成，1-进行中，2-待回测，3-已回测）
      */
     @TableField("finish_status")
+    @ExcelProperty(value = "完成状态")
     private String finishStatus;
 
     /**
-     * 交付状态
+     * 交付状态(0-是，1-否，2-不确定)
      */
     @TableField("delivery_status")
+    @ExcelProperty(value = "是否交付")
     private String deliveryStatus;
 
     /**
      * 负责人
      */
     @TableField("tester")
+    @ExcelProperty(value = "测试负责人")
     private String tester;
 
     /**
      * 备注
      */
     @TableField("remark")
+    @ExcelProperty(value = "备注")
     private String remark;
 
     /**
