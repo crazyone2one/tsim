@@ -16,7 +16,7 @@
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#" th:href="@{/dashboard}"
        th:fragment="sidebar-brand">
         <div class="sidebar-brand-icon rotate-n-15"><i class="bi-emoji-laughing-fill"> </i></div>
-        <div class="sidebar-brand-text mx-3">TSIM<sup>beta</sup></div>
+        <div class="sidebar-brand-text mx-3">TSIM&nbsp;&nbsp;<sup style="text-transform: capitalize">beta</sup></div>
     </a>
     <hr class="sidebar-divider my-0">
     <li class="nav-item">
@@ -202,7 +202,7 @@
     </button>
     <form class="d-none d-sm-inline-block form-inline mr-auto ml-md-3 my-2 my-md-0 mw-100 navbar-search">
         <div class="input-group">
-            <input type="text" class="form-control bg-light border-0 small" placeholder="Search for..."
+            <input type="text" class="form-control bg-light border-0 small" placeholder="暂时没用到这个搜索，点了也没用..."
                    aria-label="Search" aria-describedby="basic-addon2">
             <div class="input-group-append">
                 <button class="btn btn-primary" type="button">
@@ -213,23 +213,35 @@
     </form>
     <ul class="navbar-nav ml-auto">
         <li class="nav-item dropdown no-arrow d-sm-none"></li>
-        <li class="nav-item dropdown no-arrow mx-1"></li>
+        <!-- Nav Item - Alerts -->
+        <li class="nav-item dropdown no-arrow mx-1">
+            <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button" data-bs-toggle="dropdown"
+               aria-haspopup="true" aria-expanded="false">
+                <i class="bi bi-bell"></i>
+                <span class="badge badge-danger badge-counter">3+</span>
+            </a>
+            <!-- Dropdown - Alerts -->
+            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="alertsDropdown">
+
+            </div>
+        </li>
         <li class="nav-item dropdown no-arrow mx-1"></li>
         <div class="topbar-divider d-none d-sm-block"></div>
         <li class="nav-item dropdown no-arrow show">
             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
                aria-haspopup="true" aria-expanded="false">
                 <span class="mr-2 d-none d-lg-inline text-gray-600 small" th:text="${session.account.username}">11's papa</span>
+                <img class="img-profile rounded-circle" src="/static/img/undraw_profile.svg" th:src="@{/img/undraw_profile.svg}">
             </a>
             <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="userDropdown">
                 <a class="dropdown-item" href="#">
-                    <i class="bi bi-person mr-2 text-gray-400">Profile</i>
+                    <i class="bi bi-person mr-2 text-gray-400"> Profile</i>
                 </a>
                 <a class="dropdown-item" href="#">
-                    <i class="bi bi-gear mr-2 text-gray-400">Settings</i>
+                    <i class="bi bi-gear mr-2 text-gray-400"> Settings</i>
                 </a>
                 <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
-                    <i class="bi bi-box-arrow-right mr-2 text-gray-400">logout</i>
+                    <i class="bi bi-box-arrow-right mr-2 text-gray-400"> logout</i>
                 </a>
             </div>
         </li>

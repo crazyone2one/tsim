@@ -137,11 +137,15 @@ function autoComplete(url, idSelector, flag, needChange) {
 function resetModal(modalId, formId) {
     $(modalId).modal('toggle');
     $(modalId).on('hide.bs.modal', function () {
-        document.getElementById(formId).reset();
-        console.log(" hide >> reset modal completed")
+        if (formId) {
+            document.getElementById(formId).reset();
+        }
+        console.log(" hide >> reset modal completed");
     });
     $(modalId).on('hidden.bs.modal', function () {
-        document.getElementById(formId).reset();
-        console.log(" hidden >> reset modal completed")
+        if (formId) {
+            document.getElementById(formId).reset();
+        }
+        console.log(" hidden >> reset modal completed");
     })
 }

@@ -22,8 +22,24 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public String exceptionHandler(HttpServletResponse response, Exception e, Model model) {
         log.error(e.getLocalizedMessage());
-        model.addAttribute("error",
-                ResponseUtils.error(ResponseCode.ERROR_500.getCode(),ResponseCode.ERROR_500.getMessage(),e));
+        model.addAttribute("result",
+                ResponseUtils.error(ResponseCode.ERROR_500.getCode(), ResponseCode.ERROR_500.getMessage(), e));
+        return "error";
+    }
+
+    /**
+     * 空指针异常
+     *
+     * @param response
+     * @param e
+     * @param model
+     * @return java.lang.String
+     */
+    @ExceptionHandler(NullPointerException.class)
+    public String exceptionHandler(HttpServletResponse response, NullPointerException e, Model model) {
+        log.error(e.getLocalizedMessage());
+        model.addAttribute("result",
+                ResponseUtils.error(ResponseCode.PARAMS_ERROR.getCode(), ResponseCode.PARAMS_ERROR.getMessage(), e));
         return "error";
     }
 }
