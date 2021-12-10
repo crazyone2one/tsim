@@ -4,14 +4,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title th:replace="${title}"></title>
     <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
-    <link rel="stylesheet" th:href="@{/global/css/common.css}">
+    <link rel="stylesheet" th:href="@{/global/css/style.css}">
     <th:block th:replace="${links}"/>
     <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
     <link rel="stylesheet" th:href="@{/plugins/hover.css}">
     <meta name="author" content="11‘s papa">
 </head>
 <!--菜单-->
-<ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" th:fragment="sidebarMenu">
+<ul class="navbar-nav sidebar-bg sidebar accordion" th:fragment="sidebarMenu">
     <!--header-->
     <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#" th:href="@{/dashboard}"
        th:fragment="sidebar-brand">
@@ -139,9 +139,9 @@
 </footer>
 <!-- End of Footer -->
 <!--分页-->
-<div id="pagination01" class="d-flex flex-stack flex-wrap pt-6" th:fragment="pagination01">
+<div id="pagination01" th:fragment="pagination01">
     <div></div>
-    <ul class="pagination" th:if="${iPage.pages>0}">
+    <ul class="pagination justify-content-end" th:if="${iPage.pages>0}">
         <li class="page-item">
             <a class="page-link" href="#" th:if="${iPage.current == 1}" aria-label="Previous">
                 <span aria-hidden="true">&laquo;</span>
@@ -185,8 +185,8 @@
     </div>
 </div>
 <!-- toast-->
-<div class="toast position-fixed top-0 end-0 p-3 z-index-3" role="alert" aria-live="assertive" aria-atomic="true"
-     th:fragment="toast-div">
+<div class="toast align-items-center position-fixed top-0 end-0 p-3 border-0" role="alert" aria-live="assertive" aria-atomic="true"
+     style="z-index: 11" th:fragment="toast-div">
     <div class="d-flex">
         <div class="toast-body">
             Hello, world! This is a toast message.
@@ -196,7 +196,7 @@
     </div>
 </div>
 <!--右侧顶部菜单-->
-<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow" th:fragment="nav-on-main-top">
+<nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 shadow" th:fragment="nav-on-main-top">
     <button class="btn btn-link d-md-none rounded-circle mr-3" id="sidebarToggleTop">
         <i class="fa fa-bars"></i>
     </button>
