@@ -2,9 +2,7 @@
 $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
     $("body").toggleClass("sidebar-toggled");
     $(".sidebar").toggleClass("toggled");
-    if ($(".sidebar").hasClass("toggled")) {
-        $('.sidebar .collapse').collapse('hide');
-    }
+    $(".sidebar").hasClass("toggled") && $('.sidebar .collapse').collapse('hide')
 });
 
 /**
@@ -12,13 +10,9 @@ $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
  * @param code ajax请求后返回的状态码，用于决定toast的类型
  * @param msg 提示消息内容
  */
-function showToast(code, msg) {
+const showToast = (code, msg) => {
     const $toast = $('.toast');
-    if (Object.is(200, code)) {
-        $toast.addClass("bg-success");
-    } else {
-        $toast.addClass("bg-danger");
-    }
+    Object.is(200, code) ? $toast.addClass("bg-success") : $toast.addClass("bg-danger");
     $(".toast-body").text(msg);
     $toast.toast('show');
 }
@@ -28,11 +22,9 @@ function showToast(code, msg) {
  * @param idSelector
  * @param className
  */
-function removeClass(idSelector, className) {
+const removeClass = (idSelector, className) => {
     const t = $(idSelector);
-    if (t.hasClass(className)) {
-        t.removeClass(className);
-    }
+    t.hasClass(className) && t.removeClass(className);
 }
 
 /**
@@ -64,22 +56,12 @@ function autoComplete(url, idSelector, flag, needChange) {
             if (Object.is(result['code'], 200)) {
                 if (result['data']) {
                     for (let i = 0; i < result['data'].length; i++) {
-                        let temp = {}
-                        switch (flag) {
-                            case "p":
-                                // project
-                                temp = {label: result['data'][i].projectName, value: result['data'][i].id};
-                                break;
-                            case "m":
-                                //module
-                                temp = {label: result['data'][i].moduleName, value: result['data'][i].id};
-                                break;
-                            case "s":
-                                //story
-                                temp = {label: result['data'][i].description, value: result['data'][i].id};
-                                break;
+                        let temp = {
+                            "p": {label: result['data'][i].projectName, value: result['data'][i].id}, // project
+                            "m": {label: result['data'][i].moduleName, value: result['data'][i].id},  // module
+                            "s": {label: result['data'][i].description, value: result['data'][i].id}  // story
                         }
-                        dataAttr.push(temp);
+                        dataAttr.push(temp[flag]);
                     }
                 }
             }
@@ -96,17 +78,13 @@ function autoComplete(url, idSelector, flag, needChange) {
  * @param modalId
  * @param formId
  */
-function resetModal(modalId, formId) {
+const resetModal = (modalId, formId) =>{
     $(modalId).modal('toggle');
     $(modalId).on('hide.bs.modal', function () {
-        if (formId) {
-            document.getElementById(formId).reset();
-        }
+        formId && document.getElementById(formId).reset()
     });
     $(modalId).on('hidden.bs.modal', function () {
-        if (formId) {
-            document.getElementById(formId).reset();
-        }
+        formId && document.getElementById(formId).reset()
     })
 }
 
