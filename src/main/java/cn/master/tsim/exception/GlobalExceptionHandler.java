@@ -7,8 +7,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
-import javax.servlet.http.HttpServletResponse;
-
 /**
  * 全局异常处理
  *
@@ -20,8 +18,9 @@ import javax.servlet.http.HttpServletResponse;
 public class GlobalExceptionHandler {
 
     @ExceptionHandler(Exception.class)
-    public String exceptionHandler(HttpServletResponse response, Exception e, Model model) {
-        log.error(e.getLocalizedMessage());
+    public String exceptionHandler(Exception e, Model model) {
+        log.error("捕获到Exception");
+        log.error(e.getMessage(), e);
         model.addAttribute("result",
                 ResponseUtils.error(ResponseCode.ERROR_500.getCode(), ResponseCode.ERROR_500.getMessage(), e));
         return "error";
@@ -30,14 +29,14 @@ public class GlobalExceptionHandler {
     /**
      * 空指针异常
      *
-     * @param response
      * @param e
      * @param model
      * @return java.lang.String
      */
     @ExceptionHandler(NullPointerException.class)
-    public String exceptionHandler(HttpServletResponse response, NullPointerException e, Model model) {
-        log.error(e.getLocalizedMessage());
+    public String exceptionHandler(NullPointerException e, Model model) {
+        log.error("捕获到NullPointerException");
+        log.error(e.getMessage(),e);
         model.addAttribute("result",
                 ResponseUtils.error(ResponseCode.PARAMS_ERROR.getCode(), ResponseCode.PARAMS_ERROR.getMessage(), e));
         return "error";
