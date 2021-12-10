@@ -91,7 +91,7 @@
              aria-hidden="true" data-bs-backdrop="static">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
-                    <form class="modal-content needs-validation" id="addProjectForm" autocomplete="off">
+                    <form class="modal-content" id="addProjectForm" autocomplete="off">
                         <div class="modal-header pb-0 border-0 justify-content-end">
                             <h5 class="modal-title" id="staticBackdropLabel">新增项目</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -149,32 +149,38 @@
         <script>
             autoComplete("/project/queryList", "p-search", 'p', false);
             $("#save-pro").click(function () {
-                $.ajax({
-                    url: "/project/checkProject/" + $("#add-pro").val(),
-                    type: "get",
-                    // sync: false,
-                    success: function (data) {
-                        if (Object.is(200, data['code'])) {
-                            $.ajax({
-                                url: "/project/addProject",
-                                type: "post",
-                                data: {"name": $("#add-pro").val()},
-                                dataType: 'JSON',
-                                // contentType: "application/json; charset=utf-8",
-                                // sync: false,
-                                success: function (result) {
-                                    if (Object.is(200, result['code'])) {
-                                        resetModal("#add-project-modal", "addProjectForm");
-                                        $("#table_refresh").load("/project/reloadTable");
+                const pro_name = $("#add-pro").val();
+                if (pro_name) {
+                    $('#add-pro').removeClass("is-invalid");
+                    $.ajax({
+                        url: "/project/checkProject/" + pro_name,
+                        type: "get",
+                        // sync: false,
+                        success: function (data) {
+                            if (Object.is(200, data['code'])) {
+                                $.ajax({
+                                    url: "/project/addProject",
+                                    type: "post",
+                                    data: {"name": $("#add-pro").val()},
+                                    dataType: 'JSON',
+                                    // contentType: "application/json; charset=utf-8",
+                                    // sync: false,
+                                    success: function (result) {
+                                        if (Object.is(200, result['code'])) {
+                                            resetModal("#add-project-modal", "addProjectForm");
+                                            $("#table_refresh").load("/project/reloadTable");
+                                        }
+                                        showToast(result['code'], result['msg']);
                                     }
-                                    showToast(result['code'], result['msg']);
-                                }
-                            })
-                        } else {
-                            showToast(data['code'], data['msg']);
+                                })
+                            } else {
+                                showToast(data['code'], data['msg']);
+                            }
                         }
-                    }
-                });
+                    });
+                } else {
+                    $('#add-pro').addClass("is-invalid");
+                }
             })
 
             /**
