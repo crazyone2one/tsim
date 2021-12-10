@@ -12,7 +12,7 @@
                  aria-hidden="true" data-bs-backdrop="static">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <form class="modal-content needs-validation" id="addTaskForm" autocomplete="off">
+                        <form class="modal-content" id="addTaskForm" autocomplete="off">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="staticBackdropLabel">新增任务</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -21,15 +21,21 @@
                             <div class="modal-body">
                                 <div class="box-body">
                                     <div class="input-group mb-3">
-                                        <span class="input-group-text" id="basic-addon1">项目名称</span>
+                                        <span class="input-group-text" id="basic-addon1">项目名称&nbsp;<i class="bi-asterisk" style="color: red;font-size: 0.5rem"></i></span>
                                         <input type="text" class="form-control" placeholder="输入项目名称"
                                                aria-label="project" aria-describedby="basic-addon1" id="t-add">
                                         <input type="hidden" name="projectId" id="s-p-id">
+                                        <div class="invalid-feedback">
+                                            项目名称不能为空.
+                                        </div>
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="add-description-name" class="form-label">任务内容描述</label>
-                                        <textarea type="text" class="form-control" id="add-description-name"
-                                                  name="description" placeholder="输入任务内容描述"></textarea>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text">任务描述&nbsp;<i class="bi-asterisk" style="color: red;font-size: 0.5rem"></i></span>
+                                        <textarea class="form-control" aria-label="task description" id="add-description-name"
+                                                  name="description"></textarea>
+                                        <div class="invalid-feedback">
+                                            任务描述不能为空.
+                                        </div>
                                     </div>
                                     <div class="input-group mb-3">
                                         <label for="workDate" class="input-group-text">任务日期</label>
@@ -45,7 +51,7 @@
 
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" th:onclick="saveTask()">确定</button>
+                                <button type="button" class="btn btn-primary" th:onclick="saveTask()" id="save-task">确定</button>
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消
                                 </button>
                             </div>

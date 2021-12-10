@@ -93,19 +93,31 @@ $("#generateReport").on('click', function () {
  * 保存任务数据
  */
 function saveTask() {
-    $.ajax({
-        url: "/task/addTask",
-        type: "post",
-        data: {"pro": $("#s-p-id").val(), "desc": $("#add-description-name").val(), "workDate": $("#workDate").val()},
-        dataType: 'JSON',
-        // contentType: "application/json; charset=utf-8",
-        // sync: false,
-        success: function (result) {
-            if (Object.is(200, result['code'])) {
-                resetModal("#add-task-modal", "addTaskForm");
-                $("#table_refresh").load("/task/reloadTable");
+    const pro_name = $("#s-p-id").val();
+    const desc = $("#add-description-name").val();
+    console.log(pro_name);
+    console.log(desc);
+    if (pro_name && desc) {
+        removeClass('#s-p-id', "is-invalid");
+        removeClass('#add-description-name', "is-invalid");
+        $.ajax({
+            url: "/task/addTask",
+            type: "post",
+            data: {"pro": pro_name, "desc": desc, "workDate": $("#workDate").val()},
+            dataType: 'JSON',
+            // contentType: "application/json; charset=utf-8",
+            // sync: false,
+            success: function (result) {
+                if (Object.is(200, result['code'])) {
+                    resetModal("#add-task-modal", "addTaskForm");
+                    $("#table_refresh").load("/task/reloadTable");
+                }
+                showToast(result['code'], result['msg']);
             }
-            showToast(result['code'], result['msg']);
-        }
-    })
+        });
+    } else {
+        !pro_name && $('#s-p-id').addClass("is-invalid");
+        !desc && $('#add-description-name').addClass("is-invalid");
+    }
+
 }

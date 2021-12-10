@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
     <head th:replace="/fragment/commons :: common_header(~{::title},~{})">
-        <title>TSIM @ TASK</title>
+        <title>TSIM | Task</title>
     </head>
     <body id="tsim_body" class="aside-enable">
 
@@ -60,7 +60,7 @@
                         <div id="table_refresh" th:fragment="table_refresh">
                             <table class="table table-hover">
                                 <thead>
-                                <tr class="fw-bold fs-7 text-danger text-center py-4">
+                                <tr class="fw-bold text-center py-4">
                                     <th rowspan="2" th:width="60px">#</th>
                                     <th rowspan="2" th:width="130px">项目名称</th>
                                     <th rowspan="2" th:width="130px">任务描述</th>
@@ -159,64 +159,28 @@
                                     </td>
                                     <!--bug文档-->
                                     <td th:value="${tempItem.bugDoc}">
-                                <span th:if="${#strings.isEmpty(tempItem.bugDoc)}" class="tag">
-                                    <svg class="icon" viewBox="0 0 1024 1024"
-                                         xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path
-                                            d="M563.8 512l262.5-312.9c4.4-5.2 0.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9c-4.4 5.2-0.7 13.1 6.1 13.1h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"
-                                            fill="#d81e06"></path></svg>
-                                </span>
-                                        <span th:if="${not #strings.isEmpty(tempItem.bugDoc)}" class="tag">
-                                    <a href="#">
-                                        <svg class="icon" viewBox="0 0 1024 1024"
-                                             xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-                                        <path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474c-6.1-7.7-15.3-12.2-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1 0.4-12.8-6.3-12.8z"
-                                              fill="#1afa29"></path>
-                                                        </svg>
-                                    </a>
-                                </span>
+                                        <span th:if="${#strings.isEmpty(tempItem.bugDoc)}" class="tag">-</span>
+                                        <span th:if="${not #strings.isEmpty(tempItem.bugDoc)}" class="tag"><a
+                                                href="#"><i class="bi-check" style="color: #0dcaf0"></i></a></span>
                                     </td>
                                     <!--测试报告-->
                                     <td th:value="${tempItem.reportDoc}">
-                                <span th:if="${#strings.isEmpty(tempItem.reportDoc)}">
-                                    <svg class="icon" viewBox="0 0 1024 1024"
-                                         xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path
-                                            d="M563.8 512l262.5-312.9c4.4-5.2 0.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9c-4.4 5.2-0.7 13.1 6.1 13.1h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"
-                                            fill="#d81e06"></path></svg>
-                                </span>
-                                        <span th:if="${not #strings.isEmpty(tempItem.reportDoc)}">
-                                    <svg class="icon" viewBox="0 0 1024 1024"
-                                         xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-                                        <path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474c-6.1-7.7-15.3-12.2-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1 0.4-12.8-6.3-12.8z"
-                                              fill="#1afa29"></path>
-                                                        </svg>
-                                </span>
+                                        <span th:if="${#strings.isEmpty(tempItem.reportDoc)}">-</span>
+                                        <span th:if="${not #strings.isEmpty(tempItem.reportDoc)}"><a href="#"><i
+                                                class="bi-check" style="color: #0dcaf0"></i></a> </span>
                                     </td>
                                     <!--是否有需求-->
                                     <td th:value="${tempItem.reqDoc}">
-                                    <span th:if="${#strings.isEmpty(tempItem.storyId)}">
-                                    <svg class="icon" viewBox="0 0 1024 1024"
-                                         xmlns="http://www.w3.org/2000/svg" width="20" height="20"><path
-                                            d="M563.8 512l262.5-312.9c4.4-5.2 0.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9c-4.4 5.2-0.7 13.1 6.1 13.1h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z"
-                                            fill="#d81e06"></path></svg>
-                                </span>
-                                        <span th:if="${not #strings.isEmpty(tempItem.storyId)}">
-                                    <svg class="icon" viewBox="0 0 1024 1024"
-                                         xmlns="http://www.w3.org/2000/svg" width="20" height="20">
-                                        <path d="M912 190h-69.9c-9.8 0-19.1 4.5-25.1 12.2L404.7 724.5 207 474c-6.1-7.7-15.3-12.2-25.1-12.2H112c-6.7 0-10.4 7.7-6.3 12.9l273.9 347c12.8 16.2 37.4 16.2 50.3 0l488.4-618.9c4.1-5.1 0.4-12.8-6.3-12.8z"
-                                              fill="#1afa29"></path>
-                                                        </svg>
-                                </span>
+                                        <span th:if="${#strings.isEmpty(tempItem.storyId)}">-</span>
+                                        <span th:if="${not #strings.isEmpty(tempItem.storyId)}"><a href="#"><i
+                                                class="bi-check" style="color: #0dcaf0"></i></a> </span>
                                     </td>
                                     <!--完成状态-->
                                     <td th:value="${tempItem.finishStatus}">
-                                <span th:if="${#strings.isEmpty(tempItem.finishStatus)}"
-                                      class="tag">x</span>
-                                        <span th:switch="${tempItem.finishStatus}">
-                                <span th:case="1">进行中</span>
-                                <span th:case="2">待回测</span>
-                                <span th:case="3">已回测</span>
-                                <span th:case="0">已完成</span>
-                            </span>
+                                        <span th:if="${#strings.equals('1',tempItem.finishStatus)}">进行中</span>
+                                        <span th:if="${#strings.equals('2',tempItem.finishStatus)}">待回测</span>
+                                        <span th:if="${#strings.equals('3',tempItem.finishStatus)}">已回测</span>
+                                        <span th:if="${#strings.equals('0',tempItem.finishStatus)}">已完成</span>
                                     </td>
                                     <!--是否交付-->
                                     <td th:value="${tempItem.deliveryStatus}">
@@ -242,7 +206,7 @@
                                            th:attr="data-taskId=${tempItem.id}"
                                            th:onclick="editTask([[${tempItem.id}]])"
                                            id="editBtn">
-                                            <i class="bi bi-pencil-square"></i>
+                                            <i class="bi bi-pencil-square" style="font-size: 0.8rem;color: #4e73df"></i>
                                         </a>
                                     </td>
                                 </tr>
@@ -260,7 +224,7 @@
         <!--                    toast-->
         <div th:replace="/fragment/commons :: toast-div"></div>
         <div th:replace="/task/task_edit :: task-edit"></div>
-<!--        <footer th:replace="/fragment/commons :: footer"></footer>-->
+        <!--        <footer th:replace="/fragment/commons :: footer"></footer>-->
         <!-- Logout Modal-->
         <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
