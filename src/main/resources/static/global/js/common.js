@@ -6,19 +6,33 @@ $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
         $('.sidebar .collapse').collapse('hide');
     }
 });
+
 /**
  * 使用bootstrap toast作为消息提示
  * @param code ajax请求后返回的状态码，用于决定toast的类型
  * @param msg 提示消息内容
  */
 function showToast(code, msg) {
+    const $toast = $('.toast');
     if (Object.is(200, code)) {
-        $('.toast').addClass("bg-success");
+        $toast.addClass("bg-success");
     } else {
-        $('.toast').addClass("bg-danger");
+        $toast.addClass("bg-danger");
     }
     $(".toast-body").text(msg);
-    $('.toast').toast('show');
+    $toast.toast('show');
+}
+
+/**
+ * 删除class属性
+ * @param idSelector
+ * @param className
+ */
+function removeClass(idSelector, className) {
+    const t = $(idSelector);
+    if (t.hasClass(className)) {
+        t.removeClass(className);
+    }
 }
 
 /**
@@ -88,15 +102,14 @@ function resetModal(modalId, formId) {
         if (formId) {
             document.getElementById(formId).reset();
         }
-        console.log(" hide >> reset modal completed");
     });
     $(modalId).on('hidden.bs.modal', function () {
         if (formId) {
             document.getElementById(formId).reset();
         }
-        console.log(" hidden >> reset modal completed");
     })
 }
+
 /*
 手动关闭modal弹框时清空已输入的内容
 1. 点击关闭、取消按钮
