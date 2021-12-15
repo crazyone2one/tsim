@@ -14,26 +14,28 @@
             <div class="container">
                 <div class="row full-height justify-content-center">
                     <div class="col-12 text-center align-self-center py-5">
-                        <div class="section pb-5 pt-5 pt-sm-2 text-center">
+                        <div class="section pb-5 pt-5 text-center">
                             <input class="checkbox" type="checkbox" id="reg-log" name="reg-log">
                             <div class="card-3d-wrap mx-auto">
                                 <div class="card-3d-wrapper">
                                     <div class="card-front">
                                         <div class="center-wrap">
                                             <div class="section text-center">
-                                                <h4 class="mb-4 pb-3">登录</h4>
+                                                <h4 class="mb-4 pb-3 ">登 录</h4>
                                                 <form th:action="@{/user/login}" method="post">
                                                     <div class="form-group">
                                                         <input type="text" name="account" class="form-style"
-                                                               placeholder="请输入账号" id="account" autocomplete="off"
+                                                               id="account" autocomplete="off"
                                                                required>
+                                                        <label for="account">账 号</label>
                                                     </div>
-                                                    <div class="form-group mt-2">
+                                                    <div class="form-group mt-3">
                                                         <input type="password" name="password" class="form-style"
-                                                               placeholder="请输入密码" id="password" autocomplete="off"
+                                                               id="password" autocomplete="off"
                                                                required>
+                                                        <label for="password">密 码</label>
                                                     </div>
-                                                    <button type="submit" class="btn mt-4">登录</button>
+                                                    <button type="submit" class="btn mt-4">登 录</button>
                                                 </form>
                                                 <div class="d-flex justify-content-between mt-4 text-left">
                                                     <div class="flex-fill">
@@ -44,34 +46,33 @@
                                                         </p>
                                                     </div>
                                                 </div>
-                                                <!--        toast-->
-                                                <div id="toast-div">
-                                                    <p style="color: red" th:if="${not #strings.isEmpty(msg)}" th:text="${msg}"></p>
-                                                </div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="card-back">
                                         <div class="center-wrap">
                                             <div class="section text-center">
-                                                <h4 class="mb-4 pb-3">注册</h4>
+                                                <h4 class="mb-4 pb-3">注 册</h4>
                                                 <form th:action="@{/user/register}" method="post">
                                                     <div class="form-group">
                                                         <input type="text" name="account" class="form-style"
-                                                               placeholder="请输入用户名" id="account-r" autocomplete="off"
+                                                               id="account-r" autocomplete="off"
                                                                required>
+                                                        <label for="account-r">输入用户名</label>
                                                     </div>
-                                                    <div class="form-group mt-2">
+                                                    <div class="form-group mt-3">
                                                         <input type="text" name="username" class="form-style"
-                                                               placeholder="请输入用户名称" id="username" autocomplete="off"
+                                                               id="username" autocomplete="off"
                                                                required>
+                                                        <label for="username">输入用户名称</label>
                                                     </div>
-                                                    <div class="form-group mt-2">
+                                                    <div class="form-group mt-3">
                                                         <input type="password" name="password" class="form-style"
-                                                               placeholder="请输入密码" id="password-r" autocomplete="off"
+                                                               id="password-r" autocomplete="off"
                                                                required>
+                                                        <label for="password-r">输入密码</label>
                                                     </div>
-                                                    <button type="submit" class="btn mt-4">注册</button>
+                                                    <button type="submit" class="btn mt-4">注 册</button>
                                                 </form>
                                                 <p class="mb-0 mt-4 text-center">已有帐号？<label for="reg-log">立即登录</label>
                                                 </p>
