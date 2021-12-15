@@ -1,3 +1,7 @@
+/*body {*/
+/*    font-family: "Microsoft YaHei", "SimSun", "宋体", sans-serif;*/
+/*}*/
+
 .text-uppercase, .dropdown .dropdown-menu .dropdown-header, .sidebar .sidebar-heading {
     text-transform: uppercase !important;
 }
@@ -76,11 +80,11 @@
 .sidebar .nav-item .nav-link {
     text-align: center;
     padding: 0.75rem 1rem;
-    width: 6.5rem;
+    width: 8rem;
 }
 
 .sidebar .nav-item .nav-link span {
-    font-size: 0.65rem;
+    font-size: 1rem;
     display: block;
 }
 
@@ -281,8 +285,8 @@
         display: block;
         width: 100%;
         text-align: left;
-        padding: 1rem;
-        width: 14rem;
+        padding: 1rem 1rem 1rem 2rem;
+        /*width: 14rem;*/
     }
 
     .sidebar .nav-item .nav-link i {
@@ -292,7 +296,7 @@
 
     /*菜单字体大小*/
     .sidebar .nav-item .nav-link span {
-        font-size: 0.9rem;
+        font-size: 1rem;
         display: inline;
     }
 
@@ -325,7 +329,7 @@
 
     .sidebar.toggled {
         overflow: visible;
-        width: 6.5rem !important;
+        width: 8rem !important;
     }
 
     .sidebar.toggled .nav-item .collapse {
@@ -530,7 +534,7 @@ body.sidebar-toggled footer.sticky-footer {
 
 /*菜单背景色*/
 .sidebar-bg {
-    background-color: #4e73df;
+    /*background-color: #4e73df;*/
     background-image: linear-gradient(180deg, #adb8d9 10%, #69c2c2 100%);
     background-size: cover;
 }
@@ -569,10 +573,6 @@ body.sidebar-toggled footer.sticky-footer {
 .navbar-light .navbar-toggler {
     color: rgba(0, 0, 0, 0.5);
     border-color: rgba(0, 0, 0, 0.1);
-}
-
-.navbar-light .navbar-toggler-icon {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%280, 0, 0, 0.5%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 .navbar-light .navbar-text {
