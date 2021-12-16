@@ -1,5 +1,6 @@
 package cn.master.tsim.service.impl;
 
+import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Tester;
 import cn.master.tsim.mapper.TesterMapper;
@@ -10,6 +11,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,16 +30,26 @@ public class TesterServiceImpl extends ServiceImpl<TesterMapper, Tester> impleme
 
     @Autowired
     private SystemService service;
+    @Autowired
+    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public ResponseResult login(Tester tester) {
-        QueryWrapper<Tester> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(Tester::getAccount, tester.getAccount()).eq(Tester::getPassword,tester.getPassword());
-        final Tester result = baseMapper.selectOne(wrapper);
-        if (Objects.isNull(result)) {
-            return ResponseUtils.error("用户名或密码错误");
+        try {
+            QueryWrapper<Tester> wrapper = new QueryWrapper<>();
+            wrapper.lambda().eq(Tester::getAccount, tester.getAccount());
+            final Tester result = baseMapper.selectOne(wrapper);
+            if (Objects.isNull(result)) {
+                return ResponseUtils.error("用户名错误");
+            }
+            if (bCryptPasswordEncoder.matches(tester.getPassword(),result.getPassword())) {
+                return ResponseUtils.success(result);
+            }
+            return ResponseUtils.error("密码错误");
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseUtils.error(ResponseCode.PARAMS_ERROR.getCode(), ResponseCode.PARAMS_ERROR.getMessage(), e);
         }
-        return ResponseUtils.success(result);
     }
 
     @Override
@@ -49,13 +61,18 @@ public class TesterServiceImpl extends ServiceImpl<TesterMapper, Tester> impleme
         if (Objects.nonNull(result)) {
             return ResponseUtils.error("用户已存在");
         }
-        final Tester build = Tester.builder().account(tester.getAccount())
-                .username(tester.getUsername())
-                .password(tester.getPassword())
-                .delFlag("0").build();
-        baseMapper.insert(build);
-        service.refreshUserMap();
-        return ResponseUtils.success(build);
+        try {
+            final Tester build = Tester.builder().account(tester.getAccount())
+                    .username(tester.getUsername())
+                    .password(bCryptPasswordEncoder.encode(tester.getPassword()))
+                    .delFlag("0").build();
+            baseMapper.insert(build);
+            service.refreshUserMap();
+            return ResponseUtils.success(build);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseUtils.error("用户注册失败");
+        }
     }
 
     @Override
