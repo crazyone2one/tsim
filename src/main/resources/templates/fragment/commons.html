@@ -54,79 +54,10 @@
             <span class="align-middle">问题单(BUG)</span>
         </a>
     </li>
-    <div class="text-center d-none d-md-inline">
+    <div class="text-center d-none d-md-inline mt-4">
         <button class="rounded-circle border-0" id="sidebarToggle"></button>
     </div>
 </ul>
-<!--菜单样式2-->
-<div class="hover-scroll-overlay-y px-2 my-5 my-lg-5" id="aside_menu_wrapper" style="height: 500px"
-     th:fragment="sidebarMenu2">
-    <div class="menu menu-column menu-title-gray-800 menu-title-primary menu-state-icon-primary menu-state-bullet-primary menu-arrow-gray-500 fw-bold"
-         id="aside_menu" data-menu="true">
-        <div class="menu-item">
-            <a href="#" th:class="${flag=='dashboard'?'menu-link active':'menu-link'}" th:href="@{/dashboard}">
-                                        <span class="menu-bullet">
-                                            <span class="bullet bullet-dot"></span>
-                                        </span>
-                <span class="menu-title">Dashboard</span>
-            </a>
-        </div>
-        <div class="menu-item">
-            <a th:class="${flag=='project'?'menu-link active':'menu-link'}" href="#"
-               th:href="@{/project/list}">
-                                        <span class="menu-bullet">
-                                            <span class="bullet bullet-dot"></span>
-                                        </span>
-                <span class="menu-title">项目管理</span>
-            </a>
-        </div>
-        <div class="menu-item">
-            <a th:class="${flag=='task'?'menu-link active':'menu-link link-dark'}" href="#"
-               th:href="@{/task/list}">
-                                        <span class="menu-bullet">
-                                            <span class="bullet bullet-dot"></span>
-                                        </span>
-                <span class="menu-title">任务汇总</span>
-            </a>
-        </div>
-        <div class="menu-item">
-            <a th:class="${flag=='story'?'menu-link active':'menu-link link-dark'}" href="#"
-               th:href="@{/story/list}">
-                                        <span class="menu-bullet">
-                                            <span class="bullet bullet-dot"></span>
-                                        </span>
-                <span class="menu-title">测试需求管理</span>
-            </a>
-        </div>
-        <div class="menu-item">
-            <a th:class="${flag=='plan'?'menu-link active':'menu-link link-dark'}" href="#"
-               th:href="@{/plan/list}">
-                                        <span class="menu-bullet">
-                                            <span class="bullet bullet-dot"></span>
-                                        </span>
-                <span class="menu-title">测试计划管理</span>
-            </a>
-        </div>
-        <div class="menu-item">
-            <a th:class="${flag=='case'?'menu-link active':'menu-link link-dark'}" href="#"
-               th:href="@{/case/list}">
-                                        <span class="menu-bullet">
-                                            <span class="bullet bullet-dot"></span>
-                                        </span>
-                <span class="menu-title">测试用例</span>
-            </a>
-        </div>
-        <div class="menu-item">
-            <a th:class="${flag=='bug'?'menu-link active':'menu-link link-dark'}" href="#"
-               th:href="@{/bug/list}">
-                                        <span class="menu-bullet">
-                                            <span class="bullet bullet-dot"></span>
-                                        </span>
-                <span class="menu-title">问题单(BUG)</span>
-            </a>
-        </div>
-    </div>
-</div>
 
 <!-- Footer -->
 <footer id="footer" class="sticky-footer bg-white" th:fragment="footer">
