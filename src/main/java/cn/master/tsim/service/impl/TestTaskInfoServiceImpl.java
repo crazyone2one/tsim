@@ -173,4 +173,22 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
         return baseMapper.selectOne(new QueryWrapper<TestTaskInfo>()
                 .lambda().eq(TestTaskInfo::getProjectId, projectId).eq(TestTaskInfo::getStoryId, storyId));
     }
+
+    @Override
+    public ResponseResult updateTaskInfo(String id, String finishStatus, String deliveryStatus, String remark) {
+        try {
+            final TestTaskInfo taskInfo = this.baseMapper.selectOne(new QueryWrapper<TestTaskInfo>().eq("id", id));
+            if (Objects.isNull(taskInfo)) {
+                return ResponseUtils.error(ResponseCode.ERROR_500.getCode(), ResponseCode.ERROR_500.getMessage());
+            }
+            taskInfo.setFinishStatus(finishStatus);
+            taskInfo.setDeliveryStatus(deliveryStatus);
+            taskInfo.setRemark(remark);
+            taskInfo.setUpdateDate(new Date());
+            baseMapper.updateById(taskInfo);
+            return ResponseUtils.success("任务更新成功");
+        } catch (Exception e) {
+            return ResponseUtils.error("任务更新失败");
+        }
+    }
 }

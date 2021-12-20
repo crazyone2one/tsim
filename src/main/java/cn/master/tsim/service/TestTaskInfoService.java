@@ -35,8 +35,8 @@ public interface TestTaskInfoService extends IService<TestTaskInfo> {
     /**
      * 获取单个任务汇总信息
      *
-     * @param request  HttpServletRequest
-     * @param projectId  Project
+     * @param request   HttpServletRequest
+     * @param projectId Project
      * @param story
      * @return cn.master.tsim.entity.TestTaskInfo
      */
@@ -64,7 +64,19 @@ public interface TestTaskInfoService extends IService<TestTaskInfo> {
      */
 
     ResponseResult getTask(String id);
+
     ResponseResult checkTaskReport(String id);
 
     TestTaskInfo queryItem(String projectId, String storyId);
+
+    /**
+     * 更新任务数据
+     *
+     * @param id             任务id
+     * @param finishStatus   完成状态
+     * @param deliveryStatus 交付状态
+     * @param remark         备注内容
+     * @return cn.master.tsim.common.ResponseResult
+     */
+    ResponseResult updateTaskInfo(String id, String finishStatus, String deliveryStatus, String remark);
 }

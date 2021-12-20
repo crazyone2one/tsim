@@ -15,8 +15,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.util.Map;
 
 /**
  * <p>
@@ -68,9 +66,11 @@ public class TestTaskInfoController {
 
     @RequestMapping(value = "/editTask")
     @ResponseBody
-    public ResponseResult editTask(HttpServletRequest request, HttpServletResponse response) {
-        final Map<String, String[]> parameterMap = request.getParameterMap();
-        return null;
+    public ResponseResult editTask(@RequestParam("id") String taskId,
+                                   @RequestParam("finishStatus") String finishStatus,
+                                   @RequestParam("deliveryStatus") String deliveryStatus,
+                                   @RequestParam("remark") String remark) {
+        return taskInfoService.updateTaskInfo(taskId, finishStatus, deliveryStatus, remark);
     }
 
     @RequestMapping(value = "/getTask/{id}")

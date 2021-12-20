@@ -27,13 +27,17 @@ function editTask(id) {
  */
 function fillContent(taskInfo) {
     console.log(taskInfo);
+    $("#task-id").attr("value", taskInfo.id);
     $("#generateReport").attr("data-id", taskInfo.id);
     $("#workDate").attr("data-id", taskInfo.issueDate);
     $("#projectName").attr("value", taskInfo.projectId);
     $("#projectName").attr("data-id", taskInfo.projectId);
     $("#projectDesc").attr("value", taskInfo.summaryDesc);
     $("#finish-status").attr("data-id", taskInfo.finishStatus);
-    $("#story-1").attr("data-id", taskInfo.storyId);
+    $("#new-case").attr("value", taskInfo.createCaseCount);
+    $("#ex-case").attr("value", taskInfo.executeCaseCount);
+    const $story = $("#story-1");
+    $story.attr("data-id", taskInfo.storyId);
 
     //提交bug
     $("#new-level4").attr("value", taskInfo.subBug.level4);
@@ -49,45 +53,72 @@ function fillContent(taskInfo) {
     $("#ex-count").attr("value", taskInfo.fixBug.total);
     //需求文件
     if ('reqDoc' in taskInfo) {
-        $("#story-1").text(taskInfo.reqDoc);
-        $("#story-1").attr("value", taskInfo.reqDoc);
+        $story.text(taskInfo.reqDoc);
+        $story.attr("value", taskInfo.reqDoc);
     } else {
-        $("#story-1").text("暂无关联需求");
+        $story.text("暂无关联需求");
         //无关联需求时设置可编辑
-        $("#story-1").attr("value", "").removeAttr("readonly");
+        $story.attr("value", "").removeAttr("readonly");
     }
     //    测试报告
+    const $report = $("#report-doc");
     if ('reportDoc' in taskInfo) {
-        $("#report-doc").text(taskInfo.reportDoc);
-        $("#report-doc").attr("value", taskInfo.reportDoc);
+        $report.text(taskInfo.reportDoc);
+        $report.attr("value", taskInfo.reportDoc);
     } else {
-        $("#report-doc").text("暂未生成测试报告");
+        $report.text("暂未生成测试报告");
         //无关联需求时设置可编辑
-        $("#report-doc").attr("value", "").removeAttr("readonly");
+        $report.attr("value", "").removeAttr("readonly");
     }
 
 }
 
-$("#generateReport").on('click', function () {
+/**
+ * 更新任务数据
+ */
+$("#update-task").on('click', function () {
     $.ajax({
-        type: 'get',
-        url: "/task/checkReport/" + $("#generateReport").data("id"),
+        url: "/task/editTask",
+        type: "post",
+        data: {
+            "id": $("#task-id").val(),
+            "finishStatus": $("#finish-status").val(),
+            "deliveryStatus": $("#jiaofu-status").val(),
+            "remark": $('#remark').val()
+        },
+        dataType: 'JSON',
+        // contentType: "application/json; charset=utf-8",
+        sync: false,
         success: function (result) {
-            switch (result['code']) {
-                /*测试报告不存在时创建测试报告*/
-                case 200:
-                    $.ajax({
-                        type: 'get',
-                        url: "/project/generateReport/" + $("#projectName").data("id") + "/" + $("#story-1").data("id") + "/" + $("#workDate").data("id"),
-                    })
-                    break;
-                case 400:
-                    console.log("11");
-                    break;
+            if (Object.is(200, result['code'])) {
+                resetModal("#editSummaryModal", null);
+                $("#table_refresh").load("/task/reloadTable");
             }
+            showToast(result['code'], result['msg']);
         }
-    });
+    })
 })
+
+// $("#generateReport").on('click', function () {
+//     $.ajax({
+//         type: 'get',
+//         url: "/task/checkReport/" + $("#generateReport").data("id"),
+//         success: function (result) {
+//             switch (result['code']) {
+//                 /*测试报告不存在时创建测试报告*/
+//                 case 200:
+//                     $.ajax({
+//                         type: 'get',
+//                         url: "/project/generateReport/" + $("#projectName").data("id") + "/" + $("#story-1").data("id") + "/" + $("#workDate").data("id"),
+//                     })
+//                     break;
+//                 case 400:
+//                     console.log("11");
+//                     break;
+//             }
+//         }
+//     });
+// })
 
 /**
  * 保存任务数据
@@ -95,8 +126,6 @@ $("#generateReport").on('click', function () {
 function saveTask() {
     const pro_name = $("#s-p-id").val();
     const desc = $("#add-description-name").val();
-    console.log(pro_name);
-    console.log(desc);
     if (pro_name && desc) {
         removeClass('#s-p-id', "is-invalid");
         removeClass('#add-description-name', "is-invalid");
