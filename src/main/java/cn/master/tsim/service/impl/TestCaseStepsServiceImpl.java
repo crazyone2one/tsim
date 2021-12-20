@@ -4,12 +4,16 @@ import cn.master.tsim.entity.TestCase;
 import cn.master.tsim.entity.TestCaseSteps;
 import cn.master.tsim.mapper.TestCaseStepsMapper;
 import cn.master.tsim.service.TestCaseStepsService;
+import cn.master.tsim.util.JacksonUtils;
+import cn.master.tsim.util.StreamUtils;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -34,18 +38,19 @@ public class TestCaseStepsServiceImpl extends ServiceImpl<TestCaseStepsMapper, T
     }
 
     @Override
-    public void saveStep(HttpServletRequest request, TestCase testCase) {
-        final Map<String, String[]> parameterMap = request.getParameterMap();
-        final String[] steps = parameterMap.get("caseSteps[]");
-        final String[] results = parameterMap.get("caseExpectedResults[]");
-        TestCaseSteps build;
-        for (int i = 0; i < steps.length; i++) {
-            build = TestCaseSteps.builder().caseId(testCase.getId())
-                    .caseOrder(i)
-                    .caseStep(steps[i]).caseStepResult(results[i]).active(0).createDate(new Date())
+    public void saveStep(String stepStore, TestCase testCase) {
+        JSONArray stepsJson = JSON.parseArray(stepStore);
+        StreamUtils.forEach(stepsJson, (index, obj) -> {
+            final Map<String, Map<String, String>> mapMap = JacksonUtils.convertValue(obj, new TypeReference<Map<String, Map<String, String>>>() {
+            });
+            TestCaseSteps build = TestCaseSteps.builder().caseId(testCase.getId())
+                    .caseOrder(index)
+                    .caseStep(mapMap.get(String.valueOf(index)).get("t_s"))
+                    .caseStepResult(mapMap.get(String.valueOf(index)).get("t_r"))
+                    .active(0).createDate(new Date())
                     .build();
             baseMapper.insert(build);
-        }
+        });
     }
 
     @Override

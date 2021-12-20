@@ -41,17 +41,17 @@ function sub() {
     const p_div = document.getElementById("case-step-area");
     const s_div = p_div.getElementsByClassName("row");
     const temp_steps = [];
-    const temp_results = [];
     for (let i = 0; i < s_div.length; i++) {
-        temp_steps.push(s_div[i].getElementsByTagName("textarea")[0].value);
-        temp_results.push(s_div[i].getElementsByTagName("textarea")[1].value);
+        const temp_json = {};
+        temp_json['t_s'] = s_div[i].getElementsByTagName("textarea")[0].value;
+        temp_json['t_r'] = s_div[i].getElementsByTagName("textarea")[1].value;
+        const result = {};
+        result[i] = temp_json;
+        temp_steps.push(result);
     }
     const case_step = document.getElementById("caseSteps");
-    case_step.setAttribute("value", temp_steps.toString());
-    const caseExp = document.getElementById("caseExpectedResults");
-    caseExp.setAttribute("value", temp_results.toString());
+    case_step.setAttribute("value", JSON.stringify(temp_steps));
     const data = $("#add-case-from").serialize();
-    console.log(data);
     $.ajax({
         url: "/case/save",
         type: 'POST',

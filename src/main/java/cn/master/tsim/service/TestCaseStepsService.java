@@ -4,7 +4,6 @@ import cn.master.tsim.entity.TestCase;
 import cn.master.tsim.entity.TestCaseSteps;
 import com.baomidou.mybatisplus.extension.service.IService;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 /**
@@ -22,10 +21,10 @@ public interface TestCaseStepsService extends IService<TestCaseSteps> {
     /**
      * 保存测试步骤数据
      *
-     * @param request  HttpServletRequest
-     * @param testCase 测试用例数据
+     * @param stepStore json格式测试步骤及结果
+     * @param testCase  测试用例数据
      */
-    void saveStep(HttpServletRequest request, TestCase testCase);
+    void saveStep(String stepStore, TestCase testCase);
 
     /**
      * 保存测试步骤数据
