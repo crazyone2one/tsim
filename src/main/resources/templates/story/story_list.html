@@ -6,7 +6,7 @@
     <body id="tsim_body" class="aside-enable">
 
         <div id="wrapper">
-            <ul th:replace="/fragment/commons :: sidebarMenu(flag='dashboard')"></ul>
+            <ul th:replace="/fragment/commons :: sidebarMenu(flag='story')"></ul>
             <div id="content-wrapper" class="d-flex flex-column">
                 <div id="content">
                     <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
@@ -54,11 +54,11 @@
                                 <button type="button" class="btn btn-sm btn-outline-info" disabled>添加需求文件</button>
                                 <button type="button" class="btn btn-sm btn-outline-danger" disabled>删除需求文件</button>
                             </div>
-                            <table class="table table-row-dashed table-hover">
+                            <table class="table table-hover">
                                 <thead>
-                                <tr class="fw-bold fs-7 text-danger text-center py-4">
+                                <tr class="fw-bold text-center py-4">
                                     <th scope="col"></th>
-                                    <th scope="col">#</th>
+<!--                                    <th scope="col">#</th>-->
                                     <th scope="col">所属项目</th>
                                     <th scope="col">需求内容描述</th>
                                     <th scope="col">关联文档</th>
@@ -77,7 +77,7 @@
                                         </label>
                                     </td>
 
-                                    <td th:text="${stat.index+1}"></td>
+<!--                                    <td th:text="${stat.index+1}"></td>-->
                                     <td th:text="${temp.projectId}"></td>
                                     <td th:text="${temp.description}"></td>
                                     <td>

@@ -5,7 +5,7 @@
     </head>
     <body id="tsim_body" class="aside-enable">
         <div id="wrapper">
-            <ul th:replace="/fragment/commons :: sidebarMenu(flag='dashboard')"></ul>
+            <ul th:replace="/fragment/commons :: sidebarMenu(flag='case')"></ul>
             <div id="content-wrapper" class="d-flex flex-column">
                 <div id="content">
                     <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
@@ -73,8 +73,8 @@
                         <div id="table_refresh" th:fragment="table_refresh">
                             <table class="table table-row-dashed table-hover">
                                 <thead>
-                                <tr class="fw-bold fs-7 text-danger text-center py-4">
-                                    <th scope="col">#</th>
+                                <tr class="text-center py-4">
+<!--                                    <th scope="col">#</th>-->
                                     <th scope="col">所属项目</th>
                                     <th scope="col">所属模块</th>
                                     <th scope="col">标题</th>
@@ -89,7 +89,7 @@
                                 <tr th:each="temp,stat:${iPage.records}" class="text-center">
                                     <input name="id" type="hidden" class="form-control"
                                            th:value="${temp.id}" id="id">
-                                    <td th:text="${stat.index+1}"></td>
+<!--                                    <td th:text="${stat.index+1}"></td>-->
                                     <td th:text="${temp.project.projectName}"></td>
                                     <td th:text="${temp.module.moduleName}"></td>
                                     <td th:text="${temp.name}"></td>
