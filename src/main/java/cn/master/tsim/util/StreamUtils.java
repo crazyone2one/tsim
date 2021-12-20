@@ -7,6 +7,8 @@ import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.BiConsumer;
 
 /**
  * @author Created by 11's papa on 2021/10/26
@@ -34,5 +36,20 @@ public class StreamUtils {
             e.printStackTrace();
         }
         return map;
+    }
+
+    /**
+     * 自定义for each循环 可使用index
+     *
+     * @param es
+     * @param action
+     */
+    public static <E> void forEach(Iterable<? extends E> es, BiConsumer<Integer, ? super E> action) {
+        Objects.requireNonNull(es);
+        Objects.requireNonNull(action);
+        int index = 0;
+        for (E e : es) {
+            action.accept(index++, e);
+        }
     }
 }
