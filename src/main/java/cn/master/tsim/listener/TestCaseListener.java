@@ -2,6 +2,7 @@ package cn.master.tsim.listener;
 
 import cn.master.tsim.entity.TestCase;
 import cn.master.tsim.service.TestCaseService;
+import cn.master.tsim.util.ValidateUtils;
 import com.alibaba.excel.context.AnalysisContext;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.fastjson.JSON;
@@ -39,12 +40,16 @@ public class TestCaseListener implements ReadListener<TestCase> {
 
     @Override
     public void invoke(TestCase data, AnalysisContext context) {
-        log.info("解析到一条数据:{}", JSON.toJSONString(data));
-        cachedDataList.add(data);
-        // 达到BATCH_COUNT了，需要去存储一次数据库，防止数据几万条数据在内存，容易OOM
-        if (cachedDataList.size() >= BATCH_COUNT) {
-            saveData();
-            cachedDataList.clear();
+        if (ValidateUtils.validateFiled(data)) {
+            log.info("解析到一条数据:{}", JSON.toJSONString(data));
+            cachedDataList.add(data);
+            // 达到BATCH_COUNT了，需要去存储一次数据库，防止数据几万条数据在内存，容易OOM
+            if (cachedDataList.size() >= BATCH_COUNT) {
+                saveData();
+                cachedDataList.clear();
+            }
+        } else {
+            throw new RuntimeException("数据校验失败" + data);
         }
     }
 

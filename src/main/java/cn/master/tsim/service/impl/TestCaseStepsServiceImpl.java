@@ -1,12 +1,10 @@
 package cn.master.tsim.service.impl;
 
-import cn.master.tsim.entity.TestCase;
 import cn.master.tsim.entity.TestCaseSteps;
 import cn.master.tsim.mapper.TestCaseStepsMapper;
 import cn.master.tsim.service.TestCaseStepsService;
 import cn.master.tsim.util.JacksonUtils;
 import cn.master.tsim.util.StreamUtils;
-import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -38,12 +36,11 @@ public class TestCaseStepsServiceImpl extends ServiceImpl<TestCaseStepsMapper, T
     }
 
     @Override
-    public void saveStep(String stepStore, TestCase testCase) {
-        JSONArray stepsJson = JSON.parseArray(stepStore);
+    public void saveStep(JSONArray stepsJson, String testCaseId) {
         StreamUtils.forEach(stepsJson, (index, obj) -> {
             final Map<String, Map<String, String>> mapMap = JacksonUtils.convertValue(obj, new TypeReference<Map<String, Map<String, String>>>() {
             });
-            TestCaseSteps build = TestCaseSteps.builder().caseId(testCase.getId())
+            TestCaseSteps build = TestCaseSteps.builder().caseId(testCaseId)
                     .caseOrder(index)
                     .caseStep(mapMap.get(String.valueOf(index)).get("t_s"))
                     .caseStepResult(mapMap.get(String.valueOf(index)).get("t_r"))
@@ -53,15 +50,4 @@ public class TestCaseStepsServiceImpl extends ServiceImpl<TestCaseStepsMapper, T
         });
     }
 
-    @Override
-    public void saveStep(String caseId, String[] steps, String[] results) {
-        TestCaseSteps build;
-        for (int i = 0; i < steps.length; i++) {
-            build = TestCaseSteps.builder().caseId(caseId)
-                    .caseOrder(i)
-                    .caseStep(steps[i]).caseStepResult(results[i]).active(0).createDate(new Date())
-                    .build();
-            baseMapper.insert(build);
-        }
-    }
 }

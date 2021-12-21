@@ -57,7 +57,7 @@ public class TestCaseController {
     @GetMapping("/list")
     public String allTests(HttpServletRequest request, TestCase testCase, Model model,
                            @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
-                           @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
+                           @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
         final IPage<TestCase> iPage = caseService.pageList(testCase, pageCurrent, pageSize);
         model.addAttribute("iPage", iPage);
         model.addAttribute("redirecting", "/case/list?pageCurrent=");

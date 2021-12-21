@@ -3,6 +3,8 @@ package cn.master.tsim.service.impl;
 import cn.master.tsim.entity.*;
 import cn.master.tsim.mapper.TestCaseMapper;
 import cn.master.tsim.service.*;
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -53,7 +55,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         final String storyId = request.getParameter("storyId");
         final int priority = Integer.parseInt(request.getParameter("priority"));
         final Project project = projectService.getProjectById(projectId);
-        final Module module = moduleService.addModule(request,projectId,moduleId);
+        final Module module = moduleService.addModule(request, projectId, moduleId);
         final String stepStore = request.getParameter("stepStore");
         TestCase build = TestCase.builder().active(0).projectId(project.getId()).moduleId(module.getId())
                 .name(request.getParameter("name"))
@@ -65,7 +67,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 .resultStore(request.getParameter("resultStore"))
                 .createDate(new Date()).build();
         baseMapper.insert(build);
-        stepsService.saveStep(stepStore, build);
+        stepsService.saveStep(JSON.parseArray(stepStore), build.getId());
 //       关联需求时 t_project_case_ref表增加一条记录
         if (StringUtils.isNotBlank(storyId)) {
             final int item = projectCaseRefService.addRefItem(projectId, storyId, build.getId(), "");
@@ -83,16 +85,32 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             if (c.isRefFlag()) {
                 continue;
             }
-            final Project project = projectService.getProjectByName(c.getProjectId());
-            final Module module = moduleService.addModule(request, c.getProjectId(), c.getModuleId());
-            final TestCase build = TestCase.builder().active(0).projectId(project.getId()).moduleId(module.getId())
-                    .name(c.getName()).description(c.getDescription()).precondition(c.getPrecondition())
-                    .testMode(0).priority(c.getPriority()).stepStore(c.getStepStore())
-                    .resultStore(c.getResultStore()).createDate(new Date()).build();
-            baseMapper.insert(build);
             final String[] steps = c.getStepStore().split("\\n");
             final String[] results = c.getResultStore().split("\\n");
-            stepsService.saveStep(build.getId(), steps, results);
+            JSONArray stepsJson = new JSONArray();
+            for (int i = 0; i < steps.length; i++) {
+                Map<Integer, Map<String, String>> stepsMap = new LinkedHashMap<>();
+                Map<String, String> tempMap = new LinkedHashMap<>();
+                tempMap.put("t_s", steps[i]);
+                // 不太清楚这样处理是否正确
+                try {
+                    tempMap.put("t_r", Objects.nonNull(results[i]) ? results[i] : "");
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    tempMap.put("t_r", "");
+                }
+                stepsMap.put(i, tempMap);
+                stepsJson.add(stepsMap);
+            }
+
+            final Project project = projectService.getProjectByName(c.getProjectId());
+            final Module module = moduleService.addModule(request, project.getId(), c.getModuleId());
+            final TestCase build = TestCase.builder().active(0).projectId(project.getId()).moduleId(module.getId())
+                    .name(c.getName()).description(c.getDescription()).precondition(c.getPrecondition())
+                    .testMode(0).priority(c.getPriority()).stepStore(stepsJson.toJSONString())
+                    .resultStore("").createDate(new Date()).build();
+            baseMapper.insert(build);
+
+            stepsService.saveStep(stepsJson, build.getId());
         }
     }
 
@@ -152,7 +170,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             extractedSearchWrapper(testCase, wrapper, tempProjectId, tempModuleId);
         }
         final Page<TestCase> page = baseMapper.selectPage(
-                new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
+                new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize),
                 wrapper);
         page.getRecords().forEach(t -> {
             t.setProject(projectService.getProjectById(t.getProjectId()));
@@ -180,7 +198,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         final Iterator<TestCase> iterator = records.iterator();
         while (iterator.hasNext()) {
             final TestCase next = iterator.next();
-            caseIds.forEach(c->{
+            caseIds.forEach(c -> {
                 if (c.equals(next.getId())) {
                     iterator.remove();
                 }

@@ -1,7 +1,7 @@
 package cn.master.tsim.service;
 
-import cn.master.tsim.entity.TestCase;
 import cn.master.tsim.entity.TestCaseSteps;
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.List;
@@ -21,17 +21,9 @@ public interface TestCaseStepsService extends IService<TestCaseSteps> {
     /**
      * 保存测试步骤数据
      *
-     * @param stepStore json格式测试步骤及结果
-     * @param testCase  测试用例数据
+     * @param stepsJson  json格式测试步骤及结果
+     * @param testCaseId 测试用例数据
      */
-    void saveStep(String stepStore, TestCase testCase);
+    void saveStep(JSONArray stepsJson, String testCaseId);
 
-    /**
-     * 保存测试步骤数据
-     *
-     * @param caseId  测试用例数据id
-     * @param steps   步骤集合
-     * @param results 结果集合
-     */
-    void saveStep(String caseId, String[] steps, String[] results);
 }
