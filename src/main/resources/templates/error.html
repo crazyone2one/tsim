@@ -11,12 +11,17 @@
                 <div id="content">
                     <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
                     <div class="container">
-                        <div class="justify-content-center row">
+                        <div class="justify-content-center row div-style">
                             <div class="my-5 col-xl-4 col-md-5 col-12">
-                                <div class="text-center">
-                                    <h6 class="text-uppercase text-muted mb-4" th:text="${result.code}+' ERROR'">404</h6>
-                                    <h1 class="display-4 mb-3" th:text="${result.msg} + '😭'">There’s no page here 😭</h1>
+                                <div class="text-center ">
+                                    <h6 class="text-uppercase text-muted mb-4" th:text="${result.code}+' ERROR'">
+                                        404</h6>
+                                    <h1 class="display-4 mb-3" th:text="${result.msg} + '😭'">There’s no page here
+                                        😭</h1>
                                     <p class="text-muted mb-4">It looks like you found a glitch in the matrix...</p>
+                                    <div style="border: 2px solid #da0d0d;border-radius: 10px;">
+                                        <p class="text-muted mb-4" th:text="${result.data}">It looks like you found a glitch in the matrix...</p>
+                                    </div>
                                     <a href="index.html" th:href="@{/dashboard}">← Back to Dashboard</a>
                                 </div>
                             </div>

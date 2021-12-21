@@ -27,16 +27,31 @@ public class GlobalExceptionHandler {
     }
 
     /**
+     * RuntimeException
+     *
+     * @param e     RuntimeException
+     * @param model Model
+     * @return java.lang.String
+     */
+    @ExceptionHandler(RuntimeException.class)
+    public String exceptionHandler(RuntimeException e, Model model) {
+        log.error("捕获到RuntimeException");
+        log.error(e.getMessage(), e);
+        model.addAttribute("result", ResponseUtils.error(ResponseCode.PARAMS_ERROR.getCode(), ResponseCode.PARAMS_ERROR.getMessage(), e));
+        return "error";
+    }
+
+    /**
      * 空指针异常
      *
-     * @param e
-     * @param model
+     * @param e     NullPointerException
+     * @param model Model
      * @return java.lang.String
      */
     @ExceptionHandler(NullPointerException.class)
     public String exceptionHandler(NullPointerException e, Model model) {
         log.error("捕获到NullPointerException");
-        log.error(e.getMessage(),e);
+        log.error(e.getMessage(), e);
         model.addAttribute("result",
                 ResponseUtils.error(ResponseCode.PARAMS_ERROR.getCode(), ResponseCode.PARAMS_ERROR.getMessage(), e));
         return "error";
