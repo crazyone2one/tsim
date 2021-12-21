@@ -7,11 +7,9 @@ import cn.master.tsim.entity.Project;
 import cn.master.tsim.mapper.TesterMapper;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.SystemService;
-import cn.master.tsim.util.ParameterNotNull;
 import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
@@ -21,7 +19,6 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.lang.reflect.Field;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -68,29 +65,6 @@ public class SystemServiceImpl implements SystemService {
     public void refreshUserMap() {
         Constants.userMaps.clear();
         initUserMap();
-    }
-
-    @Override
-    public boolean validate(Object object) {
-        boolean flag = true;
-        try {
-            final Field[] fields = object.getClass().getDeclaredFields();
-            for (Field field : fields) {
-                field.setAccessible(true);
-                final Object value = field.get(object);
-                final ParameterNotNull annotation = field.getAnnotation(ParameterNotNull.class);
-                // FIXME: 2021/11/1 0001 字段可为空的排除掉
-                if (Objects.nonNull(annotation) && StringUtils.isBlank(String.valueOf(value))) {
-                    flag = false;
-                }
-                if (Objects.nonNull(annotation) && Objects.isNull(value)) {
-                    flag = false;
-                }
-            }
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        return flag;
     }
 
     @Override

@@ -21,8 +21,6 @@ public interface SystemService {
      */
     void refreshUserMap();
 
-    boolean validate(Object object);
-
     /**
      * 初始化项目名称缓存
      */
