@@ -1,37 +1,71 @@
-const chart1 = echarts.init(document.getElementById('issueStatistics'));
-const chart2 = echarts.init(document.getElementById('demo1'));
-const tempXAxi = JSON.parse($("#xAxisList").val())[0].data;
-const tempCount = JSON.parse($("#yAxisList").val())[0].data;
-// 指定图表的配置项和数据
-const option = {
-  tooltip: {},
-  legend: {},
-  xAxis: {
-    data: tempXAxi
-  },
-  yAxis: {
-    minInterval: 1 // 只显示整数
-  },
-  series: [{
-    name: '新增',
-    type: 'bar',
-    data: tempCount
-  }]
-};
-chart1.setOption(option);
-const c2option = {
-  tooltip: {},
-  legend: {},
-  xAxis: {
-    data: tempXAxi
-  },
-  yAxis: {
-    minInterval: 1 // 只显示整数
-  },
-  series: [{
-    name: '新增',
-    type: 'bar',
-    data: tempCount
-  }]
-};
-chart2.setOption(c2option)
+const case_chart = echarts.init(document.getElementById('case_echarts'));
+const bug_chart = echarts.init(document.getElementById('bug_echarts'));
+
+const tempXAxi = JSON.parse($("#xAxisList").val())[0].result;
+
+function loadCaseByProject(echarts_flag) {
+    $.ajax({
+        async: false,
+        type: 'POST',
+        url: '/getAnalysis',
+        success: function (result) {
+            let t_option;
+            if (Object.is(200, result['code'])) {
+                const series = [];
+                let map;
+                let text;
+                if (Object.is("case", echarts_flag)) {
+                    map = new Map(Object.entries(new Map(Object.entries(result['data'])).get("case")));
+                    text = "测试用例变化情况";
+                }
+                if (Object.is("bug", echarts_flag)) {
+                    map = new Map(Object.entries(new Map(Object.entries(result['data'])).get("bug")));
+                    text = "问题单变化情况";
+                }
+                for (let proj of map.keys()) {
+                    let tempData = map.get(proj);
+                    series.push({name: proj, type: 'line', data: JSON.parse(tempData)[0].result});
+                }
+                // 测试统计图
+                t_option = {
+                    title: {
+                        text: text
+                    },
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+                    // legend: {
+                    //     data: ['Email', 'Union Ads', 'Video Ads', 'Direct', 'Search Engine']
+                    // },
+                    grid: {
+                        left: '3%',
+                        right: '4%',
+                        bottom: '3%',
+                        containLabel: true
+                    },
+                    xAxis: {
+                        type: 'category',
+                        boundaryGap: false,
+                        data: tempXAxi
+                    },
+                    yAxis: {
+                        type: 'value',
+                        minInterval: 1 // 只显示整数
+                    },
+                    series: series
+                };
+                if (Object.is("case", echarts_flag)) {
+                    case_chart.setOption(t_option);
+                }
+                if (Object.is("bug", echarts_flag)) {
+                    bug_chart.setOption(t_option);
+                }
+            }
+        }
+    })
+}
+
+$(function () {
+    loadCaseByProject("case");
+    loadCaseByProject("bug");
+})

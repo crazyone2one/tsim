@@ -14,15 +14,15 @@
                         <div class="row">
                             <div class="col-xxl-6 mb-xxl-10">
                                 <div class="card shadow mb-4">
-                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                        <h6 class="m-0 font-weight-bold text-primary">ccccc1</h6>
-                                        <div class="dropdown no-arrow">
+<!--                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">-->
+<!--                                        <h6 class="m-0 font-weight-bold text-primary">测试用例变化情况</h6>-->
+<!--                                        <div class="dropdown no-arrow">-->
 
-                                        </div>
-                                    </div>
+<!--                                        </div>-->
+<!--                                    </div>-->
                                     <div class="card-body">
                                         <div class="chart-area">
-                                            <div id="issueStatistics" class="min-h-auto ps-4 pe-6 mb-3"
+                                            <div id="case_echarts" class="min-h-auto ps-4 pe-6 mb-3"
                                                  style="height: 300px;min-height: 315px"
                                                  data-negative-color="rgba(150,142,126,0.2"></div>
                                         </div>
@@ -31,15 +31,9 @@
                             </div>
                             <div class="col-xxl-6 mb-xxl-10">
                                 <div class="card shadow mb-4">
-                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                        <h6 class="m-0 font-weight-bold text-primary">ccccc1</h6>
-                                        <div class="dropdown no-arrow">
-
-                                        </div>
-                                    </div>
                                     <div class="card-body">
                                         <div class="chart-area">
-                                            <div id="demo1" class="min-h-auto ps-4 pe-6 mb-3"
+                                            <div id="bug_echarts" class="min-h-auto ps-4 pe-6 mb-3"
                                                  style="height: 300px;min-height: 315px"
                                                  data-negative-color="rgba(150,142,126,0.2"></div>
                                         </div>
@@ -47,8 +41,8 @@
                                 </div>
                             </div>
                         </div>
+
                         <input type="hidden" th:value="${xAxisList}" id="xAxisList">
-                        <input type="hidden" th:value="${newBugCount}" id="yAxisList">
                     </div>
                 </div>
                 <footer th:replace="/fragment/commons :: footer"></footer>
