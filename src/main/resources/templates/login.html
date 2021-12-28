@@ -35,7 +35,8 @@
                                                                required>
                                                         <label for="password">密 码</label>
                                                     </div>
-                                                    <button type="submit" class="btn mt-4">登 录</button>
+                                                    <p class="mt-2 mb-2" style="color: red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
+                                                    <button type="submit" class="btn mt-3">登 录</button>
                                                 </form>
                                                 <div class="d-flex justify-content-between mt-4 text-left">
                                                     <div class="flex-fill">
