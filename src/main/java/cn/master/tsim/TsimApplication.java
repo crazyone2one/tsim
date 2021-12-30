@@ -13,17 +13,26 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 /**
  * @author jingll
  */
-@SpringBootApplication(exclude = {org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class})
+
 @MapperScan("cn.master.tsim.mapper")
 @EnableConfigurationProperties({FileProperties.class})
+@SpringBootApplication(exclude = {org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class})
 public class TsimApplication extends SpringBootServletInitializer {
 
     public static void main(String[] args) {
         SpringApplication.run(TsimApplication.class, args);
     }
+
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
         return application.sources(TsimApplication.class);
+    }
+
+    /*禁用Ping Method
+     * 解决druid 日志报错：discard long time none received connection:xxx
+     */
+    static {
+        System.setProperty("druid.mysql.usePingMethod", "false");
     }
 
     @Bean
