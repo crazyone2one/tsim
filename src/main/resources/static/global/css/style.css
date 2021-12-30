@@ -814,3 +814,70 @@ td {
 }
 
 /*********设置边框样式*/
+/*********modal style*/
+/*.modal.show .modal-dialog {*/
+/*    transform: none;*/
+/*}*/
+
+.modal .modal-dialog {
+    outline: 0 !important;
+}
+
+.modal .modal-header {
+    align-items: center;
+    justify-content: space-between;
+    border-top-left-radius: 0.95rem;
+    border-top-right-radius: 0.95rem;
+}
+
+.scroll-y {
+    overflow-y: scroll;
+    position: relative;
+}
+
+.form-control.form-control-solid {
+    background-color: #f8f6f2;
+    border-color: #f8f6f2;
+    color: #716d66;
+    transition: color .2s ease, background-color .2s ease;
+}
+
+.form-control {
+    box-shadow: none !important;
+}
+
+.btn.btn-primary {
+    color: #fff;
+    border-color: #4fc9da;
+    background-color: #4fc9da;
+}
+
+/*自定义小按钮的尺寸*/
+.btn-sm-c, .btn-group-sm > .btn {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.2rem;
+    border-radius: 0.2rem;
+}
+
+.indicator-progress {
+    display: none;
+}
+
+.g-9 {
+    --bs-gutter-x: 2.25rem
+}
+
+.mb-8 {
+    margin-bottom: 2rem !important
+}
+
+.required::after {
+    content: "*";
+    position: relative;
+    font-size: inherit;
+    color: #f06445;
+    padding-left: .25rem;
+    font-weight: 700;
+}
+
+/*********modal style*/
