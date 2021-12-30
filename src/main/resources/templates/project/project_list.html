@@ -12,7 +12,7 @@
                     <div class="container-fluid">
                         <div class="pt-2 border-bottom">
                             <div class="card-body">
-                                <form action="#" th:action="@{list}">
+                                <form action="#" th:action="@{list}" autocomplete="off">
                                     <div class="row">
                                         <div class="input-group mb-3" style="width: fit-content">
                                             <span class="input-group-text">所属项目</span>
@@ -40,7 +40,7 @@
                             <table class="table table-hover">
                                 <thead>
                                 <tr class="fw-bold text-center py-4">
-                                    <th scope="col">#</th>
+                                    <!--                                    <th scope="col">#</th>-->
                                     <th scope="col">项目名</th>
                                     <!--                                    <th scope="col">任务时间</th>-->
                                     <th scope="col">关联模块</th>
@@ -52,22 +52,18 @@
                                 </thead>
                                 <tbody>
                                 <tr th:each="temp,stat:${iPage.records}" class="text-center">
-                                    <input name="id" type="hidden" class="form-control"
-                                           th:value="${temp.id}" id="id">
-                                    <td th:text="${stat.index+1}"></td>
+                                    <input name="id" type="hidden" class="form-control" th:value="${temp.id}" id="id">
+                                    <!--                                    <td th:text="${stat.index+1}"></td>-->
                                     <td th:text="${temp.projectName}"></td>
                                     <!--                                    <td th:text="${temp.issueDate}"></td>-->
                                     <td>
-                                        <a href="#"
-                                           th:text="${temp.refModuleCount}"></a>
+                                        <a href="#" th:text="${temp.refModuleCount}"></a>
                                     </td>
                                     <td>
-                                        <a href="#"
-                                           th:text="${temp.refCaseCount}"></a>
+                                        <a href="#" th:text="${temp.refCaseCount}"></a>
                                     </td>
                                     <td>
-                                        <a href="#"
-                                           th:text="${temp.refBugCount}"></a>
+                                        <a href="#" th:text="${temp.refBugCount}"></a>
                                     </td>
                                     <td>
                                         <a th:onclick="delPro([[${temp.id}]])" th:attr="data-name=${temp.projectName}">

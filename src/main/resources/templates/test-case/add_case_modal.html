@@ -20,7 +20,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="input-group mb-3">
-                                    <span class="input-group-text" id="basic-addon1" style="color: #bb2d3b">项目名称
+                                    <span class="input-group-text required" id="basic-addon1" style="color: #bb2d3b">项目名称
                                         <!--                                        <i class="bi bi-asterisk" style="font-size: 0.3rem; color: red"></i>-->
                                     </span>
                                     <input id="projectId" class="form-control" aria-label="项目名称" required
@@ -30,20 +30,20 @@
                                 <p class="fst-italic text-danger mb-0" style="font-size: 0.5rem">
 <!--                                    <i class="bi-exclamation-circle" style="color: #bb2d3b"></i>  录入正确的模块名称后再录入其他的参数。失去焦点后会自动创建模块信息。</p>-->
                                 <div class="input-group mb-3">
-                                    <span class="input-group-text" id="suite-span" style="color: #bb2d3b">模块名称</span>
+                                    <span class="input-group-text required" id="suite-span" style="color: #bb2d3b">模块名称</span>
                                     <input id="moduleId" class="form-control"
                                            required aria-label="模块名称"
                                            aria-describedby="suite-span" placeholder="填写模块名称">
                                     <input type="hidden" name="moduleId" id="m-a">
                                 </div>
                                 <div class="input-group mb-3">
-                                    <span class="input-group-text" id="c-s-r">关联需求</span>
+                                    <span class="input-group-text required" id="c-s-r">关联需求</span>
                                     <input id="case-story" class="form-control" aria-label="关联需求"
                                            aria-describedby="suite-span" placeholder="填写关联需求">
                                     <input type="hidden" name="storyId" id="add-case-story">
                                 </div>
                                 <div class="input-group mb-3">
-                                    <span class="input-group-text" id="title-span" style="color: #bb2d3b">测试用例标题</span>
+                                    <span class="input-group-text required" id="title-span" style="color: #bb2d3b">测试用例标题</span>
                                     <input name="name" id="caseTitle" type="text"
                                            class="form-control" placeholder="输入测试用例标题"
                                            aria-label="测试用例标题"
@@ -124,7 +124,7 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" onclick="sub()" id="submit">保存</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                                <button type="button" class="btn btn-secondary" id="add_case_cancel" data-bs-dismiss="modal">关闭</button>
                             </div>
                         </form>
                     </div>

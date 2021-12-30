@@ -108,6 +108,8 @@ public class SystemServiceImpl implements SystemService {
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             String location = this.fileStorageLocation + "/" + newFileName;
             System.out.println(location);
+            final String path = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + this.fileStorageLocation + "/" + newFileName;
+            System.out.println(path);
             resultMap.put("docPath", location);
             return ResponseUtils.success("文件上传成功", resultMap);
         } catch (Exception e) {
