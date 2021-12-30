@@ -20,6 +20,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="box-body">
+                                    <input type="hidden" name="id" id="story-id">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="basic-addon1">项目名称</span>
                                         <input type="text" class="form-control" placeholder="输入项目名称"
@@ -31,8 +32,13 @@
                                         <textarea type="text" class="form-control" id="add-description-name"
                                                   name="description" placeholder="输入需求内容描述"></textarea>
                                     </div>
-                                    <div class=" mb-3">
-                                        <input class="form-control" type="file" name="file" id="formFile">
+<!--                                    todo 文件上传-->
+                                    <div class="mb-3" id="upload-div" hidden="hidden">
+<!--                                        <input class="form-control" type="file" name="file" id="formFile">-->
+                                        <button type="button" id="up-btn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
+                                            上传需求文件
+                                        </button>
+                                        <div id="emailHelp" class="form-text">若有需求文件，先上传文件.</div>
                                     </div>
                                     <input type="hidden" name="docId" id="attachmentId">
                                     <div class="input-group mb-3">
