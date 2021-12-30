@@ -114,4 +114,10 @@ public class TestCase implements Serializable {
     @TableField(exist = false)
     @ExcelProperty(value = "是否已导入", index = 8)
     private boolean refFlag;
+
+    /**
+     * 删除状态（0，有效 1，无效）
+     */
+    @TableField("del_flag")
+    private Integer delFlag;
 }
