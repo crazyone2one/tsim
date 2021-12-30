@@ -14,7 +14,7 @@
                         <!--操作栏-->
                         <div class="pt-2 border-bottom">
                             <div class="card-body">
-                                <form th:action="@{list}">
+                                <form th:action="@{list}" autocomplete="off">
                                     <div class="row">
                                         <div class="input-group mb-3" style="width: fit-content">
                                             <span class="input-group-text" id="basic-addon1">所属项目</span>
@@ -34,15 +34,12 @@
                                             <option value="1">已完成</option>
                                             <option value="0">未完成</option>
                                         </select>
-                                        <div class="col-lg-2 col-md-4 col-sm-6">
-                                            <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
+                                        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                                            <button type="submit" id="search-story" class="btn hvr-grow"><i class="bi bi-search"
                                                                                           style="color: cornflowerblue"></i>
                                             </button>
-                                            <button type="button" class="btn"
-                                                    data-bs-toggle="modal" data-bs-target="#add-story-modal"><i
-                                                    class="bi bi-plus-circle hvr-grow"
-                                                    style="color: cornflowerblue"></i>
-                                            </button>
+                                            <a class="btn btn-primary" data-bs-toggle="modal" href="#add-story-modal" role="button"><i
+                                                    class="bi bi-plus-circle hvr-grow"></i></a>
                                         </div>
                                     </div>
                                 </form>
@@ -50,14 +47,10 @@
                         </div>
                         <!--            列表数据-->
                         <div id="table_refresh" th:fragment="table_refresh">
-                            <div>
-                                <button type="button" class="btn btn-sm btn-outline-info" disabled>添加需求文件</button>
-                                <button type="button" class="btn btn-sm btn-outline-danger" disabled>删除需求文件</button>
-                            </div>
                             <table class="table table-hover">
                                 <thead>
                                 <tr class="fw-bold text-center py-4">
-                                    <th scope="col"></th>
+<!--                                    <th scope="col"></th>-->
 <!--                                    <th scope="col">#</th>-->
                                     <th scope="col">所属项目</th>
                                     <th scope="col">需求内容描述</th>
@@ -68,33 +61,37 @@
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr class="text-center" th:each="temp,stat:${iPage.records}">
-                                    <td>
-                                        <label class="checkbox">
-                                            <input type="checkbox" th:value="${temp.id}">
-                                            <input name="id" type="hidden" class="form-control"
-                                                   th:value="${temp.id}" id="id">
-                                        </label>
-                                    </td>
-
+                                <tr th:if="${#lists.isEmpty(iPage.records)}">
+                                    <td class="text-center" colspan="6">No matching records found</td>
+                                </tr>
+                                <tr class="text-center" th:each="temp,stat:${iPage.records}" th:if="${not #lists.isEmpty(iPage.records)}">
+<!--                                    <td>-->
+<!--                                        <label class="checkbox">-->
+<!--                                            <input type="checkbox" th:value="${temp.id}">-->
+<!--                                            <input name="id" type="hidden" class="form-control"-->
+<!--                                                   th:value="${temp.id}" id="id">-->
+<!--                                        </label>-->
+<!--                                    </td>-->
+                                    <input name="id" type="hidden" class="form-control"
+                                           th:value="${temp.id}" id="id">
 <!--                                    <td th:text="${stat.index+1}"></td>-->
                                     <td th:text="${temp.projectId}"></td>
                                     <td th:text="${temp.description}"></td>
                                     <td>
                                         <a th:href="${#strings.isEmpty(temp.docId)}?'@{/story/download/'+'':'/story/download/'+${temp.docInfo.docName}+'/'+${temp.docInfo.uuidName}"
-                                           th:text="${#strings.isEmpty(temp.docId)} ? '未上传需求文档' : ${temp.docInfo.docName}"
+                                           th:text="${#strings.isEmpty(temp.docId)} ? '未关联需求文件' : ${temp.docInfo.docName}"
                                            th:style="${#strings.isEmpty(temp.docId)} ? 'pointer-events: none' : ''"></a>
                                     </td>
                                     <td th:text="${temp.workDate}"></td>
                                     <td>
-                                        <div class="form-check form-switch d-inline-block">
-                                            <input class="form-check-input" type="checkbox" id="status"
-                                                   th:checked="${temp.delFlag==0}"
-                                                   th:onclick="updateStatus([[${temp.id}]])">
-                                            <label class="form-check-label" for="status"></label>
-                                        </div>
+                                        <span th:text="未完成" th:if="${temp.delFlag==0}"></span>
+                                        <span th:text="已完成" th:if="${temp.delFlag==1}"></span>
                                     </td>
                                     <td>
+                                        <button type="button" class="btn btn-sm-c btn-outline-info" th:data-bs-id="${temp.id}"
+                                                data-bs-toggle="modal" data-bs-target="#add-story-modal" data-bs-whatever="edit">Edit</button>
+                                        <button type="button" class="btn btn-sm-c btn-outline-info" disabled>Edit</button>
+                                        <button type="button" class="btn btn-sm-c btn-outline-danger" disabled>Delete</button>
                                     </td>
                                 </tr>
                                 </tbody>
@@ -112,6 +109,7 @@
         <div th:replace="~{story/add_story_modal::addStoryFragment}"></div>
         <!--                    toast-->
         <div th:replace="/fragment/commons :: toast-div"></div>
+        <div th:replace="/fragment/commons :: upload-modal"></div>
         <!-- Logout Modal-->
         <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
@@ -119,105 +117,91 @@
         <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
         <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
         <script>
+            const exampleModal = document.getElementById('add-story-modal');
+            exampleModal.addEventListener("show.bs.modal", function (event) {
+                // Button that triggered the modal
+                const button = event.relatedTarget;
+                // Extract info from data-bs-* attributes
+                const storyId = button.getAttribute('data-bs-id');
+                // If necessary, you could initiate an AJAX request here
+                // and then do the updating in a callback.
+                //
+                // Update the modal's title.
+                if (storyId) {
+                    const modalTitle = exampleModal.querySelector('.modal-title');
+                    modalTitle.textContent = 'edit story info';
+                    $("#story-id").val(storyId);
+                    $.ajax({
+                        url: "/story/getStory/" + storyId,
+                        type: 'get',
+                        success: function (result) {
+                            console.log(result);
+                            const resultElement = result['data'];
+                            $("#p-add").val(resultElement.project.projectName);
+                            $("#s-p-id").val(resultElement.projectId);
+                            $("#add-description-name").val(resultElement.description);
+                        }
+                    });
+                } else {
+                    autoComplete('/project/queryList', 'p-add', 'p', true);
+                }
+
+            });
             // 保存项目
             $('button[id=submit]').click(function () {
                 const $project = $("#s-p-id");
+                const _storyId = $("#story-id").val();
                 const $description = $('#add-description-name');
                 const $workDate = $('#workDate');
-
-                $.ajax({
-                    url: "/story/uniqueStory",
-                    type: 'get',
-                    // contentType: "application/json; charset=utf-8",
-                    data: {
-                        name: $project.attr('value'),
-                        description: $description.val(),
-                        date: $workDate.val()
-                    },
-                    success: function (result) {
-                        if (Object.is(result['code'], 401)) {
-                            //    项目已存在
-                            showToast(result['code'], result['msg']);
-                        } else {
-                            const json = {
-                                "name": $project.attr('value'),
-                                "date": $workDate.val(),
-                                "description": $description.val(),
-                                "doc": $('#attachmentId').val()
-                            };
-                            $.ajax({
-                                url: "/story/save",
-                                type: 'POST',
-                                contentType: "application/json; charset=utf-8",
-                                data: JSON.stringify(json),
-                                dataType: 'JSON',
-                                success: function (arg) {
-                                    const msg = arg['msg'];
-                                    if (Object.is(arg['code'], 200)) {
-                                        // alert(msg, 'success');
-                                        resetModal("#add-story-modal", "addStoryForm");
-                                        $("#table_refresh").load("/story/reloadTable");
+                const serializeArray = $('#addStoryForm').serializeArray();
+                if (_storyId) {
+                // todo 更新需求信息
+                    $.ajax({
+                        url: "/story/save",
+                        type: 'POST',
+                        data: serializeArray,
+                        success: function (result) {
+                            console.log(result);
+                        }
+                    })
+                } else {
+                    // 添加需求数据
+                    $.ajax({
+                        url: "/story/uniqueStory",
+                        type: 'get',
+                        // contentType: "application/json; charset=utf-8",
+                        data: serializeArray,
+                        success: function (result) {
+                            if (!Object.is(result['code'], 200)) {
+                                //    项目已存在
+                                showToast(result['code'], result['msg']);
+                            } else {
+                                $.ajax({
+                                    url: "/story/save",
+                                    type: 'POST',
+                                    data: serializeArray,
+                                    success: function (arg) {
+                                        const msg = arg['msg'];
+                                        if (Object.is(arg['code'], 200)) {
+                                            // alert(msg, 'success');
+                                            resetModal("#add-story-modal", "addStoryForm");
+                                            $("#table_refresh").load("/story/reloadTable");
+                                        }
+                                        showToast(arg['code'], msg);
                                     }
-                                    showToast(arg['code'], msg);
-                                }
-                            });
+                                });
+                            }
                         }
-                    }
-                })
-
+                    });
+                }
             })
-
-            // 更新项目状态
-            function updateStatus(projectId) {
-                $.ajax({
-                    url: '/story/updateStoryStatus/',
-                    type: 'POST',
-                    data: {
-                        id: projectId
-                    },
-                    dataType: 'JSON',
-                    success: function (arg) {
-                        // console.log( arg['result']);
-                        const msg = arg['msg'];
-                        if (Object.is(arg['code'], 200)) {
-                            alert(msg, 'success');
-                        } else {
-                            alert(msg, 'danger');
-                        }
-                    }
-                })
-            }
 
             // 查询条件：项目
             autoComplete('/project/queryList', 'p-search', 'p', false);
-            autoComplete('/project/queryList', 'p-add', 'p', true);
 
-            /**自动上传文件*/
-            $("[type='file']").bind("change", function () {
-                let files = this.files;
-                if (files.length) {
-                    let file = files[0];
-                    let name = file.name;
-                    let formData = new FormData();
-                    formData.append("file", file);
-                    formData.append("name", name);
-                    $.ajax({
-                        url: "/story/upload",
-                        type: 'post',
-                        data: formData,
-                        processData: false,
-                        contentType: false,
-                        success: function (result) {
-                            console.log(result);
-                            console.log(result.data);
-                            $('#attachmentId').val(result.data)
-                        }
-                    })
-                }
-            })
-            $('#add-story-modal').on('hidden.bs.modal', function () {
-                document.getElementById('addStoryForm').reset();
-            })
+            // $('#add-story-modal').on('hidden.bs.modal', function () {
+            //     document.getElementById('addStoryForm').reset();
+            // })
         </script>
     </body>
 </html>
