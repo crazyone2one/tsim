@@ -8,7 +8,6 @@ import cn.master.tsim.mapper.TestStoryMapper;
 import cn.master.tsim.service.*;
 import cn.master.tsim.util.JacksonUtils;
 import cn.master.tsim.util.ResponseUtils;
-import cn.master.tsim.util.StreamUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -17,6 +16,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
@@ -77,16 +77,20 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     }
 
     @Override
-    public TestStory saveStory(HttpServletRequest request) {
-        final Map<String, Object> objectMap = StreamUtils.getParamsFromRequest(request);
-        final String description = String.valueOf(objectMap.get("description")).trim();
-        final String date = String.valueOf(objectMap.get("date"));
-        final String projectId = String.valueOf(objectMap.get("name"));
-        String doc = String.valueOf(objectMap.get("doc"));
-        TestStory build = TestStory.builder().projectId(projectId).description(description).workDate(date)
-                .docId(doc).delFlag(0).createDate(new Date()).build();
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    public TestStory saveStory(HttpServletRequest request, TestStory story) {
+        if (StringUtils.isNotBlank(story.getId())) {
+            final TestStory testStory = searchStoryById(story.getId());
+            testStory.setDescription(story.getDescription());
+            testStory.setUpdateDate(new Date());
+            baseMapper.updateById(testStory);
+            return testStory;
+        }
+        TestStory build = TestStory.builder().projectId(story.getProjectId())
+                .description(story.getDescription()).workDate(story.getWorkDate())
+                .docId(story.getDocId()).delFlag(0).createDate(new Date()).build();
         baseMapper.insert(build);
-        taskInfoService.addItem(request, projectId, build);
+        taskInfoService.addItem(request, story.getProjectId(), build);
         return build;
     }
 
@@ -105,6 +109,17 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     }
 
     @Override
+    public List<TestStory> checkUniqueStory(TestStory story) {
+        QueryWrapper<TestStory> wrapper = new QueryWrapper<>();
+//        完全匹配
+        wrapper.lambda().eq(StringUtils.isNotBlank(story.getDescription()), TestStory::getDescription, story.getDescription());
+        wrapper.lambda().eq(StringUtils.isNotBlank(story.getWorkDate()), TestStory::getWorkDate, story.getWorkDate());
+        // 验证所属项目
+        wrapper.lambda().eq(StringUtils.isNotBlank(story.getProjectId()), TestStory::getProjectId, story.getProjectId());
+        return baseMapper.selectList(wrapper);
+    }
+
+    @Override
     public TestStory searchStoryById(String storyId) {
         final TestStory story = baseMapper.selectById(storyId);
         if (Objects.nonNull(story)) {
@@ -114,6 +129,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     }
 
     @Override
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     public TestStory updateStory(String storyId) {
         final TestStory story = baseMapper.selectById(storyId);
         story.setDelFlag(Objects.equals(story.getDelFlag(), 0) ? 1 : 0);
@@ -133,14 +149,19 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     }
 
     @Override
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     public ResponseResult upload(HttpServletRequest request, MultipartFile file) {
         try {
             ResponseResult result = systemService.storeFile(request, file);
             if (Objects.equals(ResponseCode.SUCCESS.getCode(), result.getCode())) {
                 Map<String, String> map = JacksonUtils.convertValue(result.getData(), new TypeReference<Map<String, String>>() {
                 });
+                final String[] docNames = map.get("docName").split("\\.");
                 DocInfo docInfo = docInfoService.saveDocInfo(request, map);
-                result.setData(docInfo.getId());
+                Map<String, String> tempMap = new LinkedHashMap<>();
+                tempMap.put("docId", docInfo.getId());
+                tempMap.put("docName", docNames[0]);
+                result.setData(tempMap);
             }
             return result;
         } catch (Exception e) {

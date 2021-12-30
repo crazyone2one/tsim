@@ -6,8 +6,11 @@ import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestStoryService;
 import cn.master.tsim.util.DateUtils;
+import cn.master.tsim.util.JacksonUtils;
 import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Objects;
+import java.util.Map;
 
 /**
  * <p>
@@ -70,9 +73,9 @@ public class TestStoryController {
 
     @PostMapping(value = "/save")
     @ResponseBody
-    public ResponseResult saveStory(HttpServletRequest request) {
+    public ResponseResult saveStory(HttpServletRequest request,TestStory story) {
         try {
-            final TestStory testStory = service.saveStory(request);
+            final TestStory testStory = service.saveStory(request, story);
             return ResponseUtils.success("数据添加成功", testStory);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据添加失败", e.getCause().getMessage());
@@ -81,10 +84,11 @@ public class TestStoryController {
 
     @GetMapping(value = "/uniqueStory")
     @ResponseBody
-    public ResponseResult uniqueStory(HttpServletRequest request) {
+    public ResponseResult uniqueStory(HttpServletRequest request,TestStory testStory) {
         try {
-            final TestStory story = service.getStory(request.getParameter("description"), request.getParameter("date"), request.getParameter("name"));
-            if (Objects.nonNull(story)) {
+            final List<TestStory> testStories = service.checkUniqueStory(testStory);
+            if (CollectionUtils.isNotEmpty(service.checkUniqueStory(testStory))) {
+                final TestStory story = testStories.get(0);
                 final String projectName = projectService.getProjectById(story.getProjectId()).getProjectName();
                 return ResponseUtils.error(401, projectName + "已关联" + story.getWorkDate() + "月份测试需求:" + story.getDescription(), story);
             }
@@ -107,9 +111,12 @@ public class TestStoryController {
 
     @RequestMapping("/upload")
     @ResponseBody
-    public ResponseResult upload(HttpServletRequest request, MultipartFile file) {
+    public ResponseResult upload(HttpServletRequest request, MultipartFile file,Model m) {
         request.setAttribute("docFlag", "story");
-        return service.upload(request, file);
+        final ResponseResult upload = service.upload(request, file);
+        m.addAttribute("docName", JacksonUtils.convertValue(upload.getData(), new TypeReference<Map<String, String>>() {
+        }).get("docName"));
+        return upload;
     }
 
     /**
@@ -151,6 +158,14 @@ public class TestStoryController {
         } catch (Exception e) {
             ResponseUtils.error("数据查询失败");
         }
+        return result;
+    }
+
+    @RequestMapping(value = "/getStory/{storyId}")
+    @ResponseBody
+    public ResponseResult getStory(@PathVariable String storyId) {
+        ResponseResult result = ResponseUtils.success("数据查询成功");
+        result.setData(service.searchStoryById(storyId));
         return result;
     }
 }
