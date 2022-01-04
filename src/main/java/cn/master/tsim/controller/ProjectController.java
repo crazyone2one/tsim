@@ -9,6 +9,7 @@ import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -67,13 +68,14 @@ public class ProjectController {
 
     @RequestMapping("/loadProject")
     @ResponseBody
-    public Map<String, Object> loadProject(HttpServletRequest request, String projectName,
+    public Map<String, Object> loadProject(HttpServletRequest request,
                                            @RequestParam(value = "pageNum") Integer offset,
                                            @RequestParam(value = "pageSize") Integer limit) {
+        final String projectName = request.getParameter("projectName");
         Map<String, Object> map = new HashMap<>(2);
         final IPage<Project> iPage = projectService.projectListPages(projectName, offset, limit);
         map.put("total", iPage.getTotal());
-        map.put("rows", new LinkedList<>(iPage.getRecords()));
+        map.put("rows", CollectionUtils.isNotEmpty(iPage.getRecords()) ? new LinkedList<>(iPage.getRecords()) : new LinkedList<Project>());
         return map;
     }
 

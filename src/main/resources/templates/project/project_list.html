@@ -21,7 +21,7 @@
                                                aria-describedby="basic-addon1">
                                     </div>
                                     <div class="col-lg-2 col-md-4 col-sm-6">
-                                        <button type="button" id="btn-query" class="btn hvr-grow"><i
+                                        <button type="button" id="search-button" class="btn hvr-grow"><i
                                                 class="bi bi-search"
                                                 style="color: cornflowerblue"></i>
                                         </button>
@@ -36,7 +36,7 @@
                         </div>
 
                         <div id="table_refresh" th:fragment="table_refresh">
-                            <table id="project_table" class="table table-hover"></table>
+                            <table id="table" class="table table-hover"></table>
                         </div>
                         <!--                        <div th:replace="/fragment/commons :: pagination01"></div>-->
                         <!--                    toast-->
@@ -108,8 +108,9 @@
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
+<!--        <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>-->
         <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
+        <script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
         <script>
             // autoComplete("/project/queryList", "p-search", 'p', false);
             $("#save-pro").click(function () {
@@ -171,60 +172,50 @@
                     })
                 })
             }
+            // 搜索查询按钮触发事件
+            //查询
+            $(document).on('click', "#search-button",function(){
+                $('#table').bootstrapTable('refresh');
 
-            $('#btn-query').click(function () {
-                $('#project_table').bootstrapTable('refresh');
             });
 
-            //     使用bootstrap-table组件
-            $('#project_table').bootstrapTable('destroy');
-            $('#project_table').bootstrapTable({
-                classes: "table table-hover",//设置表格样式
-                url: '/project/loadProject', //请求后台的URL（*）
-                method: 'get',
-                striped: true,
-                cache: false,
-                sidePagination: "server",  //分页方式：client客户端分页，server服务端分页
-                pagination: true,
-                pageSize: 10, //每页记录行数
-                pageNumber: 1, //初始化加载第一页
-                pageList: [10, 20, 30],
-                queryParams: function (params) {
-                    return {
-                        projectName: $('#p-search').val().trim(),
-                        pageSize: params.limit,
-                        pageNum: params.offset / params.limit + 1,
+            const columns = [
+                {field: 'id', align: 'center', title: 'id', visible: false}, {
+                    field: 'projectName',
+                    align: 'center',
+                    title: '项目名',
+                }, {
+                    field: 'refModuleCount',
+                    align: 'center',
+                    title: '关联模块',
+                    formatter: refLinkFormatter
+                }, {
+                    field: 'refCaseCount',
+                    align: 'center',
+                    title: '关联测试用例',
+                    formatter: refLinkFormatter
+                }, {
+                    field: 'refBugCount',
+                    align: 'center',
+                    title: '关联bug',
+                    formatter: refLinkFormatter
+                }, {title: '操作', field: 'id', width: '100px', formatter: option}]
+            const params = function (params) {
+                return {
+                    projectName: $('#p-search').val().trim(), // 自定义查询条件
+                    pageSize: params.limit,
+                    pageNum: params.offset / params.limit + 1,
 
-                    }
-                },
-                columns: [
-                    {field: 'id', align: 'center', title: 'id', visible: false}, {
-                        field: 'projectName',
-                        align: 'center',
-                        title: '项目名',
-                    }, {
-                        field: 'refModuleCount',
-                        align: 'center',
-                        title: '关联模块',
-                        formatter: refFormatter
-                    }, {
-                        field: 'refCaseCount',
-                        align: 'center',
-                        title: '关联测试用例',
-                        formatter: refFormatter
-                    }, {
-                        field: 'refBugCount',
-                        align: 'center',
-                        title: '关联bug',
-                        formatter: refFormatter
-                    }, {title: '操作', field: 'id',width:'100px', formatter: option}]
-            })
+                }
+            };
+            InitTable('/project/loadProject', "get", columns, params);
 
             function option(value, row, index) {
-                return "<a class='btn btn-sm-c btn-danger' id='del-project' onclick='delPro(" + value + ")' title='删除'><i class='bi-trash'></i></a>";
+                // return "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
+                return '<a href="#" id="del-project" onclick="delPro(\'' + row.id + '\')">删除</a>';
             }
 
-            function refFormatter(value, row, index) {
+            function refLinkFormatter(value, row, index) {
                 return "<a href='#'>" + value + "</a>";
             }
         </script>
