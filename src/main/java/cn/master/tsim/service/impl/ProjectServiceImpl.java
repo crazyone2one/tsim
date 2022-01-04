@@ -115,11 +115,10 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
-    public IPage<Project> projectListPages(Project project, Integer pageCurrent, Integer pageSize) {
-        String proName = StringUtils.isNotBlank(project.getProjectName()) ? project.getProjectName().trim() : "";
+    public IPage<Project> projectListPages(String projectName, Integer pageCurrent, Integer pageSize) {
         QueryWrapper<Project> wrapper = new QueryWrapper<>();
         //               根据项目名称模糊查询
-        wrapper.lambda().like(StringUtils.isNotBlank(proName), Project::getProjectName, proName);
+        wrapper.lambda().like(StringUtils.isNotBlank(projectName), Project::getProjectName, projectName);
         wrapper.lambda().eq(Project::getDelFlag, 0);
         final IPage<Project> iPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize), wrapper);

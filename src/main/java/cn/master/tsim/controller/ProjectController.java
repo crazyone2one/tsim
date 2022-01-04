@@ -17,8 +17,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <p>
@@ -42,18 +41,11 @@ public class ProjectController {
     /**
      * 加载列表数据
      *
-     * @param model       Model
-     * @param pageCurrent pageCurrent
-     * @param pageSize    pageSize
-     * @param project     Project
+     * @param model Model
      * @return java.lang.String
      */
     @GetMapping(value = "/list")
-    public String projectList(Model model, @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
-                              @RequestParam(value = "pageSize", defaultValue = "0") Integer pageSize, Project project) {
-        final IPage<Project> iPage = projectService.projectListPages(project, pageCurrent, pageSize);
-        model.addAttribute("iPage", iPage);
-        model.addAttribute("redirecting", "/project/list?pageCurrent=");
+    public String projectList(Model model) {
         model.addAttribute("monthList", DateUtils.currentYearMonth());
         return "project/project_list";
     }
@@ -65,11 +57,24 @@ public class ProjectController {
      * @param project Project
      * @return java.lang.String
      */
+    @Deprecated
     @RequestMapping("/reloadTable")
     public String reloadTable(Model model, Project project) {
-        final IPage<Project> iPage = projectService.projectListPages(project, 0, 0);
+        final IPage<Project> iPage = projectService.projectListPages("", 0, 0);
         model.addAttribute("iPage", iPage);
         return "project/project_list :: table_refresh";
+    }
+
+    @RequestMapping("/loadProject")
+    @ResponseBody
+    public Map<String, Object> loadProject(HttpServletRequest request, String projectName,
+                                           @RequestParam(value = "pageNum") Integer offset,
+                                           @RequestParam(value = "pageSize") Integer limit) {
+        Map<String, Object> map = new HashMap<>(2);
+        final IPage<Project> iPage = projectService.projectListPages(projectName, offset, limit);
+        map.put("total", iPage.getTotal());
+        map.put("rows", new LinkedList<>(iPage.getRecords()));
+        return map;
     }
 
     /**
@@ -81,7 +86,6 @@ public class ProjectController {
     @ResponseBody
     public ResponseResult addProject(@RequestParam("name") String proName) {
         try {
-            log.info(proName);
             final Project addProject = projectService.saveProject(proName);
             return ResponseUtils.success("数据添加成功", addProject);
         } catch (Exception e) {

@@ -12,69 +12,33 @@
                     <div class="container-fluid">
                         <div class="pt-2 border-bottom">
                             <div class="card-body">
-                                <form action="#" th:action="@{list}" autocomplete="off">
-                                    <div class="row">
-                                        <div class="input-group mb-3" style="width: fit-content">
-                                            <span class="input-group-text">所属项目</span>
-                                            <input type="text" class="form-control" name="projectName"
-                                                   placeholder="项目名称（模糊查询）" id="p-search"
-                                                   aria-label="projectId"
-                                                   aria-describedby="basic-addon1">
-                                        </div>
-                                        <div class="col-lg-2 col-md-4 col-sm-6">
-                                            <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
-                                                                                          style="color: cornflowerblue"></i>
-                                            </button>
-                                            <button type="button" class="btn hvr-grow" data-bs-toggle="modal"
-                                                    data-bs-target="#add-project-modal"><i
-                                                    class="bi bi-plus-circle hvr-grow"
-                                                    style="color: cornflowerblue"></i>
-                                            </button>
-                                        </div>
+                                <div class="row">
+                                    <div class="input-group mb-3" style="width: fit-content">
+                                        <span class="input-group-text">所属项目</span>
+                                        <input type="text" class="form-control" name="projectName"
+                                               placeholder="项目名称（模糊查询）" id="p-search"
+                                               aria-label="projectId"
+                                               aria-describedby="basic-addon1">
                                     </div>
-                                </form>
+                                    <div class="col-lg-2 col-md-4 col-sm-6">
+                                        <button type="button" id="btn-query" class="btn hvr-grow"><i
+                                                class="bi bi-search"
+                                                style="color: cornflowerblue"></i>
+                                        </button>
+                                        <button type="button" class="btn hvr-grow" data-bs-toggle="modal"
+                                                data-bs-target="#add-project-modal"><i
+                                                class="bi bi-plus-circle hvr-grow"
+                                                style="color: cornflowerblue"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <div id="table_refresh" th:fragment="table_refresh">
-                            <table class="table table-hover">
-                                <thead>
-                                <tr class="fw-bold text-center py-4">
-                                    <!--                                    <th scope="col">#</th>-->
-                                    <th scope="col">项目名</th>
-                                    <!--                                    <th scope="col">任务时间</th>-->
-                                    <th scope="col">关联模块</th>
-                                    <th scope="col">关联测试用例</th>
-                                    <th scope="col">关联bug</th>
-                                    <!--                        <th scope="col">是否完成</th>-->
-                                    <th scope="col">操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:each="temp,stat:${iPage.records}" class="text-center">
-                                    <input name="id" type="hidden" class="form-control" th:value="${temp.id}" id="id">
-                                    <!--                                    <td th:text="${stat.index+1}"></td>-->
-                                    <td th:text="${temp.projectName}"></td>
-                                    <!--                                    <td th:text="${temp.issueDate}"></td>-->
-                                    <td>
-                                        <a href="#" th:text="${temp.refModuleCount}"></a>
-                                    </td>
-                                    <td>
-                                        <a href="#" th:text="${temp.refCaseCount}"></a>
-                                    </td>
-                                    <td>
-                                        <a href="#" th:text="${temp.refBugCount}"></a>
-                                    </td>
-                                    <td>
-                                        <a th:onclick="delPro([[${temp.id}]])" th:attr="data-name=${temp.projectName}">
-                                            <i class="bi-trash" style="font-size: 0.8rem;color: #bb2d3b"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <table id="project_table" class="table table-hover"></table>
                         </div>
-                        <div th:replace="/fragment/commons :: pagination01"></div>
+                        <!--                        <div th:replace="/fragment/commons :: pagination01"></div>-->
                         <!--                    toast-->
                         <div th:replace="/fragment/commons :: toast-div"></div>
                     </div>
@@ -142,10 +106,12 @@
         <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
         <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
         <script>
-            autoComplete("/project/queryList", "p-search", 'p', false);
+            // autoComplete("/project/queryList", "p-search", 'p', false);
             $("#save-pro").click(function () {
                 removeClass("#myToast", "bg-success");
                 removeClass("#myToast", "bg-danger");
@@ -168,7 +134,8 @@
                                     success: function (result) {
                                         if (Object.is(200, result['code'])) {
                                             resetModal("#add-project-modal", "addProjectForm");
-                                            $("#table_refresh").load("/project/reloadTable");
+                                            // $("#table_refresh").load("/project/reloadTable");
+                                            $('#project_table').bootstrapTable('refresh');
                                         }
                                         showToast(result['code'], result['msg']);
                                     }
@@ -196,12 +163,69 @@
                         success: function (result) {
                             if (Object.is(200, result['code'])) {
                                 resetModal("#delModal", null);
-                                $("#table_refresh").load("/project/reloadTable");
+                                // $("#table_refresh").load("/project/reloadTable");
+                                $('#project_table').bootstrapTable('refresh');
                             }
                             showToast(result['code'], result['msg']);
                         }
                     })
                 })
+            }
+
+            $('#btn-query').click(function () {
+                $('#project_table').bootstrapTable('refresh');
+            });
+
+            //     使用bootstrap-table组件
+            $('#project_table').bootstrapTable('destroy');
+            $('#project_table').bootstrapTable({
+                classes: "table table-hover",//设置表格样式
+                url: '/project/loadProject', //请求后台的URL（*）
+                method: 'get',
+                striped: true,
+                cache: false,
+                sidePagination: "server",  //分页方式：client客户端分页，server服务端分页
+                pagination: true,
+                pageSize: 10, //每页记录行数
+                pageNumber: 1, //初始化加载第一页
+                pageList: [10, 20, 30],
+                queryParams: function (params) {
+                    return {
+                        projectName: $('#p-search').val().trim(),
+                        pageSize: params.limit,
+                        pageNum: params.offset / params.limit + 1,
+
+                    }
+                },
+                columns: [
+                    {field: 'id', align: 'center', title: 'id', visible: false}, {
+                        field: 'projectName',
+                        align: 'center',
+                        title: '项目名',
+                    }, {
+                        field: 'refModuleCount',
+                        align: 'center',
+                        title: '关联模块',
+                        formatter: refFormatter
+                    }, {
+                        field: 'refCaseCount',
+                        align: 'center',
+                        title: '关联测试用例',
+                        formatter: refFormatter
+                    }, {
+                        field: 'refBugCount',
+                        align: 'center',
+                        title: '关联bug',
+                        formatter: refFormatter
+                    }, {title: '操作', field: 'id',width:'100px', formatter: option}]
+            })
+
+            function option(value, row, index) {
+                return "<a class='btn btn-sm-c btn-danger' id='del-project' onclick='delPro(" + value + ")' title='删除'><i class='bi-trash'></i></a>";
+            }
+
+            function refFormatter(value, row, index) {
+                return "<a href='#'>" + value + "</a>";
             }
         </script>
     </body>

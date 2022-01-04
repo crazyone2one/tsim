@@ -86,12 +86,12 @@ public interface ProjectService extends IService<Project> {
     /**
      * 分页查询
      *
-     * @param project     项目信息
+     * @param projectName 项目名称
      * @param pageCurrent pageCurrent
      * @param pageSize    pageSize
      * @return com.baomidou.mybatisplus.core.metadata.IPage<cn.master.tsim.entity.Project>
      */
-    IPage<Project> projectListPages(Project project, Integer pageCurrent, Integer pageSize);
+    IPage<Project> projectListPages(String projectName, Integer pageCurrent, Integer pageSize);
 
 
     /**
