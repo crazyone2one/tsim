@@ -108,7 +108,7 @@
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.js}"></script>
-<!--        <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>-->
+        <!--        <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>-->
         <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
         <script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
         <script>
@@ -136,7 +136,7 @@
                                         if (Object.is(200, result['code'])) {
                                             resetModal("#add-project-modal", "addProjectForm");
                                             // $("#table_refresh").load("/project/reloadTable");
-                                            $('#project_table').bootstrapTable('refresh');
+                                            $('#table').bootstrapTable('refresh');
                                         }
                                         showToast(result['code'], result['msg']);
                                     }
@@ -165,16 +165,17 @@
                             if (Object.is(200, result['code'])) {
                                 resetModal("#delModal", null);
                                 // $("#table_refresh").load("/project/reloadTable");
-                                $('#project_table').bootstrapTable('refresh');
+                                $('#table').bootstrapTable('refresh');
                             }
                             showToast(result['code'], result['msg']);
                         }
                     })
                 })
             }
+
             // 搜索查询按钮触发事件
             //查询
-            $(document).on('click', "#search-button",function(){
+            $(document).on('click', "#search-button", function () {
                 $('#table').bootstrapTable('refresh');
 
             });
@@ -184,22 +185,26 @@
                     field: 'projectName',
                     align: 'center',
                     title: '项目名',
+                    class: 'col-sm-6'
                 }, {
                     field: 'refModuleCount',
                     align: 'center',
                     title: '关联模块',
-                    formatter: refLinkFormatter
+                    formatter: refLinkFormatter,
+                    class: 'col-sm-6'
                 }, {
                     field: 'refCaseCount',
                     align: 'center',
                     title: '关联测试用例',
-                    formatter: refLinkFormatter
+                    formatter: refLinkFormatter,
+                    class: 'col-sm-6'
                 }, {
                     field: 'refBugCount',
                     align: 'center',
                     title: '关联bug',
-                    formatter: refLinkFormatter
-                }, {title: '操作', field: 'id', width: '100px', formatter: option}]
+                    formatter: refLinkFormatter,
+                    class: 'col-sm-6'
+                }, {title: '操作', align: 'center',field: 'id', class: 'col-sm-6', formatter: option,}]
             const params = function (params) {
                 return {
                     projectName: $('#p-search').val().trim(), // 自定义查询条件

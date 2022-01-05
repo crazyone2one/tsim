@@ -101,23 +101,23 @@
                     field: 'projectId',
                     align: 'center',
                     title: '项目名',
-                    width: '20%'
+                    class: 'col-sm-6'
                 }, {
                     field: 'storyId',
                     align: 'center',
                     title: '关联需求',
-                    width: '20%'
+                    class: 'col-sm-6'
                 }, {
                     field: 'name',
                     align: 'center',
                     title: '测试计划名称',
-                    width: '20%'
+                    class: 'col-sm-6'
                 }, {
                     field: 'description',
                     align: 'center',
                     title: '测试计划描述',
-                    width: '20%'
-                }, {title: '操作', align: 'center', field: 'id', width: '20%', formatter: option,}];
+                    class: 'col-sm-6'
+                }, {title: '操作', align: 'center', field: 'id', class: 'col-sm-6', formatter: option,}];
 
             function option(value, row, index) {
                 // return "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
