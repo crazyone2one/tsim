@@ -16,6 +16,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -70,6 +71,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
+    @Deprecated
     public Project addProject(HttpServletRequest request, Project project) {
         final Project projectByName = getProjectByName(project.getProjectName());
         if (Objects.nonNull(projectByName)) {
@@ -87,6 +89,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Project saveProject(String projectName) {
         final Project build = Project.builder().projectName(projectName)
                 .projectCode(UuidUtils.generate())
@@ -99,6 +102,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteProject(String projectId) {
         final Project project = getProjectById(projectId);
         project.setDelFlag(1);
@@ -107,6 +111,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void updateProjectStatus(String projectId) {
         final Project project = getProjectById(projectId);
         project.setDelFlag(Objects.equals(project.getDelFlag(), 0) ? 1 : 0);
