@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50732
 File Encoding         : 65001
 
-Date: 2021-12-03 14:12:52
+Date: 2022-01-05 09:12:02
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -69,6 +69,7 @@ CREATE TABLE `t_case` (
   `test_mode` tinyint(1) NOT NULL DEFAULT '0' COMMENT '测试方式(0=手动;1=自动)',
   `create_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'createDate',
   `update_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'updateDate',
+  `del_flag` tinyint(1) DEFAULT NULL COMMENT '删除状态',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COMMENT='测试用例表';
 
@@ -98,7 +99,7 @@ CREATE TABLE `t_doc_info` (
   `uuid_name` varchar(100) NOT NULL COMMENT 'uuid生成的文件名',
   `doc_flag` varchar(100) NOT NULL COMMENT '文件类型',
   `doc_path` varchar(100) NOT NULL COMMENT '文件路径地址',
-  `del_flag` tinyint(4) DEFAULT NULL COMMENT '删除标记 0-未删除 1-已删除',
+  `del_flag` tinyint(1) DEFAULT NULL COMMENT '删除标记 0-未删除 1-已删除',
   `create_date` datetime DEFAULT NULL COMMENT '创建时间',
   `update_date` datetime DEFAULT NULL COMMENT '更新时间'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='文档信息表';
@@ -112,7 +113,7 @@ CREATE TABLE `t_module` (
   `module_name` varchar(50) NOT NULL DEFAULT '' COMMENT '模块名称',
   `module_code` varchar(50) NOT NULL DEFAULT '' COMMENT '模块code',
   `project_id` varchar(50) NOT NULL DEFAULT '' COMMENT '项目id',
-  `del_flag` tinyint(2) NOT NULL DEFAULT '0' COMMENT '删除标志(0=未删除;1=删除)',
+  `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标志(0=未删除;1=删除)',
   `create_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'createDate',
   `update_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT '修改时间',
   PRIMARY KEY (`id`)
@@ -160,7 +161,7 @@ CREATE TABLE `t_project` (
   `project_name` varchar(50) NOT NULL DEFAULT '' COMMENT '项目名称',
   `project_code` varchar(50) NOT NULL DEFAULT '' COMMENT '项目code',
   `work_date` varchar(50) DEFAULT '' COMMENT 'workDate',
-  `del_flag` tinyint(2) NOT NULL DEFAULT '0' COMMENT '删除标志(0=未删除;1=删除)',
+  `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除标志(0=未删除;1=删除)',
   `create_data` datetime DEFAULT NULL COMMENT '创建时间',
   `update_date` datetime DEFAULT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`)
@@ -202,12 +203,12 @@ DROP TABLE IF EXISTS `t_task_info`;
 CREATE TABLE `t_task_info` (
   `id` varchar(36) NOT NULL COMMENT '主键id',
   `project_id` varchar(36) NOT NULL DEFAULT '' COMMENT '项目名称',
-  `story_id` varchar(36) NOT NULL COMMENT '需求id',
+  `story_id` varchar(36) NOT NULL DEFAULT '' COMMENT '需求id',
   `summary_desc` varchar(255) DEFAULT '' COMMENT '任务描述',
   `create_case_count` int(11) NOT NULL DEFAULT '0' COMMENT '编写用例数量',
   `execute_case_count` int(11) NOT NULL DEFAULT '0' COMMENT '执行测试用例数量',
-  `finish_status` varchar(50) NOT NULL COMMENT '完成状态',
-  `delivery_status` varchar(50) NOT NULL DEFAULT '' COMMENT '交付状态',
+  `finish_status` varchar(50) NOT NULL COMMENT '完成状态（0-已完成，1-进行中，2-待回测，3-已回测）',
+  `delivery_status` varchar(10) NOT NULL DEFAULT '' COMMENT '交付状态(0-是，1-否，2-不确定)',
   `bug_doc` tinyint(1) DEFAULT NULL,
   `report_doc` tinyint(1) DEFAULT NULL,
   `req_doc` varchar(36) DEFAULT NULL COMMENT '需求文件数据id',
@@ -225,10 +226,10 @@ CREATE TABLE `t_task_info` (
 DROP TABLE IF EXISTS `t_user`;
 CREATE TABLE `t_user` (
   `id` varchar(255) NOT NULL COMMENT '主键id',
-  `account` varchar(255) DEFAULT NULL COMMENT '账号',
-  `username` varchar(255) DEFAULT NULL COMMENT '真实姓名',
-  `password` varchar(255) DEFAULT NULL COMMENT '密码',
-  `email` varchar(255) DEFAULT NULL COMMENT '邮箱',
-  `del_flag` varchar(255) DEFAULT '0' COMMENT '删除标记（0，未删除，1 删除）',
+  `account` varchar(36) NOT NULL COMMENT '账号',
+  `username` varchar(36) NOT NULL COMMENT '真实姓名',
+  `password` varchar(100) NOT NULL COMMENT '密码',
+  `email` varchar(36) DEFAULT NULL COMMENT '邮箱',
+  `del_flag` tinyint(1) DEFAULT '0' COMMENT '删除标记（0，未删除，1 删除）',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
