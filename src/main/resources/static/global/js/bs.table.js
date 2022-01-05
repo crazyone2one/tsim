@@ -1,39 +1,67 @@
 /*bootstrap-table 插件相关js*/
-const _table = $("#table");
+let _table = $("#table");
 /**
  * 加载表格数据
  * @param url 请求路径
+ * @param requestMethod 请求方法
  * @param columns 表格表头
+ * @param parameters 请求参数
+ * @param tableElement
  * @returns {any}
  * @constructor
  */
-const InitTable = function (url, columns) {
+const InitTable = function (url, requestMethod, columns, parameters, tableElement) {
+    if (tableElement) {
+        _table = $(tableElement);
+    }
+    console.log(_table);
     // 销毁表格
     _table.bootstrapTable("destroy");
     // 加载表格
     _table.bootstrapTable({
+        classes: "table",
         showHeader: true,
         url: url,
-        method: 'post',
-        dataType: "json",
+        method: requestMethod,
+        // dataType: "json",
+        contentType: 'application/x-www-form-urlencoded',
         toolbar: "#toolbar",
         cache: false,
         uniqueId: "id",
         // showRefresh: true,
         undefinedText: "-",
-        pageNumber: 1, // 初始化加载第一页
-        pagination: true, // 是否分页
-        pageSize: 10, // 单页记录数
+        pagination: true,
+        pageSize: 10, //每页记录行数
+        pageNumber: 1, //初始化加载第一页
+        pageList: [10, 25, 50, 100, 200],
         clickToSelect: true,
-        paginationLoop: false,
         sidePagination: 'server', // server:服务器端分页|client：前端分页
-        queryParamsType: '',
-        queryParams: queryParams,
+        queryParams: parameters,
         columns: columns,
-
+        responseHandler: responseHandler,//响应数据
     });
     return InitTable;
 };
+
+function responseHandler(response) {
+    if (response) {
+        if (Object.is(0, response.total)) {
+            return {
+                "rows": [],
+                "total": 0
+            }
+        }
+        return {
+            "rows": response.rows,
+            "total": response.total
+        };
+    } else {
+        return {
+            "rows": [],
+            "total": 0
+        }
+    }
+}
 
 /**
  * 请求参数
@@ -47,7 +75,7 @@ function queryParams(params) {
     }
 }
 
-function refresh() {
+function refresh_table() {
     _table.bootstrapTable('refresh');
 }
 
