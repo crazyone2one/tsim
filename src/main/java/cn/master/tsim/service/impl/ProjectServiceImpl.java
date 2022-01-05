@@ -120,7 +120,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
-    public IPage<Project> projectListPages(String projectName, Integer pageCurrent, Integer pageSize) {
+    public IPage<Project> projectListPages(HttpServletRequest request, String projectName, Integer pageCurrent, Integer pageSize) {
         QueryWrapper<Project> wrapper = new QueryWrapper<>();
         //               根据项目名称模糊查询
         wrapper.lambda().like(StringUtils.isNotBlank(projectName), Project::getProjectName, projectName);
@@ -132,7 +132,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
             final List<Module> modules = moduleService.listModule(temp.getId());
             temp.setRefModuleCount(CollectionUtils.isNotEmpty(modules) ? modules.size() : 0);
             //            统计关联的测试用例数量
-            final List<TestCase> cases = caseService.listTestCase(null, temp.getId(), "");
+            final List<TestCase> cases = caseService.listTestCase(request, null, temp.getId(), "");
             temp.setRefCaseCount(CollectionUtils.isNotEmpty(cases) ? cases.size() : 0);
             //            关联bug
             final List<TestBug> testBugs = bugService.listBugByProjectId(temp.getId());

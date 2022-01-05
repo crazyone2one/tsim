@@ -61,7 +61,7 @@ public class ProjectController {
     @Deprecated
     @RequestMapping("/reloadTable")
     public String reloadTable(Model model, Project project) {
-        final IPage<Project> iPage = projectService.projectListPages("", 0, 0);
+        final IPage<Project> iPage = projectService.projectListPages(null, "", 0, 0);
         model.addAttribute("iPage", iPage);
         return "project/project_list :: table_refresh";
     }
@@ -73,7 +73,7 @@ public class ProjectController {
                                            @RequestParam(value = "pageSize") Integer limit) {
         final String projectName = request.getParameter("projectName");
         Map<String, Object> map = new HashMap<>(2);
-        final IPage<Project> iPage = projectService.projectListPages(projectName, offset, limit);
+        final IPage<Project> iPage = projectService.projectListPages(null, projectName, offset, limit);
         map.put("total", iPage.getTotal());
         map.put("rows", CollectionUtils.isNotEmpty(iPage.getRecords()) ? new LinkedList<>(iPage.getRecords()) : new LinkedList<Project>());
         return map;
