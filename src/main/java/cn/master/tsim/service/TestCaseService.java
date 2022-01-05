@@ -52,10 +52,12 @@ public interface TestCaseService extends IService<TestCase> {
     /**
      * 测试计划关联测试用例，查询相应的测试用例
      *
+     *
+     * @param request
      * @param params 参数
      * @return com.baomidou.mybatisplus.core.metadata.IPage<cn.master.tsim.entity.TestCase>
      */
-    IPage<TestCase> loadCaseByPlan(Map<String, Object> params);
+    IPage<TestCase> loadCaseByPlan(HttpServletRequest request, Map<String, Object> params);
 
     Map<String, Integer> caseCountByStatus(String projectId, String moduleId);
 

@@ -123,24 +123,23 @@ public class TestCaseController {
             final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
             final String planId = String.valueOf(params.get("planId"));
             params.put("pageSize", 10);
-            final IPage<TestCase> casePage = caseService.loadCaseByPlan(params);
+            final IPage<TestCase> casePage = caseService.loadCaseByPlan(request, params);
             request.getSession().setAttribute("planId", planId);
             return ResponseUtils.success("数据查询成功", casePage);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据查询错误", e.getMessage());
         }
     }
-    @RequestMapping(value = "loadCase/{planId}")
+    @RequestMapping(value = "loadCaseByPlan/{planId}")
     @ResponseBody
     public Map<String, Object> loadCase(HttpServletRequest request, @PathVariable String planId) {
-        Map<String, Object> map = new HashMap<>();
+        Map<String, Object> map = new HashMap<>(2);
         try {
             final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
             params.put("planId", planId);
-            final IPage<TestCase> casePage = caseService.loadCaseByPlan(params);
-            List<TestCase> cases = new LinkedList<>(casePage.getRecords());
+            final IPage<TestCase> casePage = caseService.loadCaseByPlan(request, params);
             map.put("total", casePage.getTotal());
-            map.put("rows", cases);
+            map.put("rows", casePage.getRecords());
             return map;
         } catch (Exception e) {
             e.printStackTrace();

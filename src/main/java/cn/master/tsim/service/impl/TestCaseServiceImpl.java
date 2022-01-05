@@ -180,11 +180,11 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     }
 
     @Override
-    public IPage<TestCase> loadCaseByPlan(Map<String, Object> params) {
-        final int pn = Integer.parseInt(String.valueOf(params.get("pn")));
+    public IPage<TestCase> loadCaseByPlan(HttpServletRequest request, Map<String, Object> params) {
+        final int pn = Integer.parseInt(request.getParameter("pageNum"));
         final String planId = String.valueOf(params.get("planId"));
         /*1. 查询项目相关的测试用例*/
-        final IPage<PlanCaseRef> ref = refService.loadRefRecords(null, params);
+        final IPage<PlanCaseRef> ref = refService.loadRefRecords(request, params);
         List<String> caseIds = new LinkedList<>();
         ref.getRecords().forEach(r -> caseIds.add(r.getCaseId()));
         /*2. 查询所有的测试用例*/
