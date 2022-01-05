@@ -14,106 +14,54 @@
                         <!--操作栏-->
                         <div class="pt-2 border-bottom">
                             <div class="card-body">
-                                <form th:action="@{list}" method="get">
-                                    <div class="row">
-                                        <div class="input-group mb-3" style="width: fit-content">
-                                            <span class="input-group-text" id="project">所属项目</span>
-                                            <input type="text" class="form-control" name="projectName"
-                                                   placeholder="项目名称"
-                                                   aria-label="project" aria-describedby="project"
-                                                   id="p-search">
-                                        </div>
-                                        <div class="input-group mb-3 " style="width: fit-content">
-                                            <span class="input-group-text">测试计划名称</span>
-                                            <input type="text" class="form-control" name="name" placeholder="测试计划名称"
-                                                   aria-label="name"
-                                                   aria-describedby="basic-addon3">
-                                        </div>
-                                        <div class="input-group mb-3 " style="width: fit-content">
-                                            <span class="input-group-text">测试计划描述</span>
-                                            <input type="text" class="form-control" name="description"
-                                                   placeholder="测试计划描述（模糊查询）"
-                                                   aria-label="name"
-                                                   aria-describedby="basic-addon3">
-                                        </div>
-                                        <select class="form-select mb-3" style="width: fit-content" aria-label="active"
-                                                name="delFlag">
-                                            <option th:value="''">结束状态</option>
-                                            <option value="0">未结束</option>
-                                            <option value="1">已结束</option>
-                                        </select>
-                                        <div class="col-lg-2 col-md-4 col-sm-6">
-                                            <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
-                                                                                          style="color: cornflowerblue"></i>
-                                            </button>
-                                            <button type="button" class="btn"
-                                                    data-bs-toggle="modal" data-bs-target="#add-plan-modal"><i
-                                                    class="bi bi-plus-circle hvr-grow"
-                                                    style="color: cornflowerblue"></i>
-                                            </button>
-                                        </div>
+                                <div class="row">
+                                    <div class="input-group mb-3" style="width: fit-content">
+                                        <span class="input-group-text" id="project">所属项目</span>
+                                        <input type="text" class="form-control" name="projectName"
+                                               placeholder="项目名称"
+                                               aria-label="project" aria-describedby="project"
+                                               id="p-search">
                                     </div>
-                                </form>
+                                    <div class="input-group mb-3 " style="width: fit-content">
+                                        <span class="input-group-text">测试计划名称</span>
+                                        <input type="text" class="form-control" name="name" placeholder="测试计划名称"
+                                               aria-label="name" id="plan-name"
+                                               aria-describedby="basic-addon3">
+                                    </div>
+                                    <div class="input-group mb-3 " style="width: fit-content">
+                                        <span class="input-group-text">测试计划描述</span>
+                                        <input type="text" class="form-control" name="description"
+                                               placeholder="测试计划描述（模糊查询）" id="plan-description"
+                                               aria-label="name"
+                                               aria-describedby="basic-addon3">
+                                    </div>
+                                    <select class="form-select mb-3" style="width: fit-content" aria-label="active"
+                                            name="delFlag">
+                                        <option th:value="''">结束状态</option>
+                                        <option value="0">未结束</option>
+                                        <option value="1">已结束</option>
+                                    </select>
+                                    <div class="col-lg-2 col-md-4 col-sm-6">
+                                        <button type="button" class="btn hvr-grow" id="search-button"><i
+                                                class="bi bi-search"
+                                                style="color: cornflowerblue"></i>
+                                        </button>
+                                        <button type="button" class="btn"
+                                                data-bs-toggle="modal" data-bs-target="#add-plan-modal"><i
+                                                class="bi bi-plus-circle hvr-grow"
+                                                style="color: cornflowerblue"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <!--            列表数据-->
                         <div id="table_refresh" th:fragment="table_refresh">
-                            <table class="table table-hover table-row-dashed">
-                                <thead>
-                                <tr class="fw-bold fs-7 text-danger text-center py-4">
-                                    <th scope="col">#</th>
-                                    <th scope="col">所属项目</th>
-                                    <th scope="col">关联需求</th>
-                                    <th scope="col">测试计划名称</th>
-                                    <th scope="col">测试计划描述</th>
-                                    <th scope="col">结束状态</th>
-                                    <th scope="col">操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="text-center" th:each="temp,stat:${iPage.records}">
-                                    <input name="id" type="hidden" class="form-control"
-                                           th:value="${temp.id}" id="id">
-                                    <input name="workDate" type="hidden" th:value="${temp.workDate}" id="workDate"/>
-                                    <td th:text="${stat.index+1}"></td>
-                                    <td th:value="${temp.project.id}" th:text="${temp.project.projectName}"
-                                        th:id="project"></td>
-                                    <td th:value="${temp.story.id}" th:text="${temp.story.description}"></td>
-                                    <td th:text="${temp.name}"></td>
-                                    <td th:text="${temp.description}"></td>
-                                    <td th:switch="${temp.delFlag}">
-                                        <div class="form-check form-switch">
-                                <span th:case="0">
-                                    <input class="form-check-input" type="checkbox" id="un-del" checked
-                                           th:onclick="updateStatus([[${temp.id}]])">
-                                    <label class="form-check-label" for="un-del"></label>
-                                </span>
-                                            <span th:case="1">
-                                    <input class="form-check-input" type="checkbox" id="del"
-                                           th:onclick="updateStatus([[${temp.id}]])">
-                                    <label class="form-check-label" for="del"></label>
-                                </span>
-                                        </div>
-                                    </td>
-                                    <td class="align-items-md-center">
-                                        <a type="button" class="btn" id="ref-add" th:attr="data-id=${temp.id}"
-                                           data-bs-toggle="modal" data-bs-target="#ref-case-modal"><i
-                                                class="bi bi-plus-circle hvr-grow" style="color: cornflowerblue"
-                                                data-bs-toggle="tooltip" data-bs-placement="top" title="关联测试用例"></i>
-                                        </a>
-                                        <a type="button" class="btn" id="ref-run"
-                                           data-bs-toggle="modal" data-bs-target="#ref-run-modal"><i
-                                                class="bi bi-list-check hvr-grow" style="color: cornflowerblue"
-                                                data-bs-toggle="tooltip" data-bs-placement="top" title="执行测试用例"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                </tbody>
-                                <tfoot></tfoot>
+                            <table id="table" class="table-hover">
                             </table>
                         </div>
                         <!--        分页-->
-                        <div th:replace="/fragment/commons :: pagination01"></div>
+                        <!--                        <div th:replace="/fragment/commons :: pagination01"></div>-->
                     </div>
                 </div>
                 <footer th:replace="/fragment/commons :: footer"></footer>
@@ -133,7 +81,7 @@
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.min.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-editable.min.js}"></script>
+        <!--        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-editable.min.js}"></script>-->
         <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.min.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
         <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
@@ -145,31 +93,105 @@
             $('#add-plan-modal').on('shown.bs.modal', function () {
                 autoComplete('/story/queryList', 'storyList', 's', true);
             })
-            const _planId = $("#ref-add").data("id");
-            /**
-             * 加载表格数据
-             */
-            $('#ref-case-modal').on('shown.bs.modal', function () {
-                const url = "/case/loadCase/" + _planId;
-                const columns = [
-                    {checkbox: true},
-                    {title: 'id', field: 'id', visible: false},
-                    {title: '测试用例标题', field: 'name',},
-                    {title: '测试步骤', field: 'stepStore'},
-                    {title: '逾期结果', field: 'resultStore'},
-                    {title: "优先级", field: 'priority'},
-                    {
-                        field: 'Button',
-                        title: "操作",
-                        align: 'center',
-                        events: operateEvents,
-                        formatter: function (value, row, index) {
-                            return '<button type="button" class="btn btn-danger btn-sm add">添加</button>';
+
+            // 列表
+            const _columns = [
+                {field: 'id', align: 'center', title: 'id', visible: false},
+                {
+                    field: 'projectId',
+                    align: 'center',
+                    title: '项目名',
+                    width: '20%'
+                }, {
+                    field: 'storyId',
+                    align: 'center',
+                    title: '关联需求',
+                    width: '20%'
+                }, {
+                    field: 'name',
+                    align: 'center',
+                    title: '测试计划名称',
+                    width: '20%'
+                }, {
+                    field: 'description',
+                    align: 'center',
+                    title: '测试计划描述',
+                    width: '20%'
+                }, {title: '操作', align: 'center', field: 'id', width: '20%', formatter: option,}];
+
+            function option(value, row, index) {
+                // return "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
+                const a = '<a type="button" class="btn" href="#" id="ref-add" data-bs-toggle="modal" ' +
+                    'data-bs-target="#ref-case-modal" data-bs-placement="top" title="关联测试用例" onclick="refCase(\'' + row.id + '\')">关联测试用例</a>';
+                const b = '<a type="button" class="btn" href="#" id="ref-run" data-bs-toggle="modal" ' +
+                    'data-bs-target="#ref-run-modal" data-bs-placement="top" title="执行测试用例">执行测试用例</a>';
+                return a + b;
+            }
+
+            const _params = function (params) {
+                return {
+                    projectName: $('#p-search').val().trim(), // 自定义查询条件
+                    planName: $('#plan-name').val().trim(), // 自定义查询条件
+                    planDesc: $('#plan-description').val().trim(), // 自定义查询条件
+                    pageSize: params.limit,
+                    pageNum: params.offset / params.limit + 1,
+
+                }
+            };
+            InitTable("/plan/loadPlan", "get", _columns, _params);
+            //查询
+            $(document).on('click', "#search-button", function () {
+                $('#table').bootstrapTable('refresh');
+
+            });
+
+            function refCase(id) {
+                $('#ref-case-modal').on('shown.bs.modal', function () {
+                    const url = "/case/loadCaseByPlan/" + id;
+
+                    function refLinkFormatter(value, row, index) {
+                        const stepJsonArray = JSON.parse(row.stepStore);
+                        let step_result = '';
+                        for (let i = 0; i < stepJsonArray.length; i++) {
+                            const temp_step_json = JSON.parse(JSON.stringify(stepJsonArray[i]));
+                            const tempStepJsonElement = JSON.stringify(temp_step_json[i]);
+                            const map1 = eval("("+tempStepJsonElement+")");
+                            step_result = step_result + map1.t_s + "\r\n";
                         }
+                        return step_result;
                     }
-                ];
-                InitTable(url, columns);
-            })
+
+                    const _r_columns = [
+                        {checkbox: true},
+                        {title: 'id', field: 'id', visible: false},
+                        {title: '测试用例标题', field: 'name',},
+                        {title: '测试步骤', field: 'stepStore', formatter: refLinkFormatter,class:'success'},
+                        {title: '预期结果', field: 'resultStore'},
+                        {title: "优先级", field: 'priority'},
+                        // {
+                        //     field: 'Button',
+                        //     title: "操作",
+                        //     align: 'center',
+                        //     events: operateEvents,
+                        //     formatter: function (value, row, index) {
+                        //         return '<button type="button" class="btn btn-danger btn-sm add">添加</button>';
+                        //     }
+                        // }
+                    ];
+                    const _r_params = function (params) {
+                        return {
+                            // projectName: $('#p-search').val().trim(), // 自定义查询条件
+                            // planName: $('#plan-name').val().trim(), // 自定义查询条件
+                            // planDesc: $('#plan-description').val().trim(), // 自定义查询条件
+                            pageSize: params.limit,
+                            pageNum: params.offset / params.limit + 1,
+
+                        }
+                    };
+                    InitTable(url, 'get', _r_columns, _r_params, "#refCaseTable");
+                })
+            }
+
 
             $("#add-case-ref-btn").click(function () {
                 const selections = getSelections();
@@ -209,7 +231,7 @@
                     success: function (arg) {
                         if (Object.is(arg['code'], 200)) {
                             resetModal("#add-plan-modal", "addPlanForm");
-                            $("#table_refresh").load("/plan/reloadTable");
+                            $('#table').bootstrapTable('refresh');
                         }
                         showToast(arg['code'], arg['msg']);
                     }

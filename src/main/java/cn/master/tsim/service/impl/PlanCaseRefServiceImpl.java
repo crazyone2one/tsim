@@ -85,8 +85,8 @@ public class PlanCaseRefServiceImpl extends ServiceImpl<PlanCaseRefMapper, PlanC
 
     @Override
     public IPage<PlanCaseRef> loadRefRecords(HttpServletRequest request, Map<String, Object> params) {
-        final Integer pageCurrent = Integer.parseInt(String.valueOf(params.get("pn")));
-        final Integer pageSize = Integer.parseInt(String.valueOf(params.get("pageSize")));
+        final Integer pageCurrent = Integer.parseInt(request.getParameter("pageNum"));
+        final Integer pageSize = Integer.parseInt(request.getParameter("pageSize"));
         final String planId = String.valueOf(params.get("planId"));
         QueryWrapper<PlanCaseRef> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(StringUtils.isNotBlank(planId), PlanCaseRef::getPlanId, planId);

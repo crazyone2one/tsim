@@ -17,7 +17,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface TestPlanService extends IService<TestPlan> {
 
-    IPage<TestPlan> pageList(TestPlan plan, Integer pageCurrent, Integer pageSize);
+    IPage<TestPlan> pageList(HttpServletRequest request, Integer pageCurrent, Integer pageSize);
 
     /**
      * 保存测试计划数据

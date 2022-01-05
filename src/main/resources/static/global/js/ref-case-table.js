@@ -28,7 +28,7 @@ function build_run_case_table(planId, pn) {
             type: 'post',
             data: JSON.stringify({
                 planId: planId,
-                pn: pn,
+                pageNum: pn,
                 pageSize: 10
             }),
             dataType: 'JSON',

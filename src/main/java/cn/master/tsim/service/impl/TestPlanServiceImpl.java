@@ -20,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -43,17 +45,22 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     }
 
     @Override
-    public IPage<TestPlan> pageList(TestPlan plan, Integer pageCurrent, Integer pageSize) {
+    public IPage<TestPlan> pageList(HttpServletRequest request, Integer pageCurrent, Integer pageSize) {
         QueryWrapper<TestPlan> wrapper = new QueryWrapper<>();
 //        按照项目查询
-        if (StringUtils.isNotBlank(plan.getProjectId())) {
-            wrapper.lambda().eq(TestPlan::getProjectId, plan.getProjectId());
+        final String projectName = request.getParameter("projectName");
+        if (StringUtils.isNotBlank(projectName)) {
+            List<String> tempProjectId = new LinkedList<>();
+            projectService.findByPartialProjectName(projectName).forEach(t -> tempProjectId.add(t.getId()));
+            wrapper.lambda().in(TestPlan::getProjectId, tempProjectId);
         }
         //        根据测试计划名称查询
-        wrapper.lambda().like(StringUtils.isNotBlank(plan.getName()), TestPlan::getName, plan.getName());
+        final String planName = request.getParameter("planName");
+        wrapper.lambda().like(StringUtils.isNotBlank(planName), TestPlan::getName, planName);
         //        根据测试计划描述内容查询
-        wrapper.lambda().like(StringUtils.isNotBlank(plan.getDescription()), TestPlan::getDescription, plan.getDescription());
-        wrapper.lambda().eq(Objects.nonNull(plan.getDelFlag()), TestPlan::getDelFlag, plan.getDelFlag());
+        final String planDesc = request.getParameter("planDesc");
+        wrapper.lambda().like(StringUtils.isNotBlank(planDesc), TestPlan::getDescription, planDesc);
+//        wrapper.lambda().eq(Objects.nonNull(request.getDelFlag()), TestPlan::getDelFlag, request.getDelFlag());
         wrapper.lambda().orderByAsc(TestPlan::getDelFlag);
         wrapper.lambda().orderByAsc(TestPlan::getCreateDate);
         final Page<TestPlan> iPage = baseMapper.selectPage(
@@ -62,7 +69,10 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
         iPage.getRecords().forEach(t -> {
             final Project project = projectService.getProjectById(t.getProjectId());
             t.setProject(project);
-            t.setStory(storyService.searchStoryById(t.getStoryId()));
+            t.setProjectId(project.getProjectName());
+            final TestStory story = storyService.searchStoryById(t.getStoryId());
+            t.setStory(story);
+            t.setStoryId(story.getDescription());
         });
         return iPage;
     }

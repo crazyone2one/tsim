@@ -20,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -49,20 +50,27 @@ public class TestPlanController {
     }
 
     @GetMapping("/list")
-    public String allPlans(TestPlan plan, Model model,
-                           @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
-                           @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
-        final IPage<TestPlan> iPage = planService.pageList(plan, pageCurrent, pageSize);
-        model.addAttribute("iPage", iPage);
-        model.addAttribute("redirecting", "/plan/list?pageCurrent=");
+    public String allPlans(HttpServletRequest request) {
         return "plan/plan_list";
     }
 
+    @Deprecated
     @RequestMapping("/reloadTable")
-    public String reloadTable(Model model, TestPlan project) {
-        final IPage<TestPlan> iPage = planService.pageList(project, 0, 0);
+    public String reloadTable(HttpServletRequest request, Model model, TestPlan project) {
+        final IPage<TestPlan> iPage = planService.pageList(request, 0, 0);
         model.addAttribute("iPage", iPage);
         return "plan/plan_list :: table_refresh";
+    }
+
+    @RequestMapping("/loadPlan")
+    @ResponseBody
+    public Map<String, Object> loadPlan(HttpServletRequest request, @RequestParam(value = "pageNum") Integer offset,
+                                        @RequestParam(value = "pageSize") Integer limit) {
+        Map<String, Object> map = new HashMap<>(2);
+        final IPage<TestPlan> iPage = planService.pageList(request, offset, limit);
+        map.put("total", iPage.getTotal());
+        map.put("rows", iPage.getRecords());
+        return map;
     }
 
     @PostMapping(value = "/save")
