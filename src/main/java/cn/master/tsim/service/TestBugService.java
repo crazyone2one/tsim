@@ -25,7 +25,7 @@ public interface TestBugService extends IService<TestBug> {
 
     TestBug updateBug(TestBug testBug);
 
-    IPage<TestBug> pageListBug(TestBug bug, Integer pageCurrent, Integer pageSize);
+    IPage<TestBug> pageListBug(HttpServletRequest request, Integer pageCurrent, Integer pageSize);
 
     Map<String, Integer> bugMapByProject(String projectId, String storyId, String bugStatus);
 

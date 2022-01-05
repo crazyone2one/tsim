@@ -13,114 +13,69 @@
                     <div class="container-fluid">
                         <div class="pt-2 border-bottom">
                             <div class="card-body">
-                                <form th:action="@{list}" method="get">
-                                    <div class="row">
-                                        <div class="input-group mb-3" style="width: fit-content">
-                                            <span class="input-group-text" id="basic-addon1">所属项目</span>
-                                            <input type="text" class="form-control"
-                                                   placeholder="项目名称（模糊查询）"
-                                                   aria-label="projectId" id="p-search"
-                                                   aria-describedby="basic-addon1">
-                                            <input type="hidden" name="projectId">
-                                        </div>
-                                        <div class="input-group mb-3" style="width: fit-content">
-                                            <span class="input-group-text" id="basic-addon2">所属模块</span>
-                                            <input type="text" class="form-control" name="moduleId"
-                                                   placeholder="模块名称（模糊查询）"
-                                                   aria-label="moduleId" id="m-search"
-                                                   aria-describedby="basic-addon2">
-                                        </div>
-                                        <div class="input-group mb-3 " style="width: fit-content">
-                                            <span class="input-group-text" id="basic-addon3">问题描述</span>
-                                            <input type="text" class="form-control" name="title"
-                                                   placeholder="问题描述（模糊查询）"
-                                                   aria-label="title"
-                                                   aria-describedby="basic-addon3">
-                                        </div>
-                                        <select class="form-select mb-3" style="width: fit-content"
-                                                aria-label="severity"
-                                                name="severity">
-                                            <option th:value="' '" selected>严重程度</option>
-                                            <option value="1">轻微</option>
-                                            <option value="2">一般</option>
-                                            <option value="3">严重</option>
-                                            <option value="4">致命</option>
-                                        </select>
-                                        <select class="form-select mb-3" style="width: fit-content"
-                                                aria-label="bugStatus"
-                                                name="bugStatus">
-                                            <option th:value="' '" selected>问题状态</option>
-                                            <option value="1">新建</option>
-                                            <option value="2">挂起</option>
-                                            <option value="3">已提交</option>
-                                            <option value="4">已解决</option>
-                                            <option value="5">非bug</option>
-                                        </select>
-                                        <div class="col-lg-2 col-md-4 col-sm-6">
-                                            <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
-                                                                                          style="color: cornflowerblue"></i>
-                                            </button>
-                                            <button type="button" class="btn hvr-grow"
-                                                    data-bs-toggle="modal" data-bs-target="#add-bug-modal"><i
-                                                    class="bi bi-plus-circle" style="color: cornflowerblue"></i>
-                                            </button>
-                                        </div>
+                                <div class="row">
+                                    <div class="input-group mb-3" style="width: fit-content">
+                                        <span class="input-group-text" id="basic-addon1">所属项目</span>
+                                        <input type="text" class="form-control"
+                                               placeholder="项目名称（模糊查询）"
+                                               aria-label="projectId" id="p-search"
+                                               aria-describedby="basic-addon1">
+                                        <input type="hidden" name="projectId">
                                     </div>
-                                </form>
+                                    <div class="input-group mb-3" style="width: fit-content">
+                                        <span class="input-group-text" id="basic-addon2">所属模块</span>
+                                        <input type="text" class="form-control" name="moduleId"
+                                               placeholder="模块名称（模糊查询）" th:id="module-search"
+                                               aria-label="moduleId" id="m-search"
+                                               aria-describedby="basic-addon2">
+                                    </div>
+                                    <div class="input-group mb-3 " style="width: fit-content">
+                                        <span class="input-group-text" id="basic-addon3">问题描述</span>
+                                        <input type="text" class="form-control" name="title"
+                                               placeholder="问题描述（模糊查询）" th:id="title-search"
+                                               aria-label="title"
+                                               aria-describedby="basic-addon3">
+                                    </div>
+                                    <select class="form-select mb-3" style="width: fit-content"
+                                            aria-label="severity"
+                                            name="severity">
+                                        <option th:value="' '" selected>严重程度</option>
+                                        <option value="1">轻微</option>
+                                        <option value="2">一般</option>
+                                        <option value="3">严重</option>
+                                        <option value="4">致命</option>
+                                    </select>
+                                    <select class="form-select mb-3" style="width: fit-content"
+                                            aria-label="bugStatus"
+                                            name="bugStatus">
+                                        <option th:value="' '" selected>问题状态</option>
+                                        <option value="1">新建</option>
+                                        <option value="2">挂起</option>
+                                        <option value="3">已提交</option>
+                                        <option value="4">已解决</option>
+                                        <option value="5">非bug</option>
+                                    </select>
+                                    <div class="col-lg-2 col-md-4 col-sm-6">
+                                        <button type="button" class="btn hvr-grow" id="search-button">
+                                            <i class="bi bi-search" style="color: cornflowerblue"></i>
+                                        </button>
+                                        <button type="button" class="btn hvr-grow"
+                                                data-bs-toggle="modal" data-bs-target="#add-bug-modal"><i
+                                                class="bi bi-plus-circle" style="color: cornflowerblue"></i>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
                         <!--            列表数据-->
                         <div id="table_refresh" th:fragment="table_refresh">
-                            <table class="table table-hover">
-                                <thead>
-                                <tr class="text-center">
-<!--                                    <th scope="col">#</th>-->
-                                    <th scope="col">所属项目</th>
-                                    <th scope="col">所属模块</th>
-                                    <th scope="col">功能点</th>
-                                    <th scope="col">问题描述</th>
-                                    <th scope="col">严重程度</th>
-                                    <th scope="col">问题状态</th>
-                                    <th scope="col">操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="text-center" th:each="temp,stat:${iPage.records}">
-                                    <input name="id" type="hidden" class="form-control"
-                                           th:value="${temp.id}" id="id">
-<!--                                    <td th:text="${stat.index+1}"></td>-->
-                                    <td th:text="${temp.project.projectName}"></td>
-                                    <td th:text="${temp.module.moduleName}"></td>
-                                    <td th:text="${temp.func}"></td>
-                                    <td th:text="${temp.title}" th:title="${temp.title}"></td>
-                                    <td th:switch="${temp.severity}">
-                                        <span th:case="1" th:text="轻微"></span>
-                                        <span th:case="2" th:text="一般"></span>
-                                        <span th:case="3" th:text="严重"></span>
-                                        <span th:case="4" th:text="致命"></span>
-                                    </td>
-                                    <td th:switch="${temp.bugStatus}">
-                                        <span th:case="1" th:text="新建"></span>
-                                        <span th:case="2" th:text="挂起"></span>
-                                        <span th:case="3" th:text="已提交"></span>
-                                        <span th:case="4" th:text="已解决"></span>
-                                        <span th:case="5" th:text="非bug"></span>
-                                    </td>
-                                    <td>
-                                        <a type="button" class="btn" id="bug-detail"
-                                           data-bs-toggle="modal" data-bs-target="#bug-detail-modal"
-                                           th:attr="data-bugId=${temp.id}">
-                                            <i class="bi bi-eye hvr-grow" style="color: cornflowerblue"
-                                               data-bs-toggle="tooltip" data-bs-placement="top" title="查看详情"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                </tbody>
+                            <table th:id="table" class="table table-hover">
+
                             </table>
                         </div>
                         <!--        分页-->
-                        <div th:replace="/fragment/commons :: pagination01"></div>
+                        <!--                        <div th:replace="/fragment/commons :: pagination01"></div>-->
                     </div>
                 </div>
                 <footer th:replace="/fragment/commons :: footer"></footer>
@@ -135,12 +90,118 @@
         <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
         <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
+        <script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
         <script th:src="@{/global/js/add_bug.js}"></script>
         <script>
+            $(document).on('click', "#search-button", function () {
+                $('#table').bootstrapTable('refresh');
+
+            });
+
+            const columns = [
+                {field: 'id', align: 'center', title: 'id', visible: false}, {
+                    field: 'projectName',
+                    align: 'center',
+                    title: '所属项目',
+                    class: 'col-sm-4',
+                    formatter: function (value, row, index) {
+                        return row.project.projectName;
+                    }
+                }, {
+                    field: 'refModuleCount',
+                    align: 'center',
+                    title: '所属模块',
+                    class: 'col-sm-4',
+                    formatter: function (value, row, index) {
+                        return row.module.moduleName;
+                    }
+                }, {
+                    field: 'func',
+                    align: 'center',
+                    title: '功能点',
+                    class: 'col-sm-6'
+                }, {
+                    field: 'title',
+                    align: 'center',
+                    title: '问题描述',
+                    class: 'col-sm-6'
+                },
+                {
+                    field: 'severity',
+                    align: 'center',
+                    title: '严重程度',
+                    class: 'col-sm-6',
+                    formatter: function (value, row, index) {
+                        let _severity = '';
+                        switch (value) {
+                            case 1:
+                                _severity = '轻微';
+                                break;
+                            case 2:
+                                _severity = '一般';
+                                break;
+                            case 3:
+                                _severity = '严重';
+                                break;
+                            case 4:
+                                _severity = '致命';
+                                break;
+                        }
+                        return _severity;
+                    }
+                },
+                {
+                    field: 'bugStatus',
+                    align: 'center',
+                    title: '问题状态',
+                    class: 'col-sm-6',
+                    formatter: function (value, row, index) {
+                        let _severity = '';
+                        switch (value) {
+                            case 1:
+                                _severity = '新增';
+                                break;
+                            case 2:
+                                _severity = '挂起';
+                                break;
+                            case 3:
+                                _severity = '已提交';
+                                break;
+                            case 4:
+                                _severity = '已解决';
+                                break;
+                            case 5:
+                                _severity = '非bug';
+                                break;
+                        }
+                        return _severity;
+                    }
+                },
+                {title: '操作', align: 'center', field: 'id', class: 'col-sm-2', formatter: option,}]
+
+            function option(value, row, index) {
+                return '<a href="#" id="del-project" data-bs-toggle="modal" data-bs-target="#bug-detail-modal" ' +
+                    'onclick="bugDetail(\'' + row.id + '\')">详情</a>';
+            }
+
+            const params = function (params) {
+                return {
+                    projectName: $('#p-search').val().trim(), // 自定义查询条件
+                    moduleName: $('#module-search').val().trim(), // 自定义查询条件
+                    titleDesc: $('#title-search').val().trim(), // 自定义查询条件
+                    pageSize: params.limit,
+                    pageNum: params.offset / params.limit + 1,
+
+                }
+            };
+            InitTable('/bug/reloadTable', 'get', columns, params);
+
             autoComplete("/project/queryList", "p-search", 'p', false);
-            autoComplete("/module/queryList", "m-search", 'm', false);
+            autoComplete("/module/queryList", "module-search", 'm', false);
             const add_modal = $('#add-bug-modal');
             add_modal.on('shown.bs.modal', function () {
                 autoComplete("/project/queryList", "projectCode", 'p', true);
@@ -152,75 +213,62 @@
             $("#add-bug-story")[0].addEventListener("focus", function () {
                 autoComplete("/story/queryList/" + $("#b-a-p").attr("value"), "add-bug-story", 's', true);
             })
-            /*模块不存在时新添加*/
-            // $("#module").on("blur", function () {
-            //     if (Object.is($("#b-a-m").attr("value"), undefined)) {
-            //         $.ajax({
-            //             url: "/module/addModule/" + $("#b-a-p").attr("value") + "/" + $("#module").val(),
-            //             type: 'post',
-            //             success: function (result) {
-            //                 $("#b-a-m").attr("value", result['data']);
-            //             }
-            //         })
-            //     }
-            // });
+
             // bug详情
-            const detail_modal = document.getElementById('bug-detail-modal');
-            detail_modal.addEventListener('show.bs.modal', function (event) {
-                const button = $(event.relatedTarget);
-                var attribute = button.attr("data-bugId");
-                $.ajax({
-                        url: '/bug/detail/' + attribute,
-                        type: 'get',
-                        dataType: 'JSON',
-                        // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-                        success: function (arg) {
-                            console.log(arg['data']);
-                            $("#projectCode-d").val(arg['data'].project.projectName);
-                            $("#module-d").val(arg['data'].module.moduleName);
-                            $("#title-d").val(arg['data'].title);
-                            $("#function-d").val(arg['data'].func);
-                            $("#owner-d").val(arg['data'].testerEntity.username);
-                            let _severity = "";
-                            switch (arg['data'].severity) {
-                                case 1:
-                                    _severity = "轻微";
-                                    break
-                                case 2:
-                                    _severity = "一般";
-                                    break
-                                case 3:
-                                    _severity = "严重";
-                                    break
-                                case 4:
-                                    _severity = "致命";
-                                    break
+            function bugDetail(id) {
+                $('#bug-detail-modal').on('show.bs.modal', function () {
+                    $.ajax({
+                            url: '/bug/detail/' + id,
+                            type: 'get',
+                            dataType: 'JSON',
+                            // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                            success: function (arg) {
+                                $("#projectCode-d").val(arg['data'].project.projectName);
+                                $("#module-d").val(arg['data'].module.moduleName);
+                                $("#title-d").val(arg['data'].title);
+                                $("#function-d").val(arg['data'].func);
+                                $("#owner-d").val(arg['data'].testerEntity.username);
+                                let _severity = "";
+                                switch (arg['data'].severity) {
+                                    case 1:
+                                        _severity = "轻微";
+                                        break
+                                    case 2:
+                                        _severity = "一般";
+                                        break
+                                    case 3:
+                                        _severity = "严重";
+                                        break
+                                    case 4:
+                                        _severity = "致命";
+                                        break
+                                }
+                                $("#severity-d").val(_severity);
+                                let _status = "";
+                                switch (arg['data'].bugStatus) {
+                                    case 1:
+                                        _status = "新建";
+                                        break
+                                    case 2:
+                                        _status = "挂起";
+                                        break
+                                    case 3:
+                                        _status = "已提交";
+                                        break
+                                    case 4:
+                                        _status = "已解决";
+                                        break
+                                    case 5:
+                                        _status = "非bug";
+                                        break
+                                }
+                                $("#status-d").val(_status);
+                                $("#remark-d").val(arg['data'].note);
                             }
-                            $("#severity-d").val(_severity);
-                            let _status = "";
-                            switch (arg['data'].bugStatus) {
-                                case 1:
-                                    _status = "新建";
-                                    break
-                                case 2:
-                                    _status = "挂起";
-                                    break
-                                case 3:
-                                    _status = "已提交";
-                                    break
-                                case 4:
-                                    _status = "已解决";
-                                    break
-                                case 5:
-                                    _status = "非bug";
-                                    break
-                            }
-                            $("#status-d").val(_status);
-                            $("#remark-d").val(arg['data'].note);
                         }
-                    }
-                )
-            });
+                    )
+                })
+            }
         </script>
     </body>
 </html>

@@ -7,6 +7,7 @@ import cn.master.tsim.entity.TestBug;
 import cn.master.tsim.service.TestBugService;
 import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -14,6 +15,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * <p>
@@ -37,25 +41,23 @@ public class TestBugController {
     /**
      * 列表
      *
-     * @param bug   TestBug
      * @param model Model
      * @return java.lang.String
      */
     @GetMapping("/list")
-    public String allBug(TestBug bug, Model model, @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
-                         @RequestParam(value = "pageSize", defaultValue = "15") Integer pageSize) {
-        final IPage<TestBug> iPage = bugService.pageListBug(bug, pageCurrent, pageSize);
-        model.addAttribute("iPage", iPage);
+    public String allBug(Model model) {
         model.addAttribute("users", Constants.userMaps);
-        model.addAttribute("redirecting", "/bug/list?pageCurrent=");
         return "bug/bug_list";
     }
 
     @RequestMapping("/reloadTable")
-    public String reloadTable(Model model, TestBug bug) {
-        final IPage<TestBug> iPage = bugService.pageListBug(bug, 0, 0);
-        model.addAttribute("iPage", iPage);
-        return "bug/bug_list :: table_refresh";
+    @ResponseBody
+    public Map<String, Object> reloadTable(HttpServletRequest request) {
+        final IPage<TestBug> iPage = bugService.pageListBug(request, 0, 0);
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("total", iPage.getTotal());
+        map.put("rows", CollectionUtils.isNotEmpty(iPage.getRecords()) ? new LinkedList<>(iPage.getRecords()) : new LinkedList<TestBug>());
+        return map;
     }
 
     /**

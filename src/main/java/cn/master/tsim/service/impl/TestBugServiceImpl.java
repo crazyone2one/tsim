@@ -75,8 +75,8 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
     }
 
     @Override
-    public IPage<TestBug> pageListBug(TestBug bug, Integer pageCurrent, Integer pageSize) {
-        QueryWrapper<TestBug> wrapper = getTestBugQueryWrapper(bug);
+    public IPage<TestBug> pageListBug(HttpServletRequest request, Integer pageCurrent, Integer pageSize) {
+        QueryWrapper<TestBug> wrapper = getTestBugQueryWrapper(request);
         final Page<TestBug> selectPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
@@ -119,23 +119,26 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
         }
     }
 
-    private QueryWrapper<TestBug> getTestBugQueryWrapper(TestBug bug) {
+    private QueryWrapper<TestBug> getTestBugQueryWrapper(HttpServletRequest request) {
         QueryWrapper<TestBug> wrapper = new QueryWrapper<>();
         List<String> tempProjectId = new LinkedList<>();
         List<String> tempModuleId = new LinkedList<>();
-        if (StringUtils.isNotBlank(bug.getProjectId())) {
-            posService.findByPartialProjectName(bug.getProjectId()).forEach(temp -> tempProjectId.add(temp.getId()));
+        final String projectName = request.getParameter("projectName");
+        if (StringUtils.isNotBlank(projectName)) {
+            posService.findByPartialProjectName(projectName).forEach(temp -> tempProjectId.add(temp.getId()));
             wrapper.lambda().in(TestBug::getProjectId, tempProjectId);
         }
-        if (StringUtils.isNotBlank(bug.getModuleId())) {
-            moduleService.findByPartialModuleName(bug.getModuleId()).forEach(temp -> tempModuleId.add(temp.getId()));
+        final String moduleName = request.getParameter("moduleName");
+        if (StringUtils.isNotBlank(moduleName)) {
+            moduleService.findByPartialModuleName(moduleName).forEach(temp -> tempModuleId.add(temp.getId()));
             wrapper.lambda().in(TestBug::getModuleId, tempModuleId);
         }
-        if (StringUtils.isNotBlank(bug.getTitle())) {
-            wrapper.lambda().like(TestBug::getTitle, bug.getTitle());
+        final String titleDesc = request.getParameter("titleDesc");
+        if (StringUtils.isNotBlank(titleDesc)) {
+            wrapper.lambda().like(TestBug::getTitle, titleDesc);
         }
-        wrapper.lambda().eq(Objects.nonNull(bug.getSeverity()), TestBug::getSeverity, bug.getSeverity());
-        wrapper.lambda().eq(Objects.nonNull(bug.getBugStatus()), TestBug::getBugStatus, bug.getBugStatus());
+//        wrapper.lambda().eq(Objects.nonNull(request.getSeverity()), TestBug::getSeverity, request.getSeverity());
+//        wrapper.lambda().eq(Objects.nonNull(request.getBugStatus()), TestBug::getBugStatus, request.getBugStatus());
         return wrapper;
     }
 }

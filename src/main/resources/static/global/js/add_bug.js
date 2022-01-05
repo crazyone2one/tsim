@@ -11,7 +11,7 @@ function saveBug() {
             success: function (arg) {
                 if (Object.is(arg['code'], 200)) {
                     resetModal("#add-bug-modal", "add-bug-from");
-                    $("#table_refresh").load("/bug/reloadTable");
+                    refresh_table()
                 }
                 showToast(arg['code'], arg['msg']);
             }
