@@ -4,6 +4,7 @@ import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.DocInfo;
 import cn.master.tsim.entity.TestStory;
+import cn.master.tsim.entity.TestTaskInfo;
 import cn.master.tsim.mapper.TestStoryMapper;
 import cn.master.tsim.service.*;
 import cn.master.tsim.util.JacksonUtils;
@@ -88,6 +89,10 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
                 testStory.setUpdateDate(new Date());
                 testStory.setWorkDate(story.getWorkDate());
                 baseMapper.updateById(testStory);
+                final TestTaskInfo itemByProject = taskInfoService.queryItem(story.getProjectId(), story.getId());
+                itemByProject.setUpdateDate(new Date());
+                itemByProject.setIssueDate(testStory.getWorkDate());
+                taskInfoService.updateTask(request, itemByProject);
                 return ResponseUtils.success("数据更新成功", testStory);
             } catch (Exception e) {
                 return ResponseUtils.error(400, "数据更新失败", e.getCause().getMessage());
