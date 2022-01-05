@@ -14,91 +14,43 @@
                         <!--操作栏-->
                         <div class="pt-2 border-bottom">
                             <div class="card-body">
-                                <form th:action="@{list}" autocomplete="off">
-                                    <div class="row">
-                                        <div class="input-group mb-3" style="width: fit-content">
-                                            <span class="input-group-text" id="basic-addon1">所属项目</span>
-                                            <input type="text" class="form-control" placeholder="输入项目名称"
-                                                   aria-label="projectId" name="projectId"
-                                                   aria-describedby="basic-addon1" id="p-search">
-                                        </div>
-                                        <div class="input-group mb-3 " style="width: fit-content">
-                                            <span class="input-group-text" id="basic-addon3">需求内容</span>
-                                            <input type="text" class="form-control" name="description"
-                                                   placeholder="输入需求内容" aria-label="name"
-                                                   aria-describedby="basic-addon3">
-                                        </div>
-                                        <select class="form-select mb-3" style="width: fit-content" aria-label="active"
-                                                name="delFlag">
-                                            <option th:value="''">完成状态</option>
-                                            <option value="1">已完成</option>
-                                            <option value="0">未完成</option>
-                                        </select>
-                                        <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
-                                            <button type="submit" id="search-story" class="btn hvr-grow"><i class="bi bi-search"
-                                                                                          style="color: cornflowerblue"></i>
-                                            </button>
-                                            <a class="btn btn-primary" data-bs-toggle="modal" href="#add-story-modal" role="button"><i
-                                                    class="bi bi-plus-circle hvr-grow"></i></a>
-                                        </div>
+                                <div class="row">
+                                    <div class="input-group mb-3" style="width: fit-content">
+                                        <span class="input-group-text" id="basic-addon1">所属项目</span>
+                                        <input type="text" class="form-control" placeholder="输入项目名称"
+                                               aria-label="projectId" name="projectId"
+                                               aria-describedby="basic-addon1" id="p-search">
                                     </div>
-                                </form>
+                                    <div class="input-group mb-3 " style="width: fit-content">
+                                        <span class="input-group-text" id="basic-addon3">需求内容</span>
+                                        <input type="text" class="form-control" name="description" id="story-desc"
+                                               placeholder="输入需求内容" aria-label="name"
+                                               aria-describedby="basic-addon3">
+                                    </div>
+                                    <select class="form-select mb-3" style="width: fit-content" aria-label="active"
+                                            name="delFlag">
+                                        <option th:value="''">完成状态</option>
+                                        <option value="1">已完成</option>
+                                        <option value="0">未完成</option>
+                                    </select>
+                                    <div class="col-lg-2 col-md-4 col-sm-6 mb-3">
+                                        <a id="search-button" class="btn btn-primary"><i
+                                                class="bi bi-search hvr-grow"
+                                                style="color: cornflowerblue"></i>
+                                        </a>
+                                        <a class="btn btn-primary" data-bs-toggle="modal"
+                                           data-bs-target="#add-story-modal"
+                                           role="button"><i class="bi bi-plus-circle hvr-grow"></i></a>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                         <!--            列表数据-->
                         <div id="table_refresh" th:fragment="table_refresh">
-                            <table class="table table-hover">
-                                <thead>
-                                <tr class="fw-bold text-center py-4">
-<!--                                    <th scope="col"></th>-->
-<!--                                    <th scope="col">#</th>-->
-                                    <th scope="col">所属项目</th>
-                                    <th scope="col">需求内容描述</th>
-                                    <th scope="col">关联文档</th>
-                                    <th scope="col">需求时间</th>
-                                    <th scope="col">完成状态</th>
-                                    <th scope="col">操作</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr th:if="${#lists.isEmpty(iPage.records)}">
-                                    <td class="text-center" colspan="6">No matching records found</td>
-                                </tr>
-                                <tr class="text-center" th:each="temp,stat:${iPage.records}" th:if="${not #lists.isEmpty(iPage.records)}">
-<!--                                    <td>-->
-<!--                                        <label class="checkbox">-->
-<!--                                            <input type="checkbox" th:value="${temp.id}">-->
-<!--                                            <input name="id" type="hidden" class="form-control"-->
-<!--                                                   th:value="${temp.id}" id="id">-->
-<!--                                        </label>-->
-<!--                                    </td>-->
-                                    <input name="id" type="hidden" class="form-control"
-                                           th:value="${temp.id}" id="id">
-<!--                                    <td th:text="${stat.index+1}"></td>-->
-                                    <td th:text="${temp.projectId}"></td>
-                                    <td th:text="${temp.description}"></td>
-                                    <td>
-                                        <a th:href="${#strings.isEmpty(temp.docId)}?'@{/story/download/'+'':'/story/download/'+${temp.docInfo.docName}+'/'+${temp.docInfo.uuidName}"
-                                           th:text="${#strings.isEmpty(temp.docId)} ? '未关联需求文件' : ${temp.docInfo.docName}"
-                                           th:style="${#strings.isEmpty(temp.docId)} ? 'pointer-events: none' : ''"></a>
-                                    </td>
-                                    <td th:text="${temp.workDate}"></td>
-                                    <td>
-                                        <span th:text="未完成" th:if="${temp.delFlag==0}"></span>
-                                        <span th:text="已完成" th:if="${temp.delFlag==1}"></span>
-                                    </td>
-                                    <td>
-                                        <button type="button" class="btn btn-sm-c btn-outline-info" th:data-bs-id="${temp.id}"
-                                                data-bs-toggle="modal" data-bs-target="#add-story-modal" data-bs-whatever="edit">Edit</button>
-                                        <button type="button" class="btn btn-sm-c btn-outline-info" disabled>Edit</button>
-                                        <button type="button" class="btn btn-sm-c btn-outline-danger" disabled>Delete</button>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
+                            <table id="table" class="table table-hover"></table>
                         </div>
                         <!--        分页-->
-                        <div th:replace="/fragment/commons :: pagination01"></div>
+                        <!--                        <div th:replace="/fragment/commons :: pagination01"></div>-->
                     </div>
                 </div>
                 <footer th:replace="/fragment/commons :: footer"></footer>
@@ -107,6 +59,7 @@
 
         <!-- 添加问题单Modal弹框 -->
         <div th:replace="~{story/add_story_modal::addStoryFragment}"></div>
+        <div th:replace="~{story/edit_story_modal::editStoryFragment}"></div>
         <!--                    toast-->
         <div th:replace="/fragment/commons :: toast-div"></div>
         <div th:replace="/fragment/commons :: upload-modal"></div>
@@ -114,58 +67,109 @@
         <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
         <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.js}"></script>
+        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
         <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
+        <script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
         <script>
-            const exampleModal = document.getElementById('add-story-modal');
-            exampleModal.addEventListener("show.bs.modal", function (event) {
-                // Button that triggered the modal
-                const button = event.relatedTarget;
-                // Extract info from data-bs-* attributes
-                const storyId = button.getAttribute('data-bs-id');
-                // If necessary, you could initiate an AJAX request here
-                // and then do the updating in a callback.
-                //
-                // Update the modal's title.
-                if (storyId) {
-                    const modalTitle = exampleModal.querySelector('.modal-title');
-                    modalTitle.textContent = 'edit story info';
-                    $("#story-id").val(storyId);
-                    $.ajax({
-                        url: "/story/getStory/" + storyId,
-                        type: 'get',
-                        success: function (result) {
-                            console.log(result);
-                            const resultElement = result['data'];
-                            $("#p-add").val(resultElement.project.projectName);
-                            $("#s-p-id").val(resultElement.projectId);
-                            $("#add-description-name").val(resultElement.description);
-                        }
-                    });
-                } else {
-                    autoComplete('/project/queryList', 'p-add', 'p', true);
-                }
+            const _table_columns = [
+                {field: 'id', align: 'center', title: 'id', visible: false}, {
+                    field: 'projectId',
+                    align: 'center',
+                    title: '所属项目',
+                    class: 'col-sm-6'
+                }, {
+                    field: 'description',
+                    align: 'center',
+                    title: '需求内容描述',
+                    class: 'col-sm-6'
+                }, {
+                    field: 'docId',
+                    align: 'center',
+                    title: '关联文档',
+                    class: 'col-sm-6'
+                }, {
+                    field: 'workDate',
+                    align: 'center',
+                    title: '需求时间',
+                    class: 'col-sm-6'
+                }, {title: '操作', align: 'center', field: 'id', class: 'col-sm-6', formatter: option,}]
+            // 查询条件
+            const _search_params = function (params) {
+                return {
+                    projectName: $('#p-search').val().trim(), // 自定义查询条件
+                    storyDesc: $('#story-desc').val().trim(), // 自定义查询条件
+                    pageSize: params.limit,
+                    pageNum: params.offset / params.limit + 1,
 
+                }
+            };
+            InitTable("/story/reloadTable", 'get', _table_columns, _search_params)
+
+            function option(value, row, index) {
+                // return "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
+                const e = '<button class="btn btn-sm-c btn-outline-info" data-bs-toggle="modal" data-bs-target="#edit-story-modal" onclick="editStory(\'' + row.id + '\')">编辑</button>'
+                const d = "<button disabled type=\"button\" class=\"btn btn-sm-c btn-outline-info\" data-bs-toggle=\"modal\" " +
+                    "data-bs-target=\"#edit-story-modal\" onclick=\"editStory(\"" + row.id + "\")\">删除</button>";
+                return e + d;
+            }
+
+            // 新增、编辑需求
+            function editStory(storyId) {
+                $('#edit-story-modal').on("shown.bs.modal", function (event) {
+                    // 编辑需求
+                    if (storyId) {
+                        $("#e-story-id").val(storyId);
+                        $.ajax({
+                            url: "/story/getStory/" + storyId,
+                            type: 'get',
+                            success: function (result) {
+                                const resultElement = result['data'];
+                                console.log(resultElement);
+                                $("#p-edit").val(resultElement.project.projectName);
+                                $("#e-p-id").val(resultElement.projectId);
+                                $("#e-description-name").val(resultElement.description);
+                                $("#e-workDate option[value=" + resultElement.workDate + "]").attr('selected', true);
+                            }
+                        });
+                    }
+                });
+            }
+
+            // 添加modal打开时，设置项目输入框可匹配
+            $('#add-story-modal').on("shown.bs.modal", function (event) {
+                autoComplete('/project/queryList', 'p-add', 'p', true);
+            });
+            $(document).on('click', "#search-button", function () {
+                $('#table').bootstrapTable('refresh');
             });
             // 保存项目
             $('button[id=submit]').click(function () {
                 const $project = $("#s-p-id");
-                const _storyId = $("#story-id").val();
+                const _storyId = $("#e-story-id").val();
                 const $description = $('#add-description-name');
                 const $workDate = $('#workDate');
-                const serializeArray = $('#addStoryForm').serializeArray();
+
                 if (_storyId) {
-                // todo 更新需求信息
+                    const serializeArray = $('#editStoryForm').serializeArray();
                     $.ajax({
                         url: "/story/save",
                         type: 'POST',
                         data: serializeArray,
-                        success: function (result) {
-                            console.log(result);
+                        success: function (arg) {
+                            const msg = arg['msg'];
+                            if (Object.is(arg['code'], 200)) {
+                                // alert(msg, 'success');
+                                resetModal("#edit-story-modal", "editStoryForm");
+                                $("#table").bootstrapTable("refresh");
+                            }
+                            showToast(arg['code'], msg);
                         }
                     })
                 } else {
                     // 添加需求数据
+                    const serializeArray = $('#addStoryForm').serializeArray();
                     $.ajax({
                         url: "/story/uniqueStory",
                         type: 'get',
@@ -185,7 +189,7 @@
                                         if (Object.is(arg['code'], 200)) {
                                             // alert(msg, 'success');
                                             resetModal("#add-story-modal", "addStoryForm");
-                                            $("#table_refresh").load("/story/reloadTable");
+                                            $("#table").bootstrapTable("refresh");
                                         }
                                         showToast(arg['code'], msg);
                                     }
@@ -199,9 +203,6 @@
             // 查询条件：项目
             autoComplete('/project/queryList', 'p-search', 'p', false);
 
-            // $('#add-story-modal').on('hidden.bs.modal', function () {
-            //     document.getElementById('addStoryForm').reset();
-            // })
         </script>
     </body>
 </html>

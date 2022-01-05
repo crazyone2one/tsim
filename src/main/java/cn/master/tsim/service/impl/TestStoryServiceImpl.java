@@ -47,22 +47,24 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     }
 
     @Override
-    public IPage<TestStory> pageList(TestStory story, Integer pageCurrent, Integer pageSize) {
+    public IPage<TestStory> pageList(HttpServletRequest request, Integer pageCurrent, Integer pageSize) {
         QueryWrapper<TestStory> wrapper = new QueryWrapper<>();
         List<String> tempProp = new LinkedList<>();
         // 按照项目模糊查询
-        if (StringUtils.isNotBlank(story.getProjectId())) {
-            projectService.findByPartialProjectName(story.getProjectId()).forEach(temp -> tempProp.add(temp.getId()));
+        final String projectName = request.getParameter("projectName");
+        if (StringUtils.isNotBlank(projectName)) {
+            projectService.findByPartialProjectName(projectName).forEach(temp -> tempProp.add(temp.getId()));
             wrapper.lambda().in(TestStory::getProjectId, tempProp);
         }
 //        按照需求内容模糊查询
-        if (StringUtils.isNotBlank(story.getDescription())) {
-            wrapper.lambda().like(TestStory::getDescription, story.getDescription());
+        final String storyDesc = request.getParameter("storyDesc");
+        if (StringUtils.isNotBlank(storyDesc)) {
+            wrapper.lambda().like(TestStory::getDescription, storyDesc);
         }
 //        按照需求完成状态查询
-        if (Objects.nonNull(story.getDelFlag())) {
-            wrapper.lambda().eq(TestStory::getDelFlag, story.getDelFlag());
-        }
+//        if (Objects.nonNull(request.getDelFlag())) {
+//            wrapper.lambda().eq(TestStory::getDelFlag, request.getDelFlag());
+//        }
         wrapper.lambda().orderByAsc(TestStory::getDelFlag);
         Page<TestStory> storyPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
@@ -78,20 +80,29 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
 
     @Override
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
-    public TestStory saveStory(HttpServletRequest request, TestStory story) {
+    public ResponseResult saveOrUpdateStory(HttpServletRequest request, TestStory story) {
         if (StringUtils.isNotBlank(story.getId())) {
-            final TestStory testStory = searchStoryById(story.getId());
-            testStory.setDescription(story.getDescription());
-            testStory.setUpdateDate(new Date());
-            baseMapper.updateById(testStory);
-            return testStory;
+            try {
+                final TestStory testStory = searchStoryById(story.getId());
+                testStory.setDescription(story.getDescription());
+                testStory.setUpdateDate(new Date());
+                testStory.setWorkDate(story.getWorkDate());
+                baseMapper.updateById(testStory);
+                return ResponseUtils.success("数据更新成功", testStory);
+            } catch (Exception e) {
+                return ResponseUtils.error(400, "数据更新失败", e.getCause().getMessage());
+            }
         }
-        TestStory build = TestStory.builder().projectId(story.getProjectId())
-                .description(story.getDescription()).workDate(story.getWorkDate())
-                .docId(story.getDocId()).delFlag(0).createDate(new Date()).build();
-        baseMapper.insert(build);
-        taskInfoService.addItem(request, story.getProjectId(), build);
-        return build;
+        try {
+            TestStory build = TestStory.builder().projectId(story.getProjectId())
+                    .description(story.getDescription()).workDate(story.getWorkDate())
+                    .docId(story.getDocId()).delFlag(0).createDate(new Date()).build();
+            baseMapper.insert(build);
+            taskInfoService.addItem(request, story.getProjectId(), build);
+            return ResponseUtils.success("数据添加成功", build);
+        } catch (Exception e) {
+            return ResponseUtils.error(400, "数据添加失败", e.getCause().getMessage());
+        }
     }
 
     @Override

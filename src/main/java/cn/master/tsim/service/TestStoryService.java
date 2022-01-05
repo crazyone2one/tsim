@@ -20,16 +20,24 @@ import java.util.List;
  */
 public interface TestStoryService extends IService<TestStory> {
 
-    IPage<TestStory> pageList(TestStory story, Integer pageCurrent, Integer pageSize);
+    /**
+     * 分页查询
+     *
+     * @param request     HttpServletRequest
+     * @param pageCurrent 页码
+     * @param pageSize    数量
+     * @return com.baomidou.mybatisplus.core.metadata.IPage<cn.master.tsim.entity.TestStory>
+     */
+    IPage<TestStory> pageList(HttpServletRequest request, Integer pageCurrent, Integer pageSize);
 
     /**
-     * 保存需求数据
+     * 保存、更新需求数据
      *
      * @param request HttpServletRequest
-     * @param story
+     * @param story   前端传的story数据
      * @return cn.master.tsim.entity.TestStory
      */
-    TestStory saveStory(HttpServletRequest request, TestStory story);
+    ResponseResult saveOrUpdateStory(HttpServletRequest request, TestStory story);
 
     /**
      * 查询需求数据

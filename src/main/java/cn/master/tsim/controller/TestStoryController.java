@@ -19,6 +19,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -46,45 +48,35 @@ public class TestStoryController {
     /**
      * 列表
      *
-     * @param story
      * @param model
-     * @param pageCurrent
-     * @param pageSize
      * @return java.lang.String
      */
     @GetMapping("/list")
-    public String allStory(TestStory story, Model model,
-                           @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
-                           @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
-        final IPage<TestStory> iPage = service.pageList(story, pageCurrent, pageSize);
-        model.addAttribute("iPage", iPage);
-        model.addAttribute("redirecting", "/story/list?pageCurrent=");
+    public String allStory(Model model) {
         model.addAttribute("monthList", DateUtils.currentYearMonth());
-        model.addAttribute("projects", projectService.findByPartialProjectName(""));
         return "story/story_list";
     }
 
     @RequestMapping("/reloadTable")
-    public String reloadTable(Model model, TestStory story) {
-        final IPage<TestStory> iPage = service.pageList(story, 0, 0);
-        model.addAttribute("iPage", iPage);
-        return "story/story_list :: table_refresh";
+    @ResponseBody
+    public Map<String, Object> reloadTable(HttpServletRequest request, @RequestParam(value = "pageNum") Integer offset,
+                                           @RequestParam(value = "pageSize") Integer limit) {
+        Map<String, Object> map = new HashMap<>(2);
+        final IPage<TestStory> iPage = service.pageList(request, offset, limit);
+        map.put("total", iPage.getTotal());
+        map.put("rows", CollectionUtils.isNotEmpty(iPage.getRecords()) ? new LinkedList<>(iPage.getRecords()) : new LinkedList<TestStory>());
+        return map;
     }
 
     @PostMapping(value = "/save")
     @ResponseBody
-    public ResponseResult saveStory(HttpServletRequest request,TestStory story) {
-        try {
-            final TestStory testStory = service.saveStory(request, story);
-            return ResponseUtils.success("数据添加成功", testStory);
-        } catch (Exception e) {
-            return ResponseUtils.error(400, "数据添加失败", e.getCause().getMessage());
-        }
+    public ResponseResult saveStory(HttpServletRequest request, TestStory story) {
+        return service.saveOrUpdateStory(request, story);
     }
 
     @GetMapping(value = "/uniqueStory")
     @ResponseBody
-    public ResponseResult uniqueStory(HttpServletRequest request,TestStory testStory) {
+    public ResponseResult uniqueStory(HttpServletRequest request, TestStory testStory) {
         try {
             final List<TestStory> testStories = service.checkUniqueStory(testStory);
             if (CollectionUtils.isNotEmpty(service.checkUniqueStory(testStory))) {
@@ -111,7 +103,7 @@ public class TestStoryController {
 
     @RequestMapping("/upload")
     @ResponseBody
-    public ResponseResult upload(HttpServletRequest request, MultipartFile file,Model m) {
+    public ResponseResult upload(HttpServletRequest request, MultipartFile file, Model m) {
         request.setAttribute("docFlag", "story");
         final ResponseResult upload = service.upload(request, file);
         m.addAttribute("docName", JacksonUtils.convertValue(upload.getData(), new TypeReference<Map<String, String>>() {

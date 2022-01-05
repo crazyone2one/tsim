@@ -7,29 +7,29 @@
         <meta name="author" content="11‘s papa">
     </head>
     <body>
-        <div th:fragment="addStoryFragment">
-            <div class="modal fade" id="add-story-modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
+        <div th:fragment="editStoryFragment">
+            <div class="modal fade" id="edit-story-modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
                  aria-hidden="true" data-bs-backdrop="static">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <form class="modal-content needs-validation" id="addStoryForm" autocomplete="off">
+                        <form class="modal-content needs-validation" id="editStoryForm" autocomplete="off">
                             <div class="modal-header">
-                                <h5 class="modal-title" th:id="modal-title" id="staticBackdropLabel">新增需求</h5>
+                                <h5 class="modal-title" th:id="modal-title" id="staticBackdropLabel">编辑需求信息</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
                                         aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <div class="box-body">
-                                    <input type="hidden" name="id" id="story-id">
+                                    <input type="hidden" name="id" id="e-story-id">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="basic-addon1">项目名称</span>
                                         <input type="text" class="form-control" placeholder="输入项目名称"
-                                               aria-label="project" aria-describedby="basic-addon1" id="p-add">
-                                        <input type="hidden" name="projectId" id="s-p-id">
+                                               aria-label="project" aria-describedby="basic-addon1" id="p-edit">
+                                        <input type="hidden" name="projectId" id="e-p-id">
                                     </div>
                                     <div class="mb-3">
-                                        <label for="add-description-name" class="form-label">需求内容描述</label>
-                                        <textarea type="text" class="form-control" id="add-description-name"
+                                        <label for="e-description-name" class="form-label">需求内容描述</label>
+                                        <textarea type="text" class="form-control" id="e-description-name"
                                                   name="description" placeholder="输入需求内容描述"></textarea>
                                     </div>
 <!--                                    todo 文件上传-->
@@ -42,8 +42,8 @@
                                     </div>
                                     <input type="hidden" name="docId" id="attachmentId">
                                     <div class="input-group mb-3">
-                                        <label for="workDate" class="input-group-text">需求日期</label>
-                                        <select class="form-select" name="workDate" id="workDate" required>
+                                        <label for="e-workDate" class="input-group-text">需求日期</label>
+                                        <select class="form-select" name="workDate" id="e-workDate" required>
                                             <option th:each="m:${monthList}"
                                                     th:value="${m}"
                                                     th:text="${m}">
