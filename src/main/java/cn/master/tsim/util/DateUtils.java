@@ -21,11 +21,12 @@ public class DateUtils {
         return LocalDate.parse(date, formatter);
     }
 
-    public static LocalDate parse2LocalDate(String date,String dateFormat) {
+    public static LocalDate parse2LocalDate(String date, String dateFormat) {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(dateFormat);
         return LocalDate.parse(date, formatter);
     }
-    public static String parse2String(Date date,String dateFormat) {
+
+    public static String parse2String(Date date, String dateFormat) {
         return new SimpleDateFormat(dateFormat).format(date);
     }
 
@@ -36,14 +37,18 @@ public class DateUtils {
     }
 
     public static List<String> currentYearMonth() {
-        final int year = LocalDate.now().getYear();
         List<String> list = new ArrayList<>();
-        for (int i = 1; i < 13; i++) {
-            if (i > 9) {
-                list.add(year + "-" + i);
-            } else {
-                list.add(year + "-0" + i);
-            }
+        LocalDate today = LocalDate.now();
+//        当前月份前3个月
+        for (long i = 1L; i <= 3L; i++) {
+            LocalDate localDate = today.minusMonths(4 - i);
+            String ss = localDate.toString().substring(0, 7);
+            list.add(ss);
+        }
+        for (long i = 0L; i <= 3L; i++) {
+            LocalDate localDate = today.minusMonths(-i);
+            String ss = localDate.toString().substring(0, 7);
+            list.add(ss);
         }
         return list;
     }
