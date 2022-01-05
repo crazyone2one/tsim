@@ -1,7 +1,6 @@
 package cn.master.tsim.controller;
 
 
-import cn.master.tsim.common.Constants;
 import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Module;
@@ -18,6 +17,7 @@ import com.alibaba.excel.EasyExcel;
 import com.alibaba.excel.ExcelReader;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -55,22 +55,19 @@ public class TestCaseController {
     }
 
     @GetMapping("/list")
-    public String allTests(HttpServletRequest request, TestCase testCase, Model model,
-                           @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
-                           @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
-        final IPage<TestCase> iPage = caseService.pageList(testCase, pageCurrent, pageSize);
-        model.addAttribute("iPage", iPage);
-        model.addAttribute("redirecting", "/case/list?pageCurrent=");
+    public String allTests(Model model) {
         model.addAttribute("monthList", DateUtils.currentYearMonth());
-        model.addAttribute("projectNames", Constants.projectNames);
         return "test-case/case_list";
     }
 
     @RequestMapping("/reloadTable")
-    public String reloadTable(Model model, TestCase testCase) {
-        final IPage<TestCase> iPage = caseService.pageList(testCase, 0, 0);
-        model.addAttribute("iPage", iPage);
-        return "test-case/case_list :: table_refresh";
+    @ResponseBody
+    public Map<String, Object> reloadTable(HttpServletRequest request) {
+        final IPage<TestCase> iPage = caseService.pageList(request, 0, 0);
+        Map<String, Object> map = new LinkedHashMap<>();
+        map.put("total", iPage.getTotal());
+        map.put("rows", CollectionUtils.isNotEmpty(iPage.getRecords()) ? new LinkedList<>(iPage.getRecords()) : new LinkedList<TestCase>());
+        return map;
     }
 
     @PostMapping(value = "/save")
@@ -99,13 +96,13 @@ public class TestCaseController {
 
     @RequestMapping(value = "loadCaseInfo")
     @ResponseBody
-    public ResponseResult loadCaseInfo(HttpServletResponse response) {
+    public ResponseResult loadCaseInfo(HttpServletRequest request,HttpServletResponse response) {
         try {
             final List<Project> projects = projectService.findByPartialProjectName("");
             for (Project project : projects) {
                 final List<Module> modules = moduleService.listModule(project.getId());
                 for (Module module : modules) {
-                    final List<TestCase> cases = caseService.listTestCase(null, project.getId(), module.getId());
+                    final List<TestCase> cases = caseService.listTestCase(request, null, project.getId(), module.getId());
                     module.setCaseList(cases);
                 }
                 project.setModules(modules);
@@ -173,10 +170,10 @@ public class TestCaseController {
         try {
             final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
             final TestCase testCase = caseService.queryCaseById(String.valueOf(params.get("id")));
-            return ResponseUtils.success("数据修改成功", testCase);
+            return ResponseUtils.success("数据查询成功", testCase);
         } catch (Exception e) {
             log.info(e.getMessage());
-            return ResponseUtils.error(400, "数据修改失败", e.getMessage());
+            return ResponseUtils.error(400, "数据查询失败", e.getMessage());
         }
     }
 

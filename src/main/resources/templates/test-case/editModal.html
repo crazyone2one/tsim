@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>case-detail</title>
+        <meta name="author" content="11‘s papa">
+    </head>
+    <body>
+        <div th:fragment="caseEditFragment">
+            <div class="modal fade" id="case-edit-modal" tabindex="-1" aria-labelledby="caseEditModalLabel"
+                 aria-hidden="true" data-bs-backdrop="static">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title bg-light" id="caseEditModalLabel">编辑测试用例</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">项目名称</span>
+                                <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"
+                                       id="edit-case-project-name" readonly>
+                                <input type="hidden" name="projectId" th:id="hidden-project-id">
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon2">模块名称</span>
+                                <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1" id="edit-case-module-name" readonly>
+                                <input type="hidden" name="moduleId" th:id="hidden-module-id">
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon3">测试用例标题</span>
+                                <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"
+                                       name="name" id="edit-case-title">
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">测试用例描述</span>
+                                <input class="form-control" aria-label="With textarea" name="description" id="edit-case-description">
+                            </div>
+                            <div class="input-group mb-3">
+                                <span class="input-group-text">前提条件</span>
+                                <input class="form-control" aria-label="With textarea" name="precondition" id="edit-case-precondition">
+                            </div>
+                            <div class="row">
+                                <div class="input-group mb-3" style="width: 50%">
+                                    <span class="input-group-text" id="basic-addon4">优先级</span>
+                                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"
+                                           name="priority" id="edit-case-priority">
+                                </div>
+                                <div class="input-group mb-3" style="width: 50%">
+                                    <span class="input-group-text" id="basic-addon5">测试方式</span>
+                                    <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"
+                                           name="testMode" id="edit-case-testMode">
+                                </div>
+                            </div>
+                            <div>
+                                <table id="step-result" data-data-type="text"
+                                       data-response-handler="responseHandler">
+                                    <thead>
+                                    <tr class="text-center">
+                                        <th data-field="caseStep">step</th>
+                                        <th data-field="caseStepResult">result</th>
+                                    </tr>
+                                    </thead>
+                                </table>
+                            </div>
+<!--                            <div class="border border-danger">-->
+<!--                                <div>-->
+<!--                                    <a href="#" id="AddMoreFileBox" class="btn btn-info btn-sm"-->
+<!--                                       onclick="addCaseStep()">添加测试步骤</a>-->
+<!--                                </div>-->
+<!--                                <input id="caseSteps" name="stepStore" type="hidden" class="form-control">-->
+<!--                                <input id="caseExpectedResults" name="resultStore" type="hidden"-->
+<!--                                       class="form-control">-->
+<!--                                <div id="case-step-area">-->
+<!--                                    <div class="position-relative" id="toast-div"></div>-->
+<!--                                    <div id="temp-step-area">-->
+<!--                                        <div class="row rounded" id="row_1">-->
+<!--                                            <div class="col-md-5">-->
+<!--                                                <label for="caseSteps_1" class="form-label">测试步骤</label>-->
+<!--                                                <textarea name="caseSteps[]" id="caseSteps_1" type="text"-->
+<!--                                                          class="form-control"-->
+<!--                                                          rows="2"></textarea>-->
+<!--                                            </div>-->
+<!--                                            <div class="col-md-5">-->
+<!--                                                <label for="caseExpectedResults_1" class="form-label">预期结果</label>-->
+<!--                                                <textarea name="caseExpectedResults[]" id="caseExpectedResults_1"-->
+<!--                                                          type="text"-->
+<!--                                                          class="form-control"></textarea>-->
+<!--                                            </div>-->
+<!--                                            <div class="position-relative col-md-1">-->
+<!--                                                <a class="position-absolute top-50 start-50">-->
+<!--                                                    <i class="bi bi-backspace" style="color: #bb2d3b" id="del"-->
+<!--                                                       onclick="removeCaseStep(this)"></i>-->
+<!--                                                </a>-->
+<!--                                            </div>-->
+<!--                                        </div>-->
+<!--                                    </div>-->
+<!--                                </div>-->
+<!--                            </div>-->
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="submit">保存</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

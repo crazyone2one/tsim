@@ -61,7 +61,7 @@ function sub() {
         success: function (arg) {
             if (Object.is(arg['code'], 200)) {
                 resetModal("#add-case-modal", "add-case-from");
-                $("#table_refresh").load("/case/reloadTable");
+                refresh_table();
             }
             showToast(arg['code'], arg['msg']);
         }
