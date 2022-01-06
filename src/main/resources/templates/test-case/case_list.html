@@ -173,7 +173,7 @@
                         return _priority;
                     }
                 },
-                {title: '操作', align: 'center', field: 'id', class: 'col-sm-6', formatter: option,}]
+                {title: '操作', align: 'center', field: 'id', class: 'col-sm-2', formatter: option,}]
 
             function option(value, row, index) {
                 // return "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
@@ -220,8 +220,8 @@
                             dataType: 'JSON',
                             // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                             success: function (arg) {
-                                $("#projectCode-d").val(arg['data'].projectId);
-                                $("#moduleId-d").val(arg['data'].moduleId);
+                                $("#projectCode-d").val(arg['data'].project.projectName);
+                                $("#moduleId-d").val(arg['data'].module.moduleName);
                                 $("#caseTitle-d").val(arg['data'].name);
                                 $("#description-d").val(arg['data'].description);
                                 $("#precondition-d").val(arg['data'].precondition);
