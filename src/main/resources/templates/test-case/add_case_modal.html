@@ -58,9 +58,9 @@
                                 </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text" id="pre-span">前提条件</span>
-                                    <textarea class="form-control" name="precondition" id="casePrecondition"
+                                    <input class="form-control " name="precondition" id="casePrecondition"
                                               placeholder="前提条件" aria-label="前提条件"
-                                              aria-describedby="pre-span"></textarea>
+                                              aria-describedby="pre-span">
                                 </div>
                                 <div class="row g-3">
                                     <div class="mb-3 col-md-4">
@@ -89,7 +89,7 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="border border-danger">
+                                <div id="case-area">
                                     <div>
                                         <a href="#" id="AddMoreFileBox" class="btn btn-info btn-sm"
                                            onclick="addCaseStep()">添加测试步骤</a>
@@ -100,22 +100,17 @@
                                     <div id="case-step-area">
                                         <div class="position-relative" id="toast-div"></div>
                                         <div class="row rounded" id="row_1">
-                                            <div class="col-md-5">
+                                            <div style="width: 47%;">
                                                 <label for="caseSteps_1" class="form-label">测试步骤</label>
-                                                <textarea name="caseSteps[]" id="caseSteps_1" type="text"
-                                                          class="form-control"
-                                                          rows="2"></textarea>
+                                                <input name="caseSteps[]" id="caseSteps_1" type="text" class="form-control line_under_input">
                                             </div>
-                                            <div class="col-md-5">
+                                            <div style="width: 47%;">
                                                 <label for="caseExpectedResults_1" class="form-label">预期结果</label>
-                                                <textarea name="caseExpectedResults[]" id="caseExpectedResults_1"
-                                                          type="text"
-                                                          class="form-control"></textarea>
+                                                <input name="caseExpectedResults[]" id="caseExpectedResults_1" type="text" class="form-control line_under_input">
                                             </div>
-                                            <div class="position-relative col-md-1">
+                                            <div class="position-relative" style="width: 6%;">
                                                 <a class="position-absolute top-50 start-50">
-                                                    <i class="bi bi-backspace" style="color: #bb2d3b" id="del"
-                                                       onclick="removeCaseStep(this)"></i>
+                                                    <i class="bi bi-backspace" style="color: #bb2d3b" id="del" onclick="removeCaseStep(this)"></i>
                                                 </a>
                                             </div>
                                         </div>
@@ -123,7 +118,7 @@
                                 </div>
                             </div>
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" onclick="sub()" id="submit">保存</button>
+                                <button type="button" class="btn btn-primary" onclick="saveCaseInfo()" id="submit">保存</button>
                                 <button type="button" class="btn btn-secondary" id="add_case_cancel" data-bs-dismiss="modal">关闭</button>
                             </div>
                         </form>

@@ -4,22 +4,21 @@ function addCaseStep() {
     let div_index = caseStepArea.getElementsByClassName("row").length;
     div_index++;
     $(caseStepArea).append('<div class="row rounded" id="row_' + div_index + '">\n' +
-        '                                            <div class="col-md-5">\n' +
+        '                                            <div style="width: 47%;">\n' +
         '                                                <label for="caseSteps_' + div_index + '" class="form-label">测试步骤</label>\n' +
-        '                                                <textarea name="caseSteps[]" id="caseSteps_' + div_index + '" type="text"\n' +
-        '                                                          class="form-control"\n' +
-        '                                                          rows="2"></textarea>\n' +
+        '                                                <input name="caseSteps[]" id="caseSteps_' + div_index + '" type="text"\n' +
+        '                                                          class="form-control">\n' +
         '                                            </div>\n' +
-        '                                            <div class="col-md-5">\n' +
+        '                                            <div style="width: 47%;">\n' +
         '                                                <label for="caseExpectedResults_' + div_index + '" class="form-label">预期结果</label>\n' +
-        '                                                <textarea name="caseExpectedResults[]" id="caseExpectedResults_' + div_index + '"\n' +
+        '                                                <input name="caseExpectedResults[]" id="caseExpectedResults_' + div_index + '"\n' +
         '                                                          type="text"\n' +
-        '                                                          class="form-control"></textarea>\n' +
+        '                                                          class="form-control">\n' +
         '                                            </div>\n' +
-        '                                            <div class="position-relative col-md-1">\n' +
-        '                                                <a class="position-absolute top-50 start-50">\n' +
+        '                                            <div class="position-relative" style="width: 6%;">\n' +
+        '                                                <a class="position-absolute top-50 start-50" title="移除">\n' +
         '                                                    <i class="bi bi-backspace" style="color: #bb2d3b" id="del"\n' +
-        '                                                       onclick="removeCaseStep(this)"></i>\n' +
+        '                                                       onclick="removeCaseStep(this)" ></i>\n' +
         '                                                </a>\n' +
         '                                            </div>\n' +
         '                                        </div>')
@@ -37,7 +36,7 @@ function removeCaseStep(obj) {
 }
 
 /*提交测试用例*/
-function sub() {
+function saveCaseInfo() {
     const p_div = document.getElementById("case-step-area");
     const s_div = p_div.getElementsByClassName("row");
     const temp_steps = [];
