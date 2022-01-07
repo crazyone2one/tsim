@@ -216,5 +216,16 @@ public class TestCaseController {
             return ResponseUtils.error("数据更新失败");
         }
     }
+
+    @PostMapping("/delete")
+    @ResponseBody
+    public ResponseResult deleteCase(HttpServletRequest request) {
+        try {
+            caseService.deleteCase(request);
+            return ResponseUtils.success("数据删除成功");
+        } catch (Exception e) {
+            return ResponseUtils.error("数据删除失败");
+        }
+    }
 }
 

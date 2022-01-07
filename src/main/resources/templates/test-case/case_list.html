@@ -66,8 +66,8 @@
                                             data-bs-target="#uploadModal" title="导入数据">
                                         <i class="bi bi-upload"></i>
                                     </button>
-                                    <button class="btn btn-danger hvr-grow btn-sm" id="delete" title="删除"><i class="bi-trash"></i></button>
-                                    <button class="btn btn-warning hvr-grow btn-sm" id="disable" title="置为无效" onclick="disableCase()"><i class="bi-x-circle"></i></button>
+                                    <button class="btn btn-warning hvr-grow btn-sm" id="disable" title="置为无效" onclick="updateCase('disable')"><i class="bi-x-circle"></i></button>
+                                    <button class="btn btn-danger hvr-grow btn-sm" id="delete" title="删除" onclick="updateCase('del')"><i class="bi-trash"></i></button>
                                 </div>
                             </div>
                         </div>

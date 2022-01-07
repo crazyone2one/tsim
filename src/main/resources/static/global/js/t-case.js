@@ -92,24 +92,30 @@ function loadStepAndResult(arg) {
         tbody.append(new_tr);
     }
 }
-
 /**
- * 将测试用例置为无效
+ * 测试用例删除、置为无效
+ * @param flag disable--置为无效，del--删除
+ *
  */
-function disableCase() {
+function updateCase(flag) {
+    let toast_msg = Object.is('disable', flag) ? "选择置为无效的测试用例数据" : "选择待删除的测试用例数据";
+    let replace_msg = Object.is('disable', flag) ? "确认将选择的测试用例数据置为无效吗" : "确认删除选择的测试用例数据吗";
+    let _url = Object.is('disable', flag) ? "/case/disable" : "/case/delete";
     const selections = getSelections();
     if (selections.length === 0) {
-        showToast(300, "选择置为无效的测试用例数据");
+        showToast(300, toast_msg);
         return;
     }
     // 处理选择已被置为无效状态的测试用例数据
-    for (let i = 0; i < selections.length; i++) {
-        if (Object.is(1, selections[i].active)) {
-            showToast(300, "确认是否选择无效状态的测试用例");
-            return;
+    if (Object.is('disable', flag)) {
+        for (let i = 0; i < selections.length; i++) {
+            if (Object.is(1, selections[i].active)) {
+                showToast(300, "确认是否选择无效状态的测试用例");
+                return;
+            }
         }
     }
-    forwardToConfirmModal('confirm-modal', '确认将选择的测试用例数据置为无效吗');
+    forwardToConfirmModal('confirm-modal', replace_msg);
     $('#btn-confirm').on('click', function () {
         const ids = [];
         for (let i = 0; i < selections.length; i++) {
@@ -117,7 +123,7 @@ function disableCase() {
         }
         $.ajax({
             type: "post",
-            url: "/case/disable",
+            url: _url,
             data: {ids: JSON.stringify(ids)},
             // contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             success: function (result) {

@@ -43,6 +43,7 @@ public interface TestCaseService extends IService<TestCase> {
      * @param request HttpServletRequest
      */
     void disableCase(HttpServletRequest request);
+    void deleteCase(HttpServletRequest request);
 
     /**
      * 测试用例模块查询

@@ -176,6 +176,17 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     }
 
     @Override
+    public void deleteCase(HttpServletRequest request) {
+        final List<String> idList = JSONArray.parseArray(request.getParameter("ids"), String.class);
+        idList.forEach(t -> {
+            final TestCase testCase = baseMapper.selectById(t);
+            testCase.setDelFlag(1);
+            testCase.setUpdateDate(new Date());
+            baseMapper.updateById(testCase);
+        });
+    }
+
+    @Override
     public IPage<TestCase> pageList(HttpServletRequest request, Integer pageCurrent, Integer pageSize) {
         QueryWrapper<TestCase> wrapper = new QueryWrapper<>();
         List<String> tempProjectId = new LinkedList<>();
