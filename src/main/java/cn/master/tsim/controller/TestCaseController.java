@@ -62,8 +62,9 @@ public class TestCaseController {
 
     @RequestMapping("/reloadTable")
     @ResponseBody
-    public Map<String, Object> reloadTable(HttpServletRequest request) {
-        final IPage<TestCase> iPage = caseService.pageList(request, 0, 0);
+    public Map<String, Object> reloadTable(HttpServletRequest request, @RequestParam(value = "pageNum") Integer offset,
+                                           @RequestParam(value = "pageSize") Integer limit) {
+        final IPage<TestCase> iPage = caseService.pageList(request, offset, limit);
         Map<String, Object> map = new LinkedHashMap<>();
         map.put("total", iPage.getTotal());
         map.put("rows", CollectionUtils.isNotEmpty(iPage.getRecords()) ? new LinkedList<>(iPage.getRecords()) : new LinkedList<TestCase>());
