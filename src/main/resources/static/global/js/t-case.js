@@ -102,6 +102,13 @@ function disableCase() {
         showToast(300, "选择置为无效的测试用例数据");
         return;
     }
+    // 处理选择已被置为无效状态的测试用例数据
+    for (let i = 0; i < selections.length; i++) {
+        if (Object.is(1, selections[i].active)) {
+            showToast(300, "确认是否选择无效状态的测试用例");
+            return;
+        }
+    }
     forwardToConfirmModal('confirm-modal', '确认将选择的测试用例数据置为无效吗');
     $('#btn-confirm').on('click', function () {
         const ids = [];
