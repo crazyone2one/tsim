@@ -1,4 +1,5 @@
 /*bootstrap-table 插件相关js*/
+'use strict';
 let _table = $("#table");
 /**
  * 加载表格数据
@@ -7,14 +8,18 @@ let _table = $("#table");
  * @param columns 表格表头
  * @param parameters 请求参数
  * @param tableElement
+ * @param styleFlag
  * @returns {any}
  * @constructor
  */
-const InitTable = function (url, requestMethod, columns, parameters, tableElement) {
+const InitTable = function (url, requestMethod, columns, parameters, tableElement, styleFlag) {
+    let _rowStyle = {};
+    if (styleFlag) {
+        _rowStyle = rowStyle;
+    }
     if (tableElement) {
         _table = $(tableElement);
     }
-    console.log(_table);
     // 销毁表格
     _table.bootstrapTable("destroy");
     // 加载表格
@@ -28,6 +33,7 @@ const InitTable = function (url, requestMethod, columns, parameters, tableElemen
         toolbar: "#toolbar",
         cache: false,
         uniqueId: "id",
+        rowStyle: _rowStyle,
         // showRefresh: true,
         undefinedText: "-",
         pagination: true,
@@ -43,6 +49,11 @@ const InitTable = function (url, requestMethod, columns, parameters, tableElemen
     return InitTable;
 };
 
+/**
+ * 处理相应数据
+ * @param response
+ * @returns {{total: (number|PaymentItem|number|*), rows: ([]|SQLResultSetRowList|number|HTMLCollectionOf<HTMLTableRowElement>|string|*)}|{total: number, rows: *[]}}
+ */
 function responseHandler(response) {
     if (response) {
         if (Object.is(0, response.total)) {
@@ -75,21 +86,33 @@ function queryParams(params) {
     }
 }
 
+/**
+ * 刷新table数据
+ */
 function refresh_table() {
     _table.bootstrapTable('refresh');
 }
 
+/**
+ * 获取选择的数据
+ * @returns {*}
+ */
 function getSelections() {
     return _table.bootstrapTable('getSelections');
 }
 
-window.operateEvents = {
-    // 当点击 class=add 时触发
-    'click .add': function (e, value, row, index) {
-        // 在 console 打印出整行数据
-        console.log(row);
+/**
+ * 设置行颜色
+ * @param row
+ * @param index
+ * @returns {{css: {"background-color": string}}|{}}
+ */
+const rowStyle = (row, index) => {
+    if (row.active === 1) {
+        // 测试用例无效时，改变底色
+        return {css: {'background-color': '#797b7e'}};
     }
-};
-
+    return {};
+}
 
 
