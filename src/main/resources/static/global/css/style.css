@@ -881,3 +881,10 @@ td {
 }
 
 /*********modal style*/
+/* input标签只显示底部边框*/
+.line_under_input {
+    border-bottom: 1px solid #dbdbdb;
+    border-top: 0;
+    border-left: 0;
+    border-right: 0;
+}
