@@ -1,3 +1,5 @@
+
+'use strict';
 // Toggle the side navigation
 $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
     $("body").toggleClass("sidebar-toggled");
@@ -12,7 +14,14 @@ $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
  */
 const showToast = (code, msg) => {
     const $toast = $('.toast');
-    Object.is(200, code) ? $toast.addClass("bg-success") : $toast.addClass("bg-danger");
+    if (Object.is(200, code)) {
+        $toast.addClass("bg-success")
+    } else if (Object.is(300, code)) {
+        $toast.addClass("bg-warning");
+    } else {
+        $toast.addClass("bg-danger")
+    }
+    // Object.is(200, code) ? $toast.addClass("bg-success") : $toast.addClass("bg-danger");
     $(".toast-body").text(msg);
     $toast.toast('show');
 }
@@ -79,7 +88,7 @@ function autoComplete(url, idSelector, flag, needChange) {
  * @param formId
  */
 const resetModal = (modalId, formId) => {
-    $(modalId).modal('toggle');
+    // $(modalId).modal('toggle');
     $(modalId).on('hide.bs.modal', function () {
         formId && document.getElementById(formId).reset()
     });
@@ -137,3 +146,36 @@ $('#uploadFileBtn').click(function (e) {
             $('#attachmentId').val(tempMap.get('docId'));
         })
 })
+
+/**
+ * 设置select控件选中
+ * @param selectId select的id值
+ * @param checkValue 选中option的值
+ */
+const select_option_checked = (selectId, checkValue) => {
+    const select = document.getElementById(selectId);
+    for (let i = 0; i < select.options.length; i++) {
+        if (Object.is(Number(select.options[i].value), checkValue)) {
+            select.options[i].selected = true;
+            break;
+        }
+    }
+}
+/**
+ * 关闭模态框
+ * @param modalIdSelection
+ */
+const closeModal = (modalIdSelection) => {
+    $('#' + modalIdSelection).modal('hide');
+};
+/**
+ * 展示确认框
+ * @param modalIdSelection modal id
+ * @param replaceContent 需要替换的内容
+ */
+const forwardToConfirmModal = (modalIdSelection, replaceContent) => {
+    const elementById = document.getElementById(modalIdSelection);
+    const modalBody = elementById.getElementsByClassName("modal-body")[0];
+    $(modalBody).find('.replace-content').text(replaceContent);
+    $('#' + modalIdSelection).modal('show');
+}
