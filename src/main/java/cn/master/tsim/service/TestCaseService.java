@@ -37,7 +37,12 @@ public interface TestCaseService extends IService<TestCase> {
 
     List<TestCase> listTestCase(HttpServletRequest request, TestCase testCase, String projectId, String moduleId);
 
-    void updateCase(String caseId);
+    /**
+     * 测试用例设置为无效状态
+     *
+     * @param request HttpServletRequest
+     */
+    void disableCase(HttpServletRequest request);
 
     /**
      * 测试用例模块查询

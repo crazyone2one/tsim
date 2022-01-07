@@ -13,6 +13,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -26,6 +27,7 @@ import java.util.*;
  * @since 2021-09-22
  */
 @Service
+@Transactional(rollbackFor = {Exception.class, RuntimeException.class})
 public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> implements TestCaseService {
 
     private final ProjectService projectService;
@@ -65,6 +67,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 .priority(priority)
                 .stepStore(stepStore)
                 .resultStore(request.getParameter("resultStore"))
+                .delFlag(0)
                 .createDate(new Date()).build();
         baseMapper.insert(build);
         stepsService.saveStep(JSON.parseArray(stepStore), build.getId());
@@ -89,7 +92,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             final String[] results = c.getResultStore().split("\\n");
             JSONArray stepsJson = new JSONArray();
             for (int i = 0; i < steps.length; i++) {
-                Map<Integer, Map<String, String>> stepsMap = new LinkedHashMap<>();
+                Map<String, Map<String, String>> stepsMap = new LinkedHashMap<>();
                 Map<String, String> tempMap = new LinkedHashMap<>();
                 tempMap.put("t_s", steps[i]);
                 // 不太清楚这样处理是否正确
@@ -98,7 +101,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 } catch (ArrayIndexOutOfBoundsException e) {
                     tempMap.put("t_r", "");
                 }
-                stepsMap.put(i, tempMap);
+                stepsMap.put(""+i, tempMap);
                 stepsJson.add(stepsMap);
             }
 
@@ -107,7 +110,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             final TestCase build = TestCase.builder().active(0).projectId(project.getId()).moduleId(module.getId())
                     .name(c.getName()).description(c.getDescription()).precondition(c.getPrecondition())
                     .testMode(0).priority(c.getPriority()).stepStore(stepsJson.toJSONString())
-                    .resultStore("").createDate(new Date()).build();
+                    .resultStore("").delFlag(0).createDate(new Date()).build();
             baseMapper.insert(build);
 
             stepsService.saveStep(stepsJson, build.getId());
@@ -149,19 +152,27 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         final String caseName = request.getParameter("caseName");
         wrapper.lambda().like(StringUtils.isNotBlank(caseName), TestCase::getName, caseName);
 //            优先级
-//        if (Objects.nonNull(request.getPriority())) {
-//            wrapper.lambda().eq(TestCase::getPriority, request.getPriority());
-//        }
-//            是否删除
-//        wrapper.lambda().eq(Objects.nonNull(request.getActive()), TestCase::getActive, request.getActive());
+        final String priority = request.getParameter("priority");
+        if (StringUtils.isNotBlank(priority)) {
+            wrapper.lambda().eq(TestCase::getPriority, Integer.parseInt(priority));
+        }
+        final String active = request.getParameter("active");
+        if (StringUtils.isNotBlank(active)) {
+            wrapper.lambda().eq(TestCase::getActive, Integer.parseInt(active));
+        }
+        wrapper.lambda().eq(TestCase::getDelFlag, 0).orderByAsc(TestCase::getActive);
     }
 
     @Override
-    public void updateCase(String caseId) {
-        final TestCase aCase = getById(caseId);
-        aCase.setActive(Objects.equals(aCase.getActive(), 0) ? 1 : 0);
-        aCase.setUpdateDate(new Date());
-        baseMapper.updateById(aCase);
+    public void disableCase(HttpServletRequest request) {
+        final String ids = request.getParameter("ids");
+        final List<String> idList = JSONArray.parseArray(ids, String.class);
+        idList.forEach(t -> {
+            final TestCase testCase = baseMapper.selectById(t);
+            testCase.setActive(1);
+            testCase.setUpdateDate(new Date());
+            baseMapper.updateById(testCase);
+        });
     }
 
     @Override

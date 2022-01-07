@@ -20,52 +20,54 @@
                                                placeholder="项目名称（模糊查询）" aria-label="projectId"
                                                aria-describedby="basic-addon1">
                                     </div>
-                                    <div class="input-group mb-3 col-md-2" style="width:20%">
+                                    <div class="input-group mb-3 ms-2" style="width:20%">
                                         <span class="input-group-text" id="basic-addon2">所属模块</span>
                                         <input type="text" class="form-control" name="moduleId"
                                                placeholder="模块名称（模糊查询）"
                                                aria-label="moduleId" id="m-search"
                                                aria-describedby="basic-addon2">
                                     </div>
-                                    <div class="input-group mb-3 col-md-2" style="width:20%">
+                                    <div class="input-group mb-3 ms-2" style="width:20%">
                                         <span class="input-group-text" id="basic-addon3">测试用例标题</span>
                                         <input type="text" class="form-control" name="name" placeholder="标题（模糊查询）"
                                                aria-label="name" id="name-search"
                                                aria-describedby="basic-addon3">
                                     </div>
-                                    <select class="form-select mb-3 col-md-2" style="width:10%"
+                                    <select class="form-select mb-3 ms-2" style="width:6%"
                                             aria-label="priority" name="priority" id="priority-search">
-                                        <option th:value="' '" selected>测试用例优先级</option>
+                                        <option value="" selected>优先级</option>
                                         <option value="0">低</option>
                                         <option value="1">中</option>
                                         <option value="2">高</option>
                                     </select>
-                                    <select class="form-select mb-3 col-md-2" aria-label="active" name="active"
-                                            id="active-search" style="width:11%">
+                                    <select class="form-select mb-3 ms-2" aria-label="active" name="active"
+                                            id="active-search" style="width: 7%;">
+                                        <option value="" selected>是否有效</option>
                                         <option value="0">有效</option>
                                         <option value="1">无效</option>
                                     </select>
                                 </div>
-                                <div class="col-lg-2 col-md-4 col-sm-6">
-                                    <button type="button" id="search-button" class="btn hvr-grow"><i
-                                            class="bi bi-search"
-                                            style="color: cornflowerblue"></i>
+                                <div class="d-grid gap-2 d-md-block">
+                                    <button type="button" class="btn btn-primary btn-sm hvr-grow" id="search-button" title="查询">
+                                        <i class="bi bi-search"></i>
                                     </button>
-                                    <button type="button" class="btn"
-                                            data-bs-toggle="modal" data-bs-target="#add-case-modal"><i
-                                            class="bi bi-plus-circle hvr-grow"
-                                            style="color: cornflowerblue"></i>
+                                    <button type="button" class="btn btn-info btn-sm hvr-grow"
+                                            data-bs-toggle="modal" data-bs-target="#add-case-modal" title="添加">
+                                        <i class="bi bi-plus-circle"></i>
                                     </button>
-                                    <!--                                // 导出模板数据-->
-                                    <a class="btn btn-light mb-3 mb-lg-0 hvr-grow"
-                                       th:href="@{/case/download/test-case-template.xlsx}">
+                                    <!--                                    <button class="btn btn-sm btn-warning hvr-grow col-md-2" id="edit">编辑</button>-->
+                                    <!-- 导出模板数据-->
+                                    <a type="button" class="btn btn-primary hvr-grow btn-sm"
+                                            th:href="@{/case/downloadTemplate/test-case-template.xlsx}" title="模板下载">
                                         <i class="bi bi-download"></i>
                                     </a>
                                     <!--                                //导入数据-->
-                                    <a class="btn btn-light mb-3 mb-lg-0 hvr-grow" data-bs-toggle="modal"
-                                       data-bs-target="#uploadModal">
+                                    <button class="btn btn-primary hvr-grow btn-sm" data-bs-toggle="modal"
+                                            data-bs-target="#uploadModal" title="导入数据">
                                         <i class="bi bi-upload"></i>
-                                    </a>
+                                    </button>
+                                    <button class="btn btn-danger hvr-grow btn-sm" id="delete" title="删除"><i class="bi-trash"></i></button>
+                                    <button class="btn btn-warning hvr-grow btn-sm" id="disable" title="置为无效" onclick="disableCase()"><i class="bi-x-circle"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -89,6 +91,7 @@
         <div th:replace="~{test-case/uploadCase::uploadModal}"></div>
         <!--                    toast-->
         <div th:replace="/fragment/commons :: toast-div"></div>
+        <div th:replace="/fragment/commons :: confirm-modal"></div>
         <!-- Logout Modal-->
         <div th:replace="/fragment/commons :: logout"></div>
         <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
@@ -98,14 +101,16 @@
         <script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
         <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
         <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
-        <script type="text/javascript" th:src="@{/global/js/add-case.js}"></script>
+        <script type="text/javascript" th:src="@{/global/js/t-case.js}"></script>
         <script th:inline="javascript">
+
+            const editModalId = "#case-edit-modal";
             $(document).on('click', "#search-button", function () {
                 $('#table').bootstrapTable('refresh');
-
             });
             const _table_columns = [
-                {field: 'id', align: 'center', title: 'id', visible: false}, {
+                {field: 'id', align: 'center', title: 'id', visible: false},
+                {field: 'checked', checkbox: true, align: "center", width: '40'}, {
                     field: 'projectId',
                     align: 'center',
                     title: '所属项目',
@@ -160,20 +165,21 @@
                     formatter: function (value, row, index) {
                         let _priority = '';
                         switch (value) {
-                            case 1:
+                            case 0:
                                 _priority = "低";
                                 break
-                            case 2:
+                            case 1:
                                 _priority = "中";
                                 break
-                            case 3:
+                            case 2:
                                 _priority = "高";
                                 break
                         }
                         return _priority;
                     }
                 },
-                {title: '操作', align: 'center', field: 'id', class: 'col-sm-2', formatter: option,}]
+                {title: '操作', align: 'center', field: 'id', class: 'col-sm-3', formatter: option,}
+            ]
 
             function option(value, row, index) {
                 // return "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
@@ -210,15 +216,12 @@
 
             //查看测试用例数据
             function detailCase(id) {
-                $('#case-detail-modal').on('shown.bs.modal', function () {
+                $('#case-detail-modal').on('show.bs.modal', function () {
                     $.ajax({
-                            url: '/case/queryCase/',
+                            url: '/case/queryCase/' + id + '?time=' + new Date().getTime(),
                             type: 'post',
-                            data: JSON.stringify({
-                                id: id,
-                            }),
-                            dataType: 'JSON',
-                            // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                            // dataType: 'JSON',
+                            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                             success: function (arg) {
                                 $("#projectCode-d").val(arg['data'].project.projectName);
                                 $("#moduleId-d").val(arg['data'].module.moduleName);
@@ -238,15 +241,7 @@
                                         break
                                 }
                                 $("#priority-d").val(_priority);
-                                let _testMode = "";
-                                switch (arg['data'].testMode) {
-                                    case 0:
-                                        _testMode = "手动";
-                                        break
-                                    case 1:
-                                        _testMode = "自动";
-                                        break
-                                }
+                                let _testMode = Object.is(0, arg['data'].testMode) ? "手动" : "自动";
                                 $("#testMode-d").val(_testMode);
                                 // 填充测试步骤
                                 loadStepAndResult(arg);
@@ -256,43 +251,16 @@
                 })
             }
 
-            function loadStepAndResult(arg) {
-                $('#step-result > tbody').html("");
-                const tbody = $('#step-result').find('tbody');
-                const stepResults = arg['data'].caseSteps;
-                for (let i = 0; i < stepResults.length; i++) {
-                    const _temp = stepResults[i];
-                    const new_tr = $("<tr></tr>")
-                    const _id = _temp.id;
-                    const hiddenInput = $("<input name='id' id='id' type='hidden' value='" + _id + "'>");
-                    new_tr.append(hiddenInput);
-                    const _order = _temp.caseOrder;
-                    const order = $("<input name='caseOrder' id='caseOrder' type='hidden' value='" + _order + "'>");
-                    new_tr.append(order);
-                    const step_td = $("<td></td>")
-                    const _step = _temp.caseStep;
-                    step_td.text(_step);
-                    new_tr.append(step_td);
-                    const res_td = $("<td></td>")
-                    const _result = _temp.caseStepResult;
-                    res_td.text(_result)
-                    new_tr.append(res_td);
-                    tbody.append(new_tr);
-                }
-            }
-
             //todo 编辑测试用例
+
             function editCase(id) {
-                $('#case-edit-modal').on('shown.bs.modal', function () {
+                $(editModalId).on('shown.bs.modal', function () {
                     $.ajax({
-                            url: '/case/queryCase/',
+                            url: '/case/queryCase/' + id + "?time=" + new Date().getTime(),
                             type: 'post',
-                            data: JSON.stringify({
-                                id: id,
-                            }),
-                            dataType: 'JSON',
-                            // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                             success: function (arg) {
+                                $("#hidden-case-id").val(arg['data'].id);
                                 $("#hidden-project-id").val(arg['data'].project.id);
                                 $("#edit-case-project-name").val(arg['data'].project.projectName);
                                 $("#hidden-module-id").val(arg['data'].moduleId);
@@ -300,38 +268,49 @@
                                 $("#edit-case-title").val(arg['data'].name);
                                 $("#edit-case-description").val(arg['data'].description);
                                 $("#edit-case-precondition").val(arg['data'].precondition);
-                                let _priority = "";
-                                switch (arg['data'].priority) {
-                                    case 0:
-                                        _priority = "低";
-                                        break
-                                    case 1:
-                                        _priority = "中";
-                                        break
-                                    case 2:
-                                        _priority = "高";
-                                        break
-                                }
-                                $("#edit-case-priority").val(_priority);
-                                let _testMode = "";
-                                switch (arg['data'].testMode) {
-                                    case 0:
-                                        _testMode = "手动";
-                                        break
-                                    case 1:
-                                        _testMode = "自动";
-                                        break
-                                }
-                                $("#edit-case-testMode").val(_testMode);
+                                select_option_checked('edit-case-priority', arg['data'].priority);
+                                select_option_checked('edit-case-testMode', arg['data'].testMode);
                                 // 填充测试步骤
-                                const stepResults = arg['data'].caseSteps;
-                                function responseHandler(stepResults) {
-                                    return JSON.parse(stepResults)
-                                }
+                                const _steps = arg['data'].caseSteps;
+                                const case_div = document.getElementById('edit-case-step-table');
 
+                                for (let i = 0; i < _steps.length; i++) {
+                                    const _temp_step_item_div = document.createElement('div');
+                                    _temp_step_item_div.className = 'row';
+                                    _temp_step_item_div.id = 'row' + i;
+                                    // 测试用例步骤
+                                    const _temp_step_input = document.createElement('input');
+                                    _temp_step_input.className = "line_under_input";
+                                    _temp_step_input.style = "width: 47%";
+                                    _temp_step_input.id = "step" + i;
+                                    $(_temp_step_input).val(_steps[i].caseStep);
+                                    _temp_step_item_div.appendChild(_temp_step_input)
+                                    // 测试用例预期结果
+                                    const _temp_result_input = document.createElement('input');
+                                    _temp_result_input.className = "line_under_input";
+                                    _temp_result_input.style = "width: 47%";
+                                    _temp_result_input.id = "result" + i;
+                                    $(_temp_result_input).val(_steps[i].caseStepResult);
+                                    // 删除标签
+                                    const _temp_del_label = document.createElement('a');
+                                    // _temp_del_label.className = "position-absolute top-50 start-50";
+                                    _temp_del_label.style = "width: 6%;";
+                                    _temp_del_label.title = "移除本条";
+                                    const _temp_i_label = document.createElement('i');
+                                    _temp_i_label.className = "bi bi-backspace";
+                                    _temp_i_label.style = "color: #bb2d3b";
+                                    _temp_i_label.id = "remove" + i;
+                                    _temp_del_label.appendChild(_temp_i_label);
+
+                                    _temp_step_item_div.appendChild(_temp_step_input)
+                                    _temp_step_item_div.appendChild(_temp_result_input)
+                                    _temp_step_item_div.appendChild(_temp_del_label)
+                                    case_div.appendChild(_temp_step_item_div);
+                                }
                             }
                         }
                     )
+                    $(editModalId).off('shown.bs.modal');
                 })
             }
 
@@ -341,12 +320,14 @@
                     projectName: $('#p-search').val().trim(), // 自定义查询条件
                     moduleName: $('#m-search').val().trim(), // 自定义查询条件
                     caseName: $('#name-search').val().trim(), // 自定义查询条件
+                    priority: $('#priority-search').val(), // 优先级
+                    active: $('#active-search').val(), // 是否有效
                     pageSize: params.limit,
                     pageNum: params.offset / params.limit + 1,
 
                 }
             };
-            InitTable('/case/reloadTable', 'get', _table_columns, _search_params);
+            InitTable('/case/reloadTable', 'get', _table_columns, _search_params,'',true);
 
             autoComplete("/project/queryList", "p-search", 'p', false);
 
@@ -358,10 +339,18 @@
             $("#moduleId")[0].addEventListener("focus", function () {
                 autoComplete("/module/queryList/" + $("#c-a-p").attr("value"), "moduleId", 'm', false);
             });
-            $("#case-story")[0].addEventListener("focus", function () {
-                autoComplete("/story/queryList/" + $("#c-a-p").attr("value"), "case-story", 's', true);
-            });
 
+            // $("#case-story")[0].addEventListener("focus", function () {
+            //     autoComplete("/story/queryList/" + $("#c-a-p").attr("value"), "case-story", 's', true);
+            // });
+            // 编辑窗口关闭时清空数据。
+            $(editModalId)[0].addEventListener('hide.bs.modal', function () {
+                const className = document.getElementById('edit-case-step-table').getElementsByTagName('div');
+                for (let i = className.length - 1; i >= 0; i--) {
+                    className.item(i).remove();
+                }
+                document.getElementById('edit-case-form').reset();
+            })
         </script>
     </body>
 </html>

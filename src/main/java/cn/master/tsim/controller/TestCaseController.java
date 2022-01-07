@@ -82,21 +82,9 @@ public class TestCaseController {
         }
     }
 
-    @PostMapping(value = "/updateCaseStatus")
-    @ResponseBody
-    public ResponseResult updateCaseStatus(@RequestBody String arguments) {
-        try {
-            caseService.updateCase(arguments.split("=")[1]);
-            return ResponseUtils.success("数据修改成功");
-        } catch (Exception e) {
-            log.info(e.getMessage());
-            return ResponseUtils.error(400, "数据修改失败", e.getMessage());
-        }
-    }
-
     @RequestMapping(value = "loadCaseInfo")
     @ResponseBody
-    public ResponseResult loadCaseInfo(HttpServletRequest request,HttpServletResponse response) {
+    public ResponseResult loadCaseInfo(HttpServletRequest request, HttpServletResponse response) {
         try {
             final List<Project> projects = projectService.findByPartialProjectName("");
             for (Project project : projects) {
@@ -127,6 +115,7 @@ public class TestCaseController {
             return ResponseUtils.error(400, "数据查询错误", e.getMessage());
         }
     }
+
     @RequestMapping(value = "loadCaseByPlan/{planId}")
     @ResponseBody
     public Map<String, Object> loadCase(HttpServletRequest request, @PathVariable String planId) {
@@ -164,12 +153,11 @@ public class TestCaseController {
         return "redirect:/case/list";
     }
 
-    @PostMapping(value = "/queryCase")
+    @PostMapping(value = "/queryCase/{id}")
     @ResponseBody
-    public ResponseResult queryCase(HttpServletRequest request) {
+    public ResponseResult queryCase(HttpServletRequest request, @PathVariable String id) {
         try {
-            final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
-            final TestCase testCase = caseService.queryCaseById(String.valueOf(params.get("id")));
+            final TestCase testCase = caseService.queryCaseById(id);
             return ResponseUtils.success("数据查询成功", testCase);
         } catch (Exception e) {
             log.info(e.getMessage());
@@ -184,7 +172,7 @@ public class TestCaseController {
      * @param fileName fileName
      * @return cn.master.tsim.common.ResponseResult
      */
-    @RequestMapping("/download/{fileName:.+}")
+    @RequestMapping("/downloadTemplate/{fileName:.+}")
     @ResponseBody
     public ResponseResult downloadTemplate(HttpServletResponse response, @PathVariable("fileName") String fileName) {
         final String filePath = Objects.requireNonNull(this.getClass().getClassLoader().getResource("export")).getPath() + "/";
@@ -214,6 +202,17 @@ public class TestCaseController {
         } catch (IOException e) {
             e.printStackTrace();
             return ResponseUtils.error("模板下载失败");
+        }
+    }
+
+    @PostMapping("/disable")
+    @ResponseBody
+    public ResponseResult disableCase(HttpServletRequest request) {
+        try {
+            caseService.disableCase(request);
+            return ResponseUtils.success("数据更新成功");
+        } catch (Exception e) {
+            return ResponseUtils.error("数据更新失败");
         }
     }
 }
