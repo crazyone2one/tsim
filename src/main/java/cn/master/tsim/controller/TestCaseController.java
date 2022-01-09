@@ -154,7 +154,7 @@ public class TestCaseController {
         return "redirect:/case/list";
     }
 
-    @PostMapping(value = "/queryCase/{id}")
+    @RequestMapping(value = "/queryCase/{id}")
     @ResponseBody
     public ResponseResult queryCase(HttpServletRequest request, @PathVariable String id) {
         try {

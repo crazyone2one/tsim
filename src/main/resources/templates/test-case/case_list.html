@@ -216,10 +216,10 @@
 
             //查看测试用例数据
             function detailCase(id) {
-                $('#case-detail-modal').on('show.bs.modal', function () {
+                $('#case-detail-modal').on('shown.bs.modal', function () {
                     $.ajax({
                             url: '/case/queryCase/' + id + '?time=' + new Date().getTime(),
-                            type: 'post',
+                            type: 'get',
                             // dataType: 'JSON',
                             contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                             success: function (arg) {
