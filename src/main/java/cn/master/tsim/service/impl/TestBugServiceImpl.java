@@ -11,6 +11,7 @@ import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestBugService;
 import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -19,6 +20,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -52,6 +54,7 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
     }
 
     @Override
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
     public TestBug addBug(HttpServletRequest request, TestBug testBug) {
         final String tempStoryId = testBug.getStoryId();
         final TestBug build = TestBug.builder()
@@ -67,11 +70,6 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
             projectBugRefService.addItem(build.getProjectId(), build.getId(), build.getWorkDate(), tempStoryId);
         }
         return build;
-    }
-
-    @Override
-    public TestBug updateBug(TestBug testBug) {
-        return null;
     }
 
     @Override
@@ -119,6 +117,23 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
         }
     }
 
+    @Override
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
+    public ResponseResult batchDelete(HttpServletRequest request) {
+        try {
+            final List<String> idList = JSONArray.parseArray(request.getParameter("ids"), String.class);
+            idList.forEach(t->{
+                TestBug bug = baseMapper.selectById(t);
+                bug.setDelFlag(1);
+                bug.setUpdateDate(new Date());
+                baseMapper.updateById(bug);
+            });
+            return ResponseUtils.success("数据删除成功");
+        } catch (Exception e) {
+            return ResponseUtils.error(400,"数据删除失败", e.getMessage());
+        }
+    }
+
     private QueryWrapper<TestBug> getTestBugQueryWrapper(HttpServletRequest request) {
         QueryWrapper<TestBug> wrapper = new QueryWrapper<>();
         List<String> tempProjectId = new LinkedList<>();
@@ -139,6 +154,7 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
         }
 //        wrapper.lambda().eq(Objects.nonNull(request.getSeverity()), TestBug::getSeverity, request.getSeverity());
 //        wrapper.lambda().eq(Objects.nonNull(request.getBugStatus()), TestBug::getBugStatus, request.getBugStatus());
+        wrapper.lambda().eq(TestBug::getDelFlag, 0).orderByDesc(TestBug::getDelFlag);
         return wrapper;
     }
 }

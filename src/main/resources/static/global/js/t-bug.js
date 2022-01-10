@@ -52,3 +52,45 @@ function saveBug() {
         return o;
     }
 }
+
+/**
+ * 删除问题单。传id参数时，删除单条数据。不传id参数，可视为批量删除。
+ * @param id 问题单id
+ */
+function batchDelete(id) {
+    let replaceMsg = id ? '确认删除该数据吗' : "确认删除选择的数据吗";
+    const selections = getSelections();
+    // 批量删除时判断选择数据的个数
+    if (!id) {
+        if (selections.length === 0) {
+            showToast(300, "先选择需要删除的数据");
+            return;
+        }
+    }
+    forwardToConfirmModal('confirm-modal', replaceMsg);
+    $('#btn-confirm').on('click', function () {
+        const ids = [];
+        if (id) {
+            ids.push(id);
+        } else {
+            for (let i = 0; i < selections.length; i++) {
+                ids.push(selections[i].id);
+            }
+        }
+        $.ajax({
+            type: "post",
+            url: "/bug/batchDelete",
+            data: {ids: JSON.stringify(ids)},
+            // contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            success: function (result) {
+                if (Object.is(200, result['code'])) {
+                    // resetModal("#delModal", null);
+                    // $("#table_refresh").load("/project/reloadTable");
+                    $('#table').bootstrapTable('refresh');
+                }
+                showToast(result['code'], result['msg']);
+            }
+        });
+        closeModal('confirm-modal');
+    })
+}

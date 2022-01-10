@@ -52,8 +52,9 @@ public class TestBugController {
 
     @RequestMapping("/reloadTable")
     @ResponseBody
-    public Map<String, Object> reloadTable(HttpServletRequest request) {
-        final IPage<TestBug> iPage = bugService.pageListBug(request, 0, 0);
+    public Map<String, Object> reloadTable(HttpServletRequest request,@RequestParam(value = "pageNum") Integer offset,
+                                           @RequestParam(value = "pageSize") Integer limit) {
+        final IPage<TestBug> iPage = bugService.pageListBug(request, offset, limit);
         Map<String, Object> map = new HashMap<>(2);
         map.put("total", iPage.getTotal());
         map.put("rows", CollectionUtils.isNotEmpty(iPage.getRecords()) ? new LinkedList<>(iPage.getRecords()) : new LinkedList<TestBug>());
@@ -87,6 +88,12 @@ public class TestBugController {
     @ResponseBody
     public ResponseResult bugDetail(HttpServletRequest request, @PathVariable String id) {
         return bugService.getBugById(id);
+    }
+
+    @RequestMapping("/batchDelete")
+    @ResponseBody
+    public ResponseResult delete(HttpServletRequest request) {
+        return bugService.batchDelete(request);
     }
 }
 
