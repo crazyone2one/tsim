@@ -11,26 +11,22 @@
                     <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
                     <div class="container-fluid">
                         <div class="pt-2 border-bottom">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="input-group mb-3" style="width: fit-content">
-                                        <span class="input-group-text">所属项目</span>
-                                        <input type="text" class="form-control" name="projectName"
-                                               placeholder="项目名称（模糊查询）" id="p-search"
-                                               aria-label="projectId"
-                                               aria-describedby="basic-addon1">
-                                    </div>
-                                    <div class="col-lg-2 col-md-4 col-sm-6">
-                                        <button type="button" id="search-button" class="btn hvr-grow"><i
-                                                class="bi bi-search"
-                                                style="color: cornflowerblue"></i>
-                                        </button>
-                                        <button type="button" class="btn hvr-grow" data-bs-toggle="modal"
-                                                data-bs-target="#add-project-modal"><i
-                                                class="bi bi-plus-circle hvr-grow"
-                                                style="color: cornflowerblue"></i>
-                                        </button>
-                                    </div>
+                            <div class="btn-group mb-2" role="group" aria-label="search">
+                                <div class="input-group me-2" style="width: fit-content">
+                                    <span class="input-group-text">所属项目</span>
+                                    <input type="text" class="form-control" name="projectName"
+                                           placeholder="项目名称（模糊查询）" id="p-search"
+                                           aria-label="projectId"
+                                           aria-describedby="basic-addon1">
+                                </div>
+                                <div class="d-grid gap-2 d-md-block">
+                                    <button type="button" id="search-button" class="btn btn-primary hvr-grow">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info hvr-grow" data-bs-toggle="modal"
+                                            data-bs-target="#add-project-modal">
+                                        <i class="bi bi-plus-circle"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>

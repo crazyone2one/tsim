@@ -13,45 +13,41 @@
                     <div class="container-fluid">
                         <!--操作栏-->
                         <div class="pt-2 border-bottom">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="input-group mb-3" style="width: fit-content">
-                                        <span class="input-group-text" id="project">所属项目</span>
-                                        <input type="text" class="form-control" name="projectName"
-                                               placeholder="项目名称"
-                                               aria-label="project" aria-describedby="project"
-                                               id="p-search">
-                                    </div>
-                                    <div class="input-group mb-3 " style="width: fit-content">
-                                        <span class="input-group-text">测试计划名称</span>
-                                        <input type="text" class="form-control" name="name" placeholder="测试计划名称"
-                                               aria-label="name" id="plan-name"
-                                               aria-describedby="basic-addon3">
-                                    </div>
-                                    <div class="input-group mb-3 " style="width: fit-content">
-                                        <span class="input-group-text">测试计划描述</span>
-                                        <input type="text" class="form-control" name="description"
-                                               placeholder="测试计划描述（模糊查询）" id="plan-description"
-                                               aria-label="name"
-                                               aria-describedby="basic-addon3">
-                                    </div>
-                                    <select class="form-select mb-3" style="width: fit-content" aria-label="active"
-                                            name="delFlag">
-                                        <option th:value="''">结束状态</option>
-                                        <option value="0">未结束</option>
-                                        <option value="1">已结束</option>
-                                    </select>
-                                    <div class="col-lg-2 col-md-4 col-sm-6">
-                                        <button type="button" class="btn hvr-grow" id="search-button"><i
-                                                class="bi bi-search"
-                                                style="color: cornflowerblue"></i>
-                                        </button>
-                                        <button type="button" class="btn"
-                                                data-bs-toggle="modal" data-bs-target="#add-plan-modal"><i
-                                                class="bi bi-plus-circle hvr-grow"
-                                                style="color: cornflowerblue"></i>
-                                        </button>
-                                    </div>
+                            <div class="btn-group mb-2">
+                                <div class="input-group me-2" style="width: fit-content">
+                                    <span class="input-group-text" id="project">所属项目</span>
+                                    <input type="text" class="form-control" name="projectName"
+                                           placeholder="项目名称"
+                                           aria-label="project" aria-describedby="project"
+                                           id="p-search">
+                                </div>
+                                <div class="input-group me-2 " style="width: fit-content">
+                                    <span class="input-group-text">测试计划名称</span>
+                                    <input type="text" class="form-control" name="name" placeholder="测试计划名称"
+                                           aria-label="name" id="plan-name"
+                                           aria-describedby="basic-addon3">
+                                </div>
+                                <div class="input-group me-2 " style="width: fit-content">
+                                    <span class="input-group-text">测试计划描述</span>
+                                    <input type="text" class="form-control" name="description"
+                                           placeholder="测试计划描述（模糊查询）" id="plan-description"
+                                           aria-label="name"
+                                           aria-describedby="basic-addon3">
+                                </div>
+                                <select class="form-select me-2" style="width: fit-content" aria-label="active"
+                                        name="delFlag">
+                                    <option th:value="''">结束状态</option>
+                                    <option value="0">未结束</option>
+                                    <option value="1">已结束</option>
+                                </select>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary hvr-grow me-2" id="search-button">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info hvr-grow"
+                                            data-bs-toggle="modal" data-bs-target="#add-plan-modal">
+                                        <i class="bi bi-plus-circle hvr-grow"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>

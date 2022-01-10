@@ -12,62 +12,60 @@
                     <div class="container-fluid">
                         <!--操作栏-->
                         <div class="pt-2 border-bottom">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="input-group mb-3" style="width:15%">
-                                        <span class="input-group-text" id="basic-addon1">所属项目</span>
-                                        <input type="text" class="form-control" name="projectId" id="p-search"
-                                               placeholder="项目名称（模糊查询）" aria-label="projectId"
-                                               aria-describedby="basic-addon1">
-                                    </div>
-                                    <div class="input-group mb-3 ms-2" style="width:20%">
-                                        <span class="input-group-text" id="basic-addon2">所属模块</span>
-                                        <input type="text" class="form-control" name="moduleId"
-                                               placeholder="模块名称（模糊查询）"
-                                               aria-label="moduleId" id="m-search"
-                                               aria-describedby="basic-addon2">
-                                    </div>
-                                    <div class="input-group mb-3 ms-2" style="width:20%">
-                                        <span class="input-group-text" id="basic-addon3">测试用例标题</span>
-                                        <input type="text" class="form-control" name="name" placeholder="标题（模糊查询）"
-                                               aria-label="name" id="name-search"
-                                               aria-describedby="basic-addon3">
-                                    </div>
-                                    <select class="form-select mb-3 ms-2" style="width:6%"
-                                            aria-label="priority" name="priority" id="priority-search">
-                                        <option value="" selected>优先级</option>
-                                        <option value="0">低</option>
-                                        <option value="1">中</option>
-                                        <option value="2">高</option>
-                                    </select>
-                                    <select class="form-select mb-3 ms-2" aria-label="active" name="active"
-                                            id="active-search" style="width: 7%;">
-                                        <option value="" selected>是否有效</option>
-                                        <option value="0">有效</option>
-                                        <option value="1">无效</option>
-                                    </select>
+                            <div class="btn-group mb-2" role="group" aria-label="search">
+                                <div class="input-group me-2" style="width:15%">
+                                    <span class="input-group-text" id="basic-addon1">所属项目</span>
+                                    <input type="text" class="form-control" name="projectId" id="p-search"
+                                           placeholder="项目名称（模糊查询）" aria-label="projectId"
+                                           aria-describedby="basic-addon1">
                                 </div>
-                                <div class="d-grid gap-2 d-md-block">
-                                    <button type="button" class="btn btn-primary btn-sm hvr-grow" id="search-button" title="查询">
+                                <div class="input-group me-2" style="width:20%">
+                                    <span class="input-group-text" id="basic-addon2">所属模块</span>
+                                    <input type="text" class="form-control" name="moduleId"
+                                           placeholder="模块名称（模糊查询）"
+                                           aria-label="moduleId" id="m-search"
+                                           aria-describedby="basic-addon2">
+                                </div>
+                                <div class="input-group me-2" style="width:20%">
+                                    <span class="input-group-text" id="basic-addon3">测试用例标题</span>
+                                    <input type="text" class="form-control" name="name" placeholder="标题（模糊查询）"
+                                           aria-label="name" id="name-search"
+                                           aria-describedby="basic-addon3">
+                                </div>
+                                <select class="form-select me-2" style="width:6%"
+                                        aria-label="priority" name="priority" id="priority-search">
+                                    <option value="" selected>优先级</option>
+                                    <option value="0">低</option>
+                                    <option value="1">中</option>
+                                    <option value="2">高</option>
+                                </select>
+                                <select class="form-select me-2" aria-label="active" name="active"
+                                        id="active-search" style="width: 7%;">
+                                    <option value="" selected>是否有效</option>
+                                    <option value="0">有效</option>
+                                    <option value="1">无效</option>
+                                </select>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary hvr-grow me-2" id="search-button" title="查询">
                                         <i class="bi bi-search"></i>
                                     </button>
-                                    <button type="button" class="btn btn-info btn-sm hvr-grow"
+                                    <button type="button" class="btn btn-info hvr-grow me-2"
                                             data-bs-toggle="modal" data-bs-target="#add-case-modal" title="添加">
                                         <i class="bi bi-plus-circle"></i>
                                     </button>
                                     <!--                                    <button class="btn btn-sm btn-warning hvr-grow col-md-2" id="edit">编辑</button>-->
                                     <!-- 导出模板数据-->
-                                    <a type="button" class="btn btn-primary hvr-grow btn-sm"
+                                    <a type="button" class="btn btn-primary hvr-grow me-2"
                                             th:href="@{/case/downloadTemplate/test-case-template.xlsx}" title="模板下载">
                                         <i class="bi bi-download"></i>
                                     </a>
                                     <!--                                //导入数据-->
-                                    <button class="btn btn-primary hvr-grow btn-sm" data-bs-toggle="modal"
+                                    <button class="btn btn-primary hvr-grow me-2" data-bs-toggle="modal"
                                             data-bs-target="#uploadModal" title="导入数据">
                                         <i class="bi bi-upload"></i>
                                     </button>
-                                    <button class="btn btn-warning hvr-grow btn-sm" id="disable" title="置为无效" onclick="updateCase('disable')"><i class="bi-x-circle"></i></button>
-                                    <button class="btn btn-danger hvr-grow btn-sm" id="delete" title="删除" onclick="updateCase('del')"><i class="bi-trash"></i></button>
+                                    <button class="btn btn-warning hvr-grow me-2" id="disable" title="置为无效" onclick="updateCase('disable')"><i class="bi-x-circle"></i></button>
+                                    <button class="btn btn-danger hvr-grow" id="delete" title="删除" onclick="updateCase('del')"><i class="bi-trash"></i></button>
                                 </div>
                             </div>
                         </div>
@@ -184,7 +182,7 @@
             function option(value, row, index) {
                 // return "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
                 const d = '<button class="btn btn-sm-c btn-outline-info" data-bs-toggle="modal" data-bs-target="#case-detail-modal" onclick="detailCase(\'' + row.id + '\')">查看</button>';
-                const e = '<button disabled class="btn btn-sm-c btn-outline-info" data-bs-toggle="modal" data-bs-target="#case-edit-modal" onclick="editCase(\'' + row.id + '\')">编辑</button>'
+                const e = '<button class="btn btn-sm-c btn-outline-info" data-bs-toggle="modal" data-bs-target="#case-edit-modal" onclick="editCase(\'' + row.id + '\')">编辑</button>'
                 return e + d;
             }
 

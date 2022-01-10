@@ -15,15 +15,15 @@
                         <div class="pt-2 border-bottom">
                             <div class="card-body">
                                 <form th:action="@{list}" method="get">
-                                    <div class="row">
-                                        <div class="input-group mb-3" style="width: fit-content">
+                                    <div class="btn-group mb-2" role="group" aria-label="search">
+                                        <div class="input-group me-2" style="width: fit-content">
                                             <span class="input-group-text">所属项目</span>
                                             <input type="text" class="form-control" name="projectId"
                                                    placeholder="项目名称（模糊查询）" id="p-search"
                                                    aria-label="projectId"
                                                    aria-describedby="basic-addon1">
                                         </div>
-                                        <div class="input-group mb-3" style="width: fit-content">
+                                        <div class="input-group me-2" style="width: fit-content">
                                             <label class="input-group-text" for="finishStatus">完成状态</label>
                                             <select class="form-select" name="finishStatus" id="finishStatus">
                                                 <option th:value="''" selected>完成状态</option>
@@ -33,7 +33,7 @@
                                                 <option value="3">已回测</option>
                                             </select>
                                         </div>
-                                        <div class="input-group mb-3" style="width: fit-content">
+                                        <div class="input-group me-2" style="width: fit-content">
                                             <label class="input-group-text" for="workDate-search">任务时间</label>
                                             <select class="form-select" name="issueDate" id="workDate-search">
                                                 <option th:value="''" selected>任务时间</option>
@@ -42,14 +42,13 @@
                                                         th:text="${m}">
                                             </select>
                                         </div>
-                                        <div class="col-lg-2 col-md-4 col-sm-6">
-                                            <button type="submit" class="btn hvr-grow"><i class="bi bi-search"
-                                                                                          style="color: cornflowerblue"></i>
+                                        <div class="btn-group">
+                                            <button type="submit" class="btn btn-primary hvr-grow me-2">
+                                                <i class="bi bi-search"></i>
                                             </button>
-                                            <button type="button" class="btn"
-                                                    data-bs-toggle="modal" data-bs-target="#add-task-modal"><i
-                                                    class="bi bi-plus-circle hvr-grow"
-                                                    style="color: cornflowerblue"></i>
+                                            <button type="button" class="btn btn-primary hvr-grow"
+                                                    data-bs-toggle="modal" data-bs-target="#add-task-modal">
+                                                <i class="bi bi-plus-circle"></i>
                                             </button>
                                         </div>
                                     </div>

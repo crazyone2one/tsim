@@ -12,58 +12,56 @@
                     <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
                     <div class="container-fluid">
                         <div class="pt-2 border-bottom">
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="input-group mb-3" style="width: fit-content">
-                                        <span class="input-group-text" id="basic-addon1">所属项目</span>
-                                        <input type="text" class="form-control"
-                                               placeholder="项目名称（模糊查询）"
-                                               aria-label="projectId" id="p-search"
-                                               aria-describedby="basic-addon1">
-                                        <input type="hidden" name="projectId">
-                                    </div>
-                                    <div class="input-group mb-3" style="width: fit-content">
-                                        <span class="input-group-text" id="basic-addon2">所属模块</span>
-                                        <input type="text" class="form-control" name="moduleId"
-                                               placeholder="模块名称（模糊查询）" th:id="module-search"
-                                               aria-label="moduleId" id="m-search"
-                                               aria-describedby="basic-addon2">
-                                    </div>
-                                    <div class="input-group mb-3 " style="width: fit-content">
-                                        <span class="input-group-text" id="basic-addon3">问题描述</span>
-                                        <input type="text" class="form-control" name="title"
-                                               placeholder="问题描述（模糊查询）" th:id="title-search"
-                                               aria-label="title"
-                                               aria-describedby="basic-addon3">
-                                    </div>
-                                    <select class="form-select mb-3" style="width: fit-content"
-                                            aria-label="severity"
-                                            name="severity">
-                                        <option th:value="' '" selected>严重程度</option>
-                                        <option value="1">轻微</option>
-                                        <option value="2">一般</option>
-                                        <option value="3">严重</option>
-                                        <option value="4">致命</option>
-                                    </select>
-                                    <select class="form-select mb-3" style="width: fit-content"
-                                            aria-label="bugStatus"
-                                            name="bugStatus">
-                                        <option th:value="' '" selected>问题状态</option>
-                                        <option value="1">新建</option>
-                                        <option value="2">挂起</option>
-                                        <option value="3">已提交</option>
-                                        <option value="4">已解决</option>
-                                        <option value="5">非bug</option>
-                                    </select>
-                                    <div class="col-lg-2 col-md-4 col-sm-6">
-                                        <button type="button" class="btn hvr-grow" id="search-button">
-                                            <i class="bi bi-search" style="color: cornflowerblue"></i>
-                                        </button>
-                                        <button type="button" class="btn hvr-grow"
-                                                data-bs-toggle="modal" data-bs-target="#add-bug-modal"><i
-                                                class="bi bi-plus-circle" style="color: cornflowerblue"></i>
-                                        </button>
-                                    </div>
+                            <div class="btn-group mb-2">
+                                <div class="input-group me-2" style="width: fit-content">
+                                    <span class="input-group-text" id="basic-addon1">所属项目</span>
+                                    <input type="text" class="form-control"
+                                           placeholder="项目名称（模糊查询）"
+                                           aria-label="projectId" id="p-search"
+                                           aria-describedby="basic-addon1">
+                                    <input type="hidden" name="projectId">
+                                </div>
+                                <div class="input-group me-2" style="width: fit-content">
+                                    <span class="input-group-text" id="basic-addon2">所属模块</span>
+                                    <input type="text" class="form-control" name="moduleId"
+                                           placeholder="模块名称（模糊查询）" th:id="module-search"
+                                           aria-label="moduleId" id="m-search"
+                                           aria-describedby="basic-addon2">
+                                </div>
+                                <div class="input-group me-2 " style="width: fit-content">
+                                    <span class="input-group-text" id="basic-addon3">问题描述</span>
+                                    <input type="text" class="form-control" name="title"
+                                           placeholder="问题描述（模糊查询）" th:id="title-search"
+                                           aria-label="title"
+                                           aria-describedby="basic-addon3">
+                                </div>
+                                <select class="form-select me-2" style="width: fit-content"
+                                        aria-label="severity"
+                                        name="severity">
+                                    <option th:value="' '" selected>严重程度</option>
+                                    <option value="1">轻微</option>
+                                    <option value="2">一般</option>
+                                    <option value="3">严重</option>
+                                    <option value="4">致命</option>
+                                </select>
+                                <select class="form-select me-2" style="width: fit-content"
+                                        aria-label="bugStatus"
+                                        name="bugStatus">
+                                    <option th:value="' '" selected>问题状态</option>
+                                    <option value="1">新建</option>
+                                    <option value="2">挂起</option>
+                                    <option value="3">已提交</option>
+                                    <option value="4">已解决</option>
+                                    <option value="5">非bug</option>
+                                </select>
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-primary hvr-grow me-2" id="search-button">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-info hvr-grow"
+                                            data-bs-toggle="modal" data-bs-target="#add-bug-modal"><i
+                                            class="bi bi-plus-circle"></i>
+                                    </button>
                                 </div>
                             </div>
                         </div>
