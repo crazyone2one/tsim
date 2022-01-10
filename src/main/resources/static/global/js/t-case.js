@@ -24,6 +24,17 @@ function addCaseStep() {
         '                                        </div>')
 }
 
+const addEditStep = () => {
+    const caseStepArea = document.getElementById('edit-case-step-table');
+    let div_index = caseStepArea.getElementsByClassName("div").length;
+    // div_index++;
+    $(caseStepArea).append('<div class="row" id="row' + div_index + '">' +
+        '<input class="line_under_input" style="width: 47%;" id="step' + div_index + '">' +
+        '<input class="line_under_input" style="width: 47%;" id="result' + div_index + '">' +
+        '<a style="width: 6%;" title="移除本条"><i class="bi bi-backspace" style="color: #bb2d3b" id="remove' + div_index + '"></i></a>' +
+        '</div>');
+}
+
 /*删除测试步骤*/
 function removeCaseStep(obj) {
     const caseStepArea = document.getElementById("case-step-area");
@@ -35,7 +46,39 @@ function removeCaseStep(obj) {
     }
 }
 
-/*提交测试用例*/
+function saveEditCaseInfo() {
+    const p_div = document.getElementById("edit-case-step-table");
+    const s_div = p_div.getElementsByClassName("row");
+    const temp_steps = [];
+    for (let i = 0; i < s_div.length; i++) {
+        const temp_json = {};
+        temp_json['t_s'] = s_div[i].getElementsByTagName("input")[0].value;
+        temp_json['t_r'] = s_div[i].getElementsByTagName("input")[1].value;
+        const result = {};
+        result[i] = temp_json;
+        temp_steps.push(result);
+    }
+    const case_step = document.getElementById("editCaseSteps");
+    case_step.setAttribute("value", JSON.stringify(temp_steps));
+    const data = $("#edit-case-form").serialize();
+    console.log(data);
+    $.ajax({
+        url: "/case/save",
+        type: 'POST',
+        data: data,
+        // contentType: "application/json;charset=UTF-8",
+        dataType: 'JSON',
+        success: function (arg) {
+            if (Object.is(arg['code'], 200)) {
+                resetModal("case-edit-modal", "edit-case-form");
+                $('#case-edit-modal').modal('hide');
+                refresh_table();
+            }
+            showToast(arg['code'], arg['msg']);
+        }
+    });
+}
+/*保存测试用例*/
 function saveCaseInfo() {
     const p_div = document.getElementById("case-step-area");
     const s_div = p_div.getElementsByClassName("row");
@@ -92,6 +135,7 @@ function loadStepAndResult(arg) {
         tbody.append(new_tr);
     }
 }
+
 /**
  * 测试用例删除、置为无效
  * @param flag disable--置为无效，del--删除

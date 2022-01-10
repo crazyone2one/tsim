@@ -1,5 +1,6 @@
 package cn.master.tsim.service;
 
+import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.TestCase;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -22,10 +23,9 @@ public interface TestCaseService extends IService<TestCase> {
      * 保存测试用例
      *
      * @param request  HttpServletRequest
-     * @param testCase TestCase参数(暂用不到）
      * @return cn.master.tsim.entity.TestCase
      */
-    TestCase saveCase(HttpServletRequest request, TestCase testCase);
+    ResponseResult saveCase(HttpServletRequest request);
 
     /**
      * 导入数据

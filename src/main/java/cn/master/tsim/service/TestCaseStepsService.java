@@ -26,4 +26,6 @@ public interface TestCaseStepsService extends IService<TestCaseSteps> {
      */
     void saveStep(JSONArray stepsJson, String testCaseId);
 
+    void removeStepByCaseId(String id);
+
 }

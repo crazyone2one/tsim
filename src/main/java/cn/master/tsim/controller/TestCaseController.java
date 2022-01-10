@@ -75,8 +75,7 @@ public class TestCaseController {
     @ResponseBody
     public ResponseResult saveTestCase(HttpServletRequest request) {
         try {
-            final TestCase saveCase = caseService.saveCase(request, null);
-            return ResponseUtils.success("数据添加成功", saveCase);
+            return caseService.saveCase(request);
         } catch (Exception e) {
             log.error(e.getMessage());
             return ResponseUtils.error(400, "数据添加失败", e.getMessage());

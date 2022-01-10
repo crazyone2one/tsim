@@ -50,4 +50,11 @@ public class TestCaseStepsServiceImpl extends ServiceImpl<TestCaseStepsMapper, T
         });
     }
 
+    @Override
+    public void removeStepByCaseId(String id) {
+        QueryWrapper<TestCaseSteps> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(TestCaseSteps::getCaseId, id);
+        baseMapper.delete(wrapper);
+    }
+
 }

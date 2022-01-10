@@ -68,10 +68,12 @@
                                     </div>
                                 </div>
                                 <div>
-                                    <div>
-                                        <button id="edit-case-step-button" class="btn btn-info btn-sm ">添加测试步骤</button>
-                                    </div>
-                                    <input id="caseSteps" name="stepStore" type="hidden" class="form-control">
+<!--                                    todo 编辑时新增测试步骤-->
+<!--                                    <div>-->
+<!--                                        <button id="edit-case-step-button" class="btn btn-info btn-sm" onclick="addEditStep()">添加测试步骤</button>-->
+<!--                                    </div>-->
+
+                                    <input id="editCaseSteps" name="stepStore" type="hidden" class="form-control">
                                     <input id="caseExpectedResults" name="resultStore" type="hidden"
                                            class="form-control">
                                     <div id="edit-case-step-table">
@@ -80,7 +82,7 @@
                             </div>
                         </form>
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="submit">保存</button>
+                            <button type="button" class="btn btn-primary" id="submit" onclick="saveEditCaseInfo()">保存</button>
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
                         </div>
                     </div>

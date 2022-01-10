@@ -1,8 +1,10 @@
 package cn.master.tsim.service.impl;
 
+import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.*;
 import cn.master.tsim.mapper.TestCaseMapper;
 import cn.master.tsim.service.*;
+import cn.master.tsim.util.ResponseUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -51,7 +53,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     }
 
     @Override
-    public TestCase saveCase(HttpServletRequest request, TestCase testCase) {
+    public ResponseResult saveCase(HttpServletRequest request) {
         final String projectId = request.getParameter("projectId");
         final String moduleId = request.getParameter("moduleId");
         final String storyId = request.getParameter("storyId");
@@ -59,26 +61,52 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         final Project project = projectService.getProjectById(projectId);
         final Module module = moduleService.addModule(request, projectId, moduleId);
         final String stepStore = request.getParameter("stepStore");
-        TestCase build = TestCase.builder().active(0).projectId(project.getId()).moduleId(module.getId())
-                .name(request.getParameter("name"))
-                .description(request.getParameter("description"))
-                .precondition(request.getParameter("precondition"))
-                .testMode(0)
-                .priority(priority)
-                .stepStore(stepStore)
-                .resultStore(request.getParameter("resultStore"))
-                .delFlag(0)
-                .createDate(new Date()).build();
-        baseMapper.insert(build);
-        stepsService.saveStep(JSON.parseArray(stepStore), build.getId());
+        String name = request.getParameter("name");
+        String id = request.getParameter("id");
+        String description = request.getParameter("description");
+        String precondition = request.getParameter("precondition");
+        TestCase build = null;
+        String message;
+        Object object;
+        if (StringUtils.isNotBlank(id)) {
+            TestCase tempCase = getById(id);
+            tempCase.setName(name);
+            tempCase.setDescription(description);
+            tempCase.setPrecondition(precondition);
+            tempCase.setTestMode(Integer.parseInt(request.getParameter("testMode")));
+            tempCase.setPriority(priority);
+            tempCase.setStepStore(stepStore);
+            tempCase.setUpdateDate(new Date());
+            baseMapper.updateById(tempCase);
+            stepsService.removeStepByCaseId(id);
+            stepsService.saveStep(JSON.parseArray(stepStore), id);
+            message = "数据更新成功";
+            object = tempCase;
+        } else {
+            build = TestCase.builder().active(0).projectId(project.getId()).moduleId(module.getId())
+                    .name(name)
+                    .description(description)
+                    .precondition(precondition)
+                    .testMode(0)
+                    .priority(priority)
+                    .stepStore(stepStore)
+                    .resultStore(request.getParameter("resultStore"))
+                    .delFlag(0)
+                    .createDate(new Date()).build();
+            baseMapper.insert(build);
+            stepsService.saveStep(JSON.parseArray(stepStore), build.getId());
+            message = "数据添加成功";
+            object = build;
+        }
 //       关联需求时 t_project_case_ref表增加一条记录
         if (StringUtils.isNotBlank(storyId)) {
+            assert build != null;
             final int item = projectCaseRefService.addRefItem(projectId, storyId, build.getId(), "");
             final TestTaskInfo taskInfo = taskInfoService.queryItem(projectId, storyId);
             taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + item);
             taskInfoService.updateTask(request, taskInfo);
         }
-        return build;
+        return ResponseUtils.success(message, object);
     }
 
     @Override
@@ -101,7 +129,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 } catch (ArrayIndexOutOfBoundsException e) {
                     tempMap.put("t_r", "");
                 }
-                stepsMap.put(""+i, tempMap);
+                stepsMap.put("" + i, tempMap);
                 stepsJson.add(stepsMap);
             }
 
