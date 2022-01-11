@@ -13,9 +13,10 @@ let _table = $("#table");
  * @constructor
  */
 const InitTable = function (url, requestMethod, columns, parameters, tableElement, styleFlag) {
-    let _rowStyle = {};
+    // debugger;
+    let _rowStyle;
     if (styleFlag) {
-        _rowStyle = rowStyle;
+        _rowStyle = styleFlag;
     }
     if (tableElement) {
         _table = $(tableElement);
@@ -99,20 +100,6 @@ function refresh_table() {
  */
 function getSelections() {
     return _table.bootstrapTable('getSelections');
-}
-
-/**
- * 设置行颜色
- * @param row
- * @param index
- * @returns {{css: {"background-color": string}}|{}}
- */
-const rowStyle = (row, index) => {
-    if (row.active === 1) {
-        // 测试用例无效时，改变底色
-        return {css: {'background-color': '#797b7e'}};
-    }
-    return {};
 }
 
 
