@@ -1,224 +1,214 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="/fragment/commons :: common_header(~{::title},~{})">
-        <title>TSIM @ PROJECT</title>
-    </head>
-    <body id="tsim_body">
-        <div id="wrapper">
-            <ul th:replace="/fragment/commons :: sidebarMenu(flag='project')"></ul>
-            <div id="content-wrapper" class="d-flex flex-column">
-                <div id="content">
-                    <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
-                    <div class="container-fluid">
-                        <div class="pt-2 border-bottom">
-                            <div class="btn-group mb-2" role="group" aria-label="search">
-                                <div class="input-group me-2" style="width: fit-content">
-                                    <span class="input-group-text">所属项目</span>
-                                    <input type="text" class="form-control" name="projectName"
-                                           placeholder="项目名称（模糊查询）" id="p-search"
-                                           aria-label="projectId"
-                                           aria-describedby="basic-addon1">
-                                </div>
-                                <div class="d-grid gap-2 d-md-block">
-                                    <button type="button" id="search-button" class="btn btn-primary hvr-grow">
-                                        <i class="bi bi-search"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-info hvr-grow" data-bs-toggle="modal"
-                                            data-bs-target="#add-project-modal">
-                                        <i class="bi bi-plus-circle"></i>
-                                    </button>
-                                </div>
+<head th:replace="/fragment/commons :: common_header(~{::title},~{})">
+    <title>TSIM @ PROJECT</title>
+</head>
+<body id="tsim_body">
+<div id="wrapper">
+    <ul th:replace="/fragment/commons :: sidebarMenu(flag='project')"></ul>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
+            <div class="container-fluid">
+                <div class="pt-2 border-bottom">
+                    <form id="search-form">
+                        <div class="btn-group mb-2" role="group" aria-label="search">
+                            <div class="input-group me-2" style="width: fit-content">
+                                <span class="input-group-text">所属项目</span>
+                                <input type="text" class="form-control" name="projectName"
+                                       placeholder="项目名称（模糊查询）" id="p-search"
+                                       aria-label="projectId"
+                                       aria-describedby="basic-addon1">
                             </div>
-                        </div>
-
-                        <div id="table_refresh" th:fragment="table_refresh">
-                            <table id="table" class="table table-hover"></table>
-                        </div>
-                        <!--                        <div th:replace="/fragment/commons :: pagination01"></div>-->
-                        <!--                    toast-->
-                        <div th:replace="/fragment/commons :: toast-div"></div>
-                    </div>
-                </div>
-                <footer th:replace="/fragment/commons :: footer"></footer>
-            </div>
-
-        </div>
-
-        <div class="modal fade" id="add-project-modal" tabindex="-1" role="dialog"
-             aria-labelledby="ModalTitle"
-             aria-hidden="true" data-bs-backdrop="static">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <form class="modal-content" id="addProjectForm" autocomplete="off">
-                        <div class="modal-header pb-0 border-0 justify-content-end">
-                            <h5 class="modal-title" id="staticBackdropLabel">新增项目</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                    aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="box-body">
-                                <div class="form-group">
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text" id="basic-addon1">项目名称</span>
-                                        <input type="text" name="projectName" id="add-pro"
-                                               class="form-control"
-                                               placeholder="输入项目名"
-                                               aria-label="Username" aria-describedby="basic-addon1"
-                                               required>
-                                        <div class="invalid-feedback">
-                                            请输入项目名称.
-                                        </div>
-                                    </div>
-                                </div>
+                            <div class="d-grid gap-2 d-md-block">
+                                <button type="button" id="search-button" class="btn btn-primary hvr-grow">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                                <button type="button" class="btn btn-info hvr-grow" data-bs-toggle="modal"
+                                        data-bs-target="#add-project-modal">
+                                    <i class="bi bi-plus-circle"></i>
+                                </button>
+                                <button type="button" class="btn btn-secondary hvr-grow " id="reset-button"
+                                        title="重置搜索">
+                                    <i class="bi-arrow-clockwise"></i>
+                                </button>
                             </div>
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" id="save-pro">保存</button>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消
-                            </button>
                         </div>
                     </form>
                 </div>
+
+                <div id="table_refresh" th:fragment="table_refresh">
+                    <table id="table" class="table table-hover"></table>
+                </div>
+                <!--                        <div th:replace="/fragment/commons :: pagination01"></div>-->
+                <!--                    toast-->
+                <div th:replace="/fragment/commons :: toast-div"></div>
             </div>
         </div>
-        <!-- Modal -->
-        <div class="modal fade" id="delModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="exampleModalLabel">删除确认框</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body">
-                        删除数据？
-                    </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消</button>
-                        <button type="button" class="btn btn-primary" id="delete-pro">删除</button>
+        <footer th:replace="/fragment/commons :: footer"></footer>
+    </div>
+
+</div>
+
+<div class="modal fade" id="add-project-modal" tabindex="-1" role="dialog"
+     aria-labelledby="ModalTitle"
+     aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <form class="modal-content" id="addProjectForm" autocomplete="off">
+                <div class="modal-header pb-0 border-0 justify-content-end">
+                    <h5 class="modal-title" id="staticBackdropLabel">新增项目</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="box-body">
+                        <div class="form-group">
+                            <div class="input-group mb-3">
+                                <span class="input-group-text" id="basic-addon1">项目名称</span>
+                                <input type="text" name="projectName" id="add-pro"
+                                       class="form-control"
+                                       placeholder="输入项目名"
+                                       aria-label="Username" aria-describedby="basic-addon1"
+                                       required>
+                                <div class="invalid-feedback">
+                                    请输入项目名称.
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-            </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="save-pro">保存</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消
+                    </button>
+                </div>
+            </form>
         </div>
-        <div th:replace="/fragment/commons :: logout"></div>
-        <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
-        <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.js}"></script>
-        <!--        <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>-->
-        <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
-        <script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
-        <script>
-            // autoComplete("/project/queryList", "p-search", 'p', false);
-            $("#save-pro").click(function () {
-                removeClass("#myToast", "bg-success");
-                removeClass("#myToast", "bg-danger");
-                const pro_name = $("#add-pro").val();
-                if (pro_name) {
-                    removeClass('#add-pro', "is-invalid");
-                    $.ajax({
-                        url: "/project/checkProject/" + pro_name,
-                        type: "get",
-                        sync: false,
-                        success: function (data) {
-                            if (Object.is(200, data['code'])) {
-                                $.ajax({
-                                    url: "/project/addProject",
-                                    type: "post",
-                                    data: {"name": $("#add-pro").val()},
-                                    dataType: 'JSON',
-                                    // contentType: "application/json; charset=utf-8",
-                                    sync: false,
-                                    success: function (result) {
-                                        if (Object.is(200, result['code'])) {
-                                            resetModal("#add-project-modal", "addProjectForm");
-                                            // $("#table_refresh").load("/project/reloadTable");
-                                            $('#table').bootstrapTable('refresh');
-                                        }
-                                        showToast(result['code'], result['msg']);
-                                    }
-                                })
-                            } else {
-                                showToast(data['code'], data['msg']);
+    </div>
+</div>
+<div th:replace="/fragment/commons :: logout"></div>
+<div th:replace="/fragment/commons :: confirm-modal"></div>
+<script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
+<script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.js}"></script>
+<!--        <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>-->
+<script type="text/javascript" th:src="@{/global/js/common.js}"></script>
+<script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
+<script>
+    // autoComplete("/project/queryList", "p-search", 'p', false);
+    $("#save-pro").click(function () {
+        removeClass("#myToast", "bg-success");
+        removeClass("#myToast", "bg-danger");
+        const pro_name = $("#add-pro").val();
+        if (pro_name) {
+            removeClass('#add-pro', "is-invalid");
+            $.ajax({
+                url: "/project/checkProject/" + pro_name,
+                type: "get",
+                sync: false,
+                success: function (data) {
+                    if (Object.is(200, data['code'])) {
+                        $.ajax({
+                            url: "/project/addProject",
+                            type: "post",
+                            data: {"name": $("#add-pro").val()},
+                            dataType: 'JSON',
+                            // contentType: "application/json; charset=utf-8",
+                            sync: false,
+                            success: function (result) {
+                                if (Object.is(200, result['code'])) {
+                                    resetModal("#add-project-modal", "addProjectForm");
+                                    // $("#table_refresh").load("/project/reloadTable");
+                                    $('#add-project-modal').modal('hide');
+                                    $('#table').bootstrapTable('refresh');
+                                }
+                                showToast(result['code'], result['msg']);
                             }
-                        }
-                    });
-                } else {
-                    $('#add-pro').addClass("is-invalid");
+                        })
+                    } else {
+                        showToast(data['code'], data['msg']);
+                    }
+                }
+            });
+        } else {
+            $('#add-pro').addClass("is-invalid");
+        }
+    })
+
+    /**
+     * 项目置为无效状态
+     * @param id
+     */
+    function delPro(id) {
+        forwardToConfirmModal('confirm-modal', '确认置为无效状态吗');
+        $("#btn-confirm").on('click',function () {
+            $.ajax({
+                url: "/project/del/" + id,
+                type: "post",
+                success: function (result) {
+                    if (Object.is(200, result['code'])) {
+                        $('#table').bootstrapTable('refresh');
+                    }
+                    showToast(result['code'], result['msg']);
                 }
             })
+            $('#confirm-modal').modal('hide');
+        })
+    }
 
-            /**
-             * 删除项目
-             * @param id
-             */
-            function delPro(id) {
-                $("#delModal").modal('show');
-                $("#delete-pro").click(function () {
-                    $.ajax({
-                        url: "/project/del/" + id,
-                        type: "post",
-                        success: function (result) {
-                            if (Object.is(200, result['code'])) {
-                                resetModal("#delModal", null);
-                                // $("#table_refresh").load("/project/reloadTable");
-                                $('#table').bootstrapTable('refresh');
-                            }
-                            showToast(result['code'], result['msg']);
-                        }
-                    })
-                })
-            }
+    const columns = [
+        {field: 'id', align: 'center', title: 'id', visible: false}, {
+            field: 'projectName',
+            align: 'center',
+            title: '项目名',
+            class: 'col-sm-6'
+        }, {
+            field: 'refModuleCount',
+            align: 'center',
+            title: '关联模块',
+            formatter: refLinkFormatter,
+            class: 'col-sm-6'
+        }, {
+            field: 'refCaseCount',
+            align: 'center',
+            title: '关联测试用例',
+            formatter: refLinkFormatter,
+            class: 'col-sm-6'
+        }, {
+            field: 'refBugCount',
+            align: 'center',
+            title: '关联bug',
+            formatter: refLinkFormatter,
+            class: 'col-sm-6'
+        }, {title: '操作', align: 'center', field: 'id', class: 'col-sm-6', formatter: option,}]
+    const params = function (params) {
+        return {
+            projectName: $('#p-search').val().trim(), // 自定义查询条件
+            pageSize: params.limit,
+            pageNum: params.offset / params.limit + 1,
 
-            // 搜索查询按钮触发事件
-            //查询
-            $(document).on('click', "#search-button", function () {
-                $('#table').bootstrapTable('refresh');
+        }
+    };
+    const _rowStyle = (row, index) => {
+        if (row.delFlag === 1) {
+            // 无效时，改变底色
+            return {css: {'background-color': '#95aac9'}};
+        }
+        return {};
+    }
+    InitTable('/project/loadProject', "get", columns, params, "", _rowStyle);
 
-            });
-
-            const columns = [
-                {field: 'id', align: 'center', title: 'id', visible: false}, {
-                    field: 'projectName',
-                    align: 'center',
-                    title: '项目名',
-                    class: 'col-sm-6'
-                }, {
-                    field: 'refModuleCount',
-                    align: 'center',
-                    title: '关联模块',
-                    formatter: refLinkFormatter,
-                    class: 'col-sm-6'
-                }, {
-                    field: 'refCaseCount',
-                    align: 'center',
-                    title: '关联测试用例',
-                    formatter: refLinkFormatter,
-                    class: 'col-sm-6'
-                }, {
-                    field: 'refBugCount',
-                    align: 'center',
-                    title: '关联bug',
-                    formatter: refLinkFormatter,
-                    class: 'col-sm-6'
-                }, {title: '操作', align: 'center',field: 'id', class: 'col-sm-6', formatter: option,}]
-            const params = function (params) {
-                return {
-                    projectName: $('#p-search').val().trim(), // 自定义查询条件
-                    pageSize: params.limit,
-                    pageNum: params.offset / params.limit + 1,
-
-                }
-            };
-            InitTable('/project/loadProject', "get", columns, params);
-
-            function option(value, row, index) {
-                // return "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
-                return '<a href="#" id="del-project" onclick="delPro(\'' + row.id + '\')">删除</a>';
-            }
-
-            function refLinkFormatter(value, row, index) {
-                return "<a href='#'>" + value + "</a>";
-            }
-        </script>
-    </body>
+    function option(value, row, index) {
+        if (row.delFlag === 0) {
+            return '<button class="btn btn-sm btn-warning" id="del-project" onclick="delPro(\'' + row.id + '\')"><i class="bi-bell"></i></button>';
+        }
+        return '<button disabled class="btn btn-sm btn-warning" id="undel" onclick="delPro(\'' + row.id + '\')"><i class="bi-bell-slash"></i></button>';
+    }
+    function refLinkFormatter(value, row, index) {
+        return "<a href='#'>" + value + "</a>";
+    }
+</script>
+</body>
 </html>

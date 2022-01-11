@@ -89,7 +89,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = {Exception.class,RuntimeException.class})
     public Project saveProject(String projectName) {
         final Project build = Project.builder().projectName(projectName)
                 .projectCode(UuidUtils.generate())
@@ -102,7 +102,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = {Exception.class,RuntimeException.class})
     public int deleteProject(String projectId) {
         final Project project = getProjectById(projectId);
         project.setDelFlag(1);
@@ -111,7 +111,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     }
 
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @Transactional(rollbackFor = {Exception.class,RuntimeException.class})
     public void updateProjectStatus(String projectId) {
         final Project project = getProjectById(projectId);
         project.setDelFlag(Objects.equals(project.getDelFlag(), 0) ? 1 : 0);
@@ -124,7 +124,8 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         QueryWrapper<Project> wrapper = new QueryWrapper<>();
         //               根据项目名称模糊查询
         wrapper.lambda().like(StringUtils.isNotBlank(projectName), Project::getProjectName, projectName);
-        wrapper.lambda().eq(Project::getDelFlag, 0);
+//        wrapper.lambda().eq(Project::getDelFlag, 0);
+        wrapper.lambda().orderByAsc(Project::getDelFlag);
         final IPage<Project> iPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize), wrapper);
         iPage.getRecords().forEach(temp -> {

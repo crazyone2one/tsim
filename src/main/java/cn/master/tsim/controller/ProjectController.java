@@ -51,21 +51,6 @@ public class ProjectController {
         return "project/project_list";
     }
 
-    /**
-     * 重新加载列表
-     *
-     * @param model   Model
-     * @param project Project
-     * @return java.lang.String
-     */
-    @Deprecated
-    @RequestMapping("/reloadTable")
-    public String reloadTable(Model model, Project project) {
-        final IPage<Project> iPage = projectService.projectListPages(null, "", 0, 0);
-        model.addAttribute("iPage", iPage);
-        return "project/project_list :: table_refresh";
-    }
-
     @RequestMapping("/loadProject")
     @ResponseBody
     public Map<String, Object> loadProject(HttpServletRequest request,
@@ -123,9 +108,20 @@ public class ProjectController {
     @ResponseBody
     public ResponseResult deleteProject(@PathVariable String id) {
         try {
-            return ResponseUtils.success("数据删除成功", projectService.deleteProject(id));
+            return ResponseUtils.success("数据更新成功", projectService.deleteProject(id));
         } catch (Exception e) {
-            return ResponseUtils.error(400, "数据删除失败", e.getMessage());
+            return ResponseUtils.error(400, "数据更新失败", e.getMessage());
+        }
+    }
+
+    @PostMapping(value = "/updateStatus/{id}")
+    @ResponseBody
+    public ResponseResult updateStatus(HttpServletRequest request,@PathVariable String id) {
+        try {
+            projectService.updateProjectStatus(id);
+            return ResponseUtils.success("数据更新成功");
+        } catch (Exception e) {
+            return ResponseUtils.error(400, "数据更新失败", e.getMessage());
         }
     }
 
