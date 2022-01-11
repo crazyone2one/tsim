@@ -2,8 +2,9 @@
 // Toggle the side navigation
 $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
     $("body").toggleClass("sidebar-toggled");
-    $(".sidebar").toggleClass("toggled");
-    $(".sidebar").hasClass("toggled") && $('.sidebar .collapse').collapse('hide')
+    const $sidebar = $(".sidebar");
+    $sidebar.toggleClass("toggled");
+    $sidebar.hasClass("toggled") && $('.sidebar .collapse').collapse('hide')
 });
 
 /**
@@ -118,6 +119,7 @@ $('#uploadFileBtn').click(function (e) {
     $(this).attr('disabled', true);
     const formData = new FormData();
     formData.append("file", $('#inputGroupFile04')[0].files[0]);
+    const $progressbar = $('#progressbar');
     $.ajax({
         url: "/story/upload",
         type: 'post',
@@ -128,14 +130,14 @@ $('#uploadFileBtn').click(function (e) {
             const xhr = $.ajaxSettings.xhr();
             xhr.upload.onprogress = function (event) {
                 const perc = Math.round((event.loaded / event.total) * 100);
-                $('#progressbar').text(perc + "%");
-                $('#progressbar').css('width', perc + "%");
+                $progressbar.text(perc + "%");
+                $progressbar.css('width', perc + "%");
             };
             return xhr;
         },
         beforeSend: function (xhr) {
-            $('#progressbar').text('');
-            $('#progressbar').css('width', "0%");
+            $progressbar.text('');
+            $progressbar.css('width', "0%");
         }
     })
         .done(function (result) {
@@ -178,3 +180,16 @@ const forwardToConfirmModal = (modalIdSelection, replaceContent) => {
     $(modalBody).find('.replace-content').text(replaceContent);
     $('#' + modalIdSelection).modal('show');
 }
+/**
+ * 查询操作
+ */
+$(document).on('click', "#search-button", function () {
+    $('#table').bootstrapTable('refresh');
+});
+/**
+ * 重置操作
+ */
+$(document).on('click', "#reset-button", function () {
+    $('#search-form')[0].reset();
+    $('#table').bootstrapTable('refresh');
+});
