@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50732
 File Encoding         : 65001
 
-Date: 2022-01-05 09:12:02
+Date: 2022-01-11 11:29:03
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -36,9 +36,14 @@ CREATE TABLE `t_bug` (
   `id` varchar(36) NOT NULL COMMENT '主键id',
   `project_id` varchar(36) NOT NULL DEFAULT '' COMMENT '项目id',
   `module_id` varchar(36) NOT NULL DEFAULT '' COMMENT '模块 id',
-  `title` varchar(100) NOT NULL DEFAULT '' COMMENT '标题',
-  `severity` int(11) NOT NULL DEFAULT '1' COMMENT '严重程度(1:轻微,2:一般,3:严重,4:致命)',
   `func` varchar(100) NOT NULL DEFAULT '' COMMENT '功能点',
+  `title` varchar(100) NOT NULL DEFAULT '' COMMENT '标题',
+  `reproduce_steps` varchar(255) DEFAULT '' COMMENT '问题复现步骤',
+  `expect_result` varchar(255) DEFAULT '' COMMENT '预期结果',
+  `actual_result` varchar(255) DEFAULT '' COMMENT '实际结果',
+  `bug_description` varchar(255) DEFAULT '' COMMENT '问题单内容描述',
+  `bug_recurrence_probability` int(10) DEFAULT '1' COMMENT '复现概率',
+  `severity` int(11) NOT NULL DEFAULT '1' COMMENT '严重程度(1:轻微,2:一般,3:严重,4:致命)',
   `bug_status` int(11) NOT NULL DEFAULT '1' COMMENT '状态（1,新增 2，挂起 3，已提交 4，已解决 5 非bug）',
   `note` varchar(100) NOT NULL DEFAULT '' COMMENT '备注内容',
   `tester` varchar(36) NOT NULL DEFAULT '' COMMENT '测试人员',
