@@ -71,7 +71,7 @@ public class PlanCaseRefServiceImpl extends ServiceImpl<PlanCaseRefMapper, PlanC
                 .moduleId(bugInfo.get("moduleId")).title(bugInfo.get("title")).severity(Integer.parseInt(bugInfo.get("severity")))
                 .func(bugInfo.get("func")).bugStatus(Integer.parseInt(bugInfo.get("bugStatus"))).note(bugInfo.get("note")).tester(bugInfo.get("tester"))
                 .build();
-        final TestBug testBug = bugService.addBug(request, build);
+        final TestBug testBug = bugService.saveOrUpdateBug(request, build);
         final Map<String, Object> planCase = JacksonUtils.convertValue(params.get("plan_case"), new TypeReference<Map<String, Object>>() {
         });
 //        更新关系数据
