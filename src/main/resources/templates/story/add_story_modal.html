@@ -41,16 +41,24 @@
                                         <div id="emailHelp" class="form-text">若有需求文件，先上传文件.</div>
                                     </div>
                                     <input type="hidden" name="docId" id="attachmentId">
-                                    <div class="input-group mb-3">
-                                        <label for="workDate" class="input-group-text">需求日期</label>
-                                        <select class="form-select" name="workDate" id="workDate" required>
-                                            <option th:each="m:${monthList}"
-                                                    th:value="${m}"
-                                                    th:text="${m}">
-                                        </select>
+                                    <div class="btn-group mb-3">
+                                        <div class="input-group me-5 ">
+                                            <label for="workDate" class="input-group-text">需求日期</label>
+                                            <select class="form-select" name="workDate" id="workDate" required>
+                                                <option th:each="m:${monthList}"
+                                                        th:value="${m}"
+                                                        th:text="${m}">
+                                            </select>
+                                        </div>
+                                        <div class="input-group me-auto">
+                                            <label for="storyStatus" class="input-group-text">完成状态</label>
+                                            <select class="form-select" name="storyStatus" id="storyStatus" required>
+                                                <option value="0">未完成</option>
+                                                <option value="1">已完成</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-primary" id="submit">确定</button>

@@ -55,7 +55,7 @@ public class TestStory implements Serializable {
     @TableField(exist = false)
     private DocInfo docInfo;
     /**
-     * 完成状态(0:未结束，1：已结束)
+     * 删除状态(0:未删除，1：已删除)
      */
     @TableField("del_flag")
     private Integer delFlag;
@@ -68,4 +68,6 @@ public class TestStory implements Serializable {
 
     @TableField(exist = false)
     private Project project;
+    @TableField("story_status")
+    private Integer storyStatus;
 }

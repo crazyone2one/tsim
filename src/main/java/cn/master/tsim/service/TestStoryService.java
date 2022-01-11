@@ -74,6 +74,8 @@ public interface TestStoryService extends IService<TestStory> {
      */
     ResponseResult upload(HttpServletRequest request, MultipartFile file);
 
+    ResponseResult batchDelete(HttpServletRequest request);
+
     /**
      * 下载需求文件
      *

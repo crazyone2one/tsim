@@ -53,20 +53,14 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         List<String> tempProp = new LinkedList<>();
         // 按照项目模糊查询
         final String projectName = request.getParameter("projectName");
-        if (StringUtils.isNotBlank(projectName)) {
-            projectService.findByPartialProjectName(projectName).forEach(temp -> tempProp.add(temp.getId()));
-            wrapper.lambda().in(TestStory::getProjectId, tempProp);
-        }
+        wrapper.lambda().inSql(StringUtils.isNotBlank(projectName),TestStory::getProjectId, "select id from t_project where project_name like '%" + projectName + "%'");
 //        按照需求内容模糊查询
         final String storyDesc = request.getParameter("storyDesc");
-        if (StringUtils.isNotBlank(storyDesc)) {
-            wrapper.lambda().like(TestStory::getDescription, storyDesc);
-        }
+        wrapper.lambda().like(StringUtils.isNotBlank(storyDesc),TestStory::getDescription, storyDesc);
 //        按照需求完成状态查询
-//        if (Objects.nonNull(request.getDelFlag())) {
-//            wrapper.lambda().eq(TestStory::getDelFlag, request.getDelFlag());
-//        }
-        wrapper.lambda().orderByAsc(TestStory::getDelFlag);
+        String status = request.getParameter("status");
+        wrapper.lambda().eq(StringUtils.isNotBlank(status),TestStory::getStoryStatus, status);
+        wrapper.lambda().eq(TestStory::getDelFlag,0).orderByAsc(TestStory::getStoryStatus);
         Page<TestStory> storyPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
@@ -74,7 +68,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
             if (StringUtils.isNotBlank(t.getDocId())) {
                 t.setDocInfo(docInfoService.queryDocById(t.getDocId()));
             }
-            t.setProjectId(projectService.getProjectById(t.getProjectId()).getProjectName());
+            t.setProject(projectService.getProjectById(t.getProjectId()));
         });
         return storyPage;
     }
@@ -88,10 +82,13 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
                 testStory.setDescription(story.getDescription());
                 testStory.setUpdateDate(new Date());
                 testStory.setWorkDate(story.getWorkDate());
+                testStory.setStoryStatus(story.getStoryStatus());
                 baseMapper.updateById(testStory);
                 final TestTaskInfo itemByProject = taskInfoService.queryItem(story.getProjectId(), story.getId());
                 itemByProject.setUpdateDate(new Date());
                 itemByProject.setIssueDate(testStory.getWorkDate());
+                itemByProject.setSummaryDesc(testStory.getDescription());
+//                itemByProject.setFinishStatus(String.valueOf(testStory.getStoryStatus()));
                 taskInfoService.updateTask(request, itemByProject);
                 return ResponseUtils.success("数据更新成功", testStory);
             } catch (Exception e) {
@@ -100,7 +97,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         }
         try {
             TestStory build = TestStory.builder().projectId(story.getProjectId())
-                    .description(story.getDescription()).workDate(story.getWorkDate())
+                    .description(story.getDescription()).workDate(story.getWorkDate()).storyStatus(story.getStoryStatus())
                     .docId(story.getDocId()).delFlag(0).createDate(new Date()).build();
             baseMapper.insert(build);
             taskInfoService.addItem(request, story.getProjectId(), build);
@@ -182,6 +179,28 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
             return result;
         } catch (Exception e) {
             return ResponseUtils.error(e.getMessage());
+        }
+    }
+
+    @Override
+    @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
+    public ResponseResult batchDelete(HttpServletRequest request) {
+        try {
+            List<String> ids = JacksonUtils.convertValue(request.getParameter("ids"), new TypeReference<List<String>>() {
+            });
+            ids.forEach(t->{
+                TestStory story = getById(t);
+                story.setDelFlag(1);
+                story.setUpdateDate(new Date());
+                updateById(story);
+                TestTaskInfo testTaskInfo = taskInfoService.queryItem(story.getProjectId(), story.getId());
+                testTaskInfo.setDelFlag(1);
+                taskInfoService.updateById(testTaskInfo);
+            });
+            return ResponseUtils.success("删除成功");
+        }
+        catch (Exception e) {
+            return ResponseUtils.error("删除失败");
         }
     }
 

@@ -160,5 +160,11 @@ public class TestStoryController {
         result.setData(service.searchStoryById(storyId));
         return result;
     }
+
+    @RequestMapping("/batchDel")
+    @ResponseBody
+    public ResponseResult batchDel(HttpServletRequest request) {
+        return service.batchDelete(request);
+    }
 }
 
