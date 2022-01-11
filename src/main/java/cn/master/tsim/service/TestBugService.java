@@ -27,7 +27,7 @@ public interface TestBugService extends IService<TestBug> {
      */
     List<TestBug> listBugByProjectId(String projectId);
 
-    TestBug addBug(HttpServletRequest request, TestBug testBug);
+    TestBug saveOrUpdateBug(HttpServletRequest request, TestBug testBug);
 
     /***
      * description: 分页查询数据 <br>

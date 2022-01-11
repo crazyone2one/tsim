@@ -55,17 +55,39 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
 
     @Override
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
-    public TestBug addBug(HttpServletRequest request, TestBug testBug) {
-        final String tempStoryId = testBug.getStoryId();
+    public TestBug saveOrUpdateBug(HttpServletRequest request, TestBug testBug) {
+
+        String bugId = testBug.getId();
+        if (StringUtils.isNotBlank(bugId)) {
+            TestBug byId = getById(bugId);
+            byId.setProjectId(testBug.getProjectId());
+            byId.setModuleId(testBug.getModuleId());
+            byId.setTitle(testBug.getTitle());
+            byId.setBugDescription(testBug.getBugDescription());
+            byId.setFunc(testBug.getFunc());
+            byId.setReproduceSteps(testBug.getReproduceSteps());
+            byId.setExpectResult(testBug.getExpectResult());
+            byId.setActualResult(testBug.getActualResult());
+            byId.setSeverity(testBug.getSeverity());
+            byId.setTester(testBug.getTester());
+            byId.setBugStatus(testBug.getBugStatus());
+            byId.setBugRecurrenceProbability(testBug.getBugRecurrenceProbability());
+            byId.setUpdateDate(new Date());
+            byId.setNote(testBug.getNote());
+            updateById(byId);
+            return byId;
+        }
         final TestBug build = TestBug.builder()
                 .projectId(testBug.getProjectId())
                 .moduleId(moduleService.addModule(request,testBug.getProjectId(),testBug.getModuleId()).getId())
-                .title(testBug.getTitle())
+                .title(testBug.getTitle()).bugDescription(testBug.getBugDescription()).reproduceSteps(testBug.getReproduceSteps())
+                .expectResult(testBug.getExpectResult()).actualResult(testBug.getActualResult()).bugRecurrenceProbability(testBug.getBugRecurrenceProbability())
                 .severity(testBug.getSeverity()).func(testBug.getFunc()).bugStatus(testBug.getBugStatus()).note(testBug.getNote())
                 .tester(testBug.getTester()).delFlag(0).createDate(new Date())
                 .workDate(StringUtils.isBlank(testBug.getWorkDate()) ? DateUtils.parse2String(new Date(), "yyyy-MM") : testBug.getWorkDate())
                 .build();
         baseMapper.insert(build);
+        final String tempStoryId = testBug.getStoryId();
         if (StringUtils.isNotBlank(tempStoryId)) {
             projectBugRefService.addItem(build.getProjectId(), build.getId(), build.getWorkDate(), tempStoryId);
         }
@@ -93,7 +115,7 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
         Map<String, Integer> result = new LinkedHashMap<>();
         QueryWrapper<TestBug> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(TestBug::getProjectId, projectId).eq(TestBug::getBugStatus, bugStatus);
-        wrapper.lambda().in(CollectionUtils.isNotEmpty(bugList),TestBug::getId, bugList);
+        wrapper.lambda().in(CollectionUtils.isNotEmpty(bugList), TestBug::getId, bugList);
         List<TestBug> bugs = baseMapper.selectList(wrapper);
         Map<Integer, Integer> collect = bugs.stream().collect(Collectors.groupingBy(TestBug::getSeverity, Collectors.summingInt(p -> 1)));
         result.put("level1", collect.getOrDefault(1, 0));
@@ -122,7 +144,7 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
     public ResponseResult batchDelete(HttpServletRequest request) {
         try {
             final List<String> idList = JSONArray.parseArray(request.getParameter("ids"), String.class);
-            idList.forEach(t->{
+            idList.forEach(t -> {
                 TestBug bug = baseMapper.selectById(t);
                 bug.setDelFlag(1);
                 bug.setUpdateDate(new Date());
@@ -130,7 +152,7 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
             });
             return ResponseUtils.success("数据删除成功");
         } catch (Exception e) {
-            return ResponseUtils.error(400,"数据删除失败", e.getMessage());
+            return ResponseUtils.error(400, "数据删除失败", e.getMessage());
         }
     }
 
@@ -150,10 +172,12 @@ public class TestBugServiceImpl extends ServiceImpl<TestBugMapper, TestBug> impl
         }
         final String titleDesc = request.getParameter("titleDesc");
         if (StringUtils.isNotBlank(titleDesc)) {
-            wrapper.lambda().like(TestBug::getTitle, titleDesc);
+            wrapper.lambda().like(TestBug::getBugDescription, titleDesc);
         }
-//        wrapper.lambda().eq(Objects.nonNull(request.getSeverity()), TestBug::getSeverity, request.getSeverity());
-//        wrapper.lambda().eq(Objects.nonNull(request.getBugStatus()), TestBug::getBugStatus, request.getBugStatus());
+        String severity = request.getParameter("severity");
+        wrapper.lambda().eq(StringUtils.isNotBlank(severity), TestBug::getSeverity, severity);
+        String status = request.getParameter("status");
+        wrapper.lambda().eq(StringUtils.isNotBlank(status), TestBug::getBugStatus, status);
         wrapper.lambda().eq(TestBug::getDelFlag, 0).orderByDesc(TestBug::getDelFlag);
         return wrapper;
     }

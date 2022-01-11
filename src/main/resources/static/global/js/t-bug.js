@@ -11,6 +11,7 @@ function saveBug() {
             success: function (arg) {
                 if (Object.is(arg['code'], 200)) {
                     resetModal("#add-bug-modal", "add-bug-from");
+                    $('#add-bug-modal').modal('hide');
                     refresh_table()
                 }
                 showToast(arg['code'], arg['msg']);
@@ -29,7 +30,7 @@ function saveBug() {
                 dataType: 'JSON',
                 // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                 success: function (result) {
-                    alert(arg['msg'], 'success')
+                    showToast(result['msg'], 'success')
                 }
             }
         )
@@ -93,4 +94,32 @@ function batchDelete(id) {
         });
         closeModal('confirm-modal');
     })
+}
+
+function add_or_update_bug_info(id) {
+    $('#add-bug-modal').modal('show');
+    document.getElementById('add-bug-modal').querySelector('.modal-title').textContent = id ? '编辑' : '新增';
+    id && $.ajax({
+        url: '/bug/detail/' + id,
+        type: "get",
+        success: function (result) {
+            const bug_info = result['data'];
+            $('#hidden-bug-id').val(bug_info.id);
+            $('#projectCode').val(bug_info.project.projectName);
+            $('#b-a-p').val(bug_info.projectId);
+            $('#module').val(bug_info.module.moduleName);
+            $('#b-a-m').val(bug_info.moduleId);
+            $('#functionDesc').val(bug_info.func);
+            $('#title').val(bug_info.title);
+            $('#bug_description').val(bug_info.bugDescription);
+            $('#reproduce_steps').val(bug_info.reproduceSteps);
+            $('#expect_result').val(bug_info.expectResult);
+            $('#actual_result').val(bug_info.actualResult);
+            select_option_checked('severity', bug_info.severity);
+            select_option_checked('owner', bug_info.tester);
+            select_option_checked('status', bug_info.bugStatus);
+            select_option_checked('bugRecurrenceProbability', bug_info.bugRecurrenceProbability);
+            $('#remark').val(bug_info.note);
+        }
+    });
 }

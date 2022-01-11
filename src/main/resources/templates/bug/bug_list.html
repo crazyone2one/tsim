@@ -12,61 +12,67 @@
             <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
             <div class="container-fluid">
                 <div class="pt-2 border-bottom">
-                    <div class="btn-group mb-2">
-                        <div class="input-group me-2" style="width: fit-content">
-                            <span class="input-group-text" id="basic-addon1">所属项目</span>
-                            <input type="text" class="form-control"
-                                   placeholder="项目名称（模糊查询）"
-                                   aria-label="projectId" id="p-search"
-                                   aria-describedby="basic-addon1">
-                            <input type="hidden" name="projectId">
+                    <form id="search-form">
+                        <div class="btn-group mb-2">
+                            <div class="input-group me-2" style="width: fit-content">
+                                <span class="input-group-text" id="basic-addon1">所属项目</span>
+                                <input type="text" class="form-control"
+                                       placeholder="项目名称（模糊查询）"
+                                       aria-label="projectId" id="p-search"
+                                       aria-describedby="basic-addon1">
+                                <input type="hidden" name="projectId">
+                            </div>
+                            <div class="input-group me-2" style="width: fit-content">
+                                <span class="input-group-text" id="basic-addon2">所属模块</span>
+                                <input type="text" class="form-control" name="moduleId"
+                                       placeholder="模块名称（模糊查询）" th:id="module-search"
+                                       aria-label="moduleId" id="m-search"
+                                       aria-describedby="basic-addon2">
+                            </div>
+                            <div class="input-group me-2 " style="width: fit-content">
+                                <span class="input-group-text" id="basic-addon3">问题描述</span>
+                                <input type="text" class="form-control" name="title"
+                                       placeholder="问题描述（模糊查询）" th:id="desc-search"
+                                       aria-label="title"
+                                       aria-describedby="basic-addon3">
+                            </div>
+                            <select class="form-select me-2" style="width: fit-content"
+                                    aria-label="severity"
+                                    name="severity" id="severity-search">
+                                <option th:value="' '" selected>严重程度</option>
+                                <option value="1">轻微</option>
+                                <option value="2">一般</option>
+                                <option value="3">严重</option>
+                                <option value="4">致命</option>
+                            </select>
+                            <select class="form-select me-2" style="width: fit-content"
+                                    aria-label="bugStatus"
+                                    name="bugStatus" id="status-search">
+                                <option th:value="' '" selected>问题状态</option>
+                                <option value="1">新建</option>
+                                <option value="2">挂起</option>
+                                <option value="3">已提交</option>
+                                <option value="4">已解决</option>
+                                <option value="5">非bug</option>
+                            </select>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary hvr-grow me-2" id="search-button" title="搜索">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                                <button type="button" class="btn btn-info hvr-grow me-2"
+                                        data-bs-toggle="modal" data-bs-target="#add-bug-modal" onclick="add_or_update_bug_info()" title="添加"><i
+                                        class="bi-plus-circle"></i>
+                                </button>
+                                <button type="button" class="btn btn-danger hvr-grow me-2" id="batch-delete"
+                                        onclick="batchDelete()" title="删除">
+                                    <i class="bi-trash"></i>
+                                </button>
+                                <button type="button" class="btn btn-secondary hvr-grow" id="reset-button" title="重置搜索">
+                                    <i class="bi-arrow-clockwise"></i>
+                                </button>
+                            </div>
                         </div>
-                        <div class="input-group me-2" style="width: fit-content">
-                            <span class="input-group-text" id="basic-addon2">所属模块</span>
-                            <input type="text" class="form-control" name="moduleId"
-                                   placeholder="模块名称（模糊查询）" th:id="module-search"
-                                   aria-label="moduleId" id="m-search"
-                                   aria-describedby="basic-addon2">
-                        </div>
-                        <div class="input-group me-2 " style="width: fit-content">
-                            <span class="input-group-text" id="basic-addon3">问题描述</span>
-                            <input type="text" class="form-control" name="title"
-                                   placeholder="问题描述（模糊查询）" th:id="title-search"
-                                   aria-label="title"
-                                   aria-describedby="basic-addon3">
-                        </div>
-                        <select class="form-select me-2" style="width: fit-content"
-                                aria-label="severity"
-                                name="severity">
-                            <option th:value="' '" selected>严重程度</option>
-                            <option value="1">轻微</option>
-                            <option value="2">一般</option>
-                            <option value="3">严重</option>
-                            <option value="4">致命</option>
-                        </select>
-                        <select class="form-select me-2" style="width: fit-content"
-                                aria-label="bugStatus"
-                                name="bugStatus">
-                            <option th:value="' '" selected>问题状态</option>
-                            <option value="1">新建</option>
-                            <option value="2">挂起</option>
-                            <option value="3">已提交</option>
-                            <option value="4">已解决</option>
-                            <option value="5">非bug</option>
-                        </select>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-primary hvr-grow me-2" id="search-button">
-                                <i class="bi bi-search"></i>
-                            </button>
-                            <button type="button" class="btn btn-info hvr-grow me-2"
-                                    data-bs-toggle="modal" data-bs-target="#add-bug-modal"><i
-                                    class="bi bi-plus-circle"></i>
-                            </button>
-                            <button type="button" class="btn btn-danger hvr-grow me-2" id="batch-delete" onclick="batchDelete()">
-                                <i class="bi-trash"></i>
-                            </button>
-                        </div>
-                    </div>
+                    </form>
                 </div>
 
                 <!--            列表数据-->
@@ -99,14 +105,9 @@
 <script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
 <script th:src="@{/global/js/t-bug.js}"></script>
 <script>
-    $(document).on('click', "#search-button", function () {
-        $('#table').bootstrapTable('refresh');
-
-    });
-
     const columns = [
         {field: 'id', align: 'center', title: 'id', visible: false},
-        {field: 'checked', checkbox: true, align: "center", width: '40'},{
+        {field: 'checked', checkbox: true, align: "center", width: '40'}, {
             field: 'projectName',
             align: 'center',
             title: '所属项目',
@@ -122,16 +123,35 @@
             formatter: function (value, row, index) {
                 return row.module.moduleName;
             }
-        }, {
-            field: 'func',
-            align: 'center',
-            title: '功能点',
-            class: 'col-sm-3'
-        }, {
-            field: 'title',
+        },
+        // {
+        //     field: 'func',
+        //     align: 'center',
+        //     title: '功能点',
+        //     class: 'col-sm-3'
+        // },
+        {
+            field: 'bugDescription',
             align: 'center',
             title: '问题描述',
             class: 'col-sm-6'
+        },
+        {
+            field: 'reproduceSteps',
+            align: 'center',
+            title: '问题复现步骤',
+            class: 'col-sm-6',
+            id: 'reproduceSteps',
+            formatter: function (value, row, index) {
+                if (value) {
+                    let html = '';
+                    let tempSteps = value.split('\r\n');
+                    for (let i = 0; i < tempSteps.length; i++) {
+                        html += '<div style="text-align: left">' + tempSteps[i] + '</div>';
+                    }
+                    return html;
+                }
+            }
         },
         {
             field: 'severity',
@@ -189,8 +209,8 @@
     function option(value, row, index) {
         const detail = '<button type="button" class="btn btn-sm btn-info" id="bug-detail" data-bs-toggle="modal" data-bs-target="#bug-detail-modal" ' +
             'onclick="bugDetail(\'' + row.id + '\')">详情</button>';
-        const edit = '<button disabled type="button" class="btn btn-sm btn-warning" id="bug-edit" data-bs-toggle="modal" data-bs-target="#bug-detail-modal" ' +
-            'onclick="bugDetail(\'' + row.id + '\')">编辑</button>';
+        const edit = '<button type="button" class="btn btn-sm btn-warning" id="bug-edit" data-bs-toggle="modal" data-bs-target="add-bug-modal" ' +
+            'onclick="add_or_update_bug_info(\'' + row.id + '\')">编辑</button>';
         const _delete = '<button type="button" class="btn btn-sm btn-danger" id="bug-delete" onclick="batchDelete(\'' + row.id + '\')">删除</button>';
         return detail + edit + _delete;
     }
@@ -199,7 +219,9 @@
         return {
             projectName: $('#p-search').val().trim(), // 自定义查询条件
             moduleName: $('#module-search').val().trim(), // 自定义查询条件
-            titleDesc: $('#title-search').val().trim(), // 自定义查询条件
+            titleDesc: $('#desc-search').val().trim(), // 自定义查询条件
+            severity: $('#severity-search').val(),
+            status: $('#status-search').val(),
             pageSize: params.limit,
             pageNum: params.offset / params.limit + 1,
 
@@ -211,6 +233,7 @@
     autoComplete("/module/queryList", "module-search", 'm', false);
     const add_modal = $('#add-bug-modal');
     add_modal.on('shown.bs.modal', function () {
+        // document.getElementById("modalTitle").innerText =('添加问题单');
         autoComplete("/project/queryList", "projectCode", 'p', true);
     })
     // 查询相关关联的模块
@@ -230,13 +253,18 @@
                     dataType: 'JSON',
                     // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                     success: function (arg) {
-                        $("#projectCode-d").val(arg['data'].project.projectName);
-                        $("#module-d").val(arg['data'].module.moduleName);
-                        $("#title-d").val(arg['data'].title);
-                        $("#function-d").val(arg['data'].func);
-                        $("#owner-d").val(arg['data'].testerEntity.username);
+                        const temp_case_info = arg['data'];
+                        $("#projectCode-d").val(temp_case_info.project.projectName);
+                        $("#module-d").val(temp_case_info.module.moduleName);
+                        $("#title-d").val(temp_case_info.title);
+                        $("#function-d").val(temp_case_info.func);
+                        $("#bug_description-d").val(temp_case_info.bugDescription);
+                        $("#reproduce_steps-d").val(temp_case_info.reproduceSteps);
+                        $("#expect_result-d").val(temp_case_info.expectResult);
+                        $("#actual_result-d").val(temp_case_info.actualResult);
+                        $("#owner-d").val(temp_case_info.testerEntity.username);
                         let _severity = "";
-                        switch (arg['data'].severity) {
+                        switch (temp_case_info.severity) {
                             case 1:
                                 _severity = "轻微";
                                 break
@@ -252,7 +280,7 @@
                         }
                         $("#severity-d").val(_severity);
                         let _status = "";
-                        switch (arg['data'].bugStatus) {
+                        switch (temp_case_info.bugStatus) {
                             case 1:
                                 _status = "新建";
                                 break
@@ -270,7 +298,7 @@
                                 break
                         }
                         $("#status-d").val(_status);
-                        $("#remark-d").val(arg['data'].note);
+                        $("#remark-d").val(temp_case_info.note);
                     }
                 }
             )

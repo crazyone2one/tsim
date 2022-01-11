@@ -20,6 +20,7 @@
                         </div>
                         <div class="modal-body pt-0 ">
                             <div class="row g-9 mb-8">
+                                <input type="hidden" name="id" id="hidden-bug-id">
                                 <div class="col-md-6">
                                     <label for="projectCode" class="required fs-6 fw-bold mb-2">项目名称</label>
                                     <input id="projectCode" type="text"
@@ -47,41 +48,63 @@
                                            required>
                                 </div>
                                 <div class="col-md-12">
-                                    <label for="title" class="required fs-6 fw-bold mb-2">标题(问题描述)</label>
-                                    <textarea name="title" id="title" type="text"
-                                              class="form-control form-control-solid" rows="2"></textarea>
+                                    <label for="title" class="required fs-6 fw-bold mb-2">标题</label>
+                                    <input name="title" id="title" type="text" class="form-control form-control-solid">
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-12">
+                                    <label for="bug_description" class="required fs-6 fw-bold mb-2">问题描述</label>
+                                    <input name="bugDescription" id="bug_description" type="text" class="form-control form-control-solid">
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="reproduce_steps" class="required fs-6 fw-bold mb-2">复现步骤</label>
+                                    <textarea name="reproduceSteps" id="reproduce_steps" type="text" class="form-control form-control-solid"></textarea>
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="expect_result" class="required fs-6 fw-bold mb-2">预期结果</label>
+                                    <input name="expectResult" id="expect_result" type="text" class="form-control form-control-solid">
+                                </div>
+                                <div class="col-md-12">
+                                    <label for="actual_result" class="required fs-6 fw-bold mb-2">实际结果</label>
+                                    <input name="actualResult" id="actual_result" type="text" class="form-control form-control-solid">
+                                </div>
+                                <div class="col-md-3">
                                     <label for="severity" class="required fs-6 fw-bold mb-2">严重程度</label>
                                     <select class="form-select form-control-solid" name="severity" id="severity" required>
                                         <option value="1">轻微</option>
-                                        <option value="2" selected>一般</option>
+                                        <option value="2">一般</option>
                                         <option value="3">严重</option>
                                         <option value="4">致命</option>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label for="owner" class="required fs-6 fw-bold mb-2">测试人员</label>
                                     <select class="form-select form-control-solid" name="tester" id="owner" required>
-                                        <option value="">--测试人员--</option>
+                                        <option value=" ">--测试人员--</option>
                                         <option th:each="u:${users}" th:value="${u.key}"
                                                 th:text="${u.value.username}"></option>
                                     </select>
                                 </div>
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <label for="status" class="required fs-6 fw-bold mb-2">问题单状态</label>
                                     <select class="form-select form-control-solid" name="bugStatus" id="status" required>
-                                        <option value="1" selected>新建</option>
+                                        <option value="1">新建</option>
                                         <option value="2">挂起</option>
                                         <option value="3">已提交</option>
                                         <option value="4">已解决</option>
                                         <option value="5">非bug</option>
                                     </select>
                                 </div>
+                                <div class="col-md-3">
+                                    <label for="bugRecurrenceProbability" class="fs-6 fw-bold mb-2">复现概率</label>
+                                    <select class="form-select form-control-solid" name="bugRecurrenceProbability" id="bugRecurrenceProbability" required>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                    </select>
+                                </div>
                                 <div class="col-md-12">
                                     <label for="remark" class="fs-6 fw-bold mb-2">备注</label>
-                                    <textarea name="note" id="remark" type="text" class="form-control form-control-solid"
-                                              rows="2"></textarea>
+                                    <input name="note" id="remark" type="text" class="form-control form-control-solid">
                                 </div>
                             </div>
                         </div>
@@ -89,8 +112,7 @@
                             <button type="reset" id="new_target_cancel" class="btn btn-light me-3"
                                     data-bs-dismiss="modal">Cancel
                             </button>
-                            <button type="button" class="btn btn-primary" onclick="saveBug(1)"
-                                    id="submitBug">
+                            <button type="button" class="btn btn-primary" onclick="saveBug(1)" id="submitBug">
                                 <span class="indicator-label">Submit</span>
                                 <span class="indicator-progress">Please wait...
                                 <span class="spinner-border spinner-border-sm align-middle ms-2"></span>

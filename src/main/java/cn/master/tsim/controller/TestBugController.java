@@ -71,7 +71,7 @@ public class TestBugController {
     @ResponseBody
     public ResponseResult saveTestCase(HttpServletRequest request, @ModelAttribute @Validated TestBug bug) {
         try {
-            final TestBug testBug = bugService.addBug(request, bug);
+            final TestBug testBug = bugService.saveOrUpdateBug(request, bug);
             return ResponseUtils.success("数据添加成功", testBug);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据添加失败", e.getMessage());

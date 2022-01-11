@@ -115,4 +115,30 @@ public class TestBug implements Serializable {
 
     @TableField(exist = false)
     private String storyId;
+
+    /**
+     * 复现概率
+     */
+    @TableField("bug_recurrence_probability")
+    private Integer bugRecurrenceProbability;
+    /**
+     * 问题单内容描述
+     */
+    @TableField("bug_description")
+    private String bugDescription;
+    /**
+     * 问题复现步骤
+     */
+    @TableField("reproduce_steps")
+    private String reproduceSteps;
+    /**
+     * 预期结果
+     */
+    @TableField("expect_result")
+    private String expectResult;
+    /**
+     * 实际结果
+     */
+    @TableField("actual_result")
+    private String actualResult;
 }
