@@ -87,9 +87,9 @@ public class DefaultController {
         try {
             String caseSql = "SELECT GROUP_CONCAT(count ORDER BY date) result FROM( SELECT t1.date, IFNULL(issueCount.c, 0) count FROM( SELECT DATE_FORMAT( DATE_SUB(NOW(), INTERVAL ac - 1 MONTH), '%Y-%m') AS date FROM ( SELECT @ai /*'*/ := /*'*/ @ai + 1 AS ac FROM ( SELECT 1 UNION SELECT 2 UNION SELECT 3) ac1, ( SELECT 1 UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 ) ac2, (SELECT @ai /*'*/ := /*'*/ 0) xc0 ) a ORDER BY date ) t1 LEFT JOIN ( SELECT DATE_FORMAT(t1.create_date, '%Y-%m') cdt, COUNT(1) c FROM {from} t1 INNER JOIN t_project t2 on t2.id=t1.project_id {whereSQL} GROUP BY cdt ) issueCount ON issueCount.cdt = t1.date ORDER BY t1.date ) t2;";
             Constants.projectNames.forEach(temp -> {
-                final List<Map<String, Object>> tempResultList = commonMapper.findMapBySql(caseSql.replace("{whereSQL}", "where t2.project_name='" + temp + "'").replace("{from}", "t_case"));
+                final List<Map<String, Object>> tempResultList = commonMapper.findMapBySql(caseSql.replace("{whereSQL}", "where t2.project_name='" + temp + "' and t1.del_flag=0").replace("{from}", "t_case"));
                 caseAttributes.put(temp, JacksonUtils.convertToString(getSeries(tempResultList)));
-                final List<Map<String, Object>> tempBugList = commonMapper.findMapBySql(caseSql.replace("{whereSQL}", "where t2.project_name='" + temp + "'").replace("{from}", "t_bug"));
+                final List<Map<String, Object>> tempBugList = commonMapper.findMapBySql(caseSql.replace("{whereSQL}", "where t2.project_name='" + temp + "' and t1.del_flag=0").replace("{from}", "t_bug"));
                 bugAttributes.put(temp, JacksonUtils.convertToString(getSeries(tempBugList)));
             });
 
