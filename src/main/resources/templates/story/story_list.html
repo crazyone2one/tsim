@@ -28,13 +28,13 @@
                                                aria-describedby="basic-addon3">
                                     </div>
                                     <select class="form-select me-2" style="width: fit-content" aria-label="active"
-                                            name="delFlag">
+                                            name="storyStatus" id="search-status">
                                         <option th:value="''">完成状态</option>
                                         <option value="1">已完成</option>
                                         <option value="0">未完成</option>
                                     </select>
                                     <div class="btn-group">
-                                        <button id="search-button" class="btn btn-primary me-2 hvr-grow">
+                                        <button type="button" id="search-button" class="btn btn-primary me-2 hvr-grow">
                                             <i class="bi bi-search"></i>
                                         </button>
                                         <a class="btn btn-primary hvr-grow me-2" data-bs-toggle="modal"
@@ -64,6 +64,7 @@
         <div th:replace="~{story/edit_story_modal::editStoryFragment}"></div>
         <!--                    toast-->
         <div th:replace="/fragment/commons :: toast-div"></div>
+        <div th:replace="/fragment/commons :: confirm-modal"></div>
         <div th:replace="/fragment/commons :: upload-modal"></div>
         <!-- Logout Modal-->
         <div th:replace="/fragment/commons :: logout"></div>
@@ -80,7 +81,9 @@
                     field: 'projectId',
                     align: 'center',
                     title: '所属项目',
-                    class: 'col-sm-6'
+                    class: 'col-sm-6', formatter: function (value, row, index) {
+                        return row.project.projectName;
+                    }
                 }, {
                     field: 'description',
                     align: 'center',
@@ -96,27 +99,54 @@
                     align: 'center',
                     title: '需求时间',
                     class: 'col-sm-6'
-                }, {title: '操作', align: 'center', field: 'id', class: 'col-sm-6', formatter: option,}]
+                }, {
+                    field: 'storyStatus',
+                    align: 'center',
+                    title: '需求状态',
+                    class: 'col-sm-6',formatter:function (value, row, index) {
+                        return Object.is(value, 0) ? "未完成" : "已完成";
+                    }
+                },
+                {title: '操作', align: 'center', field: 'id', class: 'col-sm-6', formatter: option,}]
             // 查询条件
             const _search_params = function (params) {
                 return {
                     projectName: $('#p-search').val().trim(), // 自定义查询条件
                     storyDesc: $('#story-desc').val().trim(), // 自定义查询条件
+                    status: $('#search-status').val(), // 自定义查询条件
                     pageSize: params.limit,
                     pageNum: params.offset / params.limit + 1,
 
                 }
             };
-            InitTable("/story/reloadTable", 'get', _table_columns, _search_params)
+            InitTable("/story/reloadTable", 'get', _table_columns, _search_params);
 
             function option(value, row, index) {
-                // return "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
-                const e = '<button class="btn btn-sm-c btn-outline-info" data-bs-toggle="modal" data-bs-target="#edit-story-modal" onclick="editStory(\'' + row.id + '\')">编辑</button>'
-                const d = "<button disabled type=\"button\" class=\"btn btn-sm-c btn-outline-info\" data-bs-toggle=\"modal\" " +
-                    "data-bs-target=\"#edit-story-modal\" onclick=\"editStory(\"" + row.id + "\")\">删除</button>";
+                const e = '<button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#edit-story-modal" onclick="editStory(\'' + row.id + '\')"><i class="bi-pencil-square"></i></button>'
+                const d = '<button class="btn btn-sm btn-danger" onclick="deleteStory(\''+row.id+'\')"><i class="bi-trash"></i></button>';
                 return e + d;
             }
 
+            /**
+             * 删除
+             * @param storyId
+             */
+            function deleteStory(storyId) {
+                forwardToConfirmModal('confirm-modal', '确认删除该数据吗');
+                $("#btn-confirm").on('click',function () {
+                    $.ajax({
+                        url: "/story/batchDel/",
+                        type: 'post',
+                        data: {ids: storyId},
+                        contentType: 'application/x-www-form-urlencoded',
+                        success: function (result) {
+                            $('#confirm-modal').modal('hide');
+                            showToast(result['code'], result['msg']);
+                            $("#table").bootstrapTable("refresh");
+                        }
+                    })
+                })
+            }
             // 新增、编辑需求
             function editStory(storyId) {
                 $('#edit-story-modal').on("shown.bs.modal", function (event) {
@@ -128,11 +158,11 @@
                             type: 'get',
                             success: function (result) {
                                 const resultElement = result['data'];
-                                console.log(resultElement);
                                 $("#p-edit").val(resultElement.project.projectName);
                                 $("#e-p-id").val(resultElement.projectId);
                                 $("#e-description-name").val(resultElement.description);
-                                $("#e-workDate option[value=" + resultElement.workDate + "]").attr('selected', true);
+                                select_option_checked('e-workDate', resultElement.workDate);
+                                select_option_checked('e-storyStatus', resultElement.storyStatus);
                             }
                         });
                     }
@@ -143,10 +173,9 @@
             $('#add-story-modal').on("shown.bs.modal", function (event) {
                 autoComplete('/project/queryList', 'p-add', 'p', true);
             });
-            $(document).on('click', "#search-button", function () {
-                $('#table').bootstrapTable('refresh');
-            });
-            // 保存项目
+            /**
+             * 保存
+             */
             $('button[id=submit]').click(function () {
                 const $project = $("#s-p-id");
                 const _storyId = $("#e-story-id").val();
@@ -163,6 +192,7 @@
                             const msg = arg['msg'];
                             if (Object.is(arg['code'], 200)) {
                                 // alert(msg, 'success');
+                                $('#edit-story-modal').modal('hide');
                                 resetModal("#edit-story-modal", "editStoryForm");
                                 $("#table").bootstrapTable("refresh");
                             }
@@ -189,8 +219,8 @@
                                     success: function (arg) {
                                         const msg = arg['msg'];
                                         if (Object.is(arg['code'], 200)) {
-                                            // alert(msg, 'success');
                                             resetModal("#add-story-modal", "addStoryForm");
+                                            $('#add-story-modal').modal('hide');
                                             $("#table").bootstrapTable("refresh");
                                         }
                                         showToast(arg['code'], msg);
@@ -204,7 +234,6 @@
 
             // 查询条件：项目
             autoComplete('/project/queryList', 'p-search', 'p', false);
-
         </script>
     </body>
 </html>
