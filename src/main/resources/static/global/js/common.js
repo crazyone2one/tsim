@@ -1,4 +1,3 @@
-
 'use strict';
 // Toggle the side navigation
 $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
@@ -155,7 +154,7 @@ $('#uploadFileBtn').click(function (e) {
 const select_option_checked = (selectId, checkValue) => {
     const select = document.getElementById(selectId);
     for (let i = 0; i < select.options.length; i++) {
-        if (Object.is(Number(select.options[i].value), checkValue)) {
+        if (Object.is(Number(select.options[i].value), checkValue) || Object.is(select.options[i].value, checkValue)) {
             select.options[i].selected = true;
             break;
         }
