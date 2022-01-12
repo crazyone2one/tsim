@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -233,30 +234,32 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     }
 
     @Override
-    public IPage<TestCase> loadCaseByPlan(HttpServletRequest request, Map<String, Object> params) {
+    public IPage<TestCase> loadCaseByPlan(HttpServletRequest request, String planId) {
+        String moduleName = request.getParameter("moduleName");
+        String title = request.getParameter("title");
         final int pn = Integer.parseInt(request.getParameter("pageNum"));
-        final String planId = String.valueOf(params.get("planId"));
         /*1. 查询项目相关的测试用例*/
-        final IPage<PlanCaseRef> ref = refService.loadRefRecords(request, params);
-        List<String> caseIds = new LinkedList<>();
-        ref.getRecords().forEach(r -> caseIds.add(r.getCaseId()));
+        List<String> refIds = new LinkedList<>();
+        refService.loadRefItemByPlanId(planId).forEach(r -> refIds.add(r.getCaseId()));
         /*2. 查询所有的测试用例*/
         QueryWrapper<TestCase> wrapper = new QueryWrapper<>();
+        //        根据测试计划查询对应项目下的测试用例数据
         wrapper.lambda().eq(TestCase::getProjectId, projectService.getProjectById(planService.getById(planId).getProjectId()).getId());
-        final Page<TestCase> page = baseMapper.selectPage(
+        wrapper.lambda().inSql(StringUtils.isNotBlank(moduleName), TestCase::getModuleId, "select id from t_module where module_name like '%" + moduleName + "%'");
+        wrapper.lambda().like(StringUtils.isNotBlank(title), TestCase::getName, title).eq(TestCase::getDelFlag, 0);
+        List<TestCase> records = baseMapper.selectList(wrapper);
+        List<String> unRefIds = new ArrayList<>();
+        records.forEach(t -> unRefIds.add(t.getId()));
+        /*3.移除已关联过的测试用例*/
+        refIds.forEach(t -> {
+            unRefIds.removeIf(u -> Objects.equals(u, t));
+        });
+        Page<TestCase> page = baseMapper.selectPage(
                 new Page<>(Objects.equals(pn, 0) ? 1 : pn, Objects.equals(10, 0) ? 15 : 10),
-                wrapper);
-//        不加载已关联的测试用例数据
-        final List<TestCase> records = page.getRecords();
-        final Iterator<TestCase> iterator = records.iterator();
-        while (iterator.hasNext()) {
-            final TestCase next = iterator.next();
-            caseIds.forEach(c -> {
-                if (c.equals(next.getId())) {
-                    iterator.remove();
-                }
-            });
-        }
+                new QueryWrapper<TestCase>().in("id", unRefIds.stream().distinct().collect(Collectors.toList())));
+        page.getRecords().forEach(testCase -> {
+            testCase.setModule(moduleService.getModuleById(testCase.getModuleId()));
+        });
         return page;
     }
 
@@ -275,6 +278,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     public TestCase getById(String caseId) {
         final TestCase testCase = baseMapper.selectById(caseId);
         testCase.setProject(projectService.getProjectById(testCase.getProjectId()));
+        testCase.setModule(moduleService.getModuleById(testCase.getModuleId()));
         return testCase;
     }
 

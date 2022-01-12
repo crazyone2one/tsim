@@ -1,8 +1,10 @@
 // 保存bug
-function saveBug() {
+$('#new_target_submit_bug').on('click', function () {
     const bug_info = $("#add-bug-from").serialize();
-    // bug模块直接添加bug数据
-    if (Object.is(arguments[0], 1)) {
+    if (Object.is($('#hidden-ref-id').val(), '')) {
+        /**
+         * 直接录入bug数据
+         */
         $.ajax({
             url: "/bug/save",
             type: 'POST',
@@ -18,41 +20,22 @@ function saveBug() {
             }
         });
     } else {
-        // 测试计划关联测试用例模块中录入bug信息
-        // console.log(JSON.parse(bug_info));
+        /**
+         * 测试计划关联测试用例：未通过测试用例录入bug数据
+         */
         $.ajax({
-                url: '/planCaseRef/saveRefInfo/',
+                url: '/planCaseRef/addBugByFailCase/',
                 type: 'post',
-                data: JSON.stringify({
-                    bug_info: serializeObject($("#add-bug-from")),
-                    plan_case: arguments[1]
-                }),
-                dataType: 'JSON',
-                // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                data: JSON.stringify(bug_info),
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                 success: function (result) {
-                    showToast(result['msg'], 'success')
+                    showToast(result['code'], result['msg']);
+                    // todo 完成后跳转到列表弹框
                 }
             }
         )
     }
-
-    /*form表单转成*/
-    function serializeObject() {
-        const o = {};
-        const a = arguments[0].serializeArray();
-        $.each(a, function () {
-            if (o[this.name]) {
-                if (!o[this.name].push) {
-                    o[this.name] = [o[this.name]];
-                }
-                o[this.name].push(this.value || "");
-            } else {
-                o[this.name] = this.value || "";
-            }
-        });
-        return o;
-    }
-}
+});
 
 /**
  * 删除问题单。传id参数时，删除单条数据。不传id参数，可视为批量删除。

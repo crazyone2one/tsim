@@ -108,7 +108,7 @@ public class TestCaseController {
             final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
             final String planId = String.valueOf(params.get("planId"));
             params.put("pageSize", 10);
-            final IPage<TestCase> casePage = caseService.loadCaseByPlan(request, params);
+            final IPage<TestCase> casePage = caseService.loadCaseByPlan(request, planId);
             request.getSession().setAttribute("planId", planId);
             return ResponseUtils.success("数据查询成功", casePage);
         } catch (Exception e) {
@@ -121,9 +121,7 @@ public class TestCaseController {
     public Map<String, Object> loadCase(HttpServletRequest request, @PathVariable String planId) {
         Map<String, Object> map = new HashMap<>(2);
         try {
-            final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
-            params.put("planId", planId);
-            final IPage<TestCase> casePage = caseService.loadCaseByPlan(request, params);
+            final IPage<TestCase> casePage = caseService.loadCaseByPlan(request, planId);
             map.put("total", casePage.getTotal());
             map.put("rows", casePage.getRecords());
             return map;

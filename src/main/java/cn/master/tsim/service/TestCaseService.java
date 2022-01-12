@@ -30,8 +30,8 @@ public interface TestCaseService extends IService<TestCase> {
     /**
      * 导入数据
      *
-     * @param request
-     * @param cases
+     * @param request HttpServletRequest
+     * @param cases 待导入的测试用例数据
      */
     void importCase(HttpServletRequest request, List<TestCase> cases);
 
@@ -58,11 +58,11 @@ public interface TestCaseService extends IService<TestCase> {
     /**
      * 测试计划关联测试用例，查询相应的测试用例
      *
-     * @param request
-     * @param params  参数
+     * @param request HttpServletRequest
+     * @param planId  参数
      * @return com.baomidou.mybatisplus.core.metadata.IPage<cn.master.tsim.entity.TestCase>
      */
-    IPage<TestCase> loadCaseByPlan(HttpServletRequest request, Map<String, Object> params);
+    IPage<TestCase> loadCaseByPlan(HttpServletRequest request, String planId);
 
     Map<String, Integer> caseCountByStatus(String projectId, String moduleId);
 
