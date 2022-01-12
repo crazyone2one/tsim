@@ -220,7 +220,7 @@
         return step_result;
     }
 
-    //查看测试用例数据
+    // 查看测试用例数据
     function detailCase(id) {
         $('#case-detail-modal').on('shown.bs.modal', function () {
             $.ajax({
@@ -256,9 +256,7 @@
             )
         })
     }
-
-    //todo 编辑测试用例
-
+    // 编辑测试用例数据
     function editCase(id) {
         $(editModalId).on('shown.bs.modal', function () {
             $.ajax({
