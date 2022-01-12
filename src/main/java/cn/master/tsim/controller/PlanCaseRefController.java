@@ -5,15 +5,11 @@ import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.PlanCaseRef;
 import cn.master.tsim.service.PlanCaseRefService;
 import cn.master.tsim.util.ResponseUtils;
-import cn.master.tsim.util.StreamUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import org.apache.commons.collections4.CollectionUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -33,32 +29,35 @@ public class PlanCaseRefController {
         this.refService = refService;
     }
 
-    @PostMapping(value = "/loadRefRecords")
+    @GetMapping(value = "/loadRefRecords/{planId}")
     @ResponseBody
-    public ResponseResult loadRefRecords(HttpServletRequest request) {
+    public Map<String, Object> loadRefRecords(HttpServletRequest request, @PathVariable String planId) {
+        Map<String, Object> map = new HashMap<>(2);
         try {
-            final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
-            final IPage<PlanCaseRef> iPage = refService.loadRefRecords(request, params);
-            if (CollectionUtils.isNotEmpty(iPage.getRecords())) {
-                return ResponseUtils.success("数据查询成功", iPage);
-            } else {
-                return ResponseUtils.error("数据查询失败");
-            }
+            final IPage<PlanCaseRef> iPage = refService.loadRefRecords(request, planId);
+            map.put("total", iPage.getTotal());
+            map.put("rows", iPage.getRecords());
         } catch (Exception e) {
-            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
+            e.printStackTrace();
         }
+        return map;
     }
 
-    @PostMapping(value = "/saveRefInfo")
+    @PostMapping(value = "/addBugByFailCase")
     @ResponseBody
     public ResponseResult saveRefInfo(HttpServletRequest request) {
         try {
-            final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
-            final PlanCaseRef itemRef = refService.uploadItemRef(request, params);
-            return ResponseUtils.success("数据添加成功", itemRef);
+            final PlanCaseRef itemRef = refService.addBugByFailCase(request);
+            return ResponseUtils.success("数据更新成功", itemRef);
         } catch (Exception e) {
-            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
+            return ResponseUtils.error(400, "数据更新失败", e.getMessage());
         }
+    }
+
+    @PostMapping(value = "/batchPass")
+    @ResponseBody
+    public ResponseResult batchPass(HttpServletRequest request) {
+        return refService.batchPass(request);
     }
 }
 

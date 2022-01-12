@@ -32,6 +32,8 @@ public interface TestPlanService extends IService<TestPlan> {
 
     TestPlan uniquePlan(String storyId, String planName, String planDesc);
 
+    TestPlan queryPlanById(String id);
+
     /**
      * 更新测试计划状态
      *

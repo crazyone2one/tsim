@@ -1,76 +1,54 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>plan</title>
-        <meta name="author" content="11‘s papa">
-    </head>
-    <body>
-        <div th:fragment="refRunFragment">
-            <div class="modal fade" id="ref-run-modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
-                 aria-hidden="true" data-bs-backdrop="static">
-                <div class="modal-dialog modal-xl modal-dialog-centered">
-                    <div class="modal-content">
-                        <form class="modal-content needs-validation" id="refCaseForm">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="staticBackdropLabel">执行关联测试用例</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="box-body">
-                                    <div class="border-bottom">
-                                        <button type="button" class="btn btn-sm btn-outline-success">通过</button>
-                                        <button type="button" class="btn btn-sm btn-outline-danger" disabled>未通过</button>
-                                    </div>
-                                    <table id="refRunTable" class="table table-hover">
-                                        <thead>
-                                        <tr class="text-center">
-                                            <th><input type="checkbox" class="select-all checkbox" name="select-all" id="select-all"/></th>
-                                            <th scope="col">测试用例标题</th>
-                                            <th scope="col">测试用例描述</th>
-                                            <th scope="col">测试结果</th>
-                                            <th scope="col">关联bug</th>
-                                        </tr>
-                                        </thead>
-                                        <tbody>
-
-                                        </tbody>
-                                    </table>
-                                </div>
-                                <!--                分页-->
-                                <div class="row-fluid">
-                                    <div>
-                                        <nav id="page-nav-area" aria-label="Page navigation example">
-                                            <ul class="pagination">
-                                                <li class="page-item">
-                                                    <a class="page-link" href="#" aria-label="Previous">
-                                                        <span aria-hidden="true">&laquo;</span>
-                                                    </a>
-                                                </li>
-                                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                                <li class="page-item">
-                                                    <a class="page-link" href="#" aria-label="Next">
-                                                        <span aria-hidden="true">&raquo;</span>
-                                                    </a>
-                                                </li>
-                                            </ul>
-                                        </nav>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-<!--                                <button type="button" class="btn btn-primary" id="sub-ref">确定</button>-->
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
-                            </div>
-                        </form>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>plan</title>
+    <meta name="author" content="11‘s papa">
+</head>
+<body>
+<div th:fragment="refRunFragment">
+    <div class="modal fade" id="ref-run-modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
+         aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="staticBackdropLabel">执行关联测试用例</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                            aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="box-body">
+                        <div class="btn-group mb-1">
+                            <!--                                        <div class="input-group me-1">-->
+                            <!--                                            <span class="input-group-text" id="case-title">标题</span>-->
+                            <!--                                            <input type="text" class="form-control" placeholder="测试用例标题" aria-label="标题" aria-describedby="case-title" id="search-case-title">-->
+                            <!--                                        </div>-->
+                            <!--                                    <button type="button" class="btn btn-sm btn-primary hvr-grow me-1" id="ref-case-search-btn" title="搜索">-->
+                            <!--                                        <i class="bi bi-search"></i>-->
+                            <!--                                    </button>-->
+                            <!--                                    <button type="button" class="btn btn-sm btn-secondary hvr-grow me-1" id="ref-case-reset-button" title="重置搜索">-->
+                            <!--                                        <i class="bi-arrow-clockwise"></i>-->
+                            <!--                                    </button>-->
+                            <button type="button" class="btn btn-sm btn-success hvr-grow me-1" title="批量通过"
+                                    id="batch-pass" onclick="batchPassCase()">通过
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger hvr-grow" title="批量失败！批量操作时无法录入bug数据"
+                                    id="batch-fail">未通过
+                            </button>
+                        </div>
+                        <table id="refRunTable" class="table table-hover">
+                        </table>
                     </div>
                 </div>
-
+                <div class="modal-footer">
+                    <!--                                <button type="button" class="btn btn-primary" id="sub-ref">确定</button>-->
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                </div>
             </div>
         </div>
-    </body>
+
+    </div>
+</div>
+</body>
 </html>

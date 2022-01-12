@@ -12,26 +12,42 @@
                  aria-hidden="true" data-bs-backdrop="static">
                 <div class="modal-dialog modal-xl modal-dialog-centered">
                     <div class="modal-content">
-                        <form class="modal-content needs-validation" id="refCaseForm">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="staticBackdropLabel">关联测试用例</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">关联测试用例</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="box-body">
+                                <form id="ref-search-form">
+                                    <div class="btn-group mb-1">
+                                        <div class="input-group me-1">
+                                            <span class="input-group-text" id="basic-addon1">模块</span>
+                                            <input type="text" class="form-control" placeholder="模块名称" aria-label="模块名称" aria-describedby="basic-addon1" id="search-modal-name">
+                                        </div>
+                                        <div class="input-group me-1">
+                                            <span class="input-group-text" id="basic-addon2">标题</span>
+                                            <input type="text" class="form-control" placeholder="测试用例标题" aria-label="测试用例标题" aria-describedby="basic-addon2" id="search-title">
+                                        </div>
+                                        <button type="button" class="btn btn-primary hvr-grow me-1" id="ref-case-search-btn" title="搜索">
+                                            <i class="bi bi-search"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-secondary hvr-grow me-1" id="ref-case-reset-button" title="重置搜索">
+                                            <i class="bi-arrow-clockwise"></i>
+                                        </button>
+                                        <button type="button" class="btn btn-info hvr-grow" onclick="addRefCase()" title="批量添加">add</button>
+                                    </div>
+                                </form>
+                                <!--                                    <button type="button" class="btn btn-outline-danger btn-sm">remove</button>-->
+                                <input type="hidden" id="hidden-plan-id">
+                                <table id="refCaseTable" class="table table-hover">
+                                </table>
                             </div>
-                            <div class="modal-body">
-                                <div class="box-body">
-                                    <button type="button" class="btn btn-outline-info btn-sm" id="add-case-ref-btn">add</button>
-                                    <button type="button" class="btn btn-outline-danger btn-sm">remove</button>
-                                    <input type="hidden" id="hidden-plan-id">
-                                    <table id="refCaseTable" class="table table-hover">
-                                    </table>
-                                </div>
-                            </div>
-                            <div class="modal-footer">
-<!--                                <button type="button" class="btn btn-primary" id="sub-ref">确定</button>-->
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
-                            </div>
-                        </form>
+                        </div>
+                        <div class="modal-footer">
+                            <!--                                <button type="button" class="btn btn-primary" id="sub-ref">确定</button>-->
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">关闭</button>
+                        </div>
                     </div>
                 </div>
 

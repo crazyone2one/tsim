@@ -10,13 +10,11 @@ import cn.master.tsim.service.TestPlanService;
 import cn.master.tsim.service.TestStoryService;
 import cn.master.tsim.util.JacksonUtils;
 import cn.master.tsim.util.ResponseUtils;
-import cn.master.tsim.util.StreamUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -52,14 +50,6 @@ public class TestPlanController {
     @GetMapping("/list")
     public String allPlans(HttpServletRequest request) {
         return "plan/plan_list";
-    }
-
-    @Deprecated
-    @RequestMapping("/reloadTable")
-    public String reloadTable(HttpServletRequest request, Model model, TestPlan project) {
-        final IPage<TestPlan> iPage = planService.pageList(request, 0, 0);
-        model.addAttribute("iPage", iPage);
-        return "plan/plan_list :: table_refresh";
     }
 
     @RequestMapping("/loadPlan")
@@ -125,12 +115,14 @@ public class TestPlanController {
     @ResponseBody
     public ResponseResult addRefCase(HttpServletRequest request) {
         try {
-            final Map<String, Object> params = StreamUtils.getParamsFromRequest(request);
-            final List<String> list = JacksonUtils.jsonToObject(JacksonUtils.convertToString(params.get("caseId")), new TypeReference<List<String>>() {
+            String planId = request.getParameter("planId");
+            String caseId = request.getParameter("caseId");
+            final List<String> list = JacksonUtils.jsonToObject(caseId, new TypeReference<List<String>>() {
             });
-            planCaseRefService.addItemRef(params.get("planId").toString(), list);
+            planCaseRefService.addItemRef(planId, list);
             return ResponseUtils.success();
         } catch (Exception e) {
+            log.error(e.getMessage());
             return ResponseUtils.error(ResponseCode.BODY_NOT_MATCH.getCode(), "数据添加失败", e.getMessage());
         }
     }

@@ -1,262 +1,178 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="/fragment/commons :: common_header(~{::title},~{::link})">
-        <title>TSIM @ PLAN</title>
-        <link rel="stylesheet" th:href="@{/plugins/bst/bootstrap-table.min.css}">
-    </head>
-    <body id="tsim_body">
-        <div id="wrapper">
-            <ul th:replace="/fragment/commons :: sidebarMenu(flag='plan')"></ul>
-            <div id="content-wrapper" class="d-flex flex-column">
-                <div id="content">
-                    <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
-                    <div class="container-fluid">
-                        <!--操作栏-->
-                        <div class="pt-2 border-bottom">
-                            <form id="search-form">
-                                <div class="btn-group mb-2">
-                                    <div class="input-group me-2" style="width: fit-content">
-                                        <span class="input-group-text" id="project">所属项目</span>
-                                        <input type="text" class="form-control" name="projectName"
-                                               placeholder="项目名称"
-                                               aria-label="project" aria-describedby="project"
-                                               id="p-search">
-                                    </div>
-                                    <div class="input-group me-2 " style="width: fit-content">
-                                        <span class="input-group-text">测试计划名称</span>
-                                        <input type="text" class="form-control" name="name" placeholder="测试计划名称"
-                                               aria-label="name" id="plan-name"
-                                               aria-describedby="basic-addon3">
-                                    </div>
-                                    <div class="input-group me-2 " style="width: fit-content">
-                                        <span class="input-group-text">测试计划描述</span>
-                                        <input type="text" class="form-control" name="description"
-                                               placeholder="测试计划描述（模糊查询）" id="plan-description"
-                                               aria-label="name"
-                                               aria-describedby="basic-addon3">
-                                    </div>
-                                    <select class="form-select me-2" style="width: fit-content" aria-label="active"
-                                            name="delFlag">
-                                        <option th:value="''">结束状态</option>
-                                        <option value="0">未结束</option>
-                                        <option value="1">已结束</option>
-                                    </select>
-                                    <div class="btn-group">
-                                        <button type="button" class="btn btn-primary hvr-grow me-2" id="search-button">
-                                            <i class="bi bi-search"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-info hvr-grow me-2"
-                                                data-bs-toggle="modal" data-bs-target="#add-plan-modal">
-                                            <i class="bi bi-plus-circle hvr-grow"></i>
-                                        </button>
-                                        <button type="button" class="btn btn-secondary hvr-grow " id="reset-button" title="重置搜索">
-                                            <i class="bi-arrow-clockwise"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
+<head th:replace="/fragment/commons :: common_header(~{::title},~{::link})">
+    <title>TSIM @ PLAN</title>
+    <link rel="stylesheet" th:href="@{/plugins/bst/bootstrap-table.min.css}">
+</head>
+<body id="tsim_body">
+<div id="wrapper">
+    <ul th:replace="/fragment/commons :: sidebarMenu(flag='plan')"></ul>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
+            <div class="container-fluid">
+                <!--操作栏-->
+                <div class="pt-2 border-bottom">
+                    <form id="search-form">
+                        <div class="btn-group mb-2">
+                            <div class="input-group me-2" style="width: fit-content">
+                                <span class="input-group-text" id="project">所属项目</span>
+                                <input type="text" class="form-control" name="projectName"
+                                       placeholder="项目名称"
+                                       aria-label="project" aria-describedby="project"
+                                       id="p-search">
+                            </div>
+                            <div class="input-group me-2 " style="width: fit-content">
+                                <span class="input-group-text">测试计划名称</span>
+                                <input type="text" class="form-control" name="name" placeholder="测试计划名称"
+                                       aria-label="name" id="plan-name"
+                                       aria-describedby="basic-addon3">
+                            </div>
+                            <div class="input-group me-2 " style="width: fit-content">
+                                <span class="input-group-text">测试计划描述</span>
+                                <input type="text" class="form-control" name="description"
+                                       placeholder="测试计划描述（模糊查询）" id="plan-description"
+                                       aria-label="name"
+                                       aria-describedby="basic-addon3">
+                            </div>
+                            <select class="form-select me-2" style="width: fit-content" aria-label="active"
+                                    name="delFlag">
+                                <option th:value="''">结束状态</option>
+                                <option value="0">未结束</option>
+                                <option value="1">已结束</option>
+                            </select>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary hvr-grow me-2" id="search-button">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                                <button type="button" class="btn btn-info hvr-grow me-2"
+                                        data-bs-toggle="modal" data-bs-target="#add-plan-modal">
+                                    <i class="bi bi-plus-circle hvr-grow"></i>
+                                </button>
+                                <button type="button" class="btn btn-secondary hvr-grow " id="reset-button"
+                                        title="重置搜索">
+                                    <i class="bi-arrow-clockwise"></i>
+                                </button>
+                            </div>
                         </div>
-                        <!--            列表数据-->
-                        <div id="table_refresh" th:fragment="table_refresh">
-                            <table id="table" class="table-hover">
-                            </table>
-                        </div>
-                        <!--        分页-->
-                        <!--                        <div th:replace="/fragment/commons :: pagination01"></div>-->
-                    </div>
+                    </form>
                 </div>
-                <footer th:replace="/fragment/commons :: footer"></footer>
+                <!--            列表数据-->
+                <div id="table_refresh" th:fragment="table_refresh">
+                    <table id="table" class="table-hover">
+                    </table>
+                </div>
+                <!--        分页-->
+                <!--                        <div th:replace="/fragment/commons :: pagination01"></div>-->
             </div>
         </div>
+        <footer th:replace="/fragment/commons :: footer"></footer>
+    </div>
+</div>
 
-        <!-- 添加问题单Modal弹框 -->
-        <div th:replace="~{plan/add_plan_modal::addPlanFragment}"></div>
-        <div th:replace="~{plan/associate_case::ass_case}"></div>
-        <div th:replace="~{plan/ref_run_modal::refRunFragment}"></div>
-        <!-- 添加问题单Modal弹框 -->
-        <div th:replace="~{bug/add_bug_modal::addBugFragment}"></div>
-        <!--                    toast-->
-        <div th:replace="/fragment/commons :: toast-div"></div>
-        <!-- Logout Modal-->
-        <div th:replace="/fragment/commons :: logout"></div>
-        <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
-        <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.min.js}"></script>
-        <!--        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-editable.min.js}"></script>-->
-        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.min.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
-        <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
-        <script th:inline="javascript" th:src="@{/global/js/bs.table.js}"></script>
-        <script th:src="@{/global/js/t-bug.js}"></script>
-        <script th:inline="javascript">
-            <!--            查询条件-->
-            autoComplete('/project/queryList', 'p-search', 'p', false);
-            $('#add-plan-modal').on('shown.bs.modal', function () {
-                autoComplete('/story/queryList', 'storyList', 's', true);
-            })
+<!-- 添加问题单Modal弹框 -->
+<div th:replace="~{plan/add_plan_modal::addPlanFragment}"></div>
+<div th:replace="~{plan/associate_case::ass_case}"></div>
+<div th:replace="~{plan/ref_run_modal::refRunFragment}"></div>
+<!-- 添加问题单Modal弹框 -->
+<div th:replace="~{bug/add_bug_modal::addBugFragment}"></div>
+<!--                    toast-->
+<div th:replace="/fragment/commons :: toast-div"></div>
+<!-- Logout Modal-->
+<div th:replace="/fragment/commons :: logout"></div>
+<script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
+<script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.min.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.min.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
+<script type="text/javascript" th:src="@{/global/js/common.js}"></script>
+<script th:inline="javascript" th:src="@{/global/js/bs.table.js}"></script>
+<script th:src="@{/global/js/t-bug.js}"></script>
+<script th:src="@{/global/js/t-plan.js}"></script>
+<script th:inline="javascript">
+    <!--            查询条件-->
+    //todo 在未刷新页面的情况下，再次添加测试计划时未选择需求数据，会有上一次需求数据的缓存
+    autoComplete('/project/queryList', 'p-search', 'p', false);
+    $('#add-plan-modal').on('shown.bs.modal', function () {
+        autoComplete('/story/queryList', 'storyList', 's', true);
+    })
 
-            // 列表
-            const _columns = [
-                {field: 'id', align: 'center', title: 'id', visible: false},
-                {
-                    field: 'projectId',
-                    align: 'center',
-                    title: '项目名',
-                    class: 'col-sm-6'
-                }, {
-                    field: 'storyId',
-                    align: 'center',
-                    title: '关联需求',
-                    class: 'col-sm-6'
-                }, {
-                    field: 'name',
-                    align: 'center',
-                    title: '测试计划名称',
-                    class: 'col-sm-6'
-                }, {
-                    field: 'description',
-                    align: 'center',
-                    title: '测试计划描述',
-                    class: 'col-sm-6'
-                }, {title: '操作', align: 'center', field: 'id', class: 'col-sm-6', formatter: option,}];
+    // 列表
+    const _columns = [
+        {field: 'id', align: 'center', title: 'id', visible: false},
+        {
+            field: 'projectId',
+            align: 'center',
+            title: '项目名',
+            class: 'col-sm-6'
+        }, {
+            field: 'storyId',
+            align: 'center',
+            title: '关联需求',
+            class: 'col-sm-6'
+        }, {
+            field: 'name',
+            align: 'center',
+            title: '测试计划名称',
+            class: 'col-sm-6'
+        }, {
+            field: 'description',
+            align: 'center',
+            title: '测试计划描述',
+            class: 'col-sm-6'
+        }, {title: '操作', align: 'center', field: 'id', class: 'col-sm-6', formatter: option,}];
 
-            function option(value, row, index) {
-                // return "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
-                const a = '<a type="button" class="btn" href="#" id="ref-add" data-bs-toggle="modal" ' +
-                    'data-bs-target="#ref-case-modal" data-bs-placement="top" title="关联测试用例" onclick="refCase(\'' + row.id + '\')">关联测试用例</a>';
-                const b = '<a type="button" class="btn" href="#" id="ref-run" data-bs-toggle="modal" ' +
-                    'data-bs-target="#ref-run-modal" data-bs-placement="top" title="执行测试用例">执行测试用例</a>';
-                return a + b;
-            }
+    function option(value, row, index) {
+        // return "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
+        const a = '<button type="button" class="btn btn-sm btn-info me-2" id="ref-add" data-bs-toggle="modal" ' +
+            'data-bs-target="#ref-case-modal" data-bs-placement="top" title="关联测试用例" onclick="loadCaseInfo(\'' + row.id + '\')"><i class="bi-check"></i></>';
+        const b = '<button type="button" class="btn btn-sm btn-info" id="ref-run" data-bs-toggle="modal" ' +
+            'data-bs-target="#ref-run-modal" data-bs-placement="top" title="执行测试用例" onclick="loadRunCaseInfo(\''+row.id+'\')"><i class="bi-check-all"></></button>';
+        return a + b;
+    }
 
-            const _params = function (params) {
-                return {
-                    projectName: $('#p-search').val().trim(), // 自定义查询条件
-                    planName: $('#plan-name').val().trim(), // 自定义查询条件
-                    planDesc: $('#plan-description').val().trim(), // 自定义查询条件
-                    pageSize: params.limit,
-                    pageNum: params.offset / params.limit + 1,
+    const _params = function (params) {
+        return {
+            projectName: $('#p-search').val().trim(), // 自定义查询条件
+            planName: $('#plan-name').val().trim(), // 自定义查询条件
+            planDesc: $('#plan-description').val().trim(), // 自定义查询条件
+            pageSize: params.limit,
+            pageNum: params.offset / params.limit + 1,
 
+        }
+    };
+    InitTable("/plan/loadPlan", "get", _columns, _params);
+    /** 关联弹框中搜索功能*/
+    $(document).on('click', "#ref-case-search-btn", function () {
+        $('#refCaseTable').bootstrapTable('refresh');
+    });
+    /** 关联弹框中重置功能*/
+    $(document).on('click', "#ref-case-reset-button", function () {
+        $('#ref-search-form')[0].reset();
+        $('#refCaseTable').bootstrapTable('refresh');
+    });
+
+    // 保存测试计划
+    $('#submitPlan').click(function () {
+        $.ajax({
+            url: "/plan/save",
+            type: 'POST',
+            data: {
+                "storyId": $("#storyId").val(),
+                "planName": $("#add_plan_name").val(),
+                "planDesc": $("#add-description-name").val()
+            },
+            dataType: 'JSON',
+            success: function (arg) {
+                if (Object.is(arg['code'], 200)) {
+                    $('#add-plan-modal').modal('hide');
+                    resetModal("#add-plan-modal", "addPlanForm");
+                    $('#table').bootstrapTable('refresh');
                 }
-            };
-            InitTable("/plan/loadPlan", "get", _columns, _params);
-            //查询
-            $(document).on('click', "#search-button", function () {
-                $('#table').bootstrapTable('refresh');
-
-            });
-
-            function refCase(id) {
-                $('#ref-case-modal').on('shown.bs.modal', function () {
-                    const url = "/case/loadCaseByPlan/" + id;
-
-                    function refLinkFormatter(value, row, index) {
-                        const stepJsonArray = JSON.parse(row.stepStore);
-                        let step_result = '';
-                        for (let i = 0; i < stepJsonArray.length; i++) {
-                            const temp_step_json = JSON.parse(JSON.stringify(stepJsonArray[i]));
-                            const tempStepJsonElement = JSON.stringify(temp_step_json[i]);
-                            const map1 = eval("("+tempStepJsonElement+")");
-                            step_result = step_result + map1.t_s + "\r\n";
-                        }
-                        return step_result;
-                    }
-
-                    const _r_columns = [
-                        {checkbox: true},
-                        {title: 'id', field: 'id', visible: false},
-                        {title: '测试用例标题', field: 'name',},
-                        {title: '测试步骤', field: 'stepStore', formatter: refLinkFormatter,class:'success'},
-                        {title: '预期结果', field: 'resultStore'},
-                        {title: "优先级", field: 'priority'},
-                        // {
-                        //     field: 'Button',
-                        //     title: "操作",
-                        //     align: 'center',
-                        //     events: operateEvents,
-                        //     formatter: function (value, row, index) {
-                        //         return '<button type="button" class="btn btn-danger btn-sm add">添加</button>';
-                        //     }
-                        // }
-                    ];
-                    const _r_params = function (params) {
-                        return {
-                            // projectName: $('#p-search').val().trim(), // 自定义查询条件
-                            // planName: $('#plan-name').val().trim(), // 自定义查询条件
-                            // planDesc: $('#plan-description').val().trim(), // 自定义查询条件
-                            pageSize: params.limit,
-                            pageNum: params.offset / params.limit + 1,
-
-                        }
-                    };
-                    InitTable(url, 'get', _r_columns, _r_params, "#refCaseTable");
-                })
+                showToast(arg['code'], arg['msg']);
             }
-
-
-            $("#add-case-ref-btn").click(function () {
-                const selections = getSelections();
-                if (selections.length <= 0) {
-                    showToast(201, "先选择数据");
-                }
-                let res = [];
-                for (let i = 0; i < selections.length; i++) {
-                    res.push(selections[i]['id']);
-                }
-                const params = {
-                    planId: _planId,
-                    caseId: res
-                };
-                $.ajax({
-                    url: '/plan/addRefCase/',
-                    type: 'post',
-                    data: JSON.stringify(params),
-                    dataType: 'json',
-                    contentType: "application/json",
-                    success: function (arg) {
-                        showToast(arg['code'], arg['msg']);
-                    }
-                })
-            })
-            // 保存测试计划
-            $('#submitPlan').click(function () {
-                $.ajax({
-                    url: "/plan/save",
-                    type: 'POST',
-                    data: {
-                        "storyId": $("#storyId").val(),
-                        "planName": $("#add_plan_name").val(),
-                        "planDesc": $("#add-description-name").val()
-                    },
-                    dataType: 'JSON',
-                    success: function (arg) {
-                        if (Object.is(arg['code'], 200)) {
-                            resetModal("#add-plan-modal", "addPlanForm");
-                            $('#table').bootstrapTable('refresh');
-                        }
-                        showToast(arg['code'], arg['msg']);
-                    }
-                });
-            })
-
-            // 更新项目状态
-            function updateStatus(projectId) {
-                $.ajax({
-                    url: '/plan/updatePlanStatus/',
-                    type: 'POST',
-                    data: {
-                        id: projectId
-                    },
-                    dataType: 'JSON',
-                    success: function (arg) {
-                        if (Object.is(arg['code'], 200)) {
-                            alert(arg['msg'], 'success');
-                        } else {
-                            alert(arg['msg'], 'warning');
-                        }
-                    }
-                })
-            }
-        </script>
-    </body>
+        });
+    })
+</script>
+</body>
 </html>
