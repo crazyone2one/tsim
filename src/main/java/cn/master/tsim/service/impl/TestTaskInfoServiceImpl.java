@@ -53,6 +53,7 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
         wrapper.lambda().eq(StringUtils.isNotBlank(taskInfo.getFinishStatus()), TestTaskInfo::getFinishStatus, taskInfo.getFinishStatus());
 //        根据任务时间查询
         wrapper.lambda().eq(StringUtils.isNotBlank(taskInfo.getIssueDate()), TestTaskInfo::getIssueDate, taskInfo.getIssueDate());
+        wrapper.lambda().eq(TestTaskInfo::getDelFlag, 0);
         final Page<TestTaskInfo> testTaskInfoPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize),
                 wrapper);

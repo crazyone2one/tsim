@@ -135,4 +135,9 @@ public class TestTaskInfo implements Serializable {
     private Map<String, Integer> subBug;
     @TableField(exist = false)
     private Map<String, Integer> fixBug;
+    /**
+     * 删除状态(0:未删除，1：已删除)
+     */
+    @TableField("del_flag")
+    private Integer delFlag;
 }
