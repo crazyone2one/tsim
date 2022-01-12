@@ -14,6 +14,9 @@ $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
  */
 const showToast = (code, msg) => {
     const $toast = $('.toast');
+    $toast.hasClass('bg-success')&& $toast.removeClass('bg-success');
+    $toast.hasClass('bg-warning')&& $toast.removeClass('bg-warning');
+    $toast.hasClass('bg-danger')&& $toast.removeClass('bg-danger');
     if (Object.is(200, code)) {
         $toast.addClass("bg-success")
     } else if (Object.is(300, code)) {
