@@ -183,4 +183,13 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         return result;
     }
 
+    @Override
+    public Project queryProject(HttpServletRequest request) {
+        String name = request.getParameter("name");
+        String id = request.getParameter("id");
+        QueryWrapper<Project> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(StringUtils.isNotBlank(name), Project::getProjectName, name)
+                .eq(StringUtils.isNotBlank(id), Project::getId, id);
+        return baseMapper.selectOne(wrapper);
+    }
 }

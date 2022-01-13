@@ -104,6 +104,21 @@ public class ProjectController {
         }
     }
 
+    @GetMapping(value = "/checkUnique")
+    @ResponseBody
+    public ResponseResult checkUnique(HttpServletRequest request) {
+        try {
+            Project project = projectService.queryProject(request);
+            if (Objects.nonNull(project)) {
+                return ResponseUtils.success();
+            }
+            return ResponseUtils.error(ResponseCode.PARAMS_ERROR.getCode(),ResponseCode.PARAMS_ERROR.getMessage());
+        } catch (Exception e) {
+            log.info(e.getMessage());
+            return ResponseUtils.error(400, "数据查询错误", e.getMessage());
+        }
+    }
+
     @PostMapping(value = "/del/{id}")
     @ResponseBody
     public ResponseResult deleteProject(@PathVariable String id) {

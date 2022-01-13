@@ -86,7 +86,6 @@ public interface ProjectService extends IService<Project> {
     /**
      * 分页查询
      *
-     *
      * @param request
      * @param projectName 项目名称
      * @param pageCurrent pageCurrent
@@ -108,4 +107,12 @@ public interface ProjectService extends IService<Project> {
      */
     ResponseResult generateReport(HttpServletRequest request, HttpServletResponse response, String id, String workDate, String storyId);
 
+    /**
+     * description:  根据id和name查询数据
+     *
+     * @param request HttpServletRequest
+     * @return cn.master.tsim.entity.Project
+     * @author 11's papa
+     */
+    Project queryProject(HttpServletRequest request);
 }
