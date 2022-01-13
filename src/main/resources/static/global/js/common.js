@@ -64,9 +64,15 @@ function autoComplete(url, idSelector, flag, needChange) {
     const dataAttr = [];
     $.ajax({
         url: url,
+        beforeSend: function (xmlHttp) {
+            xmlHttp.setRequestHeader("If-Modified-Since", "0");
+            xmlHttp.setRequestHeader("Cache-Control", "no-cache");
+        },
+        async: false,
         success: function (result) {
             if (Object.is(result['code'], 200)) {
                 if (result['data']) {
+                    dataAttr.length = 0;
                     for (let i = 0; i < result['data'].length; i++) {
                         let temp = {
                             "p": {label: result['data'][i].projectName, value: result['data'][i].id}, // project
@@ -107,6 +113,8 @@ const resetModal = (modalId, formId) => {
 */
 $(".modal").on('hide.bs.modal', function (e) {
     $(".modal form")[0].reset();
+    // 使用jquery 的 .off() 方式去移除掉已经绑定事件的操作，保证事件只绑定一次
+    $('.modal').off('shown.bs.modal');
 });
 
 
