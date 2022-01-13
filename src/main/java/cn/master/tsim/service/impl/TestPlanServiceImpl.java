@@ -9,6 +9,7 @@ import cn.master.tsim.mapper.TestPlanMapper;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestPlanService;
 import cn.master.tsim.service.TestStoryService;
+import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -17,6 +18,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -78,22 +80,31 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     }
 
     @Override
-    public ResponseResult savePlan(HttpServletRequest request, String storyId, String planName, String planDesc) {
-        final TestPlan uniquePlan = uniquePlan(storyId, planName, planDesc);
+    @Transactional(rollbackFor = {Exception.class,RuntimeException.class})
+    public ResponseResult savePlan(HttpServletRequest request) {
+        String tempProjectId = request.getParameter("projectId");
+        String tempStoryId = request.getParameter("storyId");
+        String tempPlanName = request.getParameter("name");
+        String description = request.getParameter("description").trim();
+//        同一项目下不允许出现相同的测试计划
+        final TestPlan uniquePlan = uniquePlan(tempStoryId, tempPlanName, tempProjectId);
         if (Objects.nonNull(uniquePlan)) {
             return ResponseUtils.error(ResponseCode.PARAMS_ERROR.getCode(), "存在相同测试计划");
         }
-        final TestStory story = storyService.searchStoryById(storyId);
-        TestPlan build = TestPlan.builder().description(planDesc).name(planName)
-                .projectId(story.getProject().getId()).storyId(story.getId()).workDate(story.getWorkDate()).delFlag(0).createDate(new Date()).build();
+        TestPlan build = TestPlan.builder().description(description).name(tempPlanName)
+                .projectId(tempProjectId).storyId(tempStoryId).workDate(DateUtils.parse2String(new Date(), "yyyy-MM"))
+                .delFlag(0).createDate(new Date()).build();
         baseMapper.insert(build);
         return ResponseUtils.error(ResponseCode.SUCCESS.getCode(), "数据添加成功", build);
     }
 
     @Override
-    public TestPlan uniquePlan(String storyId, String planName, String planDesc) {
+    public TestPlan uniquePlan(String storyId, String planName, String projectId) {
         return baseMapper.selectOne(new QueryWrapper<TestPlan>().lambda()
-                .eq(TestPlan::getStoryId, storyId).eq(TestPlan::getName, planName).eq(TestPlan::getDescription, planDesc));
+                .eq(TestPlan::getProjectId, projectId)
+                .eq(StringUtils.isNotBlank(storyId), TestPlan::getStoryId, storyId)
+                .eq(TestPlan::getName, planName));
+//                .eq(StringUtils.isNotBlank(projectId),TestPlan::getDescription, projectId));
     }
 
     @Override
@@ -104,6 +115,7 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     }
 
     @Override
+    @Transactional(rollbackFor = {Exception.class,RuntimeException.class})
     public TestPlan updatePlan(String planId) {
         final TestPlan testPlan = baseMapper.selectById(planId);
         testPlan.setDelFlag(Objects.equals(testPlan.getDelFlag(), 0) ? 1 : 0);

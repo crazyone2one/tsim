@@ -94,8 +94,13 @@
     //todo 在未刷新页面的情况下，再次添加测试计划时未选择需求数据，会有上一次需求数据的缓存
     autoComplete('/project/queryList', 'p-search', 'p', false);
     $('#add-plan-modal').on('shown.bs.modal', function () {
-        autoComplete('/story/queryList', 'storyList', 's', true);
-    })
+        autoComplete('/project/queryList', 'p-add', 'p', true);
+    });
+
+    function configureStoryComplete() {
+        const val = $('#s-p-id').val();
+        autoComplete('/story/queryList/' + val, 'storyList', 's', true);
+    }
 
     // 列表
     const _columns = [
@@ -127,7 +132,7 @@
         const a = '<button type="button" class="btn btn-sm btn-info me-2" id="ref-add" data-bs-toggle="modal" ' +
             'data-bs-target="#ref-case-modal" data-bs-placement="top" title="关联测试用例" onclick="loadCaseInfo(\'' + row.id + '\')"><i class="bi-check"></i></>';
         const b = '<button type="button" class="btn btn-sm btn-info" id="ref-run" data-bs-toggle="modal" ' +
-            'data-bs-target="#ref-run-modal" data-bs-placement="top" title="执行测试用例" onclick="loadRunCaseInfo(\''+row.id+'\')"><i class="bi-check-all"></></button>';
+            'data-bs-target="#ref-run-modal" data-bs-placement="top" title="执行测试用例" onclick="loadRunCaseInfo(\'' + row.id + '\')"><i class="bi-check-all"></></button>';
         return a + b;
     }
 
@@ -142,6 +147,7 @@
         }
     };
     InitTable("/plan/loadPlan", "get", _columns, _params);
+
     /** 关联弹框中搜索功能*/
     $(document).on('click', "#ref-case-search-btn", function () {
         $('#refCaseTable').bootstrapTable('refresh');
@@ -153,16 +159,12 @@
     });
 
     // 保存测试计划
-    $('#submitPlan').click(function () {
+    $('#submitPlan').on('click', function () {
         $.ajax({
             url: "/plan/save",
             type: 'POST',
-            data: {
-                "storyId": $("#storyId").val(),
-                "planName": $("#add_plan_name").val(),
-                "planDesc": $("#add-description-name").val()
-            },
-            dataType: 'JSON',
+            data: $("#addPlanForm").serialize(),
+            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
             success: function (arg) {
                 if (Object.is(arg['code'], 200)) {
                     $('#add-plan-modal').modal('hide');

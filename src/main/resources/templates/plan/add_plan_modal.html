@@ -12,53 +12,42 @@
                  aria-hidden="true" data-bs-backdrop="static">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <form class="modal-content needs-validation" id="addPlanForm" autocomplete="off">
-                            <div class="modal-header">
-                                <h5 class="modal-title" id="staticBackdropLabel">新增测试计划</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="box-body">
-<!--                                    <div class="mb-3">-->
-<!--&lt;!&ndash;                                        <label for="projectId" class="font-monospace">所属项目</label>&ndash;&gt;-->
-<!--&lt;!&ndash;                                        <select class="selectpicker" onchange="refreshStory()" id="projectId" name="projectId"&ndash;&gt;-->
-<!--&lt;!&ndash;                                                data-live-search="true">&ndash;&gt;-->
-<!--&lt;!&ndash;                                            <option selected>所属项目</option>&ndash;&gt;-->
-<!--&lt;!&ndash;                                            <option th:each="p:${projects}" th:value="${p.key}" th:text="${p.value.projectName}">One</option>&ndash;&gt;-->
-<!--&lt;!&ndash;                                        </select>&ndash;&gt;-->
-<!--                                        <label for="projectId" class="form-label">所属项目</label>-->
-<!--                                        <input class="form-control" list="prolist" id="projectId" name="projectId" placeholder="Type to search..."-->
-<!--                                               onchange="refreshStory()">-->
-<!--                                        <datalist id="prolist">-->
-<!--                                            <option th:each="p:${projects}" th:value="${p.value.projectName}"></option>-->
-<!--                                        </datalist>-->
-<!--                                    </div>-->
-                                    <div class="mb-3">
-<!--                                        <label for="storyId" class="font-monospace">关联需求</label>-->
-<!--                                        <select class="selectpicker" aria-label="storyId" id="storyId" name="storyId" data-live-search="true">-->
-<!--                                            <option selected>选择需求</option>-->
-<!--                                        </select>-->
-                                        <label for="storyList" class="form-label">关联需求</label>
-                                        <input class="form-control" id="storyList" name="storyName" placeholder="搜索并选择需求...">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">新增测试计划</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="box-body">
+                                <form id="addPlanForm" autocomplete="off">
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text required" id="basic-addon1">项目名称</span>
+                                        <input type="text" class="form-control" placeholder="输入项目名称"
+                                               aria-label="project" aria-describedby="basic-addon1" id="p-add">
+                                        <input type="hidden" name="projectId" id="s-p-id">
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <span id="basic-addon2" class="input-group-text">关联需求</span>
+                                        <input type="text" class="form-control" aria-label="story" aria-describedby="basic-addon2"
+                                               id="storyList" name="storyName" placeholder="搜索并选择需求..." onfocus="configureStoryComplete()">
                                         <input type="hidden" name="storyId" id="storyId">
                                     </div>
-                                    <div class="mb-3">
-                                        <label for="add_plan_name" class="form-label">测试计划名称</label>
-                                        <input type="text" class="form-control" id="add_plan_name" name="name" placeholder="输入测试计划名称"/>
+                                    <div class="input-group mb-3">
+                                        <span id="basic-addon3" class="input-group-text required">测试计划名称</span>
+                                        <input type="text" class="form-control" aria-label="name" aria-describedby="basic-addon3" id="add_plan_name" name="name" placeholder="输入测试计划名称"/>
                                     </div>
                                     <div class="mb-3">
                                         <label for="add-description-name" class="form-label">测试计划描述</label>
                                         <input type="text" class="form-control" id="add-description-name" name="description" placeholder="输入测试计划描述"/>
                                     </div>
-                                </div>
+                                </form>
+                            </div>
 
-                            </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" id="submitPlan">确定</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消
-                                </button>
-                            </div>
-                        </form>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-primary" id="submitPlan">确定</button>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">取消
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

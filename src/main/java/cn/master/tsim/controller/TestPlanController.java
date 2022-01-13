@@ -65,13 +65,9 @@ public class TestPlanController {
 
     @PostMapping(value = "/save")
     @ResponseBody
-    public ResponseResult savePlan(HttpServletRequest request,
-                                   @RequestParam("storyId") String storyId,
-                                   @RequestParam("planName") String planName,
-                                   @RequestParam("planDesc") String planDesc
-    ) {
+    public ResponseResult savePlan(HttpServletRequest request) {
         try {
-            return planService.savePlan(request, storyId, planName, planDesc);
+            return planService.savePlan(request);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据添加失败", e.getMessage());
         }

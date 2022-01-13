@@ -23,12 +23,9 @@ public interface TestPlanService extends IService<TestPlan> {
      * 保存测试计划数据
      *
      * @param request HttpServletRequest
-     * @param storyId    需求id
-     * @param planName 计划名称
-     * @param planDesc 计划描述
      * @return cn.master.tsim.entity.TestPlan
      */
-    ResponseResult savePlan(HttpServletRequest request, String storyId, String planName, String planDesc);
+    ResponseResult savePlan(HttpServletRequest request);
 
     TestPlan uniquePlan(String storyId, String planName, String planDesc);
 
