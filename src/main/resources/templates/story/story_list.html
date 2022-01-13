@@ -1,239 +1,278 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="/fragment/commons :: common_header(~{::title},~{})">
-        <title>TSIM @ STORY</title>
-    </head>
-    <body id="tsim_body" class="aside-enable">
+<head th:replace="/fragment/commons :: common_header(~{::title},~{})">
+    <title>TSIM @ STORY</title>
+</head>
+<body id="tsim_body" class="aside-enable">
 
-        <div id="wrapper">
-            <ul th:replace="/fragment/commons :: sidebarMenu(flag='story')"></ul>
-            <div id="content-wrapper" class="d-flex flex-column">
-                <div id="content">
-                    <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
-                    <div class="container-fluid">
-                        <!--操作栏-->
-                        <div class="pt-2 border-bottom">
-                            <form id="search-form">
-                                <div class="btn-group mb-2">
-                                    <div class="input-group me-2" style="width: fit-content">
-                                        <span class="input-group-text" id="basic-addon1">所属项目</span>
-                                        <input type="text" class="form-control" placeholder="输入项目名称"
-                                               aria-label="projectId" name="projectId"
-                                               aria-describedby="basic-addon1" id="p-search">
-                                    </div>
-                                    <div class="input-group me-2 " style="width: fit-content">
-                                        <span class="input-group-text" id="basic-addon3">需求内容</span>
-                                        <input type="text" class="form-control" name="description" id="story-desc"
-                                               placeholder="输入需求内容" aria-label="name"
-                                               aria-describedby="basic-addon3">
-                                    </div>
-                                    <select class="form-select me-2" style="width: fit-content" aria-label="active"
-                                            name="storyStatus" id="search-status">
-                                        <option th:value="''">完成状态</option>
-                                        <option value="1">已完成</option>
-                                        <option value="0">未完成</option>
-                                    </select>
-                                    <div class="btn-group">
-                                        <button type="button" id="search-button" class="btn btn-primary me-2 hvr-grow">
-                                            <i class="bi bi-search"></i>
-                                        </button>
-                                        <a class="btn btn-primary hvr-grow me-2" data-bs-toggle="modal"
-                                           data-bs-target="#add-story-modal"
-                                           role="button"><i class="bi bi-plus-circle"></i></a>
-                                        <button type="button" class="btn btn-secondary hvr-grow" id="reset-button" title="重置搜索">
-                                            <i class="bi-arrow-clockwise"></i>
-                                        </button>
-                                    </div>
-                                </div>
-                            </form>
+<div id="wrapper">
+    <ul th:replace="/fragment/commons :: sidebarMenu(flag='story')"></ul>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
+            <div class="container-fluid">
+                <!--操作栏-->
+                <div class="pt-2 border-bottom">
+                    <form id="search-form">
+                        <div class="btn-group mb-2">
+                            <div class="input-group me-2" style="width: fit-content">
+                                <span class="input-group-text" id="basic-addon1">所属项目</span>
+                                <input type="text" class="form-control" placeholder="输入项目名称"
+                                       aria-label="projectId" name="projectId"
+                                       aria-describedby="basic-addon1" id="p-search">
+                            </div>
+                            <div class="input-group me-2 " style="width: fit-content">
+                                <span class="input-group-text" id="basic-addon3">需求内容</span>
+                                <input type="text" class="form-control" name="description" id="story-desc"
+                                       placeholder="输入需求内容" aria-label="name"
+                                       aria-describedby="basic-addon3">
+                            </div>
+                            <select class="form-select me-2" style="width: fit-content" aria-label="active"
+                                    name="storyStatus" id="search-status">
+                                <option th:value="''">完成状态</option>
+                                <option value="1">已完成</option>
+                                <option value="0">未完成</option>
+                            </select>
+                            <div class="btn-group">
+                                <button type="button" id="search-button" class="btn btn-primary me-2 hvr-grow">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                                <a class="btn btn-primary hvr-grow me-2" data-bs-toggle="modal"
+                                   data-bs-target="#add-story-modal"
+                                   role="button"><i class="bi bi-plus-circle"></i></a>
+                                <button type="button" class="btn btn-secondary hvr-grow" id="reset-button" title="重置搜索">
+                                    <i class="bi-arrow-clockwise"></i>
+                                </button>
+                            </div>
                         </div>
-                        <!--            列表数据-->
-                        <div id="table_refresh" th:fragment="table_refresh">
-                            <table id="table" class="table table-hover"></table>
-                        </div>
-                        <!--        分页-->
-                        <!--                        <div th:replace="/fragment/commons :: pagination01"></div>-->
-                    </div>
+                    </form>
                 </div>
-                <footer th:replace="/fragment/commons :: footer"></footer>
+                <!--            列表数据-->
+                <div id="table_refresh" th:fragment="table_refresh">
+                    <table id="table" class="table table-hover"></table>
+                </div>
+                <!--        分页-->
+                <!--                        <div th:replace="/fragment/commons :: pagination01"></div>-->
             </div>
         </div>
+        <footer th:replace="/fragment/commons :: footer"></footer>
+    </div>
+</div>
 
-        <!-- 添加问题单Modal弹框 -->
-        <div th:replace="~{story/add_story_modal::addStoryFragment}"></div>
-        <div th:replace="~{story/edit_story_modal::editStoryFragment}"></div>
-        <!--                    toast-->
-        <div th:replace="/fragment/commons :: toast-div"></div>
-        <div th:replace="/fragment/commons :: confirm-modal"></div>
-        <div th:replace="/fragment/commons :: upload-modal"></div>
-        <!-- Logout Modal-->
-        <div th:replace="/fragment/commons :: logout"></div>
-        <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
-        <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
-        <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
-        <script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
-        <script>
-            const _table_columns = [
-                {field: 'id', align: 'center', title: 'id', visible: false}, {
-                    field: 'projectId',
-                    align: 'center',
-                    title: '所属项目',
-                    class: 'col-sm-6', formatter: function (value, row, index) {
-                        return row.project.projectName;
-                    }
-                }, {
-                    field: 'description',
-                    align: 'center',
-                    title: '需求内容描述',
-                    class: 'col-sm-6'
-                }, {
-                    field: 'docId',
-                    align: 'center',
-                    title: '关联文档',
-                    class: 'col-sm-6'
-                }, {
-                    field: 'workDate',
-                    align: 'center',
-                    title: '需求时间',
-                    class: 'col-sm-6'
-                }, {
-                    field: 'storyStatus',
-                    align: 'center',
-                    title: '需求状态',
-                    class: 'col-sm-6',formatter:function (value, row, index) {
-                        return Object.is(value, 0) ? "未完成" : "已完成";
-                    }
-                },
-                {title: '操作', align: 'center', field: 'id', class: 'col-sm-6', formatter: option,}]
-            // 查询条件
-            const _search_params = function (params) {
-                return {
-                    projectName: $('#p-search').val().trim(), // 自定义查询条件
-                    storyDesc: $('#story-desc').val().trim(), // 自定义查询条件
-                    status: $('#search-status').val(), // 自定义查询条件
-                    pageSize: params.limit,
-                    pageNum: params.offset / params.limit + 1,
+<!-- 添加问题单Modal弹框 -->
+<div th:replace="~{story/add_story_modal::addStoryFragment}"></div>
+<div th:replace="~{story/edit_story_modal::editStoryFragment}"></div>
+<!--                    toast-->
+<div th:replace="/fragment/commons :: toast-div"></div>
+<div th:replace="/fragment/commons :: confirm-modal"></div>
+<div th:replace="/fragment/commons :: upload-modal"></div>
+<!-- Logout Modal-->
+<div th:replace="/fragment/commons :: logout"></div>
+<script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
+<script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
+<script type="text/javascript" th:src="@{/global/js/common.js}"></script>
+<script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
+<script>
+    const _table_columns = [
+        {field: 'id', align: 'center', title: 'id', visible: false}, {
+            field: 'projectId',
+            align: 'center',
+            title: '所属项目',
+            class: 'col-sm-6', formatter: function (value, row, index) {
+                return row.project.projectName;
+            }
+        }, {
+            field: 'description',
+            align: 'center',
+            title: '需求内容描述',
+            class: 'col-sm-6'
+        }, {
+            field: 'docId',
+            align: 'center',
+            title: '关联文档',
+            class: 'col-sm-6'
+        }, {
+            field: 'workDate',
+            align: 'center',
+            title: '需求时间',
+            class: 'col-sm-6'
+        }, {
+            field: 'storyStatus',
+            align: 'center',
+            title: '需求状态',
+            class: 'col-sm-6', formatter: function (value, row, index) {
+                return Object.is(value, 0) ? "未完成" : "已完成";
+            }
+        },
+        {title: '操作', align: 'center', field: 'id', class: 'col-sm-6', formatter: option,}]
+    // 查询条件
+    const _search_params = function (params) {
+        return {
+            projectName: $('#p-search').val().trim(), // 自定义查询条件
+            storyDesc: $('#story-desc').val().trim(), // 自定义查询条件
+            status: $('#search-status').val(), // 自定义查询条件
+            pageSize: params.limit,
+            pageNum: params.offset / params.limit + 1,
 
+        }
+    };
+    InitTable("/story/reloadTable", 'get', _table_columns, _search_params);
+
+    function option(value, row, index) {
+        const e = '<button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#edit-story-modal" onclick="editStory(\'' + row.id + '\')"><i class="bi-pencil-square"></i></button>'
+        const d = '<button class="btn btn-sm btn-danger" onclick="deleteStory(\'' + row.id + '\')"><i class="bi-trash"></i></button>';
+        return e + d;
+    }
+
+    /**
+     * 删除
+     * @param storyId
+     */
+    function deleteStory(storyId) {
+        forwardToConfirmModal('confirm-modal', '确认删除该数据吗');
+        $("#btn-confirm").on('click', function () {
+            $.ajax({
+                url: "/story/batchDel/",
+                type: 'post',
+                data: {ids: storyId},
+                contentType: 'application/x-www-form-urlencoded',
+                success: function (result) {
+                    $('#confirm-modal').modal('hide');
+                    showToast(result['code'], result['msg']);
+                    $("#table").bootstrapTable("refresh");
                 }
-            };
-            InitTable("/story/reloadTable", 'get', _table_columns, _search_params);
+            })
+        })
+    }
 
-            function option(value, row, index) {
-                const e = '<button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#edit-story-modal" onclick="editStory(\'' + row.id + '\')"><i class="bi-pencil-square"></i></button>'
-                const d = '<button class="btn btn-sm btn-danger" onclick="deleteStory(\''+row.id+'\')"><i class="bi-trash"></i></button>';
-                return e + d;
-            }
-
-            /**
-             * 删除
-             * @param storyId
-             */
-            function deleteStory(storyId) {
-                forwardToConfirmModal('confirm-modal', '确认删除该数据吗');
-                $("#btn-confirm").on('click',function () {
-                    $.ajax({
-                        url: "/story/batchDel/",
-                        type: 'post',
-                        data: {ids: storyId},
-                        contentType: 'application/x-www-form-urlencoded',
-                        success: function (result) {
-                            $('#confirm-modal').modal('hide');
-                            showToast(result['code'], result['msg']);
-                            $("#table").bootstrapTable("refresh");
-                        }
-                    })
-                })
-            }
-            // 新增、编辑需求
-            function editStory(storyId) {
-                $('#edit-story-modal').on("shown.bs.modal", function (event) {
-                    // 编辑需求
-                    if (storyId) {
-                        $("#e-story-id").val(storyId);
-                        $.ajax({
-                            url: "/story/getStory/" + storyId,
-                            type: 'get',
-                            success: function (result) {
-                                const resultElement = result['data'];
-                                $("#p-edit").val(resultElement.project.projectName);
-                                $("#e-p-id").val(resultElement.projectId);
-                                $("#e-description-name").val(resultElement.description);
-                                select_option_checked('e-workDate', resultElement.workDate);
-                                select_option_checked('e-storyStatus', resultElement.storyStatus);
-                            }
-                        });
+    // 新增、编辑需求
+    function editStory(storyId) {
+        $('#edit-story-modal').on("shown.bs.modal", function (event) {
+            // 编辑需求
+            if (storyId) {
+                $("#e-story-id").val(storyId);
+                $.ajax({
+                    url: "/story/getStory/" + storyId,
+                    type: 'get',
+                    success: function (result) {
+                        const resultElement = result['data'];
+                        $("#p-edit").val(resultElement.project.projectName);
+                        $("#e-p-id").val(resultElement.projectId);
+                        $("#e-description-name").val(resultElement.description);
+                        select_option_checked('e-workDate', resultElement.workDate);
+                        select_option_checked('e-storyStatus', resultElement.storyStatus);
                     }
                 });
             }
+        });
+    }
 
-            // 添加modal打开时，设置项目输入框可匹配
-            $('#add-story-modal').on("shown.bs.modal", function (event) {
-                autoComplete('/project/queryList', 'p-add', 'p', true);
-            });
+    // 添加modal打开时，设置项目输入框可匹配
+    $('#add-story-modal').on("shown.bs.modal", function (event) {
+        autoComplete('/project/queryList', 'p-add', 'p', true);
+    });
+    /**
+     * 保存
+     */
+    $('button[id=submit]').click(function () {
+        const $project = $("#p-add").val();
+        const _storyId = $("#e-story-id").val();
+        const $description = $('#add-description-name').val();
+        const $workDate = $('#workDate');
+
+        let nonNull_project = false;
+        // 项目字段非空验证
+        if (!$project) {
+            $('#p-add').addClass("is-invalid");
+        } else {
+            $('#p-add').removeClass("is-invalid");
+            const p_id = $('#s-p-id').val();
             /**
-             * 保存
+             * 验证录入项目是否存在
              */
-            $('button[id=submit]').click(function () {
-                const $project = $("#s-p-id");
-                const _storyId = $("#e-story-id").val();
-                const $description = $('#add-description-name');
-                const $workDate = $('#workDate');
-
-                if (_storyId) {
-                    const serializeArray = $('#editStoryForm').serializeArray();
-                    $.ajax({
-                        url: "/story/save",
-                        type: 'POST',
-                        data: serializeArray,
-                        success: function (arg) {
-                            const msg = arg['msg'];
-                            if (Object.is(arg['code'], 200)) {
-                                // alert(msg, 'success');
-                                $('#edit-story-modal').modal('hide');
-                                resetModal("#edit-story-modal", "editStoryForm");
-                                $("#table").bootstrapTable("refresh");
-                            }
-                            showToast(arg['code'], msg);
-                        }
-                    })
-                } else {
-                    // 添加需求数据
-                    const serializeArray = $('#addStoryForm').serializeArray();
-                    $.ajax({
-                        url: "/story/uniqueStory",
-                        type: 'get',
-                        // contentType: "application/json; charset=utf-8",
-                        data: serializeArray,
-                        success: function (result) {
-                            if (!Object.is(result['code'], 200)) {
-                                //    项目已存在
-                                showToast(result['code'], result['msg']);
-                            } else {
-                                $.ajax({
-                                    url: "/story/save",
-                                    type: 'POST',
-                                    data: serializeArray,
-                                    success: function (arg) {
-                                        const msg = arg['msg'];
-                                        if (Object.is(arg['code'], 200)) {
-                                            resetModal("#add-story-modal", "addStoryForm");
-                                            $('#add-story-modal').modal('hide');
-                                            $("#table").bootstrapTable("refresh");
-                                        }
-                                        showToast(arg['code'], msg);
-                                    }
-                                });
-                            }
-                        }
-                    });
+            $.ajax({
+                url: '/project/checkUnique',
+                type: 'get',
+                data: {name: $project, id: p_id},
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                success: function (result) {
+                    if (Object.is(403, result['code'])) {
+                        $('#project-error-tips').text($project + '不存在,先在项目管理模块添加');
+                        $('#p-add').addClass("is-invalid");
+                    } else {
+                        nonNull_project = true;
+                    }
                 }
-            })
+            });
 
-            // 查询条件：项目
-            autoComplete('/project/queryList', 'p-search', 'p', false);
-        </script>
-    </body>
+        }
+        let nonNull_desc;
+        // 需求描述字段非空验证
+        if (!$description) {
+            $('#add-description-name').addClass("is-invalid");
+            nonNull_desc = false;
+        } else {
+            $('#add-description-name').removeClass("is-invalid");
+            nonNull_desc = true;
+        }
+        if (nonNull_project && nonNull_desc) {
+            if (_storyId) {
+                const serializeArray = $('#editStoryForm').serializeArray();
+                $.ajax({
+                    url: "/story/save",
+                    type: 'POST',
+                    data: serializeArray,
+                    success: function (arg) {
+                        const msg = arg['msg'];
+                        if (Object.is(arg['code'], 200)) {
+                            // alert(msg, 'success');
+                            $('#edit-story-modal').modal('hide');
+                            resetModal("#edit-story-modal", "editStoryForm");
+                            $("#table").bootstrapTable("refresh");
+                        }
+                        showToast(arg['code'], msg);
+                    }
+                });
+            } else {
+                // 添加需求数据
+                const serializeArray = $('#addStoryForm').serializeArray();
+                $.ajax({
+                    url: "/story/uniqueStory",
+                    type: 'get',
+                    // contentType: "application/json; charset=utf-8",
+                    data: serializeArray,
+                    success: function (result) {
+                        if (!Object.is(result['code'], 200)) {
+                            //    项目已存在
+                            showToast(result['code'], result['msg']);
+                        } else {
+                            $.ajax({
+                                url: "/story/save",
+                                type: 'POST',
+                                data: serializeArray,
+                                success: function (arg) {
+                                    const msg = arg['msg'];
+                                    if (Object.is(arg['code'], 200)) {
+                                        resetModal("#add-story-modal", "addStoryForm");
+                                        $('#add-story-modal').modal('hide');
+                                        $("#table").bootstrapTable("refresh");
+                                    }
+                                    showToast(arg['code'], msg);
+                                }
+                            });
+                        }
+                    }
+                });
+            }
+        }
+
+    })
+
+    // 查询条件：项目
+    autoComplete('/project/queryList', 'p-search', 'p', false);
+</script>
+</body>
 </html>
