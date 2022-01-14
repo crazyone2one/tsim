@@ -4,9 +4,7 @@ import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.TestPlan;
 import cn.master.tsim.mapper.TestPlanMapper;
-import cn.master.tsim.service.ProjectService;
-import cn.master.tsim.service.TestPlanService;
-import cn.master.tsim.service.TestStoryService;
+import cn.master.tsim.service.*;
 import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -36,12 +34,16 @@ import java.util.Objects;
 public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> implements TestPlanService {
 
     private final TestStoryService storyService;
+    private final PlanStoryRefService planStoryRefService;
     @Autowired
     private ProjectService projectService;
+    @Autowired
+    TestTaskInfoService taskInfoService;
 
     @Autowired
-    public TestPlanServiceImpl(TestStoryService storyService) {
+    public TestPlanServiceImpl(TestStoryService storyService, PlanStoryRefService planStoryRefService) {
         this.storyService = storyService;
+        this.planStoryRefService = planStoryRefService;
     }
 
     @Override
@@ -75,7 +77,7 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     }
 
     @Override
-    @Transactional(rollbackFor = {Exception.class,RuntimeException.class})
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
     public ResponseResult savePlan(HttpServletRequest request) {
         String tempProjectId = request.getParameter("projectId");
         String tempStoryId = request.getParameter("storyId");
@@ -90,6 +92,8 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
                 .projectId(tempProjectId).storyId(tempStoryId).workDate(DateUtils.parse2String(new Date(), "yyyy-MM"))
                 .delFlag(0).createDate(new Date()).build();
         baseMapper.insert(build);
+        planStoryRefService.addRefItem(build.getId(), tempStoryId);
+        taskInfoService.addItem(request, tempProjectId, build);
         return ResponseUtils.error(ResponseCode.SUCCESS.getCode(), "数据添加成功", build);
     }
 
@@ -110,7 +114,7 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     }
 
     @Override
-    @Transactional(rollbackFor = {Exception.class,RuntimeException.class})
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
     public TestPlan updatePlan(String planId) {
         final TestPlan testPlan = baseMapper.selectById(planId);
         testPlan.setDelFlag(Objects.equals(testPlan.getDelFlag(), 0) ? 1 : 0);

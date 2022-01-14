@@ -2,11 +2,14 @@ package cn.master.tsim.service.impl;
 
 import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
-import cn.master.tsim.entity.TestStory;
+import cn.master.tsim.entity.TestPlan;
 import cn.master.tsim.entity.TestTaskInfo;
 import cn.master.tsim.entity.Tester;
 import cn.master.tsim.mapper.TestTaskInfoMapper;
-import cn.master.tsim.service.*;
+import cn.master.tsim.service.ProjectService;
+import cn.master.tsim.service.TestBugService;
+import cn.master.tsim.service.TestCaseService;
+import cn.master.tsim.service.TestTaskInfoService;
 import cn.master.tsim.util.JacksonUtils;
 import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -17,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
@@ -66,7 +70,8 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
     }
 
     @Override
-    public TestTaskInfo addItem(HttpServletRequest request, String projectId, TestStory story) {
+    @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
+    public TestTaskInfo addItem(HttpServletRequest request, String projectId, TestPlan plan) {
         // TODO: 2021/11/1 0001 保存项目信息时，暂设置负责人为当前登录用户 。后期优化为可配置
         Tester tester = new Tester();
         final Object account = request.getSession().getAttribute("account");
@@ -74,17 +79,13 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
             tester = JacksonUtils.convertToClass(JacksonUtils.convertToString(account), Tester.class);
         }
         assert tester != null;
-        final TestTaskInfo taskInfo = getItemByProject(request, projectId, story);
-        if (Objects.nonNull(taskInfo)) {
-            return taskInfo;
-        }
         final TestTaskInfo build = TestTaskInfo.builder().projectId(projectId)
-                .storyId(story.getId()).summaryDesc(story.getDescription())
+                .storyId(plan.getStoryId()).planId(plan.getId()).summaryDesc(plan.getName())
                 .finishStatus("1")
-                .reqDoc(StringUtils.isNotBlank(story.getDocId()) ? story.getDocId() : "")
+                .reqDoc(Objects.nonNull(plan.getStory()) ? plan.getStory().getDocId() : "")
                 .deliveryStatus("1")
                 .tester(tester.getId())
-                .issueDate(story.getWorkDate())
+                .issueDate(plan.getWorkDate())
                 .createDate(new Date())
                 .build();
         baseMapper.insert(build);
@@ -105,11 +106,11 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
     }
 
     @Override
-    public TestTaskInfo getItemByProject(HttpServletRequest request, String projectId, TestStory story) {
+    public TestTaskInfo getItemByProject(HttpServletRequest request, String projectId, TestPlan story) {
         QueryWrapper<TestTaskInfo> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(TestTaskInfo::getProjectId, projectId);
         wrapper.lambda().eq(TestTaskInfo::getIssueDate, story.getWorkDate());
-        wrapper.lambda().eq(TestTaskInfo::getStoryId, story.getId());
+        wrapper.lambda().eq(TestTaskInfo::getStoryId, story.getStory().getId());
         wrapper.lambda().eq(TestTaskInfo::getSummaryDesc, story.getDescription());
         return baseMapper.selectOne(wrapper);
     }

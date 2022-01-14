@@ -84,12 +84,12 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
                 testStory.setWorkDate(story.getWorkDate());
                 testStory.setStoryStatus(story.getStoryStatus());
                 baseMapper.updateById(testStory);
-                final TestTaskInfo itemByProject = taskInfoService.queryItem(story.getProjectId(), story.getId());
-                itemByProject.setUpdateDate(new Date());
-                itemByProject.setIssueDate(testStory.getWorkDate());
-                itemByProject.setSummaryDesc(testStory.getDescription());
-//                itemByProject.setFinishStatus(String.valueOf(testStory.getStoryStatus()));
-                taskInfoService.updateTask(request, itemByProject);
+//                final TestTaskInfo itemByProject = taskInfoService.queryItem(story.getProjectId(), story.getId());
+//                itemByProject.setUpdateDate(new Date());
+//                itemByProject.setIssueDate(testStory.getWorkDate());
+//                itemByProject.setSummaryDesc(testStory.getDescription());
+////                itemByProject.setFinishStatus(String.valueOf(testStory.getStoryStatus()));
+//                taskInfoService.updateTask(request, itemByProject);
                 return ResponseUtils.success("数据更新成功", testStory);
             } catch (Exception e) {
                 return ResponseUtils.error(400, "数据更新失败", e.getCause().getMessage());
@@ -100,7 +100,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
                     .description(story.getDescription()).workDate(story.getWorkDate()).storyStatus(story.getStoryStatus())
                     .docId(story.getDocId()).delFlag(0).createDate(new Date()).build();
             baseMapper.insert(build);
-            taskInfoService.addItem(request, story.getProjectId(), build);
+//            taskInfoService.addItem(request, story.getProjectId(), build);
             return ResponseUtils.success("数据添加成功", build);
         } catch (Exception e) {
             return ResponseUtils.error(400, "数据添加失败", e.getCause().getMessage());

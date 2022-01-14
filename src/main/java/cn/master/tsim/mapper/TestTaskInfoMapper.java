@@ -35,6 +35,6 @@ public interface TestTaskInfoMapper extends BaseMapper<TestTaskInfo> {
     @Select("select project_id from  t_task_info where issue_date = #{workDate} ")
     List<String> queryTaskInfoId(@Param("workDate") String workDate);
 
-    @Select("SELECT * from t_task_info t1 INNER JOIN t_plan t2 on t2.story_id=t1.story_id WHERE t2.id=#{planId}")
+    @Select("SELECT * from t_task_info t1  WHERE t1.plan_id=#{planId}")
     TestTaskInfo queryTaskInfoByPlan(String planId);
 }

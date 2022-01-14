@@ -8,10 +8,9 @@ import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.service.PlanCaseRefService;
 import cn.master.tsim.service.TestPlanService;
 import cn.master.tsim.service.TestStoryService;
-import cn.master.tsim.util.JacksonUtils;
 import cn.master.tsim.util.ResponseUtils;
+import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.metadata.IPage;
-import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -113,8 +112,7 @@ public class TestPlanController {
         try {
             String planId = request.getParameter("planId");
             String caseId = request.getParameter("caseId");
-            final List<String> list = JacksonUtils.jsonToObject(caseId, new TypeReference<List<String>>() {
-            });
+            final List<String> list = JSONArray.parseArray(caseId, String.class);
             planCaseRefService.addItemRef(planId, list);
             return ResponseUtils.success();
         } catch (Exception e) {

@@ -5,7 +5,6 @@ import cn.master.tsim.entity.PlanCaseRef;
 import cn.master.tsim.entity.TestBug;
 import cn.master.tsim.entity.TestTaskInfo;
 import cn.master.tsim.mapper.PlanCaseRefMapper;
-import cn.master.tsim.mapper.TestPlanMapper;
 import cn.master.tsim.mapper.TestTaskInfoMapper;
 import cn.master.tsim.service.PlanCaseRefService;
 import cn.master.tsim.service.TestBugService;
@@ -38,7 +37,6 @@ import java.util.Objects;
 @Service
 public class PlanCaseRefServiceImpl extends ServiceImpl<PlanCaseRefMapper, PlanCaseRef> implements PlanCaseRefService {
 
-    private final TestPlanMapper planMapper;
     private final TestCaseService caseService;
     private final TestBugService bugService;
     private final TestTaskInfoMapper taskInfoMapper;
@@ -46,8 +44,7 @@ public class PlanCaseRefServiceImpl extends ServiceImpl<PlanCaseRefMapper, PlanC
     private TestPlanService planService;
 
     @Autowired
-    public PlanCaseRefServiceImpl(TestPlanMapper planMapper, TestCaseService caseService, TestBugService bugService, TestTaskInfoMapper testTaskInfoMapper) {
-        this.planMapper = planMapper;
+    public PlanCaseRefServiceImpl(TestCaseService caseService, TestBugService bugService, TestTaskInfoMapper testTaskInfoMapper) {
         this.caseService = caseService;
         this.bugService = bugService;
         this.taskInfoMapper = testTaskInfoMapper;
@@ -71,6 +68,7 @@ public class PlanCaseRefServiceImpl extends ServiceImpl<PlanCaseRefMapper, PlanC
     @Override
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
     public PlanCaseRef addBugByFailCase(HttpServletRequest request) {
+        String moduleId = request.getParameter("moduleId");
 //       添加关联的bug
         final TestBug build = TestBug.builder().projectId(request.getParameter("projectId"))
                 .moduleId(request.getParameter("moduleId"))

@@ -1,7 +1,10 @@
 package cn.master.tsim.service.impl;
 
 import cn.master.tsim.common.ResponseResult;
-import cn.master.tsim.entity.*;
+import cn.master.tsim.entity.Module;
+import cn.master.tsim.entity.Project;
+import cn.master.tsim.entity.TestCase;
+import cn.master.tsim.entity.TestTaskInfo;
 import cn.master.tsim.mapper.TestCaseMapper;
 import cn.master.tsim.service.*;
 import cn.master.tsim.util.ResponseUtils;
@@ -19,7 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * <p>
@@ -254,9 +256,13 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         refIds.forEach(t -> {
             unRefIds.removeIf(u -> Objects.equals(u, t));
         });
+        if (CollectionUtils.isEmpty(unRefIds)) {
+            unRefIds.add(" ");
+        }
         Page<TestCase> page = baseMapper.selectPage(
                 new Page<>(Objects.equals(pn, 0) ? 1 : pn, Objects.equals(10, 0) ? 15 : 10),
-                new QueryWrapper<TestCase>().in("id", unRefIds.stream().distinct().collect(Collectors.toList())));
+                // FIXME: 2022/1/14 0014
+                new QueryWrapper<TestCase>().in("id", unRefIds));
         page.getRecords().forEach(testCase -> {
             testCase.setModule(moduleService.getModuleById(testCase.getModuleId()));
         });
