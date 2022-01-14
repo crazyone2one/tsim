@@ -78,6 +78,7 @@ function saveEditCaseInfo() {
         }
     });
 }
+
 /*保存测试用例*/
 function saveCaseInfo() {
     const p_div = document.getElementById("case-step-area");
@@ -87,6 +88,12 @@ function saveCaseInfo() {
         const temp_json = {};
         temp_json['t_s'] = s_div[i].getElementsByTagName("input")[0].value;
         temp_json['t_r'] = s_div[i].getElementsByTagName("input")[1].value;
+        if (!temp_json['t_s'] && !temp_json['t_r']) {
+            $('#toast-div').addClass("is-invalid");
+            return;
+        } else {
+            removeClass('#toast-div', 'is-invalid');
+        }
         const result = {};
         result[i] = temp_json;
         temp_steps.push(result);
@@ -94,21 +101,7 @@ function saveCaseInfo() {
     const case_step = document.getElementById("caseSteps");
     case_step.setAttribute("value", JSON.stringify(temp_steps));
     const data = $("#add-case-from").serialize();
-    $.ajax({
-        url: "/case/save",
-        type: 'POST',
-        data: data,
-        // contentType: "application/json;charset=UTF-8",
-        dataType: 'JSON',
-        success: function (arg) {
-            if (Object.is(arg['code'], 200)) {
-                resetModal("#add-case-modal", "add-case-from");
-                $('#add-case-modal').modal('hide');
-                refresh_table();
-            }
-            showToast(arg['code'], arg['msg']);
-        }
-    });
+    validateCaseInfo(data);
 }
 
 function loadStepAndResult(arg) {
@@ -181,4 +174,62 @@ function updateCase(flag) {
         })
         closeModal('confirm-modal');
     })
+}
+
+/**
+ * 测试用例数据非空验证：项目、模块、测试用例标题
+ * @param case_info_data
+ */
+function validateCaseInfo(case_info_data) {
+    const _projectId = '#projectId';
+    const _moduleId = '#moduleId';
+    const _caseTitle = '#caseTitle';
+    const tempProjectName = $(_projectId).val();
+    const tempModuleName = $(_moduleId).val();
+    const tempHiddenProjectId = $('#c-a-p').val();
+    const tempCaseTitle = $(_caseTitle).val();
+
+    // 所属模块名称非空验证
+    tempModuleName ? removeClass(_moduleId, 'is-invalid') : $(_moduleId).addClass("is-invalid");
+    // 测试用例标题为空验证
+    tempCaseTitle ? removeClass(_caseTitle, 'is-invalid') : $(_caseTitle).addClass("is-invalid");
+    if (!tempProjectName) {
+        $(_projectId).addClass("is-invalid");
+    } else {
+        removeClass(_projectId, 'is-invalid');
+        if (!tempHiddenProjectId) {
+            $('#project-error-tips').text(tempProjectName + '不存在,先在项目管理模块添加');
+            $(_projectId).addClass("is-invalid");
+        } else {
+            removeClass('_projectId', 'is-invalid');
+            $.ajax({
+                url: '/project/checkUnique',
+                type: 'get',
+                data: {name: tempProjectName, id: tempHiddenProjectId},
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                success: function (result) {
+                    if (Object.is(403, result['code'])) {
+                        $('#project-error-tips').text('[' + tempProjectName + ']不存在,先在项目管理模块添加');
+                        $(_projectId).addClass("is-invalid");
+                    } else {
+                        $.ajax({
+                            url: "/case/save",
+                            type: 'POST',
+                            data: case_info_data,
+                            // contentType: "application/json;charset=UTF-8",
+                            dataType: 'JSON',
+                            success: function (arg) {
+                                if (Object.is(arg['code'], 200)) {
+                                    resetModal("#add-case-modal", "add-case-from");
+                                    $('#add-case-modal').modal('hide');
+                                    refresh_table();
+                                }
+                                showToast(arg['code'], arg['msg']);
+                            }
+                        });
+                    }
+                }
+            })
+        }
+    }
 }

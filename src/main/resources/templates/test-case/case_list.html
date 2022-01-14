@@ -188,9 +188,10 @@
     ]
 
     function option(value, row, index) {
-        // return "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
-        const d = '<button class="btn btn-sm-c btn-outline-info" data-bs-toggle="modal" data-bs-target="#case-detail-modal" onclick="detailCase(\'' + row.id + '\')">查看</button>';
-        const e = '<button class="btn btn-sm-c btn-outline-info" data-bs-toggle="modal" data-bs-target="#case-edit-modal" onclick="editCase(\'' + row.id + '\')">编辑</button>'
+        // const del = "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
+        // const disable = "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='置为无效'>置为无效</a>";
+        const d = '<button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#case-detail-modal" onclick="detailCase(\'' + row.id + '\')">查看</button>';
+        const e = '<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#case-edit-modal" onclick="editCase(\'' + row.id + '\')">编辑</button>'
         return e + d;
     }
 
@@ -256,6 +257,7 @@
             )
         })
     }
+
     // 编辑测试用例数据
     function editCase(id) {
         $(editModalId).on('shown.bs.modal', function () {
@@ -348,9 +350,11 @@
 
     autoComplete("/project/queryList", "p-search", 'p', false);
 
-    $('#add-case-modal').on('shown.bs.modal', function (event) {
+    $('#add-case-modal').on('show.bs.modal', function (event) {
         autoComplete("/project/queryList", "projectId", 'p', true);
         // myModal.off('shown.bs.modal');//去除绑定
+        $("input[type=hidden][id='c-a-p']").val('');
+        $("input[type=hidden][id='m-a']").val('');
     });
     // 查询相关关联的模块
     $("#moduleId")[0].addEventListener("focus", function () {
