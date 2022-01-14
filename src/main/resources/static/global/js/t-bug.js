@@ -31,6 +31,8 @@ $('#new_target_submit_bug').on('click', function () {
                 success: function (result) {
                     showToast(result['code'], result['msg']);
                     // todo 完成后跳转到列表弹框
+                    resetModal("#add-bug-modal", "add-bug-from");
+                    $('#add-bug-modal').modal('hide');
                 }
             }
         )
