@@ -91,10 +91,10 @@
 <script th:src="@{/global/js/t-plan.js}"></script>
 <script th:inline="javascript">
     <!--            查询条件-->
-    //todo 在未刷新页面的情况下，再次添加测试计划时未选择需求数据，会有上一次需求数据的缓存
     autoComplete('/project/queryList', 'p-search', 'p', false);
-    $('#add-plan-modal').on('shown.bs.modal', function () {
+    $('#add-plan-modal').on('show.bs.modal', function () {
         autoComplete('/project/queryList', 'p-add', 'p', true);
+        $("input[type=hidden][id='storyId']").val('');
     });
 
     function configureStoryComplete() {
@@ -109,12 +109,16 @@
             field: 'projectId',
             align: 'center',
             title: '项目名',
-            class: 'col-sm-6'
+            class: 'col-sm-6', formatter: function (value, row, index) {
+                return row.project.projectName;
+            }
         }, {
             field: 'storyId',
             align: 'center',
             title: '关联需求',
-            class: 'col-sm-6'
+            class: 'col-sm-6', formatter: function (value, row, index) {
+                return row.story != null ? row.story.description : undefined;
+            }
         }, {
             field: 'name',
             align: 'center',
@@ -160,21 +164,52 @@
 
     // 保存测试计划
     $('#submitPlan').on('click', function () {
-        $.ajax({
-            url: "/plan/save",
-            type: 'POST',
-            data: $("#addPlanForm").serialize(),
-            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-            success: function (arg) {
-                if (Object.is(arg['code'], 200)) {
-                    $('#add-plan-modal').modal('hide');
-                    resetModal("#add-plan-modal", "addPlanForm");
-                    $('#table').bootstrapTable('refresh');
-                }
-                showToast(arg['code'], arg['msg']);
+        const tempProjectName = $('#p-add').val();
+        const tempHiddenProjectId = $('#s-p-id').val();
+        const tempStoryName = $('#storyList').val();
+        const tempStoryId = $('#storyId').val();
+        const tempPlanDesc = $('#add_plan_name').val();
+        // 测试计划名称非空验证
+        tempPlanDesc ? removeClass('#add_plan_name', 'is-invalid') : $('#add_plan_name').addClass("is-invalid");
+        if (!tempProjectName) {
+            $('#p-add').addClass("is-invalid");
+        } else {
+            removeClass('#p-add', 'is-invalid');
+            if (!tempHiddenProjectId) {
+                $('#project-error-tips').text(tempProjectName + '不存在,先在项目管理模块添加');
+                $('#p-add').addClass("is-invalid");
+            } else {
+                removeClass('#p-add', 'is-invalid');
+                $.ajax({
+                    url: '/project/checkUnique',
+                    type: 'get',
+                    data: {name: tempProjectName, id: tempHiddenProjectId},
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    success: function (result) {
+                        if (Object.is(403, result['code'])) {
+                            $('#project-error-tips').text('[' + tempProjectName + ']不存在,先在项目管理模块添加');
+                            $('#p-add').addClass("is-invalid");
+                        } else {
+                            $.ajax({
+                                url: "/plan/save",
+                                type: 'POST',
+                                data: $("#addPlanForm").serialize(),
+                                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                                success: function (arg) {
+                                    if (Object.is(arg['code'], 200)) {
+                                        $('#add-plan-modal').modal('hide');
+                                        resetModal("#add-plan-modal", "addPlanForm");
+                                        $('#table').bootstrapTable('refresh');
+                                    }
+                                    showToast(arg['code'], arg['msg']);
+                                }
+                            });
+                        }
+                    }
+                });
             }
-        });
-    })
+        }
+    });
 </script>
 </body>
 </html>

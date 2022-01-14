@@ -23,6 +23,9 @@
                                         <span class="input-group-text required" id="basic-addon1">项目名称</span>
                                         <input type="text" class="form-control" placeholder="输入项目名称"
                                                aria-label="project" aria-describedby="basic-addon1" id="p-add">
+                                        <div class="invalid-feedback" id="project-error-tips">
+                                            请输入或选择项目.
+                                        </div>
                                         <input type="hidden" name="projectId" id="s-p-id">
                                     </div>
                                     <div class="input-group mb-3">
@@ -34,6 +37,9 @@
                                     <div class="input-group mb-3">
                                         <span id="basic-addon3" class="input-group-text required">测试计划名称</span>
                                         <input type="text" class="form-control" aria-label="name" aria-describedby="basic-addon3" id="add_plan_name" name="name" placeholder="输入测试计划名称"/>
+                                        <div class="invalid-feedback">
+                                            请输入测试计划名称.
+                                        </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="add-description-name" class="form-label">测试计划描述</label>

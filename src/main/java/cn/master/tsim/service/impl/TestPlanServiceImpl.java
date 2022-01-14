@@ -2,9 +2,7 @@ package cn.master.tsim.service.impl;
 
 import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
-import cn.master.tsim.entity.Project;
 import cn.master.tsim.entity.TestPlan;
-import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.mapper.TestPlanMapper;
 import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.service.TestPlanService;
@@ -62,19 +60,16 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
         //        根据测试计划描述内容查询
         final String planDesc = request.getParameter("planDesc");
         wrapper.lambda().like(StringUtils.isNotBlank(planDesc), TestPlan::getDescription, planDesc);
-//        wrapper.lambda().eq(Objects.nonNull(request.getDelFlag()), TestPlan::getDelFlag, request.getDelFlag());
         wrapper.lambda().orderByAsc(TestPlan::getDelFlag);
         wrapper.lambda().orderByAsc(TestPlan::getCreateDate);
         final Page<TestPlan> iPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
         iPage.getRecords().forEach(t -> {
-            final Project project = projectService.getProjectById(t.getProjectId());
-            t.setProject(project);
-            t.setProjectId(project.getProjectName());
-            final TestStory story = storyService.searchStoryById(t.getStoryId());
-            t.setStory(story);
-            t.setStoryId(story.getDescription());
+            t.setProject(projectService.getProjectById(t.getProjectId()));
+            if (StringUtils.isNotBlank(t.getStoryId())) {
+                t.setStory(storyService.searchStoryById(t.getStoryId()));
+            }
         });
         return iPage;
     }
