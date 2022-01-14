@@ -87,10 +87,19 @@ public class PlanCaseRefServiceImpl extends ServiceImpl<PlanCaseRefMapper, PlanC
         final TestBug testBug = bugService.saveOrUpdateBug(request, build);
 //        更新关系数据
         PlanCaseRef ref = baseMapper.selectById(request.getParameter("ref-id"));
+        Integer runStatus = ref.getRunStatus();
         ref.setRunStatus(1);
         ref.setRunResult(1);
         ref.setBugId(testBug.getId());
-        baseMapper.updateById(ref);
+        int index = baseMapper.updateById(ref);
+//        更新任务汇总数据执行测试用例数量
+        if (runStatus == 0) {
+            // 已通过测试用例再次录入bug时不增加执行测试用例数量
+            final TestTaskInfo taskInfo = taskInfoMapper.queryTaskInfoByPlan(ref.getPlanId());
+            taskInfo.setExecuteCaseCount(taskInfo.getExecuteCaseCount() + index);
+            taskInfo.setUpdateDate(new Date());
+            taskInfoMapper.updateById(taskInfo);
+        }
         return ref;
     }
 
@@ -126,7 +135,12 @@ public class PlanCaseRefServiceImpl extends ServiceImpl<PlanCaseRefMapper, PlanC
                 PlanCaseRef planCaseRef = getById(t);
                 planCaseRef.setRunStatus(1);
                 planCaseRef.setRunResult(0);
-                updateById(planCaseRef);
+                int index = baseMapper.updateById(planCaseRef);
+                //        更新任务汇总数据执行测试用例数量
+                final TestTaskInfo taskInfo = taskInfoMapper.queryTaskInfoByPlan(planCaseRef.getPlanId());
+                taskInfo.setExecuteCaseCount(taskInfo.getExecuteCaseCount() + index);
+                taskInfo.setUpdateDate(new Date());
+                taskInfoMapper.updateById(taskInfo);
             });
             return ResponseUtils.success("数据更新成功");
         } catch (Exception e) {
