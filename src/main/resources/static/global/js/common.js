@@ -14,9 +14,9 @@ $("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
  */
 const showToast = (code, msg) => {
     const $toast = $('.toast');
-    $toast.hasClass('bg-success')&& $toast.removeClass('bg-success');
-    $toast.hasClass('bg-warning')&& $toast.removeClass('bg-warning');
-    $toast.hasClass('bg-danger')&& $toast.removeClass('bg-danger');
+    $toast.hasClass('bg-success') && $toast.removeClass('bg-success');
+    $toast.hasClass('bg-warning') && $toast.removeClass('bg-warning');
+    $toast.hasClass('bg-danger') && $toast.removeClass('bg-danger');
     if (Object.is(200, code)) {
         $toast.addClass("bg-success")
     } else if (Object.is(300, code)) {
@@ -116,7 +116,13 @@ $(".modal").on('hide.bs.modal', function (e) {
     // 使用jquery 的 .off() 方式去移除掉已经绑定事件的操作，保证事件只绑定一次
     $('.modal').off('shown.bs.modal');
 });
-
+/**
+ * modal关闭时删除is-invalid类，清空相关的提示信息
+ */
+$('.modal').on('show.bs.modal', function () {
+    const $invalid = $('.invalid-item');
+    $invalid.hasClass('is-invalid') && $invalid.removeClass('is-invalid');
+})
 
 /*****文件上传*/
 $('.file-input').on('change', function () {
