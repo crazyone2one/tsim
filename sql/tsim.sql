@@ -10,7 +10,7 @@ Target Server Type    : MYSQL
 Target Server Version : 50732
 File Encoding         : 65001
 
-Date: 2022-01-11 11:29:03
+Date: 2022-01-14 16:32:13
 */
 
 SET FOREIGN_KEY_CHECKS=0;
@@ -158,6 +158,17 @@ CREATE TABLE `t_plan_case_ref` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 ROW_FORMAT=DYNAMIC;
 
 -- ----------------------------
+-- Table structure for t_plan_story_ref
+-- ----------------------------
+DROP TABLE IF EXISTS `t_plan_story_ref`;
+CREATE TABLE `t_plan_story_ref` (
+  `id` varchar(36) NOT NULL COMMENT '主键',
+  `plan_id` varchar(36) DEFAULT '' COMMENT '测试计划数据id',
+  `story_id` varchar(36) DEFAULT '' COMMENT '需求数据id',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='测试计划与测试需求关联关系表';
+
+-- ----------------------------
 -- Table structure for t_project
 -- ----------------------------
 DROP TABLE IF EXISTS `t_project`;
@@ -194,8 +205,9 @@ CREATE TABLE `t_story` (
   `description` varchar(255) NOT NULL DEFAULT '' COMMENT '需求内容',
   `project_id` varchar(36) NOT NULL DEFAULT '' COMMENT '项目id',
   `work_date` varchar(50) NOT NULL DEFAULT '' COMMENT '需求时间',
+  `story_status` tinyint(1) DEFAULT '0' COMMENT '完成状态(0-未完成,1-已完成）',
   `doc_id` varchar(36) DEFAULT NULL,
-  `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '完成状态(0:未结束，1：已结束)',
+  `del_flag` tinyint(1) NOT NULL DEFAULT '0' COMMENT '删除状态(0:未删除，1：已删除)',
   `create_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'createDate',
   `update_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT 'updateDate',
   PRIMARY KEY (`id`)
@@ -209,6 +221,7 @@ CREATE TABLE `t_task_info` (
   `id` varchar(36) NOT NULL COMMENT '主键id',
   `project_id` varchar(36) NOT NULL DEFAULT '' COMMENT '项目名称',
   `story_id` varchar(36) NOT NULL DEFAULT '' COMMENT '需求id',
+  `plan_id` varchar(36) DEFAULT '' COMMENT '测试计划数据id',
   `summary_desc` varchar(255) DEFAULT '' COMMENT '任务描述',
   `create_case_count` int(11) NOT NULL DEFAULT '0' COMMENT '编写用例数量',
   `execute_case_count` int(11) NOT NULL DEFAULT '0' COMMENT '执行测试用例数量',
@@ -219,6 +232,7 @@ CREATE TABLE `t_task_info` (
   `req_doc` varchar(36) DEFAULT NULL COMMENT '需求文件数据id',
   `tester` varchar(36) NOT NULL DEFAULT '' COMMENT '负责人',
   `remark` varchar(255) NOT NULL DEFAULT '' COMMENT '备注',
+  `del_flag` tinyint(1) DEFAULT '0' COMMENT '删除状态',
   `issue_date` varchar(50) NOT NULL DEFAULT '' COMMENT '任务时间',
   `create_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT '创建时间',
   `update_date` datetime NOT NULL DEFAULT '1000-01-01 00:00:00' COMMENT '修改时间',
