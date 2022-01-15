@@ -4,10 +4,20 @@ spring:
     prefix: classpath:/templates/
     suffix: .html
   datasource:
-    url: jdbc:mysql://localhost:3306/tsim?useUnicode=true&characterEncoding=UTF-8
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: admin
+    dynamic:
+      primary: master #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+      datasource:
+        master:
+          jdbc-url: jdbc:mysql://localhost:3306/tsim?useUnicode=true&characterEncoding=UTF-8
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          username: root
+          password: admin
+        secondary:
+          jdbc-url: jdbc:mysql://localhost:3306/nxdb?useUnicode=true&characterEncoding=UTF-8
+          driver-class-name: com.mysql.cj.jdbc.Driver
+          username: root
+          password: admin
     type: com.alibaba.druid.pool.DruidDataSource
     druid:
       # 连接池的配置信息初始化大小，最小，最大
