@@ -241,35 +241,24 @@ function addRefCase(id) {
  */
 function addRefBug(params) {
     $('#add-bug-modal').on('shown.bs.modal', function () {
+        console.log(params);
         const tempCase = params.testCase;
         $('#hidden-ref-id').val(params.id);
         $('#projectCode').val(tempCase.project.projectName).attr('readonly', true);
         $('#b-a-p').val(tempCase.projectId);
         $('#module').val(tempCase.module.moduleName);
         $('#b-a-m').val(tempCase.moduleId);
-        $('#add-bug-story').val(params.plan.story.description);
-        $('#bug-story-ref').val(params.plan.storyId);
+        const _temp_story = params.plan.story;
+        $('#add-bug-story').val(Object.is(_temp_story,undefined)?"":_temp_story.description);
+        $('#bug-story-ref').val(Object.is(params.plan.storyId, undefined) ? '' : params.plan.storyId);
         $('#functionDesc').val(tempCase.name);
+
+        // 打开bug弹框时按钮增加属性用于modal之间的跳转
+        $('#close-modal-btn').attr('data-bs-toggle', 'modal').attr('data-bs-target', '#ref-run-modal');
+        $('#new_target_cancel').attr('data-bs-toggle', 'modal').attr('data-bs-target', '#ref-run-modal');
+        $('#new_target_submit_bug').attr('data-bs-toggle', 'modal').attr('data-bs-target', '#ref-run-modal');
     });
 }
-
-/**
- * 测试计划关联测试用例：未通过测试用例录入bug数据
- */
-// $('#new_target_submit_bug').on('click', function () {
-//     const bug_info = $("#add-bug-from").serialize();
-//     console.log(bug_info);
-//     $.ajax({
-//             url: '/planCaseRef/addBugByFailCase/',
-//             type: 'post',
-//             data: JSON.stringify(bug_info),
-//             contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-//             success: function (result) {
-//                 showToast(result['msg'], 'success')
-//             }
-//         }
-//     )
-// });
 
 function batchPassCase(id) {
     let res = [];

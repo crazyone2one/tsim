@@ -30,9 +30,9 @@ $('#new_target_submit_bug').on('click', function () {
                 contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                 success: function (result) {
                     showToast(result['code'], result['msg']);
-                    // todo 完成后跳转到列表弹框
                     resetModal("#add-bug-modal", "add-bug-from");
-                    $('#add-bug-modal').modal('hide');
+                    //数据更新完成后跳转到执行窗口并刷新
+                    $('#refRunTable').bootstrapTable('refresh');
                 }
             }
         )
