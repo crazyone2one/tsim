@@ -60,8 +60,9 @@ function saveEditCaseInfo() {
     }
     const case_step = document.getElementById("editCaseSteps");
     case_step.setAttribute("value", JSON.stringify(temp_steps));
+    !$('#mode-manual-e').prop('checked') && $('#mode-manual-e').val();
+    !$('#mode-auto-e').prop('checked') && $('#mode-auto-e').val();
     const data = $("#edit-case-form").serialize();
-    console.log(data);
     $.ajax({
         url: "/case/save",
         type: 'POST',
@@ -100,6 +101,8 @@ function saveCaseInfo() {
     }
     const case_step = document.getElementById("caseSteps");
     case_step.setAttribute("value", JSON.stringify(temp_steps));
+    !$('#mode-manual').prop('checked') && $('#mode-manual').val();
+    !$('#mode-auto').prop('checked') && $('#mode-auto').val();
     const data = $("#add-case-from").serialize();
     validateCaseInfo(data);
 }

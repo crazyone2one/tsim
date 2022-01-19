@@ -68,6 +68,8 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         String id = request.getParameter("id");
         String description = request.getParameter("description");
         String precondition = request.getParameter("precondition");
+        String runModeManual = request.getParameter("runModeManual");
+        String runModeAuto = request.getParameter("runModeAuto");
         TestCase build = null;
         String message;
         Object object;
@@ -76,7 +78,9 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             tempCase.setName(name);
             tempCase.setDescription(description);
             tempCase.setPrecondition(precondition);
-            tempCase.setTestMode(Integer.parseInt(request.getParameter("testMode")));
+            //tempCase.setTestMode(Integer.parseInt(request.getParameter("testMode")));
+            tempCase.setRunModeManual(StringUtils.isNotBlank(runModeManual) ? runModeManual : "");
+            tempCase.setRunModeAuto(StringUtils.isNotBlank(runModeAuto) ? runModeAuto : "");
             tempCase.setPriority(priority);
             tempCase.setStepStore(stepStore);
             tempCase.setUpdateDate(new Date());
@@ -90,7 +94,8 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                     .name(name)
                     .description(description)
                     .precondition(precondition)
-                    .testMode(0)
+                    .runModeManual(StringUtils.isNotBlank(runModeManual) ? runModeManual : "")
+                    .runModeAuto(StringUtils.isNotBlank(runModeAuto) ? runModeAuto : "")
                     .priority(priority)
                     .stepStore(stepStore)
                     .resultStore(request.getParameter("resultStore"))

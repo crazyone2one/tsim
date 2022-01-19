@@ -50,8 +50,8 @@
                                     <span class="input-group-text">前提条件</span>
                                     <input class="form-control" aria-label="With textarea" name="precondition" id="edit-case-precondition">
                                 </div>
-                                <div class="row">
-                                    <div class="mb-3 col-md-6">
+                                <div class="row mb-3">
+                                    <div class="col-md-6">
                                         <select class="form-select" aria-label="priority" name="priority" id="edit-case-priority"
                                                 data-bs-toggle="tooltip" data-bs-placement="bottom" title="测试用例优先级">
                                             <option value="0">低</option>
@@ -59,12 +59,15 @@
                                             <option value="2">高</option>
                                         </select>
                                     </div>
-                                    <div class=" mb-3 col-md-6">
-                                        <select class="form-select" aria-label="testMode" name="testMode" id="edit-case-testMode"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom" title="测试用例执行方式">
-                                            <option value="0">手动测试</option>
-                                            <option value="1">自动测试</option>
-                                        </select>
+                                    <div class="col-md-6">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="runModeManual" id="mode-manual-e" value="1">
+                                            <label class="form-check-label" for="mode-manual-e">手动测试</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="runModeAuto" id="mode-auto-e" value="1">
+                                            <label class="form-check-label" for="mode-auto-e">自动测试</label>
+                                        </div>
                                     </div>
                                 </div>
                                 <div>

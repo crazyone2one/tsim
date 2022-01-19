@@ -185,7 +185,7 @@
                 return _priority;
             }
         },
-        {title: '操作', align: 'center', field: 'id', class: 'col-sm-3', formatter: option,}
+        {title: '操作', align: 'center', field: 'id', class: 'col-sm-4', formatter: option,}
     ]
 
     function option(value, row, index) {
@@ -250,8 +250,8 @@
                                 break
                         }
                         $("#priority-d").val(_priority);
-                        let _testMode = Object.is(0, arg['data'].testMode) ? "手动" : "自动";
-                        $("#testMode-d").val(_testMode);
+                        arg['data'].runModeManual && $("#mode-manual-d").prop('checked', true);
+                        arg['data'].runModeAuto && $("#mode-auto-d").prop('checked', true);
                         // 填充测试步骤
                         loadStepAndResult(arg);
                     }
@@ -277,7 +277,9 @@
                         $("#edit-case-description").val(arg['data'].description);
                         $("#edit-case-precondition").val(arg['data'].precondition);
                         select_option_checked('edit-case-priority', arg['data'].priority);
-                        select_option_checked('edit-case-testMode', arg['data'].testMode);
+                        arg['data'].runModeManual && $("#mode-manual-e").prop('checked', true);
+                        arg['data'].runModeAuto && $("#mode-auto-e").prop('checked', true);
+                        // select_option_checked('edit-case-testMode', arg['data'].testMode);
                         // 填充测试步骤
                         const _steps = arg['data'].caseSteps;
                         const case_div = document.getElementById('edit-case-step-table');

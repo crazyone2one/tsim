@@ -108,6 +108,12 @@ public class TestCase implements Serializable {
     @TableField("test_mode")
     private Integer testMode;
 
+    @TableField("run_mode_manual")
+    private String runModeManual;
+
+    @TableField("run_mode_auto")
+    private String runModeAuto;
+
     @TableField(exist = false)
     private List<TestCaseSteps> caseSteps;
 

@@ -68,32 +68,37 @@
                                               placeholder="前提条件" aria-label="前提条件"
                                               aria-describedby="pre-span">
                                 </div>
-                                <div class="row g-3">
-                                    <div class="mb-3 col-md-4">
-                                        <select class="form-select" aria-label="priority" name="priority"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom" title="测试用例优先级">
-                                            <option value="0">低</option>
-                                            <option value="1" selected>中</option>
-                                            <option value="2">高</option>
-                                        </select>
+                                <div class="row g-3 mb-3">
+                                    <div class="col">
+                                        <div class="input-group">
+                                            <label class="input-group-text" for="priority">测试用例优先级</label>
+                                            <select class="form-select" name="priority" id="priority">
+                                                <option value="0">低</option>
+                                                <option value="1" selected>中</option>
+                                                <option value="2">高</option>
+                                            </select>
+                                        </div>
                                     </div>
-                                    <div class=" mb-3 col-md-4">
-                                        <select class="form-select" aria-label="testMode" name="testMode"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom" title="测试用例执行方式">
-                                            <option value="0" selected>手动测试</option>
-                                            <option value="1">自动测试</option>
-                                        </select>
+                                    <div class="col">
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="runModeManual" id="mode-manual" value="1">
+                                            <label class="form-check-label" for="mode-manual">手动测试</label>
+                                        </div>
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="checkbox" name="runModeAuto" id="mode-auto" value="1">
+                                            <label class="form-check-label" for="mode-auto">自动测试</label>
+                                        </div>
                                     </div>
-                                    <div class=" mb-3 col-md-4">
-                                        <select class="form-select" aria-label="workDate" id="workDate" name="workDate"
-                                                data-bs-toggle="tooltip" data-bs-placement="bottom"
-                                                title="此字段值用于和项目统计关联使用">
-                                            <option th:each="m:${monthList}"
-                                                    th:value="${m}"
-                                                    th:text="${m}"
-                                                    th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}">
-                                        </select>
-                                    </div>
+<!--                                    <div class="  col-md-4">-->
+<!--                                        <select class="form-select" aria-label="workDate" id="workDate" name="workDate"-->
+<!--                                                data-bs-toggle="tooltip" data-bs-placement="bottom"-->
+<!--                                                title="此字段值用于和项目统计关联使用">-->
+<!--                                            <option th:each="m:${monthList}"-->
+<!--                                                    th:value="${m}"-->
+<!--                                                    th:text="${m}"-->
+<!--                                                    th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}">-->
+<!--                                        </select>-->
+<!--                                    </div>-->
                                 </div>
                                 <div id="case-area">
                                     <div>
