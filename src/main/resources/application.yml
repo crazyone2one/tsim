@@ -48,3 +48,18 @@ server:
 
 file:
   upload-dir: ./upload
+  selenium-screenshots: ./selenium-screenshots  # 测试用例执行失败后自动截图存放文件夹
+
+webdriver:
+  isRemote: false
+  browser: CHROME
+  service:
+    location: http://localhost
+    port: 4444
+    default-username: admin
+    default-password: 123456
+    test-server: http://39.103.139.6:9004/
+  capabilities:
+    javascriptEnabled: true
+    takeScreenshot: true
+    browserName: chrome

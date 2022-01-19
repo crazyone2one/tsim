@@ -43,6 +43,21 @@ public class ResponseUtils {
         return resp;
     }
 
+    public static ResponseResult success(Integer code, String message) {
+        ResponseResult resp = new ResponseResult();
+        resp.setCode(code);
+        resp.setMsg(message);
+        return resp;
+    }
+
+    public static ResponseResult success(Integer code, String message, Object object) {
+        ResponseResult resp = new ResponseResult();
+        resp.setCode(code);
+        resp.setMsg(message);
+        resp.setData(object);
+        return resp;
+    }
+
     public static ResponseResult error() {
         ResponseResult resp = new ResponseResult();
         resp.setCode(ResponseCode.BODY_NOT_MATCH.getCode());

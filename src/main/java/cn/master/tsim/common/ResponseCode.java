@@ -12,6 +12,7 @@ import lombok.Getter;
 public enum ResponseCode {
     // 数据操作错误定义
     SUCCESS(200, "成功!"),
+    SUCCESS_201(201, "测试用例执行失败!"),
     BODY_NOT_MATCH(400, "请求的数据格式不符!"),
     ERROR_404(404, "未找到该资源!"),
     PARAMS_ERROR(403, "参数错误!"),

@@ -109,6 +109,7 @@
 <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
 <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
 <script type="text/javascript" th:src="@{/global/js/t-case.js}"></script>
+<script type="text/javascript" th:src="@{/global/js/t-auto-run.js}"></script>
 <script th:inline="javascript">
     // $(document).on('click', "#import", function () {
     //     $('#uploadModal').modal('show');
@@ -191,8 +192,9 @@
         // const del = "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
         // const disable = "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='置为无效'>置为无效</a>";
         const d = '<button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#case-detail-modal" onclick="detailCase(\'' + row.id + '\')">查看</button>';
-        const e = '<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#case-edit-modal" onclick="editCase(\'' + row.id + '\')">编辑</button>'
-        return e + d;
+        const e = '<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#case-edit-modal" onclick="editCase(\'' + row.id + '\')">编辑</button>';
+        const r = '<button class="btn btn-sm btn-warning" onclick="runCase(\'' + row.id + '\')">run</button>';
+        return e + d + r;
     }
 
     //测试步骤封装

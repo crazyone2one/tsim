@@ -12,4 +12,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class FileProperties {
     @Setter@Getter
     private String uploadDir;
+    @Setter
+    @Getter
+    private String seleniumScreenshots;
 }

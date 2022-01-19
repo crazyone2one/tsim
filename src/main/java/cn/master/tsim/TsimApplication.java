@@ -1,6 +1,8 @@
 package cn.master.tsim;
 
+import cn.master.tsim.config.DriverServerProperties;
 import cn.master.tsim.config.FileProperties;
+import cn.master.tsim.config.WebDriverProperties;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -18,7 +20,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
  */
 
 @MapperScan("cn.master.tsim.mapper")
-@EnableConfigurationProperties({FileProperties.class})
+@EnableConfigurationProperties({FileProperties.class, WebDriverProperties.class, DriverServerProperties.class})
 @SpringBootApplication(exclude = {org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration.class,
         DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class, JdbcTemplateAutoConfiguration.class})
 public class TsimApplication extends SpringBootServletInitializer {
