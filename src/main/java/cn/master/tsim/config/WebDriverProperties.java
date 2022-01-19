@@ -12,7 +12,7 @@ import java.util.Map;
  * @version 1.0.0
  */
 @Data
-@Component
+@Component("webDriverProperties")
 @ConfigurationProperties(prefix = "webdriver")
 public class WebDriverProperties {
     private String osName = System.getProperty("os.name");

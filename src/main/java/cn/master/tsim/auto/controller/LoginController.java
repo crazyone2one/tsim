@@ -4,6 +4,7 @@ import cn.master.tsim.auto.service.LoginService;
 import cn.master.tsim.common.ResponseResult;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,13 +19,12 @@ public class LoginController {
     private final LoginService loginService;
 
     @Autowired
-    public LoginController(LoginService loginService) {
+    public LoginController(@Qualifier("loginServiceImpl") LoginService loginService) {
         this.loginService = loginService;
     }
 
     @RequestMapping("/loginMainProcess")
     public ResponseResult loginMainProcess() {
-        loginService.doLogin();
-        return null;
+        return loginService.doLogin();
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
  * @version 1.0.0
  */
 @Data
-@Component
+@Component("driverServerProperties")
 @ConfigurationProperties(prefix = "webdriver.service")
 public class DriverServerProperties {
     private String port = "4444";
