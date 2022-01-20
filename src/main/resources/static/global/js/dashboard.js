@@ -56,9 +56,17 @@ function loadCaseByProject(echarts_flag) {
                 };
                 if (Object.is("case", echarts_flag)) {
                     case_chart.setOption(t_option);
+                    window.onresize=function () {
+                        // $(case_chart).width($('#case_echarts').width());
+                        case_chart.resize();
+                    }
                 }
                 if (Object.is("bug", echarts_flag)) {
                     bug_chart.setOption(t_option);
+                    window.onresize=function () {
+                        // $(case_chart).width($('#case_echarts').width());
+                        bug_chart.resize();
+                    }
                 }
             }
         }
