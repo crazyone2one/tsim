@@ -79,7 +79,8 @@
 
                 <!--            列表数据-->
                 <div id="table_refresh" th:fragment="table_refresh">
-                    <table th:id="table" class="table table-hover">
+                    <table th:id="table" class="table table-hover" data-detail-view="true"
+                           data-detail-formatter="reproduceStepsFormatter">
 
                     </table>
                 </div>
@@ -157,16 +158,16 @@
             title: '问题复现步骤',
             class: 'col-sm-6',
             id: 'reproduceSteps',
-            formatter: function (value, row, index) {
-                if (value) {
-                    let html = '';
-                    let tempSteps = value.split('\r\n');
-                    for (let i = 0; i < tempSteps.length; i++) {
-                        html += '<div style="text-align: left">' + tempSteps[i] + '</div>';
-                    }
-                    return html;
-                }
-            }
+            // formatter: function (value, row, index) {
+            //     if (value) {
+            //         let html = '';
+            //         let tempSteps = value.split('\r\n');
+            //         for (let i = 0; i < tempSteps.length; i++) {
+            //             html += '<div style="text-align: left">' + tempSteps[i] + '</div>';
+            //         }
+            //         return html;
+            //     }
+            // }
         },
         {
             field: 'severity',
@@ -188,6 +189,7 @@
         },
         {title: '操作', align: 'center', field: 'id', class: 'col-sm-3', formatter: option,}]
 
+    // 操作栏
     function option(value, row, index) {
         const detail = '<button type="button" class="btn btn-sm btn-info" id="bug-detail" data-bs-toggle="modal" data-bs-target="#bug-detail-modal" ' +
             'onclick="bugDetail(\'' + row.id + '\')">详情</button>';
@@ -197,6 +199,20 @@
         return detail + edit + _delete;
     }
 
+    function reproduceStepsFormatter(index, row) {
+        let html = '';
+        let tempSteps = row.reproduceSteps.split('\r\n');
+        for (let i = 0; i < tempSteps.length; i++) {
+            if (!tempSteps[i]) {
+                continue;
+            }
+            html += '<div style="text-align: left"> step' + (i + 1) + ':' + tempSteps[i] + '</div>';
+        }
+        return html;
+
+    }
+
+    // 请求参数
     const params = function (params) {
         return {
             projectName: $('#p-search').val().trim(), // 自定义查询条件
@@ -209,6 +225,7 @@
 
         }
     };
+
     InitTable('/bug/reloadTable', 'get', columns, params);
 
     autoComplete("/project/queryList", "p-search", 'p', false);
