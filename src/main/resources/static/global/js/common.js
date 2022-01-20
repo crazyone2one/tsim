@@ -1,11 +1,4 @@
 'use strict';
-// Toggle the side navigation
-$("#sidebarToggle, #sidebarToggleTop").on('click', function (e) {
-    $("body").toggleClass("sidebar-toggled");
-    const $sidebar = $(".sidebar");
-    $sidebar.toggleClass("toggled");
-    $sidebar.hasClass("toggled") && $('.sidebar .collapse').collapse('hide')
-});
 
 /**
  * 使用bootstrap toast作为消息提示
