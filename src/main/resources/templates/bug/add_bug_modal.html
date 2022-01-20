@@ -24,29 +24,22 @@
                                 <input type="hidden" name="ref-id" id="hidden-ref-id">
                                 <div class="col-md-6">
                                     <label for="projectCode" class="required fs-6 fw-bold mb-2">项目名称</label>
-                                    <input id="projectCode" type="text"
-                                           class="form-control form-control-solid" placeholder="录入项目名称"
-                                           required>
+                                    <input id="projectCode" type="text" class="form-control form-control-solid" placeholder="录入项目名称">
                                     <input type="hidden" name="projectId" id="b-a-p">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="module" class="required fs-6 fw-bold mb-2">模块</label>
-                                    <input id="module" type="text" class="form-control form-control-solid"
-                                           placeholder="录入模块名称"
-                                           required>
+                                    <input id="module" type="text" class="form-control form-control-solid" placeholder="录入模块名称">
                                     <input type="hidden" name="moduleId" id="b-a-m">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="add-bug-story" class="fs-6 fw-bold mb-2">关联需求</label>
-                                    <input id="add-bug-story" type="text" class="form-control form-control-solid"
-                                           placeholder="录入需求名称">
+                                    <input id="add-bug-story" type="text" class="form-control form-control-solid" placeholder="录入需求名称">
                                     <input type="hidden" name="storyId" id="bug-story-ref">
                                 </div>
                                 <div class="col-md-6">
                                     <label for="functionDesc" class="required fs-6 fw-bold mb-2">功能点</label>
-                                    <input name="func" id="functionDesc" type="text"
-                                           class="form-control form-control-solid" placeholder=""
-                                           required>
+                                    <input name="func" id="functionDesc" type="text" class="form-control form-control-solid" placeholder="">
                                 </div>
                                 <div class="col-md-12">
                                     <label for="title" class="required fs-6 fw-bold mb-2">标题</label>
@@ -109,16 +102,14 @@
                                 </div>
                             </div>
                         </div>
-                        <div class="text-center">
-                            <button type="reset" id="new_target_cancel" class="btn btn-light me-3"
-                                    data-bs-dismiss="modal">Cancel
-                            </button>
-                            <button type="button" class="btn btn-primary" id="new_target_submit_bug">
-                                <span class="indicator-label">Submit</span>
+                        <div class="text-center mb-1">
+                            <button type="button" class="btn btn-primary me-3" id="new_target_submit_bug">
+                                <span class="indicator-label">保存</span>
                                 <span class="indicator-progress">Please wait...
                                 <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
                                 </span>
                             </button>
+                            <button type="reset" id="new_target_cancel" class="btn btn-secondary " data-bs-dismiss="modal">取消</button>
                         </div>
                     </form>
                 </div>

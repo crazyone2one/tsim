@@ -56,11 +56,13 @@
                                 <option value="5">非bug</option>
                             </select>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-primary hvr-grow me-2" id="search-button" title="搜索">
+                                <button type="button" class="btn btn-primary hvr-grow me-2" id="search-button"
+                                        title="搜索">
                                     <i class="bi bi-search"></i>
                                 </button>
                                 <button type="button" class="btn btn-info hvr-grow me-2"
-                                        data-bs-toggle="modal" data-bs-target="#add-bug-modal" onclick="add_or_update_bug_info()" title="添加"><i
+                                        data-bs-toggle="modal" data-bs-target="#add-bug-modal"
+                                        onclick="add_or_update_bug_info()" title="添加"><i
                                         class="bi-plus-circle"></i>
                                 </button>
                                 <button type="button" class="btn btn-danger hvr-grow me-2" id="batch-delete"
@@ -105,6 +107,19 @@
 <script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
 <script th:src="@{/global/js/t-bug.js}"></script>
 <script>
+    const _severity = {
+        1: '轻微',
+        2: '一般',
+        3: '严重',
+        4: '致命',
+    }
+    const _status = {
+        1: '新增',
+        2: '挂起',
+        3: '已提交',
+        4: '已解决',
+        5: '非bug',
+    }
     const columns = [
         {field: 'id', align: 'center', title: 'id', visible: false},
         {field: 'checked', checkbox: true, align: "center", width: '40'}, {
@@ -159,22 +174,7 @@
             title: '严重程度',
             class: 'col-sm-2',
             formatter: function (value, row, index) {
-                let _severity = '';
-                switch (value) {
-                    case 1:
-                        _severity = '轻微';
-                        break;
-                    case 2:
-                        _severity = '一般';
-                        break;
-                    case 3:
-                        _severity = '严重';
-                        break;
-                    case 4:
-                        _severity = '致命';
-                        break;
-                }
-                return _severity;
+                return _severity[value];
             }
         },
         {
@@ -183,25 +183,7 @@
             title: '问题状态',
             class: 'col-sm-2',
             formatter: function (value, row, index) {
-                let _severity = '';
-                switch (value) {
-                    case 1:
-                        _severity = '新增';
-                        break;
-                    case 2:
-                        _severity = '挂起';
-                        break;
-                    case 3:
-                        _severity = '已提交';
-                        break;
-                    case 4:
-                        _severity = '已解决';
-                        break;
-                    case 5:
-                        _severity = '非bug';
-                        break;
-                }
-                return _severity;
+                return _status[value];
             }
         },
         {title: '操作', align: 'center', field: 'id', class: 'col-sm-3', formatter: option,}]
@@ -231,18 +213,6 @@
 
     autoComplete("/project/queryList", "p-search", 'p', false);
     autoComplete("/module/queryList", "module-search", 'm', false);
-    const add_modal = $('#add-bug-modal');
-    add_modal.on('shown.bs.modal', function () {
-        // document.getElementById("modalTitle").innerText =('添加问题单');
-        autoComplete("/project/queryList", "projectCode", 'p', true);
-    })
-    // 查询相关关联的模块
-    $("#module")[0].addEventListener("focus", function () {
-        autoComplete("/module/queryList/" + $("#b-a-p").attr("value"), "module", 'm', false);
-    })
-    $("#add-bug-story")[0].addEventListener("focus", function () {
-        autoComplete("/story/queryList/" + $("#b-a-p").attr("value"), "add-bug-story", 's', true);
-    })
 
     // bug详情
     function bugDetail(id) {
@@ -263,41 +233,8 @@
                         $("#expect_result-d").val(temp_case_info.expectResult);
                         $("#actual_result-d").val(temp_case_info.actualResult);
                         $("#owner-d").val(temp_case_info.testerEntity.username);
-                        let _severity = "";
-                        switch (temp_case_info.severity) {
-                            case 1:
-                                _severity = "轻微";
-                                break
-                            case 2:
-                                _severity = "一般";
-                                break
-                            case 3:
-                                _severity = "严重";
-                                break
-                            case 4:
-                                _severity = "致命";
-                                break
-                        }
-                        $("#severity-d").val(_severity);
-                        let _status = "";
-                        switch (temp_case_info.bugStatus) {
-                            case 1:
-                                _status = "新建";
-                                break
-                            case 2:
-                                _status = "挂起";
-                                break
-                            case 3:
-                                _status = "已提交";
-                                break
-                            case 4:
-                                _status = "已解决";
-                                break
-                            case 5:
-                                _status = "非bug";
-                                break
-                        }
-                        $("#status-d").val(_status);
+                        $("#severity-d").val(_severity[temp_case_info.severity]);
+                        $("#status-d").val(_status[temp_case_info.bugStatus]);
                         $("#remark-d").val(temp_case_info.note);
                     }
                 }

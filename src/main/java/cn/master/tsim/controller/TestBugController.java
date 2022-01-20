@@ -8,6 +8,7 @@ import cn.master.tsim.service.TestBugService;
 import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -52,7 +53,7 @@ public class TestBugController {
 
     @RequestMapping("/reloadTable")
     @ResponseBody
-    public Map<String, Object> reloadTable(HttpServletRequest request,@RequestParam(value = "pageNum") Integer offset,
+    public Map<String, Object> reloadTable(HttpServletRequest request, @RequestParam(value = "pageNum") Integer offset,
                                            @RequestParam(value = "pageSize") Integer limit) {
         final IPage<TestBug> iPage = bugService.pageListBug(request, offset, limit);
         Map<String, Object> map = new HashMap<>(2);
@@ -70,11 +71,13 @@ public class TestBugController {
     @PostMapping("/save")
     @ResponseBody
     public ResponseResult saveTestCase(HttpServletRequest request, @ModelAttribute @Validated TestBug bug) {
+        String successMsg = StringUtils.isNotBlank(bug.getId()) ? "数据更新成功" : "数据添加成功";
+        String errorMsg = StringUtils.isNotBlank(bug.getId()) ? "数据更新失败" : "数据添加失败";
         try {
             final TestBug testBug = bugService.saveOrUpdateBug(request, bug);
-            return ResponseUtils.success("数据添加成功", testBug);
+            return ResponseUtils.success(successMsg, testBug);
         } catch (Exception e) {
-            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
+            return ResponseUtils.error(400, errorMsg, e.getMessage());
         }
     }
 

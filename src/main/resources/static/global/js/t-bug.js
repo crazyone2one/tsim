@@ -81,18 +81,36 @@ function batchDelete(id) {
     })
 }
 
+/**
+ * 添加、编辑问题单数据
+ * @param id 问题单数据id
+ */
 function add_or_update_bug_info(id) {
-    $('#add-bug-modal').modal('show');
-    document.getElementById('add-bug-modal').querySelector('.modal-title').textContent = id ? '编辑' : '新增';
+    const add_modal = $('#add-bug-modal');
+    add_modal.modal('show');
+    add_modal.on('shown.bs.modal', function () {
+        // 编辑数据时不使用字段提示功能
+        !id && autoComplete("/project/queryList", "projectCode", 'p', true);
+    })
+    // 查询项目关联的模块，编辑数据时不使用字段提示功能
+    !id && $("#module")[0].addEventListener("focus", function () {
+        autoComplete("/module/queryList/" + $("#b-a-p").attr("value"), "module", 'm', false);
+    })
+    // 查询项目关联的需求，编辑数据时不使用字段提示功能
+    !id && $("#add-bug-story")[0].addEventListener("focus", function () {
+        autoComplete("/story/queryList/" + $("#b-a-p").attr("value"), "add-bug-story", 's', true);
+    })
+    document.getElementById('add-bug-modal').querySelector('.modal-title').textContent = id ? '编辑问题单' : '新增问题单';
+    // 编辑数据时回显信息
     id && $.ajax({
         url: '/bug/detail/' + id,
         type: "get",
         success: function (result) {
             const bug_info = result['data'];
             $('#hidden-bug-id').val(bug_info.id);
-            $('#projectCode').val(bug_info.project.projectName);
+            $('#projectCode').val(bug_info.project.projectName).attr('readonly', '');
             $('#b-a-p').val(bug_info.projectId);
-            $('#module').val(bug_info.module.moduleName);
+            $('#module').val(bug_info.module.moduleName).attr('readonly', '');
             $('#b-a-m').val(bug_info.moduleId);
             $('#functionDesc').val(bug_info.func);
             $('#title').val(bug_info.title);
