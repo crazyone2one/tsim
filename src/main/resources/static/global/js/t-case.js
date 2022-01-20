@@ -156,6 +156,14 @@ function updateCase(flag) {
         }
     }
     forwardToConfirmModal('confirm-modal', replace_msg);
+    // 删除时更改图标颜色
+    if (Object.is('del', flag)) {
+        removeClass('modal-i-label', 'text-warning');
+        $('#modal-i-label').addClass('text-danger');
+        removeClass('btn-confirm', 'btn-warning');
+        $('#btn-confirm').addClass('btn-danger');
+    }
+
     $('#btn-confirm').on('click', function () {
         const ids = [];
         for (let i = 0; i < selections.length; i++) {
@@ -176,7 +184,7 @@ function updateCase(flag) {
             }
         })
         closeModal('confirm-modal');
-    })
+    });
 }
 
 /**
