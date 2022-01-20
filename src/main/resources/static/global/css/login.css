@@ -1,6 +1,11 @@
 body {
-    /*背景色*/
-    background: linear-gradient(to bottom, #f1f4f9, #dff1ff);
+    padding-right: 0!important;
+    padding-left: 0!important;
+}
+body.login-bg {
+    background-image: url(../../img/bg-pattern-light.svg);
+    background-size: cover;
+    background-position: center;
 }
 
 a {
