@@ -47,12 +47,12 @@ function batchDelete(id) {
     let replaceMsg = id ? '确认删除该数据吗' : "确认删除选择的数据吗";
     const selections = getSelections();
     // 批量删除时判断选择数据的个数
-    if (!id) {
-        if (selections.length === 0) {
-            showToast(300, "先选择需要删除的数据");
-            return;
-        }
-    }
+    // if (!id) {
+    //     if (selections.length === 0) {
+    //         showToast(300, "先选择需要删除的数据");
+    //         return;
+    //     }
+    // }
     forwardToConfirmModal('confirm-modal', replaceMsg);
     $('#btn-confirm').on('click', function () {
         const ids = [];

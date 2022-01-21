@@ -55,7 +55,6 @@
                                         data-bs-toggle="modal" data-bs-target="#add-case-modal" title="添加">
                                     <i class="bi bi-plus-circle"></i>
                                 </button>
-                                <!--                                    <button class="btn btn-sm btn-warning hvr-grow col-md-2" id="edit">编辑</button>-->
                                 <!-- 导出模板数据-->
                                 <a type="button" class="btn btn-primary hvr-grow me-2"
                                    th:href="@{/case/downloadTemplate/test-case-template.xlsx}" title="模板下载">
@@ -66,10 +65,10 @@
                                         data-bs-target="#uploadModal" id="import" title="导入数据">
                                     <i class="bi bi-upload"></i>
                                 </button>
-                                <button type="button" class="btn btn-warning hvr-grow me-2" id="disable" title="置为无效"
-                                        onclick="updateCase('disable')"><i class="bi-x-circle"></i></button>
-                                <button type="button" class="btn btn-danger hvr-grow me-2" id="delete" title="删除"
-                                        onclick="updateCase('del')"><i class="bi-trash"></i></button>
+                                <button type="button" class="btn btn-warning hvr-grow me-2" id="batch-disable" title="置为无效"
+                                        onclick="updateCase('disable')" disabled><i class="bi-x-circle"></i></button>
+                                <button type="button" class="btn btn-danger hvr-grow me-2" id="batch-delete" title="删除"
+                                        onclick="updateCase('del')" disabled><i class="bi-trash"></i></button>
                                 <button type="button" class="btn btn-secondary hvr-grow " id="reset-button"
                                         title="重置搜索">
                                     <i class="bi-arrow-clockwise"></i>

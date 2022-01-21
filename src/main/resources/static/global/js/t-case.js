@@ -138,14 +138,14 @@ function loadStepAndResult(arg) {
  *
  */
 function updateCase(flag) {
-    let toast_msg = Object.is('disable', flag) ? "选择置为无效的测试用例数据" : "选择待删除的测试用例数据";
+    // let toast_msg = Object.is('disable', flag) ? "选择置为无效的测试用例数据" : "选择待删除的测试用例数据";
     let replace_msg = Object.is('disable', flag) ? "确认将选择的测试用例数据置为无效吗" : "确认删除选择的测试用例数据吗";
     let _url = Object.is('disable', flag) ? "/case/disable" : "/case/delete";
     const selections = getSelections();
-    if (selections.length === 0) {
-        showToast(300, toast_msg);
-        return;
-    }
+    // if (selections.length === 0) {
+    //     showToast(300, toast_msg);
+    //     return;
+    // }
     // 处理选择已被置为无效状态的测试用例数据
     if (Object.is('disable', flag)) {
         for (let i = 0; i < selections.length; i++) {

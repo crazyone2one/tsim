@@ -102,4 +102,16 @@ function getSelections() {
     return _table.bootstrapTable('getSelections');
 }
 
+const batchDeleteBtn = $('#batch-delete');
+const batchDisableBtn = $('#batch-disable');
+/**
+ * 未选择数据时，设置批量按钮不可用
+ */
+$(function () {
+    _table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function () {
+        batchDeleteBtn.prop('disabled', !getSelections().length);
+        batchDisableBtn.prop('disabled', !getSelections().length);
+    })
+})
+
 
