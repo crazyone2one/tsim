@@ -153,21 +153,22 @@
             class: 'col-sm-6'
         },
         {
-            field: 'reproduceSteps',
+            field: 'expectResult',
             align: 'center',
-            title: '问题复现步骤',
+            title: '预期结果',
             class: 'col-sm-6',
-            id: 'reproduceSteps',
-            // formatter: function (value, row, index) {
-            //     if (value) {
-            //         let html = '';
-            //         let tempSteps = value.split('\r\n');
-            //         for (let i = 0; i < tempSteps.length; i++) {
-            //             html += '<div style="text-align: left">' + tempSteps[i] + '</div>';
-            //         }
-            //         return html;
-            //     }
-            // }
+        },
+        {
+            field: 'actualResult',
+            align: 'center',
+            title: '实际结果',
+            class: 'col-sm-6',
+        },
+        {
+            field: "bugRecurrenceProbability",
+            align: "center",
+            title: "复现概率",
+            class: 'col-sm-2',
         },
         {
             field: 'severity',
@@ -200,13 +201,13 @@
     }
 
     function reproduceStepsFormatter(index, row) {
-        let html = '';
+        let html = '<div class="text-danger">问题复现步骤:</div>';
         let tempSteps = row.reproduceSteps.split('\r\n');
         for (let i = 0; i < tempSteps.length; i++) {
             if (!tempSteps[i]) {
                 continue;
             }
-            html += '<div style="text-align: left"> step' + (i + 1) + ':' + tempSteps[i] + '</div>';
+            html += "<div class='text-start'> ==> " + tempSteps[i] + "</div>"
         }
         return html;
 
