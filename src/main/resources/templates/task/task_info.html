@@ -1,232 +1,86 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="/fragment/commons :: common_header(~{::title},~{})">
-        <title>TSIM | Task</title>
-    </head>
-    <body id="tsim_body" class="aside-enable">
+<head th:replace="/fragment/commons :: common_header(~{::title},~{})">
+    <title>TSIM | Task</title>
+</head>
+<body id="tsim_body" class="aside-enable">
 
-        <div id="wrapper">
-            <div th:replace="/fragment/commons :: sidebarMenu(flag='task')"></div>
-            <div id="content-wrapper" class="d-flex flex-column">
-                <div id="content">
-                    <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
-                    <div class="container-fluid">
-                        <!--操作栏-->
-                        <div class="pt-2 border-bottom">
-                            <div class="card-body">
-                                <form th:action="@{list}" method="get">
-                                    <div class="btn-group mb-2" role="group" aria-label="search">
-                                        <div class="input-group me-2" style="width: fit-content">
-                                            <span class="input-group-text">所属项目</span>
-                                            <input type="text" class="form-control" name="projectId"
-                                                   placeholder="项目名称（模糊查询）" id="p-search"
-                                                   aria-label="projectId"
-                                                   aria-describedby="basic-addon1">
-                                        </div>
-                                        <div class="input-group me-2" style="width: fit-content">
-                                            <label class="input-group-text" for="finishStatus">完成状态</label>
-                                            <select class="form-select" name="finishStatus" id="finishStatus">
-                                                <option th:value="''" selected>完成状态</option>
-                                                <option value="0">已完成</option>
-                                                <option value="1">进行中</option>
-                                                <option value="2">待回测</option>
-                                                <option value="3">已回测</option>
-                                            </select>
-                                        </div>
-                                        <div class="input-group me-2" style="width: fit-content">
-                                            <label class="input-group-text" for="workDate-search">任务时间</label>
-                                            <select class="form-select" name="issueDate" id="workDate-search">
-                                                <option th:value="''" selected>任务时间</option>
-                                                <option th:each="m:${monthList}"
-                                                        th:value="${m}"
-                                                        th:text="${m}">
-                                            </select>
-                                        </div>
-                                        <div class="btn-group">
-                                            <button type="submit" class="btn btn-primary hvr-grow me-2">
-                                                <i class="bi bi-search"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-primary hvr-grow"
-                                                    data-bs-toggle="modal" data-bs-target="#add-task-modal">
-                                                <i class="bi bi-plus-circle"></i>
-                                            </button>
-                                        </div>
-                                    </div>
-                                </form>
+<div id="wrapper">
+    <div th:replace="/fragment/commons :: sidebarMenu(flag='task')"></div>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
+            <div class="container-fluid">
+                <!--操作栏-->
+                <div class="pt-2">
+                    <div class="card-body">
+                        <form id="search-form">
+                            <div class="btn-group mb-2" role="group" aria-label="search">
+                                <div class="input-group me-2" style="width: fit-content">
+                                    <span class="input-group-text">所属项目</span>
+                                    <input type="text" class="form-control" name="projectId"
+                                           placeholder="项目名称（模糊查询）" id="p-search"
+                                           aria-label="projectId"
+                                           aria-describedby="basic-addon1">
+                                </div>
+                                <div class="input-group me-2" style="width: fit-content">
+                                    <label class="input-group-text" for="finishStatus">完成状态</label>
+                                    <select class="form-select" name="finishStatus" id="finishStatus">
+                                        <option th:value="''" selected>完成状态</option>
+                                        <option value="0">已完成</option>
+                                        <option value="1">进行中</option>
+                                        <option value="2">待回测</option>
+                                        <option value="3">已回测</option>
+                                    </select>
+                                </div>
+                                <div class="input-group me-2" style="width: fit-content">
+                                    <label class="input-group-text" for="workDate-search">任务时间</label>
+                                    <select class="form-select" name="issueDate" id="workDate-search">
+                                        <option th:value="''" selected>任务时间</option>
+                                        <option th:each="m:${monthList}"
+                                                th:value="${m}"
+                                                th:text="${m}">
+                                    </select>
+                                </div>
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary hvr-grow me-2">
+                                        <i class="bi bi-search"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-primary hvr-grow"
+                                            data-bs-toggle="modal" data-bs-target="#add-task-modal">
+                                        <i class="bi bi-plus-circle"></i>
+                                    </button>
+                                </div>
                             </div>
-                        </div>
-                        <!--            列表数据-->
-                        <div id="table_refresh" th:fragment="table_refresh">
-                            <table class="table table-hover">
-                                <thead >
-                                <tr class="text-center align-middle">
-<!--                                    <th rowspan="2" th:width="60px">#</th>-->
-                                    <th rowspan="2" th:width="130px" >项目名称</th>
-                                    <th rowspan="2" th:width="130px">任务描述</th>
-                                    <th colspan="2">用例数量</th>
-                                    <th colspan="5">提交bug</th>
-                                    <th colspan="5">回测bug</th>
-                                    <th colspan="2">测试文档</th>
-                                    <th rowspan="2" th:width="98px">关联需求</th>
-                                    <th rowspan="2" th:width="100px">完成状态</th>
-                                    <th rowspan="2" th:width="100px">是否交付</th>
-                                    <th rowspan="2" th:width="100px">测试人员</th>
-                                    <th rowspan="2" th:width="100px">备注</th>
-                                    <th rowspan="2" th:width="100px">月份</th>
-                                    <th rowspan="2" th:width="50px"><i class="bi-tools"></i>
-                                    </th>
-                                </tr>
-                                <tr class="text-center">
-                                    <th th:width="50px">新建</th>
-                                    <th th:width="50px">执行</th>
-                                    <th th:width="50px">致命</th>
-                                    <th th:width="50px">严重</th>
-                                    <th th:width="50px">一般</th>
-                                    <th th:width="50px">轻微</th>
-                                    <th th:width="50px">总计</th>
-                                    <th th:width="50px">致命</th>
-                                    <th th:width="50px">严重</th>
-                                    <th th:width="50px">一般</th>
-                                    <th th:width="50px">轻微</th>
-                                    <th th:width="50px">总计</th>
-                                    <th th:width="82px" th:title="bug文档">bug文档</th>
-                                    <th th:width="82px" th:title="测试报告">测试报告</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                <tr class="text-center" th:each="tempItem,stat:${iPage.records}">
-                                    <input name="id" id="id" type="hidden" class="form-control" th:value="${tempItem.getId}">
-<!--                                    <td th:text="${stat.count}"></td>-->
-                                    <td th:text="${tempItem.projectId}" th:title="${tempItem.projectId}"></td>
-                                    <td th:text="${tempItem.getSummaryDesc}" th:title="${tempItem.getSummaryDesc}"></td>
-                                    <!--编写用例-->
-                                    <td>
-                                        <!--                            th:href="@{/case/list(proId=${proMap.get(tempItem.getProjectCode()).getProjectName()})}"-->
-                                        <a
-                                                th:text="${tempItem.createCaseCount}"></a>
-                                        <span>
-                                        </span>
-                                    </td>
-                                    <!--执行用例-->
-                                    <td>
-                                        <span th:text="${tempItem.getExecuteCaseCount()}"></span>
-                                    </td>
-                                    <!--提交bug部分-->
-                                    <!--致命-->
-                                    <td th:value="${tempItem.getId}">
-                                        <span th:text="${tempItem.subBug.get('level4')}"></span>
-                                    </td>
-                                    <!--严重-->
-                                    <td th:value="${tempItem.getId}">
-                                        <span th:text="${tempItem.subBug.get('level3')}"></span>
-                                    </td>
-                                    <!--一般-->
-                                    <td th:value="${tempItem.getId}">
-                                        <span th:text="${tempItem.subBug.get('level2')}"></span>
-                                    </td>
-                                    <!--轻微-->
-                                    <td th:value="${tempItem.getId}">
-                                        <span th:text="${tempItem.subBug.get('level1')}"></span>
-                                    </td>
-                                    <!--总计-->
-                                    <td th:value="${tempItem.getId}">
-                                        <span th:text="${tempItem.subBug.get('total')}"></span>
-                                    </td>
-                                    <!--回测bug-->
-                                    <!--致命-->
-                                    <td th:value="${tempItem.getId}">
-                                        <span th:text="${tempItem.fixBug.get('level4')}"></span>
-                                    </td>
-                                    <!--严重-->
-                                    <td th:value="${tempItem.getId}">
-                                        <span th:text="${tempItem.fixBug.get('level3')}"></span>
-                                    </td>
-                                    <!--一般-->
-                                    <td th:value="${tempItem.getId}">
-                                        <span th:text="${tempItem.fixBug.get('level2')}"></span>
-                                    </td>
-                                    <!--轻微-->
-                                    <td th:value="${tempItem.getId}">
-                                        <span th:text="${tempItem.fixBug.get('level1')}"></span>
-                                    </td>
-                                    <!--总计-->
-                                    <td th:value="${tempItem.getId}">
-                                        <span th:text="${tempItem.fixBug.get('total')}"></span>
-                                    </td>
-                                    <!--bug文档-->
-                                    <td th:value="${tempItem.bugDoc}">
-                                        <span th:if="${#strings.isEmpty(tempItem.bugDoc)}" class="tag">-</span>
-                                        <span th:if="${not #strings.isEmpty(tempItem.bugDoc)}" class="tag"><a
-                                                href="#"><i class="bi-check" style="color: #0dcaf0"></i></a></span>
-                                    </td>
-                                    <!--测试报告-->
-                                    <td th:value="${tempItem.reportDoc}">
-                                        <span th:if="${#strings.isEmpty(tempItem.reportDoc)}">-</span>
-                                        <span th:if="${not #strings.isEmpty(tempItem.reportDoc)}"><a href="#"><i
-                                                class="bi-check" style="color: #0dcaf0"></i></a> </span>
-                                    </td>
-                                    <!--是否有需求-->
-                                    <td th:value="${tempItem.reqDoc}">
-                                        <span th:if="${#strings.isEmpty(tempItem.storyId)}">-</span>
-                                        <span th:if="${not #strings.isEmpty(tempItem.storyId)}"><a href="#"><i
-                                                class="bi-check" style="color: #0dcaf0"></i></a> </span>
-                                    </td>
-                                    <!--完成状态-->
-                                    <td th:value="${tempItem.finishStatus}">
-                                        <span th:if="${#strings.equals('1',tempItem.finishStatus)}">进行中</span>
-                                        <span th:if="${#strings.equals('2',tempItem.finishStatus)}">待回测</span>
-                                        <span th:if="${#strings.equals('3',tempItem.finishStatus)}">已回测</span>
-                                        <span th:if="${#strings.equals('0',tempItem.finishStatus)}">已完成</span>
-                                    </td>
-                                    <!--是否交付-->
-                                    <td th:value="${tempItem.deliveryStatus}">
-                                        <span th:if="${#strings.equals('1',tempItem.deliveryStatus)}">未交付</span>
-                                        <span th:if="${#strings.equals('0',tempItem.deliveryStatus)}">已交付</span>
-                                        <span th:if="${#strings.equals('2',tempItem.deliveryStatus)}">不确定</span>
-                                    </td>
-                                    <!--测试人员-->
-                                    <td th:value="${tempItem.tester}">
-                                        <span th:each="o:${users}">
-                                            <span th:if="${tempItem.tester eq o.key}">
-                                                <span th:value="${o.value.account}"
-                                                      th:text="${o.value.username}"></span>
-                                            </span>
-                                        </span>
-                                    </td>
-                                    <!--测试人员-->
-                                    <td th:text="${tempItem.getRemark()}"></td>
-                                    <td th:text="${tempItem.issueDate}"></td>
-                                    <td>
-                                        <a class="btn btn-sm" data-bs-toggle="modal"
-                                           data-bs-target="#editSummaryModal"
-                                           th:attr="data-taskId=${tempItem.id}"
-                                           th:onclick="editTask([[${tempItem.id}]])"
-                                           id="editBtn">
-                                            <i class="bi bi-pencil-square" style="font-size: 0.8rem;color: #4e73df"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                        <div th:replace="/task/add_task :: addTaskFragment"></div>
-                        <div th:replace="/fragment/commons :: pagination01"></div>
+                        </form>
                     </div>
                 </div>
-                <footer th:replace="/fragment/commons :: footer"></footer>
+                <!--            列表数据-->
+                <div id="table_refresh" th:fragment="table_refresh">
+                    <table id="table" class="table table-hover" data-detail-view="true"
+                           data-detail-formatter="taskDetail"></table>
+                </div>
+                <div th:replace="/task/add_task :: addTaskFragment"></div>
+                <!--                        <div th:replace="/fragment/commons :: pagination01"></div>-->
             </div>
         </div>
+        <footer th:replace="/fragment/commons :: footer"></footer>
+    </div>
+</div>
 
-        <!--                    toast-->
-        <div th:replace="/fragment/commons :: toast-div"></div>
-        <div th:replace="/task/task_edit :: task-edit"></div>
-        <!--        <footer th:replace="/fragment/commons :: footer"></footer>-->
-        <!-- Logout Modal-->
-        <div th:replace="/fragment/commons :: logout"></div>
-        <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
-        <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
-        <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
-        <script th:inline="javascript" th:src="@{/global/js/task.js}"></script>
-    </body>
+<!--                    toast-->
+<div th:replace="/fragment/commons :: toast-div"></div>
+<div th:replace="/task/task_edit :: task-edit"></div>
+<!--        <footer th:replace="/fragment/commons :: footer"></footer>-->
+<!-- Logout Modal-->
+<div th:replace="/fragment/commons :: logout"></div>
+<script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
+<script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
+<script type="text/javascript" th:src="@{/global/js/common.js}"></script>
+<script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
+<script th:inline="javascript" th:src="@{/global/js/t-task.js}"></script>
+</body>
 </html>

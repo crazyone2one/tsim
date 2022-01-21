@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 public interface TestTaskInfoService extends IService<TestTaskInfo> {
 
-    IPage<TestTaskInfo> taskInfoPage(TestTaskInfo taskInfo, Integer pageCurrent, Integer pageSize);
+    IPage<TestTaskInfo> taskInfoPage(HttpServletRequest request, Integer pageCurrent, Integer pageSize);
 
     /**
      * 保存 任务汇总信息

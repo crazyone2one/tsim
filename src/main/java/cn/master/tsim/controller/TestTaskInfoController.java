@@ -9,12 +9,16 @@ import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.Map;
 
 /**
  * <p>
@@ -36,11 +40,7 @@ public class TestTaskInfoController {
     }
 
     @GetMapping("/list")
-    public String taskList(TestTaskInfo taskInfo, Model model, @RequestParam(value = "pageCurrent", defaultValue = "1") Integer pageCurrent,
-                           @RequestParam(value = "pageSize", defaultValue = "10") Integer pageSize) {
-        final IPage<TestTaskInfo> iPage = taskInfoService.taskInfoPage(taskInfo, pageCurrent, pageSize);
-        model.addAttribute("iPage", iPage);
-        model.addAttribute("redirecting", "/task/list?pageCurrent=");
+    public String taskList(HttpServletRequest request, Model model) {
         model.addAttribute("monthList", DateUtils.currentYearMonth());
         model.addAttribute("users", Constants.userMaps);
         return "task/task_info";
@@ -99,10 +99,15 @@ public class TestTaskInfoController {
     }
 
     @RequestMapping("/reloadTable")
-    public String reloadTable(Model model, TestTaskInfo taskInfo) {
-        final IPage<TestTaskInfo> iPage = taskInfoService.taskInfoPage(taskInfo, 0, 0);
-        model.addAttribute("iPage", iPage);
-        return "task/task_info :: table_refresh";
+    @ResponseBody
+    public Map<String, Object> reloadTable(HttpServletRequest request,
+                                           @RequestParam(value = "pageNum") Integer offset,
+                                           @RequestParam(value = "pageSize") Integer limit) {
+        final IPage<TestTaskInfo> iPage = taskInfoService.taskInfoPage(request, offset, limit);
+        Map<String, Object> map = new HashMap<>(2);
+        map.put("total", iPage.getTotal());
+        map.put("rows", CollectionUtils.isNotEmpty(iPage.getRecords()) ? new LinkedList<>(iPage.getRecords()) : new LinkedList<TestTaskInfo>());
+        return map;
     }
 }
 

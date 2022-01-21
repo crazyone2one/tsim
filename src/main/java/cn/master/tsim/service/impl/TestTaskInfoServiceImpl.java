@@ -48,15 +48,18 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
     }
 
     @Override
-    public IPage<TestTaskInfo> taskInfoPage(TestTaskInfo taskInfo, Integer pageCurrent, Integer pageSize) {
+    public IPage<TestTaskInfo> taskInfoPage(HttpServletRequest request, Integer pageCurrent, Integer pageSize) {
         QueryWrapper<TestTaskInfo> wrapper = new QueryWrapper<>();
 //        根据项目名称模糊查询
-        wrapper.lambda().inSql(StringUtils.isNotBlank(taskInfo.getProjectId()),
-                TestTaskInfo::getProjectId, "select id from t_project where project_name like '%" + taskInfo.getProjectId() + "%'");
+        String projectName = request.getParameter("projectName");
+        wrapper.lambda().inSql(StringUtils.isNotBlank(projectName),
+                TestTaskInfo::getProjectId, "select id from t_project where project_name like '%" + projectName + "%'");
 //        根据完成状态查询
-        wrapper.lambda().eq(StringUtils.isNotBlank(taskInfo.getFinishStatus()), TestTaskInfo::getFinishStatus, taskInfo.getFinishStatus());
+        String status = request.getParameter("status");
+        wrapper.lambda().eq(StringUtils.isNotBlank(status), TestTaskInfo::getFinishStatus, status);
 //        根据任务时间查询
-        wrapper.lambda().eq(StringUtils.isNotBlank(taskInfo.getIssueDate()), TestTaskInfo::getIssueDate, taskInfo.getIssueDate());
+        String taskDate = request.getParameter("taskDate");
+        wrapper.lambda().eq(StringUtils.isNotBlank(taskDate), TestTaskInfo::getIssueDate, taskDate);
         wrapper.lambda().eq(TestTaskInfo::getDelFlag, 0);
         final Page<TestTaskInfo> testTaskInfoPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize),
