@@ -105,9 +105,11 @@ const resetModal = (modalId, formId) => {
 2. 点击 x
 */
 $(".modal").on('hide.bs.modal', function (e) {
-    $(".modal form")[0].reset();
-    // 使用jquery 的 .off() 方式去移除掉已经绑定事件的操作，保证事件只绑定一次
-    $('.modal').off('shown.bs.modal');
+    if (!Object.is(e.currentTarget.id, 'logoutModal')) {
+        $(".modal form")[0].reset();
+        // 使用jquery 的 .off() 方式去移除掉已经绑定事件的操作，保证事件只绑定一次
+        $('.modal').off('shown.bs.modal');
+    }
 });
 /**
  * modal关闭时删除is-invalid类，清空相关的提示信息
