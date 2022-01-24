@@ -39,12 +39,15 @@
                                     </div>
                                     <input type="hidden" name="moduleId" id="m-a">
                                 </div>
-<!--                                <div class="input-group mb-3">-->
-<!--                                    <span class="input-group-text required" id="c-s-r">关联需求</span>-->
-<!--                                    <input id="case-story" class="form-control" aria-label="关联需求"-->
-<!--                                           aria-describedby="suite-span" placeholder="填写关联需求">-->
-<!--                                    <input type="hidden" name="storyId" id="add-case-story">-->
-<!--                                </div>-->
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="c-s-r">关联测试计划</span>
+                                    <input id="ref-plan" class="form-control" aria-label="测试计划"
+                                           aria-describedby="suite-span" placeholder="填写测试计划">
+                                    <div class="invalid-feedback" id="plan-error-tips">
+                                        请输入或选择项目.
+                                    </div>
+                                    <input type="hidden" name="tempPlanId" id="add-case-ref-plan">
+                                </div>
                                 <div class="input-group mb-3">
                                     <span class="input-group-text required" id="title-span">测试用例标题</span>
                                     <input name="name" id="caseTitle" type="text"

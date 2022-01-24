@@ -60,8 +60,8 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         final String projectId = request.getParameter("projectId");
         final String moduleId = request.getParameter("moduleId");
         final String storyId = request.getParameter("storyId");
+        final String planId = request.getParameter("tempPlanId");
         final int priority = Integer.parseInt(request.getParameter("priority"));
-        final Project project = projectService.getProjectById(projectId);
         final Module module = moduleService.addModule(request, projectId, moduleId);
         final String stepStore = request.getParameter("stepStore");
         String name = request.getParameter("name");
@@ -90,7 +90,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             message = "数据更新成功";
             object = tempCase;
         } else {
-            build = TestCase.builder().active(0).projectId(project.getId()).moduleId(module.getId())
+            build = TestCase.builder().active(0).projectId(projectId).moduleId(module.getId())
                     .name(name)
                     .description(description)
                     .precondition(precondition)
@@ -107,10 +107,17 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             object = build;
         }
 //       关联需求时 t_project_case_ref表增加一条记录
-        if (StringUtils.isNotBlank(storyId)) {
+//        if (StringUtils.isNotBlank(storyId)) {
+//            assert build != null;
+//            final int item = projectCaseRefService.addRefItem(projectId, storyId, build.getId(), "");
+//            final TestTaskInfo taskInfo = taskInfoService.queryItem(projectId, storyId);
+//            taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + item);
+//            taskInfoService.updateTask(request, taskInfo);
+//        }
+        if (StringUtils.isNotBlank(planId)) {
             assert build != null;
-            final int item = projectCaseRefService.addRefItem(projectId, storyId, build.getId(), "");
-            final TestTaskInfo taskInfo = taskInfoService.queryItem(projectId, storyId);
+            final int item = projectCaseRefService.addRefItem(projectId, "", planId, build.getId());
+            final TestTaskInfo taskInfo = taskInfoService.queryItem(projectId, "", planId);
             taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + item);
             taskInfoService.updateTask(request, taskInfo);
         }
@@ -119,6 +126,8 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
 
     @Override
     public void importCase(HttpServletRequest request, List<TestCase> cases) {
+        String projectId = request.getParameter("projectId");
+        String tempPlanId = request.getParameter("tempPlanId");
         // TODO: 2021/11/16 0016 mapper里面新增一个方法batchInsert,所有数据一次性插入
         for (TestCase c : cases) {
             if (c.isRefFlag()) {
@@ -140,16 +149,23 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                 stepsMap.put("" + i, tempMap);
                 stepsJson.add(stepsMap);
             }
-
-            final Project project = projectService.getProjectByName(c.getProjectId());
-            final Module module = moduleService.addModule(request, project.getId(), c.getModuleId());
-            final TestCase build = TestCase.builder().active(0).projectId(project.getId()).moduleId(module.getId())
+            if (StringUtils.isBlank(projectId)) {
+                Project projectByName = projectService.getProjectByName(c.getProjectId());
+                projectId = projectByName.getId();
+            }
+            final Module module = moduleService.addModule(request, projectId, c.getModuleId());
+            final TestCase build = TestCase.builder().active(0).projectId(projectId).moduleId(module.getId())
                     .name(c.getName()).description(c.getDescription()).precondition(c.getPrecondition())
                     .testMode(0).priority(c.getPriority()).stepStore(stepsJson.toJSONString())
                     .resultStore("").delFlag(0).createDate(new Date()).build();
             baseMapper.insert(build);
-
             stepsService.saveStep(stepsJson, build.getId());
+            if (StringUtils.isNotBlank(tempPlanId)) {
+                final int item = projectCaseRefService.addRefItem(projectId, "", tempPlanId, build.getId());
+                final TestTaskInfo taskInfo = taskInfoService.queryItem(projectId, "", tempPlanId);
+                taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + item);
+                taskInfoService.updateTask(request, taskInfo);
+            }
         }
     }
 

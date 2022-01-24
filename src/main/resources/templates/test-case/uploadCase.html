@@ -8,8 +8,8 @@
     </head>
     <body>
         <div th:fragment="uploadModal">
-            <div class="modal fade border-0" id="uploadModal" tabindex="-1"
-                 aria-labelledby="uploadModal" aria-hidden="true" data-bs-backdrop="static">
+            <div class="modal fade border-0" id="case-upload-modal" tabindex="-1"
+                 aria-labelledby="case-upload-modal" aria-hidden="true" data-bs-backdrop="static">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content needs-validation">
                         <div class="modal-header">
@@ -17,7 +17,26 @@
                                     aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="uploadForm" th:action="@{upload}" method="post" enctype="multipart/form-data">
+                            <form id="uploadForm" th:action="@{upload}" method="post" enctype="multipart/form-data" autocomplete="off">
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1">项目名称
+                                    </span>
+                                    <input id="import-project" class="form-control" aria-label="项目名称"
+                                           placeholder="填写项目名称">
+                                    <div class="invalid-feedback" id="project-error-tips">
+                                        error tips.
+                                    </div>
+                                    <input type="hidden" name="projectId" id="hidden-import-project">
+                                </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="c-s-r">关联测试计划</span>
+                                    <input id="import-ref-plan" class="form-control" aria-label="测试计划"
+                                           aria-describedby="suite-span" placeholder="填写测试计划">
+                                    <div class="invalid-feedback" id="plan-error-tips">
+                                        error tips.
+                                    </div>
+                                    <input type="hidden" name="tempPlanId" id="hidden-import-ref-plan">
+                                </div>
                                 <input id="singleFileUploadInput" type="file" name="file" class="file-input" required/>
                                 <input type="submit" class="btn btn-sm btn-info" value="上传数据">
                             </form>

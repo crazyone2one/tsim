@@ -199,6 +199,34 @@ function validateCaseInfo(case_info_data) {
     const tempModuleName = $(_moduleId).val();
     const tempHiddenProjectId = $('#c-a-p').val();
     const tempCaseTitle = $(_caseTitle).val();
+    const plan_name = $('#ref-plan').val();
+    const hidden_plan_id = $('#add-case-ref-plan').val();
+
+    if (plan_name) {
+        if (!hidden_plan_id) {
+            $('#ref-plan').addClass("is-invalid");
+            $('#plan-error-tips').text(plan_name + '不存在,先添加测试计划');
+        } else {
+            removeClass('#ref-plan', 'is-invalid');
+            $.ajax({
+                url: '/plan/getPlan',
+                type: 'get',
+                data: {name: tempProjectName, id: hidden_plan_id},
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                success: function (result) {
+                    if (Object.is(403, result['code'])) {
+                        $('#ref-plan').addClass("is-invalid");
+                        $('#plan-error-tips').text(plan_name + '不存在,先添加测试计划');
+                    } else {
+                        if (!Object.is(result['data'].name, plan_name)) {
+                            $('#ref-plan').addClass("is-invalid");
+                            $('#plan-error-tips').text(plan_name + '不存在,先添加测试计划');
+                        }
+                    }
+                },
+            });
+        }
+    }
 
     // 所属模块名称非空验证
     tempModuleName ? removeClass(_moduleId, 'is-invalid') : $(_moduleId).addClass("is-invalid");
@@ -244,3 +272,14 @@ function validateCaseInfo(case_info_data) {
         }
     }
 }
+
+// 导入测试用例js
+$('#case-upload-modal').on('show.bs.modal', function (event) {
+    autoComplete("/project/queryList", "import-project", 'p', true);
+    // myModal.off('shown.bs.modal');//去除绑定
+    $("input[type=hidden][id='hidden-import-project']").val('');
+    $("input[type=hidden][id='add-case-ref-plan']").val('');
+});
+$("#import-ref-plan")[0].addEventListener("focus", function () {
+    $('#hidden-import-project').attr('value') && autoComplete("/plan/getPlans/" + $('#hidden-import-project').attr('value'), "import-ref-plan", 'plan', true);
+});

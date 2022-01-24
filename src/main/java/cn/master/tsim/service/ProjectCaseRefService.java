@@ -18,13 +18,13 @@ public interface ProjectCaseRefService extends IService<ProjectCaseRef> {
     /**
      * 添加数据
      *
-     * @param projectId
-     * @param storyId
-     * @param caseId
-     * @param workDate
+     * @param projectId 项目id
+     * @param storyId   需求id
+     * @param planId    测试计划id
+     * @param caseId    测试用例id
      * @return int
      */
-    int addRefItem(String projectId, String storyId, String caseId, String workDate);
+    int addRefItem(String projectId, String storyId, String planId, String caseId);
 
     List<ProjectCaseRef> queryRefList(String projectId, String workDate);
 }
