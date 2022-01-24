@@ -122,4 +122,11 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
         baseMapper.updateById(testPlan);
         return testPlan;
     }
+
+    @Override
+    public List<TestPlan> queryPlansByProjectId(String projectId) {
+        QueryWrapper<TestPlan> wrapper = new QueryWrapper<>();
+        wrapper.lambda().eq(TestPlan::getProjectId, projectId).eq(TestPlan::getDelFlag, 0);
+        return baseMapper.selectList(wrapper);
+    }
 }

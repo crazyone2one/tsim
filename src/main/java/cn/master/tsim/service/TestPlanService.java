@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * <p>
@@ -39,4 +40,12 @@ public interface TestPlanService extends IService<TestPlan> {
      */
     TestPlan updatePlan(String planId);
 
+    /**
+     * description: 根据项目查询测试计划数据 <br>
+     *
+     * @param projectId 项目id
+     * @return java.util.List<cn.master.tsim.entity.TestPlan>
+     * @author 11's papa
+     */
+    List<TestPlan> queryPlansByProjectId(String projectId);
 }

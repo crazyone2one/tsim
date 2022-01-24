@@ -4,10 +4,8 @@ package cn.master.tsim.controller;
 import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.TestPlan;
-import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.service.PlanCaseRefService;
 import cn.master.tsim.service.TestPlanService;
-import cn.master.tsim.service.TestStoryService;
 import cn.master.tsim.util.ResponseUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -35,14 +33,11 @@ import java.util.Map;
 public class TestPlanController {
 
     private final TestPlanService planService;
-    private final TestStoryService storyService;
     private final PlanCaseRefService planCaseRefService;
 
     @Autowired
-    public TestPlanController(TestPlanService planService,
-                              TestStoryService storyService, PlanCaseRefService planCaseRefService) {
+    public TestPlanController(TestPlanService planService, PlanCaseRefService planCaseRefService) {
         this.planService = planService;
-        this.storyService = storyService;
         this.planCaseRefService = planCaseRefService;
     }
 
@@ -84,19 +79,30 @@ public class TestPlanController {
     }
 
     /**
-     * 根据项目查询相关需求
+     * 根据项目查询相关测试计划数据
      *
-     * @param projectId 项目名称
+     * @param projectId 项目id
      * @return cn.master.tsim.common.ResponseResult
      */
-    @RequestMapping(value = "/getStoryMapByProject")
+    @RequestMapping(value = "/getPlans/{projectId}")
     @ResponseBody
-    public ResponseResult getStoryMapByProject(@RequestParam String projectId) {
+    public ResponseResult getStoryMapByProject(@PathVariable String projectId) {
         try {
-            final List<TestStory> stories = storyService.listStoryByProjectId(projectId);
-            return ResponseUtils.success(stories);
+            List<TestPlan> testPlans = planService.queryPlansByProjectId(projectId);
+            return ResponseUtils.success(testPlans);
         } catch (Exception e) {
-            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
+            return ResponseUtils.error(403, "数据查询失败", e.getMessage());
+        }
+    }
+
+    @RequestMapping(value = "/getPlan")
+    @ResponseBody
+    public ResponseResult getStoryMapByProject(HttpServletRequest request) {
+        try {
+            TestPlan testPlan = planService.getById(request.getParameter("id"));
+            return ResponseUtils.success(testPlan);
+        } catch (Exception e) {
+            return ResponseUtils.error(403, "数据查询失败", e.getMessage());
         }
     }
 
