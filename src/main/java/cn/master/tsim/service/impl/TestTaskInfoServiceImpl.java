@@ -109,16 +109,6 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
     }
 
     @Override
-    public TestTaskInfo getItemByProject(HttpServletRequest request, String projectId, TestPlan story) {
-        QueryWrapper<TestTaskInfo> wrapper = new QueryWrapper<>();
-        wrapper.lambda().eq(TestTaskInfo::getProjectId, projectId);
-        wrapper.lambda().eq(TestTaskInfo::getIssueDate, story.getWorkDate());
-        wrapper.lambda().eq(TestTaskInfo::getStoryId, story.getStory().getId());
-        wrapper.lambda().eq(TestTaskInfo::getSummaryDesc, story.getDescription());
-        return baseMapper.selectOne(wrapper);
-    }
-
-    @Override
     public TestTaskInfo updateItemStatue(HttpServletRequest request) {
         final Map<String, String[]> parameterMap = request.getParameterMap();
         QueryWrapper<TestTaskInfo> wrapper = new QueryWrapper<>();
@@ -177,6 +167,15 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
     public TestTaskInfo queryItem(String projectId, String storyId) {
         return baseMapper.selectOne(new QueryWrapper<TestTaskInfo>()
                 .lambda().eq(TestTaskInfo::getProjectId, projectId).eq(TestTaskInfo::getStoryId, storyId));
+    }
+
+    @Override
+    public TestTaskInfo queryItem(String projectId, String storyId, String planId) {
+        return baseMapper.selectOne(new QueryWrapper<TestTaskInfo>()
+                .lambda().eq(TestTaskInfo::getProjectId, projectId)
+                .eq(StringUtils.isNotBlank(storyId), TestTaskInfo::getStoryId, storyId)
+                .eq(StringUtils.isNotBlank(planId), TestTaskInfo::getPlanId, planId));
+
     }
 
     @Override
