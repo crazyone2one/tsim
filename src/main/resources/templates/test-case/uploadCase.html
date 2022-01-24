@@ -37,8 +37,16 @@
                                     </div>
                                     <input type="hidden" name="tempPlanId" id="hidden-import-ref-plan">
                                 </div>
-                                <input id="singleFileUploadInput" type="file" name="file" class="file-input" required/>
-                                <input type="submit" class="btn btn-sm btn-info" value="上传数据">
+                                <div class="input-group mb-3">
+                                    <input type="file" class="form-control" id="singleFileUploadInput" aria-describedby="inputGroupFileAddon04" aria-label="Upload" name="file">
+                                    <button class="btn btn-outline-info" type="submit" id="inputGroupFileAddon04">
+                                        <i class="bi-cloud-arrow-up"></i>
+                                    </button>
+                                </div>
+                                <button type="button" class="btn btn-sm" data-bs-container="body"
+                                        data-bs-toggle="popover" data-bs-placement="right" data-bs-content="导入数据时选择测试计划数据,在数据导入成功后会自动填充任务汇总下'创建测试用例'数量">
+                                    <i class="bi-info-circle"></i>
+                                </button>
                             </form>
                         </div>
                     </div>
