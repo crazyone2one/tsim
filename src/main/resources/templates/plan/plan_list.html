@@ -117,7 +117,7 @@
             align: 'center',
             title: '关联需求',
             class: 'col-sm-6', formatter: function (value, row, index) {
-                return row.story != null ? row.story.description : undefined;
+                return row.story != null ? row.story.storyName : undefined;
             }
         }, {
             field: 'name',
