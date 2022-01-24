@@ -206,3 +206,9 @@ $(document).on('click', "#reset-button", function () {
     $('#search-form')[0].reset();
     $('#table').bootstrapTable('refresh');
 });
+
+// Enable popovers everywhere
+const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="popover"]'));
+const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
+    return new bootstrap.Popover(popoverTriggerEl)
+});
