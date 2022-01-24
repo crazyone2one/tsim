@@ -70,7 +70,7 @@ function autoComplete(url, idSelector, flag, needChange) {
                         let temp = {
                             "p": {label: result['data'][i].projectName, value: result['data'][i].id}, // project
                             "m": {label: result['data'][i].moduleName, value: result['data'][i].id},  // module
-                            "s": {label: result['data'][i].description, value: result['data'][i].id} , // story
+                            "s": {label: result['data'][i].storyName, value: result['data'][i].id} , // story
                             "plan": {label: result['data'][i].name, value: result['data'][i].id}  // story
                         }
                         dataAttr.push(temp[flag]);
