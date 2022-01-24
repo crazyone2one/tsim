@@ -96,7 +96,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
             }
         }
         try {
-            TestStory build = TestStory.builder().projectId(story.getProjectId())
+            TestStory build = TestStory.builder().projectId(story.getProjectId()).storyName(story.getStoryName())
                     .description(story.getDescription()).workDate(story.getWorkDate()).storyStatus(story.getStoryStatus())
                     .docId(story.getDocId()).delFlag(0).createDate(new Date()).build();
             baseMapper.insert(build);
@@ -125,7 +125,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     public List<TestStory> checkUniqueStory(TestStory story) {
         QueryWrapper<TestStory> wrapper = new QueryWrapper<>();
 //        完全匹配
-        wrapper.lambda().eq(StringUtils.isNotBlank(story.getDescription()), TestStory::getDescription, story.getDescription());
+        wrapper.lambda().eq(StringUtils.isNotBlank(story.getStoryName()), TestStory::getStoryName, story.getStoryName());
         wrapper.lambda().eq(StringUtils.isNotBlank(story.getWorkDate()), TestStory::getWorkDate, story.getWorkDate());
         // 验证所属项目
         wrapper.lambda().eq(StringUtils.isNotBlank(story.getProjectId()), TestStory::getProjectId, story.getProjectId());

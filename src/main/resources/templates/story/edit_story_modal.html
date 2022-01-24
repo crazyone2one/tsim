@@ -24,13 +24,21 @@
                                     <div class="input-group mb-3">
                                         <span class="input-group-text" id="basic-addon1">项目名称</span>
                                         <input type="text" class="form-control" placeholder="输入项目名称"
-                                               aria-label="project" aria-describedby="basic-addon1" id="p-edit">
+                                               aria-label="project" aria-describedby="basic-addon1" id="p-edit" readonly>
                                         <input type="hidden" name="projectId" id="e-p-id">
+                                    </div>
+                                    <div class="input-group mb-3">
+                                        <span class="input-group-text required" id="story-name-span">需求名称</span>
+                                        <input type="text" class="form-control invalid-item" placeholder="输入项目名称"
+                                               aria-label="project" aria-describedby="basic-addon1" id="story-name-input-edit" name="storyName">
+                                        <div class="invalid-feedback" id="non-story-name-tips">
+                                            输入需求名称.
+                                        </div>
                                     </div>
                                     <div class="mb-3">
                                         <label for="e-description-name" class="form-label">需求内容描述</label>
                                         <textarea type="text" class="form-control" id="e-description-name"
-                                                  name="description" placeholder="输入需求内容描述"></textarea>
+                                                  name="description" placeholder="输入需求内容描述" rows="3"></textarea>
                                     </div>
 <!--                                    todo 文件上传-->
                                     <div class="mb-3" id="upload-div" hidden="hidden">

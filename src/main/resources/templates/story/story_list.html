@@ -85,6 +85,11 @@
                 return row.project.projectName;
             }
         }, {
+            field: 'storyName',
+            align: 'center',
+            title: '需求名称',
+            class: 'col-sm-6'
+        }, {
             field: 'description',
             align: 'center',
             title: '需求内容描述',
@@ -162,6 +167,7 @@
                         $("#p-edit").val(resultElement.project.projectName);
                         $("#e-p-id").val(resultElement.projectId);
                         $("#e-description-name").val(resultElement.description);
+                        $("#story-name-input-edit").val(resultElement.storyName);
                         select_option_checked('e-workDate', resultElement.workDate);
                         select_option_checked('e-storyStatus', resultElement.storyStatus);
                     }
@@ -175,7 +181,8 @@
         autoComplete('/project/queryList', 'p-add', 'p', true);
         // 打开添加弹框时设置项目id为空
         $('input[type=hidden]:first').val('');
-        $('#p-add').removeClass("is-invalid");
+        removeClass('#p-add', 'is-invalid');
+        removeClass('#story-name-input', 'is-invalid');
     });
     /**
      * 保存
@@ -184,11 +191,12 @@
         const $project = $("#p-add").val();
         const p_id = $('#s-p-id').val();
         const _storyId = $("#e-story-id").val();
-        const $description = $('#add-description-name').val();
+        const $desc = $('#add-description-name');
+        const $story = $('#story-name-input');
 
         // 需求描述字段非空验证
-        $description ? removeClass('#add-description-name', 'is-invalid') : $('#add-description-name').addClass("is-invalid");
-
+        $desc.val() ? removeClass('#add-description-name', 'is-invalid') : $desc.addClass("is-invalid");
+        $story.val() ? removeClass('#story-name-input', 'is-invalid') : $story.addClass("is-invalid");
         // 项目字段非空验证
         // 没有录入项目数据
         if (!$project) {

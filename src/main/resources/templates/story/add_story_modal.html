@@ -31,9 +31,17 @@
                                         <input type="hidden" name="projectId" id="s-p-id">
                                     </div>
                                     <div class="input-group mb-3">
+                                        <span class="input-group-text required" id="story-name-span">需求名称</span>
+                                        <input type="text" class="form-control invalid-item" placeholder="输入项目名称"
+                                               aria-label="project" aria-describedby="basic-addon1" id="story-name-input" name="storyName">
+                                        <div class="invalid-feedback" id="non-story-name-tips">
+                                            输入需求名称.
+                                        </div>
+                                    </div>
+                                    <div class="input-group mb-3">
                                         <span id="basic-addon2" class="input-group-text required">需求内容描述</span>
                                         <textarea type="text" class="form-control invalid-item" aria-label="desc" aria-describedby="basic-addon2" id="add-description-name"
-                                                  name="description" placeholder="输入需求内容描述"></textarea>
+                                                  name="description" placeholder="简述需求内容" rows="3"></textarea>
                                         <div class="invalid-feedback">
                                             请输入需求内容描述.
                                         </div>

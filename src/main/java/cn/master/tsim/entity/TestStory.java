@@ -38,12 +38,18 @@ public class TestStory implements Serializable {
      */
     @TableField("description")
     private String description;
+    /**
+     * 需求名称
+     */
+    @TableField("story_name")
+    private String storyName;
 
     /**
      * 项目id
      */
     @TableField("project_id")
     private String projectId;
+
 
     /**
      * 需求时间
