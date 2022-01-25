@@ -96,7 +96,7 @@
             field: 'docId',
             align: 'center',
             title: '关联文档',
-            class: 'col-sm-6', formatter(value, row, index) {
+            class: 'col-sm-4', formatter(value, row, index) {
                 let _docName;
                 if (Object.is(undefined, row.docInfo)) {
                     _docName = undefined;
@@ -112,16 +112,16 @@
             field: 'workDate',
             align: 'center',
             title: '需求时间',
-            class: 'col-sm-6'
+            class: 'col-sm-3'
         }, {
             field: 'storyStatus',
             align: 'center',
             title: '需求状态',
-            class: 'col-sm-6', formatter: function (value, row, index) {
+            class: 'col-sm-3', formatter: function (value, row, index) {
                 return Object.is(value, 0) ? "未完成" : "已完成";
             }
         },
-        {title: '操作', align: 'center', field: 'id', class: 'col-sm-6', formatter: option,}]
+        {title: '操作', align: 'center', field: 'id', class: 'col-sm-2', formatter: option,}]
     // 查询条件
     const _search_params = function (params) {
         return {
@@ -215,6 +215,7 @@
         // 没有录入项目数据
         if (!$project) {
             $('#p-add').addClass("is-invalid");
+            return false;
         } else {
             removeClass('#p-add', 'is-invalid');
             /**
@@ -223,6 +224,7 @@
             if (!p_id) {
                 $('#project-error-tips').text($project + '不存在,先在项目管理模块添加');
                 $('#p-add').addClass("is-invalid");
+                return false;
             } else {
                 removeClass('#p-add', 'is-invalid');
                 $.ajax({
@@ -234,6 +236,7 @@
                         if (Object.is(403, result['code'])) {
                             $('#project-error-tips').text('[' + $project + ']不存在,先在项目管理模块添加');
                             $('#p-add').addClass("is-invalid");
+                            return false;
                         }
                     }
                 });

@@ -128,7 +128,8 @@ $("#update-task").on('click', function () {
  * 保存任务数据
  */
 function saveTask() {
-    const pro_name = $("#s-p-id").val();
+    const pro_name = $("#t-add").val();
+    const projectId = $("#s-p-id").val();
     const desc = $("#add-description-name").val();
     if (pro_name && desc) {
         removeClass('#s-p-id', "is-invalid");
@@ -150,7 +151,7 @@ function saveTask() {
             }
         });
     } else {
-        !pro_name && $('#s-p-id').addClass("is-invalid");
+        !pro_name && $('#t-add').addClass("is-invalid");
         !desc && $('#add-description-name').addClass("is-invalid");
     }
 }
