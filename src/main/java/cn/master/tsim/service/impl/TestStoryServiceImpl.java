@@ -75,30 +75,33 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
 
     @Override
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
-    public ResponseResult saveOrUpdateStory(HttpServletRequest request, TestStory story) {
-        if (StringUtils.isNotBlank(story.getId())) {
+    public ResponseResult saveOrUpdateStory(HttpServletRequest request) {
+        String id = request.getParameter("id");
+        String name = request.getParameter("name");
+        String desc = request.getParameter("desc");
+        String docId = request.getParameter("docId");
+        String projectId = request.getParameter("projectId");
+        String workDate = request.getParameter("workDate");
+        Integer storyStatus = Integer.valueOf(request.getParameter("storyStatus"));
+        if (StringUtils.isNotBlank(id)) {
             try {
-                final TestStory testStory = searchStoryById(story.getId());
-                testStory.setDescription(story.getDescription());
+                final TestStory testStory = searchStoryById(id);
+                testStory.setStoryName(name);
+                testStory.setDescription(desc);
                 testStory.setUpdateDate(new Date());
-                testStory.setWorkDate(story.getWorkDate());
-                testStory.setStoryStatus(story.getStoryStatus());
+                testStory.setWorkDate(workDate);
+                testStory.setStoryStatus(storyStatus);
+                testStory.setDocId(docId);
                 baseMapper.updateById(testStory);
-//                final TestTaskInfo itemByProject = taskInfoService.queryItem(story.getProjectId(), story.getId());
-//                itemByProject.setUpdateDate(new Date());
-//                itemByProject.setIssueDate(testStory.getWorkDate());
-//                itemByProject.setSummaryDesc(testStory.getDescription());
-////                itemByProject.setFinishStatus(String.valueOf(testStory.getStoryStatus()));
-//                taskInfoService.updateTask(request, itemByProject);
                 return ResponseUtils.success("数据更新成功", testStory);
             } catch (Exception e) {
                 return ResponseUtils.error(400, "数据更新失败", e.getCause().getMessage());
             }
         }
         try {
-            TestStory build = TestStory.builder().projectId(story.getProjectId()).storyName(story.getStoryName())
-                    .description(story.getDescription()).workDate(story.getWorkDate()).storyStatus(story.getStoryStatus())
-                    .docId(story.getDocId()).delFlag(0).createDate(new Date()).build();
+            TestStory build = TestStory.builder().projectId(projectId).storyName(name)
+                    .description(desc).workDate(workDate).storyStatus(storyStatus)
+                    .docId(docId).delFlag(0).createDate(new Date()).build();
             baseMapper.insert(build);
 //            taskInfoService.addItem(request, story.getProjectId(), build);
             return ResponseUtils.success("数据添加成功", build);
@@ -122,13 +125,13 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     }
 
     @Override
-    public List<TestStory> checkUniqueStory(TestStory story) {
+    public List<TestStory> checkUniqueStory(HttpServletRequest request) {
         QueryWrapper<TestStory> wrapper = new QueryWrapper<>();
 //        完全匹配
-        wrapper.lambda().eq(StringUtils.isNotBlank(story.getStoryName()), TestStory::getStoryName, story.getStoryName());
-        wrapper.lambda().eq(StringUtils.isNotBlank(story.getWorkDate()), TestStory::getWorkDate, story.getWorkDate());
+        wrapper.lambda().eq(TestStory::getStoryName, request.getParameter("name"));
+        wrapper.lambda().eq(TestStory::getWorkDate, request.getParameter("workDate"));
         // 验证所属项目
-        wrapper.lambda().eq(StringUtils.isNotBlank(story.getProjectId()), TestStory::getProjectId, story.getProjectId());
+        wrapper.lambda().eq(TestStory::getProjectId, request.getParameter("projectId"));
         return baseMapper.selectList(wrapper);
     }
 

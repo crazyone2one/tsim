@@ -70,19 +70,19 @@ public class TestStoryController {
 
     @PostMapping(value = "/save")
     @ResponseBody
-    public ResponseResult saveStory(HttpServletRequest request, TestStory story) {
-        return service.saveOrUpdateStory(request, story);
+    public ResponseResult saveStory(HttpServletRequest request) {
+        return service.saveOrUpdateStory(request);
     }
 
     @GetMapping(value = "/uniqueStory")
     @ResponseBody
-    public ResponseResult uniqueStory(HttpServletRequest request, TestStory testStory) {
+    public ResponseResult uniqueStory(HttpServletRequest request) {
         try {
-            final List<TestStory> testStories = service.checkUniqueStory(testStory);
-            if (CollectionUtils.isNotEmpty(service.checkUniqueStory(testStory))) {
+            final List<TestStory> testStories = service.checkUniqueStory(request);
+            if (CollectionUtils.isNotEmpty(testStories)) {
                 final TestStory story = testStories.get(0);
                 final String projectName = projectService.getProjectById(story.getProjectId()).getProjectName();
-                return ResponseUtils.error(401, projectName + "已关联" + story.getWorkDate() + "月份测试需求:" + story.getDescription(), story);
+                return ResponseUtils.error(401, projectName + "已关联" + story.getWorkDate() + "月份测试需求:" + story.getStoryName(), story);
             }
             return ResponseUtils.success();
         } catch (Exception e) {
