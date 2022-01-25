@@ -101,7 +101,10 @@
                 if (Object.is(undefined, row.docInfo)) {
                     _docName = undefined;
                 } else {
-                    _docName = '<a href="#">' + row.docInfo.docName + '</a>';
+                    let _tempName = row.docInfo.docName;
+                    let _hrefStr = '/story/download/' + _tempName + '/' + row.docInfo.uuidName;
+                    _docName = '<a href=' + _hrefStr + '>' + _tempName + '</a>';
+                    // _docName = '<a href="javascript:void(0)" onclick="downloadFile(\'' + _tempName + '\',\'' + row.docInfo.uuidName + '\')">' + _tempName + '</a>';
                 }
                 return _docName;
             },
@@ -324,6 +327,22 @@
             });
         });
     });
+
+    function downloadFile(fileName, uuidName) {
+        $.ajax({
+            url: "/story/download/" + fileName + "/" + uuidName,
+            type: "get",
+            dataType : "json",
+            data: {},
+            cache: false,
+            success: function (res) {
+                console.log(res);
+            },
+            error: function (err) {
+                console.error(err);
+            },
+        });
+    }
 </script>
 </body>
 </html>

@@ -53,14 +53,14 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         List<String> tempProp = new LinkedList<>();
         // 按照项目模糊查询
         final String projectName = request.getParameter("projectName");
-        wrapper.lambda().inSql(StringUtils.isNotBlank(projectName),TestStory::getProjectId, "select id from t_project where project_name like '%" + projectName + "%'");
+        wrapper.lambda().inSql(StringUtils.isNotBlank(projectName), TestStory::getProjectId, "select id from t_project where project_name like '%" + projectName + "%'");
 //        按照需求内容模糊查询
         final String storyDesc = request.getParameter("storyDesc");
-        wrapper.lambda().like(StringUtils.isNotBlank(storyDesc),TestStory::getDescription, storyDesc);
+        wrapper.lambda().like(StringUtils.isNotBlank(storyDesc), TestStory::getDescription, storyDesc);
 //        按照需求完成状态查询
         String status = request.getParameter("status");
-        wrapper.lambda().eq(StringUtils.isNotBlank(status),TestStory::getStoryStatus, status);
-        wrapper.lambda().eq(TestStory::getDelFlag,0).orderByAsc(TestStory::getStoryStatus);
+        wrapper.lambda().eq(StringUtils.isNotBlank(status), TestStory::getStoryStatus, status);
+        wrapper.lambda().eq(TestStory::getDelFlag, 0).orderByAsc(TestStory::getStoryStatus);
         Page<TestStory> storyPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
@@ -145,7 +145,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
 
     @Override
     public List<TestStory> listStoryByProjectId(String projectId) {
-        return baseMapper.selectList(new QueryWrapper<TestStory>().lambda().eq(StringUtils.isNotBlank(projectId),TestStory::getProjectId, projectId));
+        return baseMapper.selectList(new QueryWrapper<TestStory>().lambda().eq(StringUtils.isNotBlank(projectId), TestStory::getProjectId, projectId));
     }
 
     @Override
@@ -180,7 +180,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         try {
             List<String> ids = JacksonUtils.convertValue(request.getParameter("ids"), new TypeReference<List<String>>() {
             });
-            ids.forEach(t->{
+            ids.forEach(t -> {
                 TestStory story = getById(t);
                 story.setDelFlag(1);
                 story.setUpdateDate(new Date());
@@ -190,8 +190,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
                 taskInfoService.updateById(testTaskInfo);
             });
             return ResponseUtils.success("删除成功");
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             return ResponseUtils.error("删除失败");
         }
     }
@@ -200,10 +199,9 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     public ResponseResult downloadFile(HttpServletRequest request, HttpServletResponse response, String fileName, String uuidName) {
         try {
             systemService.downloadFile(request, response, fileName, uuidName);
-//            response.sendRedirect("/story/list");
-            return ResponseUtils.success("文件下载成功");
+            return ResponseUtils.success("文件下载成功") ;
         } catch (Exception e) {
-            return ResponseUtils.error("文件下载失败");
+            return ResponseUtils.error("文件下载失败" + e);
         }
     }
 }
