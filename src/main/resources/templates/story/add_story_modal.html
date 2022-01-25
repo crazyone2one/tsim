@@ -20,7 +20,7 @@
                             </div>
                             <div class="modal-body">
                                 <div class="box-body">
-<!--                                    <input type="hidden" name="id" id="story-id">-->
+                                    <input type="hidden" name="id" id="story-id">
                                     <div class="input-group mb-3">
                                         <span class="input-group-text required" id="basic-addon1">项目名称</span>
                                         <input type="text" class="form-control invalid-item" placeholder="输入项目名称"
@@ -28,7 +28,7 @@
                                         <div class="invalid-feedback" id="project-error-tips">
                                             请输入项目名称.
                                         </div>
-                                        <input type="hidden" name="projectId" id="s-p-id">
+                                        <input type="hidden" name="projectId" id="hidden-project-id">
                                     </div>
                                     <div class="input-group mb-3">
                                         <span class="input-group-text required" id="story-name-span">需求名称</span>
@@ -46,15 +46,6 @@
                                             请输入需求内容描述.
                                         </div>
                                     </div>
-<!--                                    todo 文件上传-->
-                                    <div class="mb-3" id="upload-div" hidden="hidden">
-<!--                                        <input class="form-control" type="file" name="file" id="formFile">-->
-                                        <button type="button" id="up-btn" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#uploadModal">
-                                            上传需求文件
-                                        </button>
-                                        <div id="emailHelp" class="form-text">若有需求文件，先上传文件.</div>
-                                    </div>
-                                    <input type="hidden" name="docId" id="attachmentId">
                                     <div class="btn-group mb-3">
                                         <div class="input-group me-5 ">
                                             <label for="workDate" class="input-group-text">需求日期</label>
@@ -72,6 +63,14 @@
                                             </select>
                                         </div>
                                     </div>
+                                    <div class="input-group mb-3" id="upload-div">
+<!--                                        <label class="input-group-text" for="file-upload-input">上传需求文档</label>-->
+                                        <input type="file" class="form-control" id="file-upload-input" name="file"
+                                               aria-describedby="file-upload-input" aria-label="上传需求文档">
+                                        <button type="button" class="btn btn-sm btn-info" id="file-upload-button">开始上传</button>
+                                    </div>
+                                    <div id="infoHelp" class="form-text mt-3"></div>
+                                    <input type="hidden" name="docId" id="attachmentId">
                                 </div>
                             </div>
                             <div class="modal-footer">

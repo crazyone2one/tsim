@@ -111,20 +111,6 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     }
 
     @Override
-    public TestStory getStory(String description, String workDate, String proId) {
-        QueryWrapper<TestStory> wrapper = new QueryWrapper<>();
-//        完全匹配
-        wrapper.lambda().eq(StringUtils.isNotBlank(description), TestStory::getDescription, description);
-        wrapper.lambda().eq(StringUtils.isNotBlank(workDate), TestStory::getWorkDate, workDate);
-        // 验证所属项目
-        wrapper.lambda().eq(StringUtils.isNotBlank(proId), TestStory::getProjectId, proId);
-        //        if (Objects.nonNull(story)) {
-//            story.setProject(projectService.getProjectById(story.getProjectId()));
-//        }
-        return baseMapper.selectOne(wrapper);
-    }
-
-    @Override
     public List<TestStory> checkUniqueStory(HttpServletRequest request) {
         QueryWrapper<TestStory> wrapper = new QueryWrapper<>();
 //        完全匹配
@@ -140,6 +126,9 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         final TestStory story = baseMapper.selectById(storyId);
         if (Objects.nonNull(story)) {
             story.setProject(projectService.getProjectById(story.getProjectId()));
+            if (StringUtils.isNotBlank(story.getDocId())) {
+                story.setDocInfo(docInfoService.queryDocById(story.getDocId()));
+            }
         }
         return story;
     }

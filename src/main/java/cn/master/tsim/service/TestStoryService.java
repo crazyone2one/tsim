@@ -39,16 +39,6 @@ public interface TestStoryService extends IService<TestStory> {
     ResponseResult saveOrUpdateStory(HttpServletRequest request);
 
     /**
-     * 查询需求数据
-     *
-     * @param description 需求内容
-     * @param workDate    需求时间
-     * @param proId       项目id
-     * @return cn.master.tsim.entity.TestStory
-     */
-    TestStory getStory(String description, String workDate, String proId);
-
-    /**
      * description:  根据需求名称、时间、所属项目，验证需求数据的唯一性<br>
      *
      * @param request HttpServletRequest
@@ -57,6 +47,13 @@ public interface TestStoryService extends IService<TestStory> {
      */
     List<TestStory> checkUniqueStory(HttpServletRequest request);
 
+    /**
+     * description: 查询需求数据 <br>
+     *
+     * @param storyId 需求数据id
+     * @return cn.master.tsim.entity.TestStory
+     * @author 11's papa
+     */
     TestStory searchStoryById(String storyId);
 
     /**

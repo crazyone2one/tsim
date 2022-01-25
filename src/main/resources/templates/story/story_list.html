@@ -38,7 +38,7 @@
                                     <i class="bi bi-search"></i>
                                 </button>
                                 <a class="btn btn-primary hvr-grow me-2" data-bs-toggle="modal"
-                                   data-bs-target="#add-story-modal"
+                                   data-bs-target="#add-story-modal" onclick="addOrEditStory()"
                                    role="button"><i class="bi bi-plus-circle"></i></a>
                                 <button type="button" class="btn btn-secondary hvr-grow" id="reset-button" title="重置搜索">
                                     <i class="bi-arrow-clockwise"></i>
@@ -61,11 +61,9 @@
 
 <!-- 添加问题单Modal弹框 -->
 <div th:replace="~{story/add_story_modal::addStoryFragment}"></div>
-<div th:replace="~{story/edit_story_modal::editStoryFragment}"></div>
 <!--                    toast-->
 <div th:replace="/fragment/commons :: toast-div"></div>
 <div th:replace="/fragment/commons :: confirm-modal"></div>
-<div th:replace="/fragment/commons :: upload-modal"></div>
 <!-- Logout Modal-->
 <div th:replace="/fragment/commons :: logout"></div>
 <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
@@ -98,7 +96,15 @@
             field: 'docId',
             align: 'center',
             title: '关联文档',
-            class: 'col-sm-6'
+            class: 'col-sm-6', formatter(value, row, index) {
+                let _docName;
+                if (Object.is(undefined, row.docInfo)) {
+                    _docName = undefined;
+                } else {
+                    _docName = '<a href="#">' + row.docInfo.docName + '</a>';
+                }
+                return _docName;
+            },
         }, {
             field: 'workDate',
             align: 'center',
@@ -127,7 +133,7 @@
     InitTable("/story/reloadTable", 'get', _table_columns, _search_params);
 
     function option(value, row, index) {
-        const e = '<button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#edit-story-modal" onclick="editStory(\'' + row.id + '\')"><i class="bi-pencil-square"></i></button>'
+        const e = '<button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="add-story-modal" onclick="addOrEditStory(\'' + row.id + '\')"><i class="bi-pencil-square"></i></button>'
         const d = '<button class="btn btn-sm btn-danger" onclick="deleteStory(\'' + row.id + '\')"><i class="bi-trash"></i></button>';
         return e + d;
     }
@@ -154,45 +160,50 @@
     }
 
     // 新增、编辑需求
-    function editStory(storyId) {
-        $('#edit-story-modal').on("shown.bs.modal", function (event) {
-            // 编辑需求
-            if (storyId) {
-                $("#e-story-id").val(storyId);
-                $.ajax({
-                    url: "/story/getStory/" + storyId,
-                    type: 'get',
-                    success: function (result) {
-                        const resultElement = result['data'];
-                        $("#p-edit").val(resultElement.project.projectName);
-                        $("#e-p-id").val(resultElement.projectId);
-                        $("#e-description-name").val(resultElement.description);
-                        $("#story-name-input-edit").val(resultElement.storyName);
-                        select_option_checked('e-workDate', resultElement.workDate);
-                        select_option_checked('e-storyStatus', resultElement.storyStatus);
-                    }
-                });
-            }
-        });
+    function addOrEditStory(id) {
+        const _modal = $('#add-story-modal');
+        _modal.modal('show');
+        _modal.on('shown.bs.modal', function () {
+            // 编辑数据时不使用字段提示功能
+            !id && autoComplete('/project/queryList', 'p-add', 'p', true);
+            !id && $('input[type=hidden]:first').val('');
+            removeClass('#p-add', 'is-invalid');
+            removeClass('#story-name-input', 'is-invalid');
+        })
+        document.getElementById('add-story-modal').querySelector('.modal-title').textContent = id ? '编辑需求数据' : '添加需求数据';
+
+        // 编辑需求
+        if (id) {
+            $("#story-id").val(id);
+            $.ajax({
+                url: "/story/getStory/" + id,
+                type: 'get',
+                success: function (result) {
+                    const resultElement = result['data'];
+                    const docId = resultElement.docId;
+                    $("#p-add").val(resultElement.project.projectName);
+                    $("#hidden-project-id").val(resultElement.projectId);
+                    $("#add-description-name").val(resultElement.description);
+                    $("#story-name-input").val(resultElement.storyName);
+                    $("#attachmentId").val(docId);
+                    docId && $('#infoHelp').addClass('text-success fw-bold fst-italic').text(resultElement.docInfo.docName);
+                    select_option_checked('workDate', resultElement.workDate);
+                    select_option_checked('storyStatus', resultElement.storyStatus);
+                }
+            });
+        }
     }
 
-    // 添加modal打开时，设置项目输入框可匹配
-    $('#add-story-modal').on("show.bs.modal", function (event) {
-        autoComplete('/project/queryList', 'p-add', 'p', true);
-        // 打开添加弹框时设置项目id为空
-        $('input[type=hidden]:first').val('');
-        removeClass('#p-add', 'is-invalid');
-        removeClass('#story-name-input', 'is-invalid');
-    });
     /**
      * 保存
      */
-    $('button[id=submit]').click(function () {
+    $('button[id=submit]').on('click', function () {
         const $project = $("#p-add").val();
-        const p_id = $('#s-p-id').val();
-        const _storyId = $("#e-story-id").val();
+        const p_id = $('#hidden-project-id').val();
+        const _storyId = $("#story-id").val();
         const $desc = $('#add-description-name');
         const $story = $('#story-name-input');
+        const $workDate = $('#workDate').val();
         // 验证字段开始************
         // 需求描述字段非空验证
         $desc.val() ? removeClass('#add-description-name', 'is-invalid') : $desc.addClass("is-invalid");
@@ -226,25 +237,26 @@
             }
         }
         // 验证字段结束************
+
+        const saveDate = {
+            id: _storyId,
+            name: $story.val(),
+            projectId: p_id,
+            workDate: $workDate,
+            desc: $desc.val(),
+            docId: $('#attachmentId').val(),
+            storyStatus: $('#storyStatus').val()
+        }
         if (_storyId) {
             $.ajax({
                 url: "/story/save",
                 type: 'POST',
-                data: {
-                    id: _storyId,
-                    name: $('#story-name-input-edit').val(),
-                    projectId: p_id,
-                    workDate: $('#e-workDate').val(),
-                    desc: $('#e-description-name').val(),
-                    docId: $('#attachmentId').val(),
-                    storyStatus: $('#e-storyStatus').val()
-                },
+                data: saveDate,
                 success: function (arg) {
                     const msg = arg['msg'];
                     if (Object.is(arg['code'], 200)) {
-                        // alert(msg, 'success');
-                        $('#edit-story-modal').modal('hide');
-                        resetModal("#edit-story-modal", "editStoryForm");
+                        resetModal("#add-story-modal", "addStoryForm");
+                        $('#add-story-modal').modal('hide');
                         $("#table").bootstrapTable("refresh");
                     }
                     showToast(arg['code'], msg);
@@ -256,7 +268,7 @@
                 url: "/story/uniqueStory",
                 type: 'get',
                 contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-                data: {name: $story.val(), projectId: p_id, workDate: $('#workDate').val()},
+                data: {name: $story.val(), projectId: p_id, workDate: $workDate},
                 success: function (result) {
                     if (!Object.is(result['code'], 200)) {
                         //    项目已存在
@@ -265,14 +277,7 @@
                         $.ajax({
                             url: "/story/save",
                             type: 'POST',
-                            data: {
-                                name: $story.val(),
-                                desc: $('#add-description-name').val(),
-                                docId: $('#attachmentId').val(),
-                                projectId: p_id,
-                                workDate: $('#workDate').val(),
-                                storyStatus: $('#storyStatus').val()
-                            },
+                            data: saveDate,
                             success: function (arg) {
                                 const msg = arg['msg'];
                                 if (Object.is(arg['code'], 200)) {
@@ -290,6 +295,35 @@
     })
     // 查询条件：项目
     autoComplete('/project/queryList', 'p-search', 'p', false);
+</script>
+<script>
+    /**
+     * 上传文件
+     */
+    $(document).ready(function () {
+        $('#file-upload-button').on('click', function (e) {
+            // cancel the default behavior
+            e.preventDefault();
+            const formData = new FormData();
+            formData.append("file", $('#file-upload-input')[0].files[0]);
+            $.ajax({
+                url: "/story/upload",
+                type: "POST",
+                data: formData,
+                enctype: 'multipart/form-data',
+                processData: false,
+                contentType: false,
+                cache: false,
+                success: function (res) {
+                    $('#attachmentId').val(res['data'].docId);
+                    $('#infoHelp').addClass('text-success').text('文件上传成功');
+                },
+                error: function (err) {
+                    console.error(err);
+                },
+            });
+        });
+    });
 </script>
 </body>
 </html>
