@@ -115,6 +115,11 @@ function loadRunCaseInfo(id) {
  * @param id 测试计划数据id值
  */
 function loadCaseInfo(id) {
+    const case_priority={
+        0: '低',
+        1: '中',
+        2: '高'
+    }
     $('#ref-case-modal').on('shown.bs.modal', function () {
         $('#hidden-plan-id').val(id);
         const url = "/case/loadCaseByPlan/" + id;
@@ -176,13 +181,15 @@ function loadCaseInfo(id) {
                 class: 'col-md-3',
                 formatter: refCaseResultFormatter
             },
-            {title: "优先级", field: 'priority', align: 'center',},
+            {title: "优先级", field: 'priority', align: 'center',formatter:function (value, row, index) {
+                    return case_priority[value];
+                }},
             {
                 field: 'Button',
                 title: "操作",
                 align: 'center',
                 formatter: function (value, row, index) {
-                    return '<button type="button" class="btn btn-sm btn-info" onclick="addRefCase(\'' + row.id + '\')">添加</button>';
+                    return '<button type="button" class="btn btn-sm btn-info hvr-grow" onclick="addRefCase(\'' + row.id + '\')"><i class="bi-plus-circle"></i> </button>';
                 }
             }
         ];
