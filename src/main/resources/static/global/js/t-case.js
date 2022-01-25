@@ -242,7 +242,7 @@ function validateCaseInfo(case_info_data) {
         } else {
             removeClass('_projectId', 'is-invalid');
             $.ajax({
-                url: '/project/checkUnique',
+                url: '/project/checkUniqueProject',
                 type: 'get',
                 data: {name: tempProjectName, id: tempHiddenProjectId},
                 contentType: "application/x-www-form-urlencoded; charset=UTF-8",

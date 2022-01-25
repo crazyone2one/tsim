@@ -181,7 +181,7 @@
             } else {
                 removeClass('#p-add', 'is-invalid');
                 $.ajax({
-                    url: '/project/checkUnique',
+                    url: '/project/checkUniqueProject',
                     type: 'get',
                     data: {name: tempProjectName, id: tempHiddenProjectId},
                     contentType: "application/x-www-form-urlencoded; charset=UTF-8",

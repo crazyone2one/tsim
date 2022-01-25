@@ -104,7 +104,7 @@ public class ProjectController {
         }
     }
 
-    @GetMapping(value = "/checkUnique")
+    @GetMapping(value = "/checkUniqueProject")
     @ResponseBody
     public ResponseResult checkUnique(HttpServletRequest request) {
         try {
