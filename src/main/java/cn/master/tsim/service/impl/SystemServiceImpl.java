@@ -19,6 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -44,7 +45,7 @@ public class SystemServiceImpl implements SystemService {
         String datePath = dateFormat.format(new Date());
         // 5:最终文件的上传目录
         String realPath = "/files/" + datePath;
-        this.fileStorageLocation = Paths.get(properties.getUploadDir() + realPath).toAbsolutePath().normalize();
+        this.fileStorageLocation = Paths.get(properties.getUploadDir() + realPath).normalize();
         try {
             Files.createDirectories(this.fileStorageLocation);
         } catch (IOException e) {
@@ -107,9 +108,6 @@ public class SystemServiceImpl implements SystemService {
             Path targetLocation = this.fileStorageLocation.resolve(newFileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             String location = this.fileStorageLocation + "/" + newFileName;
-            System.out.println(location);
-            final String path = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + this.fileStorageLocation + "/" + newFileName;
-            System.out.println(path);
             resultMap.put("docPath", location);
             return ResponseUtils.success("文件上传成功", resultMap);
         } catch (Exception e) {
@@ -119,45 +117,35 @@ public class SystemServiceImpl implements SystemService {
     }
 
     @Override
-    public void saveFile(HttpServletRequest request, String fileName) {
-        try {
-            Path targetLocation = this.fileStorageLocation.resolve(fileName);
-            final InputStream inputStream = Files.newInputStream(targetLocation);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
     public void downloadFile(HttpServletRequest request, HttpServletResponse response, String fileName, String uuidName) {
         try {
             String downloadUri = this.fileStorageLocation + "/" + uuidName;
             // 读文件
             File file = new File(downloadUri);
+            if (!file.exists()) {
+                throw new RuntimeException("文件不存在");
+            }
+            InputStream fis = new BufferedInputStream(new FileInputStream(file));
+            byte[] buff = new byte[fis.available()];
+            int read = fis.read(buff);
+            fis.close();
             // 重置response
             response.reset();
-            // ContentType，即告诉客户端所发送的数据属于什么类型
-//            response.setContentType("application/octet-stream; charset=UTF-8");
+            response.setCharacterEncoding("UTF-8");
             // 获得文件的长度
-            response.setHeader("Content-Length", String.valueOf(file.length()));
-            response.setHeader("Content-disposition", "attachment;fileName=" + fileName);
+            response.setHeader("Content-Length", "" + file.length());
+            // 解决下载文件时文件名乱码问题
+            byte[] fileNameBytes = fileName.getBytes(StandardCharsets.UTF_8);
+            response.setHeader("Content-disposition", "attachment;fileName=" + new String(fileNameBytes, 0, fileNameBytes.length, StandardCharsets.ISO_8859_1));
             // 发送给客户端的数据
-            OutputStream outputStream = response.getOutputStream();
-            byte[] buff = new byte[1024];
-            BufferedInputStream bis;
-            // 读取文件
-            bis = new BufferedInputStream(new FileInputStream(downloadUri));
-            int i = bis.read(buff);
-            // 只要能读到，则一直读取
-            while (i != -1) {
-                // 将文件写出
-                outputStream.write(buff, 0, buff.length);
-                // 刷出
-                outputStream.flush();
-                i = bis.read(buff);
-            }
+            OutputStream outputStream = new BufferedOutputStream(response.getOutputStream());
+            response.setContentType("application/octet-stream");
+            outputStream.write(buff);
+            outputStream.flush();
+            outputStream.close();
         } catch (IOException e) {
             e.printStackTrace();
+            throw new RuntimeException("文件下载失败", e);
         }
     }
 }
