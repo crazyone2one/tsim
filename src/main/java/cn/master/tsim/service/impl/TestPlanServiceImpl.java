@@ -79,10 +79,20 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     @Override
     @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
     public ResponseResult savePlan(HttpServletRequest request) {
+        String id = request.getParameter("id");
         String tempProjectId = request.getParameter("projectId");
         String tempStoryId = request.getParameter("storyId");
         String tempPlanName = request.getParameter("name");
         String description = request.getParameter("description").trim();
+        if (StringUtils.isNotBlank(id)) {
+            TestPlan byId = getById(id);
+            byId.setStoryId(tempStoryId);
+            byId.setName(tempPlanName);
+            byId.setDescription(description);
+            byId.setUpdateDate(new Date());
+            updateById(byId);
+            return ResponseUtils.success(ResponseCode.SUCCESS.getCode(), "数据更新成功", byId);
+        }
 //        同一项目下不允许出现相同的测试计划
         final TestPlan uniquePlan = uniquePlan(tempStoryId, tempPlanName, tempProjectId);
         if (Objects.nonNull(uniquePlan)) {
@@ -94,7 +104,7 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
         baseMapper.insert(build);
         planStoryRefService.addRefItem(build.getId(), tempStoryId);
         taskInfoService.addItem(request, tempProjectId, build);
-        return ResponseUtils.error(ResponseCode.SUCCESS.getCode(), "数据添加成功", build);
+        return ResponseUtils.success(ResponseCode.SUCCESS.getCode(), "数据添加成功", build);
     }
 
     @Override
@@ -109,7 +119,10 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     @Override
     public TestPlan queryPlanById(String id) {
         TestPlan byId = getById(id);
-        byId.setStory(storyService.searchStoryById(byId.getStoryId()));
+        if (StringUtils.isNotBlank(byId.getStoryId())) {
+            byId.setStory(storyService.searchStoryById(byId.getStoryId()));
+        }
+        byId.setProject(projectService.getProjectById(byId.getProjectId()));
         return byId;
     }
 

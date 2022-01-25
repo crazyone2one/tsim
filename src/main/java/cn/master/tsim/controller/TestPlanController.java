@@ -99,7 +99,7 @@ public class TestPlanController {
     @ResponseBody
     public ResponseResult getStoryMapByProject(HttpServletRequest request) {
         try {
-            TestPlan testPlan = planService.getById(request.getParameter("id"));
+            TestPlan testPlan = planService.queryPlanById(request.getParameter("id"));
             return ResponseUtils.success(testPlan);
         } catch (Exception e) {
             return ResponseUtils.error(403, "数据查询失败", e.getMessage());

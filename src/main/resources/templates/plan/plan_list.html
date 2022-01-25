@@ -46,7 +46,8 @@
                                     <i class="bi bi-search"></i>
                                 </button>
                                 <button type="button" class="btn btn-info hvr-grow me-2"
-                                        data-bs-toggle="modal" data-bs-target="#add-plan-modal">
+                                        data-bs-toggle="modal" data-bs-target="#add-plan-modal"
+                                        onclick="addOrEditPlan()">
                                     <i class="bi bi-plus-circle hvr-grow"></i>
                                 </button>
                                 <button type="button" class="btn btn-secondary hvr-grow " id="reset-button"
@@ -129,15 +130,17 @@
             align: 'center',
             title: '测试计划描述',
             class: 'col-sm-6'
-        }, {title: '操作', align: 'center', field: 'id', class: 'col-sm-6', formatter: option,}];
+        }, {title: '操作', align: 'center', field: 'id', class: 'col-sm-2', formatter: option,}];
 
     function option(value, row, index) {
         // return "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
-        const a = '<button type="button" class="btn btn-sm btn-info me-2" id="ref-add" data-bs-toggle="modal" ' +
+        const edit = '<button type="button" class="btn btn-sm btn-warning me-1" id="edit-plan-button" data-bs-toggle="modal" ' +
+            'data-bs-target="add-plan-modal" title="关联测试用例" onclick="addOrEditPlan(\'' + row.id + '\')"><i class="bi-pencil-square"></i></>';
+        const a = '<button type="button" class="btn btn-sm btn-info me-1" id="ref-add" data-bs-toggle="modal" ' +
             'data-bs-target="#ref-case-modal" data-bs-placement="top" title="关联测试用例" onclick="loadCaseInfo(\'' + row.id + '\')"><i class="bi-check"></i></>';
         const b = '<button type="button" class="btn btn-sm btn-info" id="ref-run" data-bs-toggle="modal" ' +
             'data-bs-target="#ref-run-modal" data-bs-placement="top" title="执行测试用例" onclick="loadRunCaseInfo(\'' + row.id + '\')"><i class="bi-check-all"></></button>';
-        return a + b;
+        return edit + a + b;
     }
 
     const _params = function (params) {
@@ -162,22 +165,56 @@
         $('#refCaseTable').bootstrapTable('refresh');
     });
 
+    function addOrEditPlan(id) {
+        const _modal = $('#add-plan-modal');
+        _modal.modal('show');
+        _modal.on('shown.bs.modal', function () {
+            // 编辑数据时不使用字段提示功能
+            !id && autoComplete('/project/queryList', 'p-add', 'p', true);
+            !id && $('input[type=hidden]:first').val('');
+            removeClass('#p-add', 'is-invalid');
+            removeClass('#add_plan_name', 'is-invalid');
+        })
+        document.getElementById('add-plan-modal').querySelector('.modal-title').textContent = id ? '编辑测试计划' : '新增测试计划';
+        if (id) {
+            $("#hidden-plan-id").val(id);
+            $.ajax({
+                url: "/plan/getPlan/",
+                type: 'get',
+                data: {id: id},
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                success: function (res) {
+                    let data = res['data'];
+                    $('#p-add').attr('readonly', 'readonly').val(data.project.projectName);
+                    $('#s-p-id').val(data.projectId);
+                    $('#storyId').val(data.storyId);
+                    data.story && $('#storyList').val(data.story.storyName);
+                    $('#add_plan_name').val(data.name);
+                    $('#add-description-name').val(data.description);
+                },
+            })
+        }
+    }
+
     // 保存测试计划
-    $('#submitPlan').on('click', function () {
+    $('button[id=submitPlan]').on('click', function () {
         const tempProjectName = $('#p-add').val();
         const tempHiddenProjectId = $('#s-p-id').val();
         const tempStoryName = $('#storyList').val();
         const tempStoryId = $('#storyId').val();
-        const tempPlanDesc = $('#add_plan_name').val();
+        const $addPlanName = $('#add_plan_name');
+        const tempPlanName = $addPlanName.val();
         // 测试计划名称非空验证
-        tempPlanDesc ? removeClass('#add_plan_name', 'is-invalid') : $('#add_plan_name').addClass("is-invalid");
+        tempPlanName ? removeClass('#add_plan_name', 'is-invalid') : $addPlanName.addClass("is-invalid");
         if (!tempProjectName) {
             $('#p-add').addClass("is-invalid");
+            return false;
         } else {
             removeClass('#p-add', 'is-invalid');
             if (!tempHiddenProjectId) {
                 $('#project-error-tips').text(tempProjectName + '不存在,先在项目管理模块添加');
                 $('#p-add').addClass("is-invalid");
+                return false;
             } else {
                 removeClass('#p-add', 'is-invalid');
                 $.ajax({
@@ -189,26 +226,26 @@
                         if (Object.is(403, result['code'])) {
                             $('#project-error-tips').text('[' + tempProjectName + ']不存在,先在项目管理模块添加');
                             $('#p-add').addClass("is-invalid");
-                        } else {
-                            $.ajax({
-                                url: "/plan/save",
-                                type: 'POST',
-                                data: $("#addPlanForm").serialize(),
-                                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-                                success: function (arg) {
-                                    if (Object.is(arg['code'], 200)) {
-                                        $('#add-plan-modal').modal('hide');
-                                        resetModal("#add-plan-modal", "addPlanForm");
-                                        $('#table').bootstrapTable('refresh');
-                                    }
-                                    showToast(arg['code'], arg['msg']);
-                                }
-                            });
+                            return false;
                         }
                     }
                 });
             }
         }
+        $.ajax({
+            url: "/plan/save",
+            type: 'POST',
+            data: $("#addPlanForm").serialize(),
+            contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+            success: function (arg) {
+                if (Object.is(arg['code'], 200)) {
+                    $('#add-plan-modal').modal('hide');
+                    resetModal("#add-plan-modal", "addPlanForm");
+                    $('#table').bootstrapTable('refresh');
+                }
+                showToast(arg['code'], arg['msg']);
+            }
+        });
     });
 </script>
 </body>
