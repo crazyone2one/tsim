@@ -20,19 +20,17 @@
                                 <div class="card-3d-wrapper">
                                     <div class="card-front">
                                         <div class="center-wrap">
-                                            <div class="section text-center">
+                                            <div class="text-center">
                                                 <h4 class="mb-4 pb-3 ">登 录</h4>
                                                 <form th:action="@{/user/login}" method="post">
-                                                    <div class="form-group">
-                                                        <input type="text" name="account" class="form-style"
-                                                               id="account" autocomplete="off"
-                                                               required>
+                                                    <div class="form-floating">
+                                                        <input type="text" name="account" class="form-control"
+                                                               id="account" placeholder="name@example.com">
                                                         <label for="account">账 号</label>
                                                     </div>
-                                                    <div class="form-group mt-3">
-                                                        <input type="password" name="password" class="form-style"
-                                                               id="password" autocomplete="off"
-                                                               required>
+                                                    <div class="form-floating mt-3">
+                                                        <input type="password" name="password" class="form-control"
+                                                               id="password" placeholder="Password">
                                                         <label for="password">密 码</label>
                                                     </div>
                                                     <p class="mt-2 mb-2" style="color: red" th:text="${msg}" th:if="${not #strings.isEmpty(msg)}"></p>
@@ -52,31 +50,28 @@
                                     </div>
                                     <div class="card-back">
                                         <div class="center-wrap">
-                                            <div class="section text-center">
+                                            <div class="text-center">
                                                 <h4 class="mb-4 pb-3">注 册</h4>
                                                 <form th:action="@{/user/register}" method="post">
-                                                    <div class="form-group">
-                                                        <input type="text" name="account" class="form-style"
-                                                               id="account-r" autocomplete="off"
-                                                               required>
+                                                    <div class="form-floating">
+                                                        <input type="text" name="account" class="form-control" id="account-r" placeholder="输入用户名">
                                                         <label for="account-r">输入用户名</label>
                                                     </div>
-                                                    <div class="form-group mt-3">
-                                                        <input type="text" name="username" class="form-style"
-                                                               id="username" autocomplete="off"
-                                                               required>
+                                                    <div class="form-floating mt-3">
+                                                        <input type="text" name="username" class="form-control" id="username" placeholder="输入用户名称">
                                                         <label for="username">输入用户名称</label>
                                                     </div>
-                                                    <div class="form-group mt-3">
-                                                        <input type="password" name="password" class="form-style"
-                                                               id="password-r" autocomplete="off"
-                                                               required>
+                                                    <div class="form-floating mt-3">
+                                                        <input type="password" name="password" class="form-control" id="password-r" placeholder="输入密码">
                                                         <label for="password-r">输入密码</label>
                                                     </div>
                                                     <button type="submit" class="btn mt-4">注 册</button>
                                                 </form>
-                                                <p class="mb-0 mt-4 text-center">已有帐号？<label for="reg-log">立即登录</label>
-                                                </p>
+                                                <div class="d-flex justify-content-between mt-4 text-left">
+                                                    <div class="flex-fill">
+                                                        <p>已有帐号？<label for="reg-log">立即登录</label></p>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
