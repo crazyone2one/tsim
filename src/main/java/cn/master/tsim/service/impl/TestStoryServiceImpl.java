@@ -147,7 +147,9 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
 
     @Override
     public List<TestStory> listStoryByProjectId(String projectId) {
-        return baseMapper.selectList(new QueryWrapper<TestStory>().lambda().eq(StringUtils.isNotBlank(projectId), TestStory::getProjectId, projectId));
+        return baseMapper.selectList(new QueryWrapper<TestStory>().lambda()
+                .eq(StringUtils.isNotBlank(projectId), TestStory::getProjectId, projectId)
+                .eq(TestStory::getDelFlag,0));
     }
 
     @Override
