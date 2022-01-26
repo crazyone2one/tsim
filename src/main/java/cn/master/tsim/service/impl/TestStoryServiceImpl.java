@@ -4,7 +4,6 @@ import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.DocInfo;
 import cn.master.tsim.entity.TestStory;
-import cn.master.tsim.entity.TestTaskInfo;
 import cn.master.tsim.mapper.TestStoryMapper;
 import cn.master.tsim.service.*;
 import cn.master.tsim.util.JacksonUtils;
@@ -18,10 +17,12 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.File;
 import java.util.*;
 
 /**
@@ -118,6 +119,7 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
         wrapper.lambda().eq(TestStory::getWorkDate, request.getParameter("workDate"));
         // 验证所属项目
         wrapper.lambda().eq(TestStory::getProjectId, request.getParameter("projectId"));
+        wrapper.lambda().eq(TestStory::getDelFlag, 0);
         return baseMapper.selectList(wrapper);
     }
 
@@ -185,9 +187,11 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
                 story.setDelFlag(1);
                 story.setUpdateDate(new Date());
                 updateById(story);
-                TestTaskInfo testTaskInfo = taskInfoService.queryItem(story.getProjectId(), story.getId());
-                testTaskInfo.setDelFlag(1);
-                taskInfoService.updateById(testTaskInfo);
+                // 物理删除需求附件
+                if (StringUtils.isNotBlank(story.getDocId())) {
+                    DocInfo docInfo = docInfoService.queryDocById(story.getDocId());
+                    FileSystemUtils.deleteRecursively(new File(docInfo.getDocPath()));
+                }
             });
             return ResponseUtils.success("删除成功");
         } catch (Exception e) {

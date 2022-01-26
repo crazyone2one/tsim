@@ -103,6 +103,7 @@
                 } else {
                     let _tempName = row.docInfo.docName;
                     let _hrefStr = '/story/download/' + _tempName + '/' + row.docInfo.uuidName;
+                    // fixme 直接传地址，无法正确下载文件
                     _docName = '<a href=' + _hrefStr + '>' + _tempName + '</a>';
                     // _docName = '<a href="javascript:void(0)" onclick="downloadFile(\'' + _tempName + '\',\'' + row.docInfo.uuidName + '\')">' + _tempName + '</a>';
                 }
