@@ -121,7 +121,7 @@ public class SystemServiceImpl implements SystemService {
         try {
             String downloadUri = this.fileStorageLocation + "/" + uuidName;
             // 读文件
-            File file = new File(downloadUri);
+            File file = new File(uuidName);
             if (!file.exists()) {
                 throw new RuntimeException("文件不存在");
             }

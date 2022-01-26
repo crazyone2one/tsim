@@ -198,7 +198,13 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     @Override
     public ResponseResult downloadFile(HttpServletRequest request, HttpServletResponse response, String fileName, String uuidName) {
         try {
-            systemService.downloadFile(request, response, fileName, uuidName);
+            QueryWrapper<DocInfo> wrapper = new QueryWrapper<>();
+            wrapper.lambda().eq(DocInfo::getUuidName, uuidName);
+            DocInfo docInfo = docInfoService.queryDocInfo(wrapper);
+            if (Objects.isNull(docInfo)) {
+                return ResponseUtils.error("文件存在");
+            }
+            systemService.downloadFile(request, response, fileName, docInfo.getDocPath());
             return ResponseUtils.success("文件下载成功") ;
         } catch (Exception e) {
             return ResponseUtils.error("文件下载失败" + e);

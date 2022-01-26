@@ -3,6 +3,7 @@ package cn.master.tsim.service.impl;
 import cn.master.tsim.entity.DocInfo;
 import cn.master.tsim.mapper.DocInfoMapper;
 import cn.master.tsim.service.DocInfoService;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -36,4 +37,10 @@ public class DocInfoServiceImpl extends ServiceImpl<DocInfoMapper, DocInfo> impl
     public DocInfo queryDocById(String id) {
         return baseMapper.selectById(id);
     }
+
+    @Override
+    public DocInfo queryDocInfo(QueryWrapper<DocInfo> wrapper) {
+        return baseMapper.selectOne(wrapper);
+    }
+
 }
