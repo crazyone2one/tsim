@@ -1,5 +1,6 @@
 package cn.master.tsim.service.impl;
 
+import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.*;
 import cn.master.tsim.mapper.ProjectMapper;
@@ -59,38 +60,20 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
 
     @Override
     public Project getProjectByName(String projectName) {
-        // FIXME: 2021/10/22 0022 TooManyResultsException
         QueryWrapper<Project> wrapper = new QueryWrapper<>();
         wrapper.eq(StringUtils.isNotBlank(projectName), "project_name", projectName);
+        wrapper.lambda().eq(Project::getDelFlag, 0);
         return baseMapper.selectOne(wrapper);
     }
 
     @Override
-    public Project checkProject(String projectName, String workDate) {
-        return baseMapper.queryProjectByName(projectName, workDate);
-    }
-
-    @Override
-    @Deprecated
-    public Project addProject(HttpServletRequest request, Project project) {
-        final Project projectByName = getProjectByName(project.getProjectName());
-        if (Objects.nonNull(projectByName)) {
-            return projectByName;
-        }
-//        未查询到相关的项目数据，新添加
-        final Project build = Project.builder().projectName(project.getProjectName().trim())
-                .projectCode(UuidUtils.generate())
-                .createData(new Date())
-                .delFlag(0)
-                .build();
-        baseMapper.insert(build);
-        systemService.refreshProjectName();
-        return build;
-    }
-
-    @Override
     @Transactional(rollbackFor = {Exception.class,RuntimeException.class})
-    public Project saveProject(String projectName) {
+
+    public ResponseResult saveProject(String projectName) {
+        final Project projectByName = getProjectByName(projectName);
+        if (Objects.nonNull(projectByName)) {
+            return ResponseUtils.success(ResponseCode.PARAMS_ERROR.getCode(),"[" + projectName + "]已存在项目", projectByName);
+        }
         final Project build = Project.builder().projectName(projectName)
                 .projectCode(UuidUtils.generate())
                 .createData(new Date())
@@ -98,7 +81,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
                 .build();
         baseMapper.insert(build);
         systemService.refreshProjectName();
-        return build;
+        return ResponseUtils.success("数据添加成功", build);
     }
 
     @Override
@@ -114,7 +97,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
     @Transactional(rollbackFor = {Exception.class,RuntimeException.class})
     public void updateProjectStatus(String projectId) {
         final Project project = getProjectById(projectId);
-        project.setDelFlag(Objects.equals(project.getDelFlag(), 0) ? 1 : 0);
+        project.setProjectStatus(Objects.equals(project.getProjectStatus(), 0) ? 1 : 0);
         project.setUpdateDate(new Date());
         baseMapper.updateById(project);
     }
@@ -124,8 +107,7 @@ public class ProjectServiceImpl extends ServiceImpl<ProjectMapper, Project> impl
         QueryWrapper<Project> wrapper = new QueryWrapper<>();
         //               根据项目名称模糊查询
         wrapper.lambda().like(StringUtils.isNotBlank(projectName), Project::getProjectName, projectName);
-//        wrapper.lambda().eq(Project::getDelFlag, 0);
-        wrapper.lambda().orderByAsc(Project::getDelFlag);
+        wrapper.lambda().eq(Project::getDelFlag, 0).orderByAsc(Project::getProjectName);
         final IPage<Project> iPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize), wrapper);
         iPage.getRecords().forEach(temp -> {

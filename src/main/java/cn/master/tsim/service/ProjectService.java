@@ -43,30 +43,12 @@ public interface ProjectService extends IService<Project> {
     Project getProjectByName(String projectName);
 
     /**
-     * 根据项目名称和任务时间查询项目数据
-     *
-     * @param projectName 项目名称
-     * @param workDate    任务时间
-     * @return cn.master.tsim.entity.Project
-     */
-    Project checkProject(String projectName, String workDate);
-
-    /**
-     * 添加项目数据
-     *
-     * @param request HttpServletRequest
-     * @param project Project
-     * @return cn.master.tsim.entity.Project
-     */
-    Project addProject(HttpServletRequest request, Project project);
-
-    /**
      * 保存项目数据
      *
      * @param projectName 项目名称
      * @return cn.master.tsim.entity.Project
      */
-    Project saveProject(String projectName);
+    ResponseResult saveProject(String projectName);
 
     /**
      * 删除项目数据
@@ -86,7 +68,7 @@ public interface ProjectService extends IService<Project> {
     /**
      * 分页查询
      *
-     * @param request
+     * @param request HttpServletRequest
      * @param projectName 项目名称
      * @param pageCurrent pageCurrent
      * @param pageSize    pageSize

@@ -46,6 +46,12 @@ public class Project implements Serializable {
      */
     @TableField("project_code")
     private String projectCode;
+    /**
+     * 状态标志(0=正常;1=无效)
+     */
+    @TableField("project_status")
+    private Integer projectStatus;
+
     @TableField("work_date")
     private String workDate;
 

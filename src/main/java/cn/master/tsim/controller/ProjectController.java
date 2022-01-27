@@ -72,13 +72,7 @@ public class ProjectController {
     @PostMapping(value = "/addProject")
     @ResponseBody
     public ResponseResult addProject(@RequestParam("name") String proName) {
-        try {
-            final Project addProject = projectService.saveProject(proName);
-            return ResponseUtils.success("数据添加成功", addProject);
-        } catch (Exception e) {
-            log.info(e.getMessage());
-            return ResponseUtils.error(400, "数据添加失败", e.getMessage());
-        }
+        return projectService.saveProject(proName);
     }
 
     /**
