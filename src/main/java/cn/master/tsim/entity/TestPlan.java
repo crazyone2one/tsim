@@ -89,4 +89,7 @@ public class TestPlan implements Serializable {
     private Project project;
     @TableField(exist = false)
     private TestStory story;
+
+    @TableField(exist = false)
+    private boolean finished;
 }

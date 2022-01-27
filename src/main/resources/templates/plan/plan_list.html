@@ -135,7 +135,7 @@
     function option(value, row, index) {
         // return "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
         const edit = '<button type="button" class="btn btn-sm btn-warning me-1" id="edit-plan-button" data-bs-toggle="modal" ' +
-            'data-bs-target="add-plan-modal" title="关联测试用例" onclick="addOrEditPlan(\'' + row.id + '\')"><i class="bi-pencil-square"></i></>';
+            'data-bs-target="add-plan-modal" title="编辑测试计划数据" onclick="addOrEditPlan(\'' + row.id + '\')"><i class="bi-pencil-square"></i></>';
         const a = '<button type="button" class="btn btn-sm btn-info me-1" id="ref-add" data-bs-toggle="modal" ' +
             'data-bs-target="#ref-case-modal" data-bs-placement="top" title="关联测试用例" onclick="loadCaseInfo(\'' + row.id + '\')"><i class="bi-check"></i></>';
         const b = '<button type="button" class="btn btn-sm btn-info" id="ref-run" data-bs-toggle="modal" ' +

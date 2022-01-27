@@ -122,7 +122,10 @@ function loadRunCaseInfo(id) {
  */
 function loadCaseInfo(id) {
     $('#ref-case-modal').on('shown.bs.modal', function () {
-        $('#hidden-plan-id').val(id);
+        $('#ass-hidden-plan-id').val(id);
+        // fixme 再次打开modal时没有清空查询条件
+        $('#ass-search-name').val();
+        $('#ass-search-title').val();
         const url = "/case/loadCaseByPlan/" + id;
 
         // 测试用例步骤
@@ -196,8 +199,8 @@ function loadCaseInfo(id) {
         ];
         const _r_params = function (params) {
             return {
-                moduleName: $('#search-modal-name').val().trim(), // 自定义查询条件
-                title: $('#search-title').val().trim(), // 自定义查询条件
+                moduleName: $('#ass-search-name').val().trim(), // 自定义查询条件
+                title: $('#ass-search-title').val().trim(), // 自定义查询条件
                 pageSize: params.limit,
                 pageNum: params.offset / params.limit + 1,
 
@@ -226,7 +229,7 @@ function addRefCase(id) {
         }
     }
     const params = {
-        planId: $('#hidden-plan-id').val(),
+        planId: $('#ass-hidden-plan-id').val(),
         caseId: JSON.stringify(res)
     };
     $.ajax({

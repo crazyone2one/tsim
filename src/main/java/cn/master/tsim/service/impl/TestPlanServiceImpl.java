@@ -2,6 +2,7 @@ package cn.master.tsim.service.impl;
 
 import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
+import cn.master.tsim.entity.PlanCaseRef;
 import cn.master.tsim.entity.TestPlan;
 import cn.master.tsim.mapper.TestPlanMapper;
 import cn.master.tsim.service.*;
@@ -40,6 +41,8 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     private ProjectService projectService;
     @Autowired
     TestTaskInfoService taskInfoService;
+    @Autowired
+    PlanCaseRefService planCaseRefService;
 
     @Autowired
     public TestPlanServiceImpl(PlanStoryRefService planStoryRefService) {
@@ -74,6 +77,13 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
             t.setProject(projectService.getProjectById(t.getProjectId()));
             if (StringUtils.isNotBlank(t.getStoryId())) {
                 t.setStory(storyService.searchStoryById(t.getStoryId()));
+            }
+            List<PlanCaseRef> planCaseRefs = planCaseRefService.loadRefItemByPlanId(t.getId());
+            for (PlanCaseRef ref : planCaseRefs) {
+                if (Objects.isNull(ref.getRunStatus())) {
+                    t.setFinished(false);
+                    break;
+                }
             }
         });
         return iPage;
