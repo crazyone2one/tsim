@@ -7,6 +7,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 
 /**
  * <p>
@@ -67,4 +69,6 @@ public interface TestTaskInfoService extends IService<TestTaskInfo> {
      * @param request@return cn.master.tsim.common.ResponseResult
      */
     ResponseResult updateTaskInfo(HttpServletRequest request);
+
+    void exportTaskInfo(HttpServletRequest request, HttpServletResponse response) throws IOException;
 }

@@ -29,14 +29,16 @@
                                        aria-label="task-desc"
                                        aria-describedby="task-desc">
                             </div>
-                            <select class="form-select me-2" aria-label="Default select example" id="finishStatus-search" style="width: fit-content">>
+                            <select class="form-select me-2" aria-label="Default select example"
+                                    id="finishStatus-search" style="width: fit-content">>
                                 <option value="" selected>完成状态</option>
                                 <option value="0">已完成</option>
                                 <option value="1">进行中</option>
                                 <option value="2">待回测</option>
                                 <option value="3">已回测</option>
                             </select>
-                            <select class="form-select me-2" aria-label="Default select example" id="workDate-search" style="width: fit-content">>
+                            <select class="form-select me-2" aria-label="Default select example" id="workDate-search"
+                                    style="width: fit-content">>
                                 <option value="" selected>任务时间</option>
                                 <option th:each="m:${monthList}"
                                         th:value="${m}"
@@ -51,10 +53,14 @@
                                         data-bs-toggle="modal" data-bs-target="#add-task-modal">
                                     <i class="bi bi-plus-circle"></i>
                                 </button>
-                                <button type="button" class="btn btn-secondary hvr-grow " id="reset-button"
+                                <button type="button" class="btn btn-secondary hvr-grow me-1" id="reset-button"
                                         title="重置搜索">
                                     <i class="bi-arrow-clockwise"></i>
                                 </button>
+                                <a type="button" class="btn btn-secondary hvr-grow" id="export-button"
+                                   title="导出数据" href="/task/exportTask">
+                                    <i class="bi-cloud-download"></i>
+                                </a>
                             </div>
                         </div>
                     </form>
@@ -90,9 +96,39 @@
     // 列表数据
     const _table_columns = [
         [{field: 'id', align: 'center', title: 'id', rowspan: 2, colspan: 1, visible: false},
-            {align: 'center', title: '所属项目', field: 'projectId', rowspan: 2, colspan: 1, valign: 'middle', class:'col-md-1',cellStyle: formatTableUnit, formatter: paramsMatter},
-            {align: 'center', title: '任务描述', field: 'summaryDesc', rowspan: 2, colspan: 1, valign: 'middle',class:'col-md-1', cellStyle: formatTableUnit, formatter: paramsMatter},
-            {align: 'center', title: '关联需求', field: 'reqDoc', rowspan: 2, colspan: 1, valign: 'middle',class:'col-md-1',cellStyle: formatTableUnit, formatter: paramsMatter},
+            {
+                align: 'center',
+                title: '所属项目',
+                field: 'projectId',
+                rowspan: 2,
+                colspan: 1,
+                valign: 'middle',
+                class: 'col-md-1',
+                cellStyle: formatTableUnit,
+                formatter: paramsMatter
+            },
+            {
+                align: 'center',
+                title: '任务描述',
+                field: 'summaryDesc',
+                rowspan: 2,
+                colspan: 1,
+                valign: 'middle',
+                class: 'col-md-1',
+                cellStyle: formatTableUnit,
+                formatter: paramsMatter
+            },
+            {
+                align: 'center',
+                title: '关联需求',
+                field: 'reqDoc',
+                rowspan: 2,
+                colspan: 1,
+                valign: 'middle',
+                class: 'col-md-1',
+                cellStyle: formatTableUnit,
+                formatter: paramsMatter
+            },
             {
                 align: 'center', title: '完成状态', field: 'finishStatus', rowspan: 2, colspan: 1, valign: 'middle',
                 formatter: function (value, row, index) {
@@ -188,6 +224,25 @@
 
     function option(value, row, index) {
         return '<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editSummaryModal" onclick="editTask(\'' + row.id + '\')"><i class="bi-pencil-square"></i></button>';
+    }
+
+    function exportTaskInfo() {
+        $.ajax({
+            url: '/task/exportTask/',
+            type: 'get',
+            data: {
+                projectName: $('#p-search').val().trim(), // 项目名称
+                taskDesc: $('#task-desc-search').val().trim(), // 项目名称
+                finishStatus: $('#finishStatus-search').val(), // 完成状态
+                taskDate: $('#workDate-search').val(), // 任务时间
+            },
+            contentType: 'application/x-www-form-urlencoded',
+            success: function (arg) {
+                showToast(arg['code'], arg['msg']);
+                // 关联测试用例数据后重新加载一次列表数据
+                $('#refCaseTable').bootstrapTable('refresh');
+            }
+        });
     }
 </script>
 </body>

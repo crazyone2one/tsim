@@ -16,6 +16,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
@@ -106,6 +108,15 @@ public class TestTaskInfoController {
         map.put("total", iPage.getTotal());
         map.put("rows", CollectionUtils.isNotEmpty(iPage.getRecords()) ? new LinkedList<>(iPage.getRecords()) : new LinkedList<TestTaskInfo>());
         return map;
+    }
+
+    @GetMapping("/exportTask")
+    public void exportTask(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            taskInfoService.exportTaskInfo(request, response);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
 

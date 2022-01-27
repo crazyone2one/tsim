@@ -1,5 +1,6 @@
 package cn.master.tsim.entity;
 
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -32,6 +33,7 @@ public class TestTaskInfo implements Serializable {
     /**
      * 主键id
      */
+    @ExcelIgnore
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
@@ -41,11 +43,16 @@ public class TestTaskInfo implements Serializable {
     @ExcelProperty(value = "项目名称", index = 0)
     @TableField("project_id")
     private String projectId;
+
+    @ExcelIgnore
     @TableField("story_id")
     private String storyId;
+
+    @ExcelIgnore
     @TableField(exist = false)
     private TestStory testStory;
 
+    @ExcelIgnore
     @TableField("plan_id")
     private String planId;
     /**
@@ -121,28 +128,35 @@ public class TestTaskInfo implements Serializable {
     /**
      * 任务时间
      */
+    @ExcelProperty(value = "任务时间")
     @TableField("issue_date")
     private String issueDate;
 
     /**
      * 创建时间
      */
+    @ExcelIgnore
     @TableField("create_date")
     private Date createDate;
 
     /**
      * 修改时间
      */
+    @ExcelIgnore
     @TableField("update_date")
     private Date updateDate;
 
+    @ExcelIgnore
     @TableField(exist = false)
     private Map<String, Integer> subBug;
+
+    @ExcelIgnore
     @TableField(exist = false)
     private Map<String, Integer> fixBug;
     /**
      * 删除状态(0:未删除，1：已删除)
      */
+    @ExcelIgnore
     @TableField("del_flag")
     private Integer delFlag;
 }
