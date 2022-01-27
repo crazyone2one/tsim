@@ -20,11 +20,11 @@
                                        aria-label="projectId"
                                        aria-describedby="basic-addon1">
                             </div>
-                            <div class="d-grid gap-2 d-md-block">
-                                <button type="button" id="search-button" class="btn btn-primary hvr-grow">
+                            <div class="btn-group">
+                                <button type="button" id="search-button" class="btn btn-primary hvr-grow me-1">
                                     <i class="bi bi-search"></i>
                                 </button>
-                                <button type="button" class="btn btn-info hvr-grow" data-bs-toggle="modal"
+                                <button type="button" class="btn btn-info hvr-grow me-1" data-bs-toggle="modal"
                                         data-bs-target="#add-project-modal">
                                     <i class="bi bi-plus-circle"></i>
                                 </button>
@@ -150,26 +150,26 @@
             field: 'projectName',
             align: 'center',
             title: '项目名',
-            class: 'col-sm-6'
+            class: 'col-sm-3'
         }, {
             field: 'refModuleCount',
             align: 'center',
             title: '关联模块',
             formatter: refLinkFormatter,
-            class: 'col-sm-6'
+            class: 'col-sm-3'
         }, {
             field: 'refCaseCount',
             align: 'center',
             title: '关联测试用例',
             formatter: refLinkFormatter,
-            class: 'col-sm-6'
+            class: 'col-sm-3'
         }, {
             field: 'refBugCount',
             align: 'center',
             title: '关联bug',
             formatter: refLinkFormatter,
-            class: 'col-sm-6'
-        }, {title: '操作', align: 'center', field: 'id', class: 'col-sm-6', formatter: option,}]
+            class: 'col-sm-3'
+        }, {title: '操作', align: 'center', field: 'id', class: 'col-sm-1', formatter: option,}]
     const params = function (params) {
         return {
             projectName: $('#p-search').val().trim(), // 自定义查询条件

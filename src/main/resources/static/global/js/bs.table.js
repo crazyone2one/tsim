@@ -114,4 +114,39 @@ $(function () {
     })
 })
 
+/**
+ * 表格超出宽度鼠标悬停显示td内容
+ * @param value
+ * @param row
+ * @param index
+ * @param field
+ * @returns {string}
+ */
+function paramsMatter(value, row, index, field) {
+    if (value) {
+        const span = document.createElement('span');
+        span.setAttribute('title', value);
+        span.innerHTML = value;
+        return span.outerHTML;
+    }
+}
+
+/**
+ * td宽度，内容超过宽度隐藏
+ * @param value
+ * @param row
+ * @param index
+ * @returns {{css: {overflow: string, "white-space": string, width: string, "text-overflow": string}}}
+ */
+function formatTableUnit(value, row, index) {
+    return {
+        css: {
+            'max-width': '150px',
+            'text-overflow': 'ellipsis',
+            'overflow': 'hidden',
+            'white-space': 'nowrap'
+        }
+    }
+}
+
 

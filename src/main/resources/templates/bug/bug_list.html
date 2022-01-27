@@ -56,16 +56,16 @@
                                 <option value="5">非bug</option>
                             </select>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-primary hvr-grow me-2" id="search-button"
+                                <button type="button" class="btn btn-primary hvr-grow me-1" id="search-button"
                                         title="搜索">
                                     <i class="bi bi-search"></i>
                                 </button>
-                                <button type="button" class="btn btn-info hvr-grow me-2"
+                                <button type="button" class="btn btn-info hvr-grow me-1"
                                         data-bs-toggle="modal" data-bs-target="#add-bug-modal"
                                         onclick="add_or_update_bug_info()" title="添加"><i
                                         class="bi-plus-circle"></i>
                                 </button>
-                                <button type="button" class="btn btn-danger hvr-grow me-2" id="batch-delete"
+                                <button type="button" class="btn btn-danger hvr-grow me-1" id="batch-delete"
                                         onclick="batchDelete()" title="删除" disabled>
                                     <i class="bi-trash"></i>
                                 </button>
@@ -149,19 +149,19 @@
         {
             field: 'bugDescription',
             align: 'center',
-            title: '问题描述',
+            title: '问题描述',cellStyle: formatTableUnit,formatter: paramsMatter,
             class: 'col-sm-6'
         },
         {
             field: 'expectResult',
             align: 'center',
-            title: '预期结果',
+            title: '预期结果',cellStyle: formatTableUnit,formatter: paramsMatter,
             class: 'col-sm-6',
         },
         {
             field: 'actualResult',
             align: 'center',
-            title: '实际结果',
+            title: '实际结果',cellStyle: formatTableUnit,formatter: paramsMatter,
             class: 'col-sm-6',
         },
         {
@@ -192,9 +192,9 @@
 
     // 操作栏
     function option(value, row, index) {
-        const detail = '<button type="button" class="btn btn-sm btn-info" id="bug-detail" data-bs-toggle="modal" data-bs-target="#bug-detail-modal" ' +
+        const detail = '<button type="button" class="btn btn-sm btn-info me-1" id="bug-detail" data-bs-toggle="modal" data-bs-target="#bug-detail-modal" ' +
             'onclick="bugDetail(\'' + row.id + '\')">详情</button>';
-        const edit = '<button type="button" class="btn btn-sm btn-warning" id="bug-edit" data-bs-toggle="modal" data-bs-target="add-bug-modal" ' +
+        const edit = '<button type="button" class="btn btn-sm btn-warning me-1" id="bug-edit" data-bs-toggle="modal" data-bs-target="add-bug-modal" ' +
             'onclick="add_or_update_bug_info(\'' + row.id + '\')">编辑</button>';
         const _delete = '<button type="button" class="btn btn-sm btn-danger" id="bug-delete" onclick="batchDelete(\'' + row.id + '\')">删除</button>';
         return detail + edit + _delete;

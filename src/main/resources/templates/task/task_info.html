@@ -90,9 +90,9 @@
     // 列表数据
     const _table_columns = [
         [{field: 'id', align: 'center', title: 'id', rowspan: 2, colspan: 1, visible: false},
-            {align: 'center', title: '所属项目', field: 'projectId', rowspan: 2, colspan: 1, valign: 'middle'},
-            {align: 'center', title: '任务描述', field: 'summaryDesc', rowspan: 2, colspan: 1, valign: 'middle'},
-            {align: 'center', title: '关联需求', field: 'reqDoc', rowspan: 2, colspan: 1, valign: 'middle'},
+            {align: 'center', title: '所属项目', field: 'projectId', rowspan: 2, colspan: 1, valign: 'middle', class:'col-md-1',cellStyle: formatTableUnit, formatter: paramsMatter},
+            {align: 'center', title: '任务描述', field: 'summaryDesc', rowspan: 2, colspan: 1, valign: 'middle',class:'col-md-1', cellStyle: formatTableUnit, formatter: paramsMatter},
+            {align: 'center', title: '关联需求', field: 'reqDoc', rowspan: 2, colspan: 1, valign: 'middle',class:'col-md-1',cellStyle: formatTableUnit, formatter: paramsMatter},
             {
                 align: 'center', title: '完成状态', field: 'finishStatus', rowspan: 2, colspan: 1, valign: 'middle',
                 formatter: function (value, row, index) {

@@ -34,10 +34,10 @@
                                 <option value="0">未完成</option>
                             </select>
                             <div class="btn-group">
-                                <button type="button" id="search-button" class="btn btn-primary me-2 hvr-grow">
+                                <button type="button" id="search-button" class="btn btn-primary me-1 hvr-grow">
                                     <i class="bi bi-search"></i>
                                 </button>
-                                <a class="btn btn-primary hvr-grow me-2" data-bs-toggle="modal"
+                                <a class="btn btn-primary hvr-grow me-1" data-bs-toggle="modal"
                                    data-bs-target="#add-story-modal" onclick="addOrEditStory()"
                                    role="button"><i class="bi bi-plus-circle"></i></a>
                                 <button type="button" class="btn btn-secondary hvr-grow" id="reset-button" title="重置搜索">
@@ -91,7 +91,7 @@
             field: 'description',
             align: 'center',
             title: '需求内容描述',
-            class: 'col-sm-6'
+            class: 'col-sm-6',cellStyle: formatTableUnit,formatter: paramsMatter
         }, {
             field: 'docId',
             align: 'center',

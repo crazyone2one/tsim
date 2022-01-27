@@ -47,28 +47,28 @@
                                 <option value="1">无效</option>
                             </select>
                             <div class="btn-group">
-                                <button type="button" class="btn btn-primary hvr-grow me-2" id="search-button"
+                                <button type="button" class="btn btn-primary hvr-grow me-1" id="search-button"
                                         title="查询">
                                     <i class="bi bi-search"></i>
                                 </button>
-                                <button type="button" class="btn btn-info hvr-grow me-2"
+                                <button type="button" class="btn btn-info hvr-grow me-1"
                                         data-bs-toggle="modal" data-bs-target="#add-case-modal" title="添加">
                                     <i class="bi bi-plus-circle"></i>
                                 </button>
                                 <!-- 导出模板数据-->
-                                <a type="button" class="btn btn-primary hvr-grow me-2"
+                                <a type="button" class="btn btn-primary hvr-grow me-1"
                                    th:href="@{/case/downloadTemplate/test-case-template.xlsx}" title="模板下载">
                                     <i class="bi bi-download"></i>
                                 </a>
                                 <!--                                //导入数据-->
-                                <button type="button" class="btn btn-primary hvr-grow me-2" data-bs-toggle="modal"
+                                <button type="button" class="btn btn-primary hvr-grow me-1" data-bs-toggle="modal"
                                         data-bs-target="#case-upload-modal" id="import" title="导入数据">
                                     <i class="bi bi-upload"></i>
                                 </button>
-                                <button type="button" class="btn btn-warning hvr-grow me-2" id="batch-disable"
+                                <button type="button" class="btn btn-warning hvr-grow me-1" id="batch-disable"
                                         title="置为无效"
                                         onclick="updateCase('disable')" disabled><i class="bi-x-circle"></i></button>
-                                <button type="button" class="btn btn-danger hvr-grow me-2" id="batch-delete" title="删除"
+                                <button type="button" class="btn btn-danger hvr-grow me-1" id="batch-delete" title="删除"
                                         onclick="updateCase('del')" disabled><i class="bi-trash"></i></button>
                                 <button type="button" class="btn btn-secondary hvr-grow " id="reset-button"
                                         title="重置搜索">
@@ -136,32 +136,32 @@
         }, {
             field: 'name',
             align: 'center',
-            title: '测试用例标题',
-            class: 'col-sm-6'
+            title: '测试用例标题', cellStyle: formatTableUnit, formatter: paramsMatter,
+            class: 'col-sm-4'
         }, {
             field: 'description',
             align: 'center',
-            title: '测试用例描述',
-            class: 'col-sm-6'
+            title: '测试用例描述', cellStyle: formatTableUnit, formatter: paramsMatter,
+            class: 'col-sm-4'
         },
         {
             field: 'precondition',
             align: 'center',
-            title: '前置条件',
-            class: 'col-sm-6'
+            title: '前置条件', cellStyle: formatTableUnit, formatter: paramsMatter,
+            class: 'col-sm-4'
         },
         {
             field: 'stepStore',
             align: 'center',
             title: '测试用例步骤',
-            class: 'col-sm-6',
+            class: 'col-sm-6', cellStyle: formatTableUnit,
             formatter: stepFormatter
         },
         {
             field: 'resultStore',
             align: 'center',
             title: '预期结果',
-            class: 'col-sm-6',
+            class: 'col-sm-6', cellStyle: formatTableUnit,
             formatter: stepResultFormatter
         },
         {
@@ -191,10 +191,10 @@
     function option(value, row, index) {
         // const del = "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
         // const disable = "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='置为无效'>置为无效</a>";
-        const d = '<button class="btn btn-sm btn-info" data-bs-toggle="modal" data-bs-target="#case-detail-modal" onclick="detailCase(\'' + row.id + '\')">查看</button>';
-        const e = '<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#case-edit-modal" onclick="editCase(\'' + row.id + '\')">编辑</button>';
+        const _detail = '<button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#case-detail-modal" onclick="detailCase(\'' + row.id + '\')">查看</button>';
+        const _edit = '<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#case-edit-modal" onclick="editCase(\'' + row.id + '\')">编辑</button>';
         const r = '<button disabled class="btn btn-sm btn-warning" onclick="runCase(\'' + row.id + '\')">run</button>';
-        return e + d + r;
+        return _detail + _edit;
     }
 
     //测试步骤封装
@@ -207,7 +207,11 @@
             const map1 = eval("(" + tempStepJsonElement + ")");
             step_result = step_result + map1.t_s + "\r\n";
         }
-        return step_result;
+        const span = document.createElement('span');
+        span.setAttribute('title', step_result);
+        span.innerHTML = step_result;
+        return span.outerHTML;
+        // return step_result;
     }
 
     // 预期结果封装
@@ -220,7 +224,11 @@
             const map1 = eval("(" + tempStepJsonElement + ")");
             step_result = step_result + map1.t_r + "\r\n";
         }
-        return step_result;
+        const span = document.createElement('span');
+        span.setAttribute('title', step_result);
+        span.innerHTML = step_result;
+        return span.outerHTML;
+        // return step_result;
     }
 
     // 查看测试用例数据

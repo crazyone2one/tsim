@@ -88,7 +88,7 @@ $("#update_target_submit").on('click', function () {
         type: "post",
         data: {
             "id": $("#task-id").val(),
-            "taskDesc": $("#task-desc").val(),
+            "taskDesc": $("#task-desc-edit").val(),
             "finishStatus": $("#finish-status").val(),
             "deliveryStatus": $("#jiaofu-status").val(),
             "remark": $('#remark').val()
