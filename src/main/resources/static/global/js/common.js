@@ -12,12 +12,11 @@ const showToast = (code, msg) => {
     $toast.hasClass('bg-danger') && $toast.removeClass('bg-danger');
     if (Object.is(200, code)) {
         $toast.addClass("bg-success")
-    } else if (Object.is(300, code)) {
-        $toast.addClass("bg-warning");
-    } else {
+    } else if (Object.is(400, code)) {
         $toast.addClass("bg-danger")
+    } else {
+        $toast.addClass("bg-warning");
     }
-    // Object.is(200, code) ? $toast.addClass("bg-success") : $toast.addClass("bg-danger");
     $(".toast-body").text(msg);
     $toast.toast('show');
 }
