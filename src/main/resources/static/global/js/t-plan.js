@@ -1,3 +1,9 @@
+
+const case_priority={
+    0: '低',
+    1: '中',
+    2: '高'
+}
 /**
  * 执行测试计划关联的测试用例数据时加载测试用例数据
  * @param id 测试计划数据id
@@ -69,7 +75,7 @@ function loadRunCaseInfo(id) {
             },
             {
                 title: "优先级", field: 'priority', align: 'center', formatter: function (value, row, index) {
-                    return row.testCase.priority;
+                    return case_priority[row.testCase.priority];
                 }
             },
             {
@@ -115,11 +121,6 @@ function loadRunCaseInfo(id) {
  * @param id 测试计划数据id值
  */
 function loadCaseInfo(id) {
-    const case_priority={
-        0: '低',
-        1: '中',
-        2: '高'
-    }
     $('#ref-case-modal').on('shown.bs.modal', function () {
         $('#hidden-plan-id').val(id);
         const url = "/case/loadCaseByPlan/" + id;

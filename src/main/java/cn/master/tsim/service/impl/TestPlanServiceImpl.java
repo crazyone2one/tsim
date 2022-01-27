@@ -33,7 +33,8 @@ import java.util.Objects;
 @Service
 public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> implements TestPlanService {
 
-    private final TestStoryService storyService;
+    @Autowired
+    private TestStoryService storyService;
     private final PlanStoryRefService planStoryRefService;
     @Autowired
     private ProjectService projectService;
@@ -41,8 +42,7 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     TestTaskInfoService taskInfoService;
 
     @Autowired
-    public TestPlanServiceImpl(TestStoryService storyService, PlanStoryRefService planStoryRefService) {
-        this.storyService = storyService;
+    public TestPlanServiceImpl(PlanStoryRefService planStoryRefService) {
         this.planStoryRefService = planStoryRefService;
     }
 
@@ -62,8 +62,11 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
         //        根据测试计划描述内容查询
         final String planDesc = request.getParameter("planDesc");
         wrapper.lambda().like(StringUtils.isNotBlank(planDesc), TestPlan::getDescription, planDesc);
-        wrapper.lambda().orderByAsc(TestPlan::getDelFlag);
-        wrapper.lambda().orderByAsc(TestPlan::getCreateDate);
+        // 完成状态
+        String workStatus = request.getParameter("workStatus");
+        wrapper.lambda().eq(StringUtils.isNotBlank(workStatus), TestPlan::getWorkStatus, Integer.valueOf(workStatus));
+        wrapper.lambda().eq(TestPlan::getDelFlag, 0);
+        wrapper.lambda().orderByDesc(TestPlan::getCreateDate);
         final Page<TestPlan> iPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);

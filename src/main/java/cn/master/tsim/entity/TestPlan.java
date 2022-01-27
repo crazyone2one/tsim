@@ -63,10 +63,16 @@ public class TestPlan implements Serializable {
     @TableField("work_date")
     private String workDate;
     /**
+     * 完成状态(0-未完成，1-已完成）
+     */
+    @TableField("work_status")
+    private Integer workStatus;
+    /**
      * 删除状态（0，有效 1，无效）
      */
     @TableField("del_flag")
     private Integer delFlag;
+
 
     @TableField("group_id")
     private String groupId;

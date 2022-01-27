@@ -1,4 +1,5 @@
-autoComplete("/project/queryList", "p-search", 'p', false);
+'use strict'
+// autoComplete("/project/queryList", "p-search", 'p', false);
 
 $('#add-task-modal').on('shown.bs.modal', function () {
     autoComplete("/project/queryList", "t-add", 'p', true);
@@ -15,7 +16,6 @@ function editTask(id) {
         type: 'get',
         dataType: 'JSON',
         success: function (res) {
-            console.log(res);
             if (Object.is(200, res['code'])) {
                 fillContent(res['data']);
             } else {
@@ -36,8 +36,10 @@ function fillContent(taskInfo) {
     $("#workDate").attr("data-id", taskInfo.issueDate);
     $("#projectName").attr("value", taskInfo.projectId);
     $("#projectName").attr("data-id", taskInfo.projectId);
-    $("#projectDesc").attr("value", taskInfo.summaryDesc);
+    $("#task-desc-edit").val(taskInfo.summaryDesc);
     $("#finish-status").attr("data-id", taskInfo.finishStatus);
+    select_option_checked('finish-status', taskInfo.finishStatus);
+    select_option_checked('jiaofu-status', taskInfo.deliveryStatus);
     $("#new-case").attr("value", taskInfo.createCaseCount);
     $("#ex-case").attr("value", taskInfo.executeCaseCount);
     const $story = $("#story-1");
@@ -80,23 +82,26 @@ function fillContent(taskInfo) {
 /**
  * 更新任务数据
  */
-$("#update-task").on('click', function () {
+$("#update_target_submit").on('click', function () {
     $.ajax({
         url: "/task/editTask",
         type: "post",
         data: {
             "id": $("#task-id").val(),
+            "taskDesc": $("#task-desc").val(),
             "finishStatus": $("#finish-status").val(),
             "deliveryStatus": $("#jiaofu-status").val(),
             "remark": $('#remark').val()
         },
-        dataType: 'JSON',
-        // contentType: "application/json; charset=utf-8",
+        // dataType: 'JSON',
+        contentType: 'application/x-www-form-urlencoded',
         sync: false,
         success: function (result) {
             if (Object.is(200, result['code'])) {
+                closeModal('editSummaryModal');
                 resetModal("#editSummaryModal", null);
-                $("#table_refresh").load("/task/reloadTable");
+                $('#table').bootstrapTable('refresh');
+
             }
             showToast(result['code'], result['msg']);
         }
@@ -131,28 +136,50 @@ function saveTask() {
     const pro_name = $("#t-add").val();
     const projectId = $("#s-p-id").val();
     const desc = $("#add-description-name").val();
-    if (pro_name && desc) {
-        removeClass('#s-p-id', "is-invalid");
-        removeClass('#add-description-name', "is-invalid");
-        $.ajax({
-            url: "/task/addTask",
-            type: "post",
-            data: {"pro": pro_name, "desc": desc, "workDate": $("#workDate").val()},
-            dataType: 'JSON',
-            // contentType: "application/json; charset=utf-8",
-            // sync: false,
-            success: function (result) {
-                if (Object.is(200, result['code'])) {
-                    resetModal("#add-task-modal", "addTaskForm");
-                    $('#add-task-modal').modal('hide');
-                    $("#table_refresh").load("/task/reloadTable");
-                }
-                showToast(result['code'], result['msg']);
-            }
-        });
+    desc ? removeClass('#add-description-name', "is-invalid") : $('#add-description-name').addClass("is-invalid");
+    if (!pro_name) {
+        $('#t-add').addClass("is-invalid");
     } else {
-        !pro_name && $('#t-add').addClass("is-invalid");
-        !desc && $('#add-description-name').addClass("is-invalid");
+        removeClass('#s-p-id', "is-invalid");
+        if (!projectId) {
+            $('#project-error-tips').text(pro_name + '不存在,先在项目管理模块添加');
+            $('#t-add').addClass("is-invalid");
+            return false;
+        } else {
+            removeClass('#s-p-id', "is-invalid");
+            $.ajax({
+                url: '/project/checkUniqueProject',
+                type: 'get',
+                data: {name: pro_name, id: projectId},
+                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                success: function (res) {
+                    if (Object.is(403, res['code'])) {
+                        $('#project-error-tips').text('[' + pro_name + ']不存在,先在项目管理模块添加');
+                        $('#t-add').addClass("is-invalid");
+                        return false;
+                    } else {
+                        removeClass('#s-p-id', "is-invalid");
+                        removeClass('#add-description-name', "is-invalid");
+                        $.ajax({
+                            url: "/task/addTask",
+                            type: "post",
+                            data: {"pro": projectId, "desc": desc, "workDate": $("#workDate").val()},
+                            dataType: 'JSON',
+                            // contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                            // sync: false,
+                            success: function (result) {
+                                if (Object.is(200, result['code'])) {
+                                    resetModal("#add-task-modal", "addTaskForm");
+                                    closeModal('add-task-modal');
+                                    $('#table').bootstrapTable('refresh');
+                                }
+                                showToast(result['code'], result['msg']);
+                            }
+                        });
+                    }
+                }
+            });
+        }
     }
 }
 
@@ -167,83 +194,6 @@ const _deliveryStatus = {
     '1': '未交付',
     '2': '不确定',
 };
-// 列表数据
-const _table_columns = [
-    [{field: 'id', align: 'center', title: 'id', rowspan: 2, colspan: 1, visible: false},
-        {align: 'center', title: '所属项目', field: 'projectId', rowspan: 2, colspan: 1, valign: 'middle'},
-        {align: 'center', title: '任务描述', field: 'summaryDesc', rowspan: 2, colspan: 1, valign: 'middle'},
-        {align: 'center', title: '关联需求', field: '', rowspan: 2, colspan: 1, valign: 'middle'},
-        {align: 'center', title: '完成状态', field: 'finishStatus', rowspan: 2, colspan: 1, valign: 'middle',
-            formatter: function (value, row, index) {
-                return _finishStatus[value];
-            }},
-        {align: 'center', title: '交付状态', field: 'deliveryStatus', rowspan: 2, colspan: 1, valign: 'middle',
-            formatter:function (value, row, index) {
-                return _deliveryStatus[value];
-            }},
-        {align: 'center', title: '用例数量', field: '', rowspan: 1, colspan: 2, valign: 'middle',class:'col-md-1'},
-        {align: 'center', title: '提交bug', field: '', rowspan: 1, colspan: 5, valign: 'middle',class:'col-md-2'},
-        {align: 'center', title: '回测bug', field: '', rowspan: 1, colspan: 5, valign: 'middle',class:'col-md-2'},
-        {align: 'center', title: '测试文档', field: '', rowspan: 1, colspan: 2, valign: 'middle',class:'col-md-1'},
-        {align: 'center', title: '任务时间', field: 'issueDate', rowspan: 2, colspan: 1, valign: 'middle'},
-        {align: 'center', title: '测试人员', field: 'tester', rowspan: 2, colspan: 1, valign: 'middle'},
-        {align: 'center', title: '备注', field: 'remark', rowspan: 2, colspan: 1, valign: 'middle'},
-        {align: 'center', title: '操作', rowspan: 2, colspan: 1,valign: 'middle', formatter: option}
-    ],
-    [   // 用例数量
-        {title: "新建", field: 'createCaseCount', align: 'center'},
-        {title: "执行", field: 'executeCaseCount', align: 'center'},
-        // 提交bug
-        {title: "致命", field: '', align: 'center',formatter:function (value, row, index) {
-                return '<div style="color: red">' + row.subBug['level4'] + '</div>';
-            }},
-        {title: "严重", field: '', align: 'center',formatter:function (value, row, index) {
-                return '<div style="color: orange">' + row.subBug['level3'] + '</div>';
-            }},
-        {title: "一般", field: '', align: 'center',formatter:function (value, row, index) {
-                return '<div style="color: yellow">' + row.subBug['level2'] + '</div>';
-            }},
-        {title: "轻微", field: '', align: 'center',formatter:function (value, row, index) {
-                return '<div style="color: blue">' + row.subBug['level1'] + '</div>';
-            }},
-        {title: "总计", field: '', align: 'center',formatter:function (value, row, index) {
-                return row.subBug['level4']+row.subBug['level3']+row.subBug['level2']+row.subBug['level1']
-            }},
-        // 回测bug
-        {title: "致命", field: '', align: 'center',formatter:function (value, row, index) {
-                return '<div style="color: red">' + row.fixBug['level4'] + '</div>';
-            }},
-        {title: "严重", field: '', align: 'center',formatter:function (value, row, index) {
-                return '<div style="color: orange">' + row.fixBug['level3'] + '</div>';
-            }},
-        {title: "一般", field: '', align: 'center',formatter:function (value, row, index) {
-                return '<div style="color: yellow">' + row.fixBug['level2'] + '</div>';
-            }},
-        {title: "轻微", field: '', align: 'center',formatter:function (value, row, index) {
-                return '<div style="color: blue">' + row.fixBug['level1'] + '</div>';
-            }},
-        {title: "总计", field: '', align: 'center',formatter:function (value, row, index) {
-                return row.fixBug['level4']+row.fixBug['level3']+row.fixBug['level2']+row.fixBug['level1']
-            }},
-        {title: "bug文档", field: '', align: 'center'}, {title: "测试报告", field: '', align: 'center'},
-    ],
-]
-// 查询条件
-const _search_params = function (params) {
-    return {
-        projectName: $('#p-search').val().trim(), // 自定义查询条件
-        status: $('#finishStatus').val(), // 自定义查询条件
-        taskDate: $('#workDate-search').val(), // 自定义查询条件
-        pageSize: params.limit,
-        pageNum: params.offset / params.limit + 1,
-
-    }
-};
-InitTable("/task/reloadTable", 'get', _table_columns, _search_params);
-
-function option(value, row, index) {
-    return '<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editSummaryModal" onclick="editTask(\'' + row.id + '\')"><i class="bi-pencil-square"></i></button>' ;
-}
 
 function taskDetail(index, row) {
     console.log(row);

@@ -36,8 +36,8 @@
                                        aria-describedby="basic-addon3">
                             </div>
                             <select class="form-select me-2" style="width: fit-content" aria-label="active"
-                                    name="delFlag">
-                                <option th:value="''">结束状态</option>
+                                    name="workStatus" id="workStatus">
+<!--                                <option th:value="''">结束状态</option>-->
                                 <option value="0">未结束</option>
                                 <option value="1">已结束</option>
                             </select>
@@ -148,6 +148,7 @@
             projectName: $('#p-search').val().trim(), // 自定义查询条件
             planName: $('#plan-name').val().trim(), // 自定义查询条件
             planDesc: $('#plan-description').val().trim(), // 自定义查询条件
+            workStatus: $('#workStatus').val().trim(), // 自定义查询条件
             pageSize: params.limit,
             pageNum: params.offset / params.limit + 1,
 
@@ -174,6 +175,11 @@
             !id && $('input[type=hidden]:first').val('');
             removeClass('#p-add', 'is-invalid');
             removeClass('#add_plan_name', 'is-invalid');
+            if (id) {
+                $('#p-add').attr('readonly', 'readonly');
+            } else {
+                $('#p-add').attr('readonly', false);
+            }
         })
         document.getElementById('add-plan-modal').querySelector('.modal-title').textContent = id ? '编辑测试计划' : '新增测试计划';
         if (id) {
@@ -185,7 +191,7 @@
                 contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                 success: function (res) {
                     let data = res['data'];
-                    $('#p-add').attr('readonly', 'readonly').val(data.project.projectName);
+                    $('#p-add').val(data.project.projectName);
                     $('#s-p-id').val(data.projectId);
                     $('#storyId').val(data.storyId);
                     data.story && $('#storyList').val(data.story.storyName);

@@ -66,11 +66,8 @@ public class TestTaskInfoController {
 
     @RequestMapping(value = "/editTask")
     @ResponseBody
-    public ResponseResult editTask(@RequestParam("id") String taskId,
-                                   @RequestParam("finishStatus") String finishStatus,
-                                   @RequestParam("deliveryStatus") String deliveryStatus,
-                                   @RequestParam("remark") String remark) {
-        return taskInfoService.updateTaskInfo(taskId, finishStatus, deliveryStatus, remark);
+    public ResponseResult editTask(HttpServletRequest request) {
+        return taskInfoService.updateTaskInfo(request);
     }
 
     @RequestMapping(value = "/getTask/{id}")
@@ -103,6 +100,7 @@ public class TestTaskInfoController {
     public Map<String, Object> reloadTable(HttpServletRequest request,
                                            @RequestParam(value = "pageNum") Integer offset,
                                            @RequestParam(value = "pageSize") Integer limit) {
+        String projectName = request.getParameter("projectName");
         final IPage<TestTaskInfo> iPage = taskInfoService.taskInfoPage(request, offset, limit);
         Map<String, Object> map = new HashMap<>(2);
         map.put("total", iPage.getTotal());

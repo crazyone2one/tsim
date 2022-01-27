@@ -1,15 +1,14 @@
 package cn.master.tsim.service.impl;
 
+import cn.master.tsim.common.Constants;
 import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.TestPlan;
+import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.entity.TestTaskInfo;
 import cn.master.tsim.entity.Tester;
 import cn.master.tsim.mapper.TestTaskInfoMapper;
-import cn.master.tsim.service.ProjectService;
-import cn.master.tsim.service.TestBugService;
-import cn.master.tsim.service.TestCaseService;
-import cn.master.tsim.service.TestTaskInfoService;
+import cn.master.tsim.service.*;
 import cn.master.tsim.util.JacksonUtils;
 import cn.master.tsim.util.ResponseUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -41,6 +40,10 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
 
     @Autowired
     private TestBugService bugService;
+    @Autowired
+    TestStoryService storyService;
+    @Autowired
+    TestPlanService planService;
 
     @Autowired
     public TestTaskInfoServiceImpl(ProjectService projectService, TestCaseService caseService) {
@@ -54,8 +57,10 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
         String projectName = request.getParameter("projectName");
         wrapper.lambda().inSql(StringUtils.isNotBlank(projectName),
                 TestTaskInfo::getProjectId, "select id from t_project where project_name like '%" + projectName + "%'");
+        String taskDesc = request.getParameter("taskDesc");
+        wrapper.lambda().like(StringUtils.isNotBlank(taskDesc), TestTaskInfo::getSummaryDesc, taskDesc);
 //        根据完成状态查询
-        String status = request.getParameter("status");
+        String status = request.getParameter("finishStatus");
         wrapper.lambda().eq(StringUtils.isNotBlank(status), TestTaskInfo::getFinishStatus, status);
 //        根据任务时间查询
         String taskDate = request.getParameter("taskDate");
@@ -65,9 +70,15 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize),
                 wrapper);
         testTaskInfoPage.getRecords().forEach(t -> {
+            TestStory story = storyService.searchStoryById(t.getStoryId());
+            if (Objects.nonNull(story)) {
+                t.setReqDoc(story.getStoryName());
+                t.setTestStory(story);
+            }
             t.setSubBug(bugService.bugMapByProject(t.getProjectId(), t.getStoryId(), "1"));
             t.setFixBug(bugService.bugMapByProject(t.getProjectId(), t.getStoryId(), "4"));
             t.setProjectId(projectService.getProjectById(t.getProjectId()).getProjectName());
+            t.setTester(Constants.userMaps.get(t.getTester()).getUsername());
         });
         return testTaskInfoPage;
     }
@@ -142,8 +153,11 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
             TestTaskInfo taskInfo = baseMapper.selectById(id);
             taskInfo.setSubBug(bugService.bugMapByProject(taskInfo.getProjectId(), taskInfo.getStoryId(), "1"));
             taskInfo.setFixBug(bugService.bugMapByProject(taskInfo.getProjectId(), taskInfo.getStoryId(), "4"));
-//            TestStory story = storyService.getStory("", taskInfo.getIssueDate(), taskInfo.getProjectId());
-//            taskInfo.setReqDoc(Objects.nonNull(story) ? story.getDescription() : "");
+            TestStory story = storyService.searchStoryById(taskInfo.getStoryId());
+            if (Objects.nonNull(story)) {
+                taskInfo.setReqDoc(story.getStoryName());
+                taskInfo.setTestStory(story);
+            }
             taskInfo.setProjectId(projectService.getProjectById(taskInfo.getProjectId()).getProjectName());
             success = ResponseUtils.success("数据查询成功", taskInfo);
         } catch (NullPointerException e) {
@@ -179,17 +193,33 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
     }
 
     @Override
-    public ResponseResult updateTaskInfo(String id, String finishStatus, String deliveryStatus, String remark) {
+    public ResponseResult updateTaskInfo(HttpServletRequest request) {
+        String id = request.getParameter("id");
+        String taskDesc = request.getParameter("taskDesc");
+        String finishStatus = request.getParameter("finishStatus");
+        String deliveryStatus = request.getParameter("deliveryStatus");
+        String remark = request.getParameter("remark");
         try {
-            final TestTaskInfo taskInfo = this.baseMapper.selectOne(new QueryWrapper<TestTaskInfo>().eq("id", id));
+            final TestTaskInfo taskInfo = this.baseMapper.selectOne(new QueryWrapper<TestTaskInfo>()
+                    .eq("id", id).eq("del_flag",0));
             if (Objects.isNull(taskInfo)) {
                 return ResponseUtils.error(ResponseCode.ERROR_500.getCode(), ResponseCode.ERROR_500.getMessage());
             }
+            taskInfo.setSummaryDesc(taskDesc);
             taskInfo.setFinishStatus(finishStatus);
             taskInfo.setDeliveryStatus(deliveryStatus);
             taskInfo.setRemark(remark);
             taskInfo.setUpdateDate(new Date());
             baseMapper.updateById(taskInfo);
+            if (StringUtils.isNotBlank(taskInfo.getPlanId())) {
+                TestPlan byId = planService.getById(taskInfo.getPlanId());
+                byId.setName(taskDesc);
+                if (Objects.equals("0", finishStatus)) {
+                    byId.setWorkStatus(1);
+                }
+                byId.setUpdateDate(new Date());
+                planService.updateById(byId);
+            }
             return ResponseUtils.success("任务更新成功");
         } catch (Exception e) {
             return ResponseUtils.error("任务更新失败");

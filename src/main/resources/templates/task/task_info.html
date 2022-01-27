@@ -12,48 +12,52 @@
             <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
             <div class="container-fluid">
                 <!--操作栏-->
-                <div class="pt-2">
-                    <div class="card-body">
-                        <form id="search-form">
-                            <div class="btn-group mb-2" role="group" aria-label="search">
-                                <div class="input-group me-2" style="width: fit-content">
-                                    <span class="input-group-text">所属项目</span>
-                                    <input type="text" class="form-control" name="projectId"
-                                           placeholder="项目名称（模糊查询）" id="p-search"
-                                           aria-label="projectId"
-                                           aria-describedby="basic-addon1">
-                                </div>
-                                <div class="input-group me-2" style="width: fit-content">
-                                    <label class="input-group-text" for="finishStatus">完成状态</label>
-                                    <select class="form-select" name="finishStatus" id="finishStatus">
-                                        <option th:value="''" selected>完成状态</option>
-                                        <option value="0">已完成</option>
-                                        <option value="1">进行中</option>
-                                        <option value="2">待回测</option>
-                                        <option value="3">已回测</option>
-                                    </select>
-                                </div>
-                                <div class="input-group me-2" style="width: fit-content">
-                                    <label class="input-group-text" for="workDate-search">任务时间</label>
-                                    <select class="form-select" name="issueDate" id="workDate-search">
-                                        <option th:value="''" selected>任务时间</option>
-                                        <option th:each="m:${monthList}"
-                                                th:value="${m}"
-                                                th:text="${m}">
-                                    </select>
-                                </div>
-                                <div class="btn-group">
-                                    <button type="submit" class="btn btn-primary hvr-grow me-2">
-                                        <i class="bi bi-search"></i>
-                                    </button>
-                                    <button type="button" class="btn btn-primary hvr-grow"
-                                            data-bs-toggle="modal" data-bs-target="#add-task-modal">
-                                        <i class="bi bi-plus-circle"></i>
-                                    </button>
-                                </div>
+                <div class="pt-2 border-bottom">
+                    <form id="search-form">
+                        <div class="btn-group mb-2" role="group" aria-label="search">
+                            <div class="input-group me-2" style="width: fit-content">
+                                <span class="input-group-text" id="basic-addon1">所属项目</span>
+                                <input type="text" class="form-control" name="projectId"
+                                       placeholder="项目名称（模糊查询）" id="p-search"
+                                       aria-label="projectId"
+                                       aria-describedby="basic-addon1">
                             </div>
-                        </form>
-                    </div>
+                            <div class="input-group me-2" style="width: fit-content">
+                                <span class="input-group-text" id="task-desc">任务描述</span>
+                                <input type="text" class="form-control" name="projectId"
+                                       placeholder="任务描述（模糊查询）" id="task-desc-search"
+                                       aria-label="task-desc"
+                                       aria-describedby="task-desc">
+                            </div>
+                            <select class="form-select me-2" aria-label="Default select example" id="finishStatus-search" style="width: fit-content">>
+                                <option value="" selected>完成状态</option>
+                                <option value="0">已完成</option>
+                                <option value="1">进行中</option>
+                                <option value="2">待回测</option>
+                                <option value="3">已回测</option>
+                            </select>
+                            <select class="form-select me-2" aria-label="Default select example" id="workDate-search" style="width: fit-content">>
+                                <option value="" selected>任务时间</option>
+                                <option th:each="m:${monthList}"
+                                        th:value="${m}"
+                                        th:text="${m}">
+                            </select>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-primary hvr-grow me-1" id="search-button"
+                                        title="查询">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                                <button type="button" class="btn btn-primary hvr-grow me-1"
+                                        data-bs-toggle="modal" data-bs-target="#add-task-modal">
+                                    <i class="bi bi-plus-circle"></i>
+                                </button>
+                                <button type="button" class="btn btn-secondary hvr-grow " id="reset-button"
+                                        title="重置搜索">
+                                    <i class="bi-arrow-clockwise"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
                 <!--            列表数据-->
                 <div id="table_refresh" th:fragment="table_refresh">
@@ -82,5 +86,109 @@
 <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
 <script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
 <script th:inline="javascript" th:src="@{/global/js/t-task.js}"></script>
+<script>
+    // 列表数据
+    const _table_columns = [
+        [{field: 'id', align: 'center', title: 'id', rowspan: 2, colspan: 1, visible: false},
+            {align: 'center', title: '所属项目', field: 'projectId', rowspan: 2, colspan: 1, valign: 'middle'},
+            {align: 'center', title: '任务描述', field: 'summaryDesc', rowspan: 2, colspan: 1, valign: 'middle'},
+            {align: 'center', title: '关联需求', field: 'reqDoc', rowspan: 2, colspan: 1, valign: 'middle'},
+            {
+                align: 'center', title: '完成状态', field: 'finishStatus', rowspan: 2, colspan: 1, valign: 'middle',
+                formatter: function (value, row, index) {
+                    return _finishStatus[value];
+                }
+            },
+            {
+                align: 'center', title: '交付状态', field: 'deliveryStatus', rowspan: 2, colspan: 1, valign: 'middle',
+                formatter: function (value, row, index) {
+                    return _deliveryStatus[value];
+                }
+            },
+            {align: 'center', title: '用例数量', field: '', rowspan: 1, colspan: 2, valign: 'middle', class: 'col-md-1'},
+            {align: 'center', title: '提交bug', field: '', rowspan: 1, colspan: 5, valign: 'middle', class: 'col-md-2'},
+            {align: 'center', title: '回测bug', field: '', rowspan: 1, colspan: 5, valign: 'middle', class: 'col-md-2'},
+            {align: 'center', title: '测试文档', field: '', rowspan: 1, colspan: 2, valign: 'middle', class: 'col-md-1'},
+            {align: 'center', title: '任务时间', field: 'issueDate', rowspan: 2, colspan: 1, valign: 'middle'},
+            {align: 'center', title: '测试人员', field: 'tester', rowspan: 2, colspan: 1, valign: 'middle'},
+            {align: 'center', title: '备注', field: 'remark', rowspan: 2, colspan: 1, valign: 'middle'},
+            {align: 'center', title: '操作', rowspan: 2, colspan: 1, valign: 'middle', formatter: option}
+        ],
+        [   // 用例数量
+            {title: "新建", field: 'createCaseCount', align: 'center'},
+            {title: "执行", field: 'executeCaseCount', align: 'center'},
+            // 提交bug
+            {
+                title: "致命", field: '', align: 'center', formatter: function (value, row, index) {
+                    return '<div style="color: red">' + row.subBug['level4'] + '</div>';
+                }
+            },
+            {
+                title: "严重", field: '', align: 'center', formatter: function (value, row, index) {
+                    return '<div style="color: orange">' + row.subBug['level3'] + '</div>';
+                }
+            },
+            {
+                title: "一般", field: '', align: 'center', formatter: function (value, row, index) {
+                    return '<div style="color: yellow">' + row.subBug['level2'] + '</div>';
+                }
+            },
+            {
+                title: "轻微", field: '', align: 'center', formatter: function (value, row, index) {
+                    return '<div style="color: blue">' + row.subBug['level1'] + '</div>';
+                }
+            },
+            {
+                title: "总计", field: '', align: 'center', formatter: function (value, row, index) {
+                    return row.subBug['level4'] + row.subBug['level3'] + row.subBug['level2'] + row.subBug['level1']
+                }
+            },
+            // 回测bug
+            {
+                title: "致命", field: '', align: 'center', formatter: function (value, row, index) {
+                    return '<div style="color: red">' + row.fixBug['level4'] + '</div>';
+                }
+            },
+            {
+                title: "严重", field: '', align: 'center', formatter: function (value, row, index) {
+                    return '<div style="color: orange">' + row.fixBug['level3'] + '</div>';
+                }
+            },
+            {
+                title: "一般", field: '', align: 'center', formatter: function (value, row, index) {
+                    return '<div style="color: yellow">' + row.fixBug['level2'] + '</div>';
+                }
+            },
+            {
+                title: "轻微", field: '', align: 'center', formatter: function (value, row, index) {
+                    return '<div style="color: blue">' + row.fixBug['level1'] + '</div>';
+                }
+            },
+            {
+                title: "总计", field: '', align: 'center', formatter: function (value, row, index) {
+                    return row.fixBug['level4'] + row.fixBug['level3'] + row.fixBug['level2'] + row.fixBug['level1']
+                }
+            },
+            {title: "bug文档", field: '', align: 'center'}, {title: "测试报告", field: '', align: 'center'},
+        ],
+    ]
+    // 查询条件
+    const _search_params = function (params) {
+        return {
+            projectName: $('#p-search').val().trim(), // 项目名称
+            taskDesc: $('#task-desc-search').val().trim(), // 项目名称
+            finishStatus: $('#finishStatus-search').val(), // 完成状态
+            taskDate: $('#workDate-search').val(), // 任务时间
+            pageSize: params.limit,
+            pageNum: params.offset / params.limit + 1,
+
+        };
+    };
+    InitTable("/task/reloadTable", 'get', _table_columns, _search_params);
+
+    function option(value, row, index) {
+        return '<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editSummaryModal" onclick="editTask(\'' + row.id + '\')"><i class="bi-pencil-square"></i></button>';
+    }
+</script>
 </body>
 </html>

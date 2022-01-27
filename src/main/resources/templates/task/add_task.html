@@ -12,7 +12,7 @@
                  aria-hidden="true" data-bs-backdrop="static">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
-                        <form class="modal-content" id="addTaskForm" autocomplete="off">
+                        <form class="modal-content needs-validation" id="addTaskForm" autocomplete="off">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="staticBackdropLabel">新增任务</h5>
                                 <button type="button" class="btn-close" data-bs-dismiss="modal"
@@ -24,7 +24,7 @@
                                         <span class="input-group-text required" id="basic-addon1">项目名称</span>
                                         <input type="text" class="form-control invalid-item" placeholder="输入项目名称"
                                                aria-label="project" aria-describedby="basic-addon1" id="t-add">
-                                        <div class="invalid-feedback">
+                                        <div class="invalid-feedback" id="project-error-tips">
                                             项目名称不能为空.
                                         </div>
                                         <input type="hidden" name="projectId" id="s-p-id">
@@ -39,7 +39,7 @@
                                     </div>
                                     <div class="input-group mb-3">
                                         <label for="workDate" class="input-group-text required">任务日期</label>
-                                        <select class="form-select" name="workDate" id="workDate" required>
+                                        <select class="form-select" name="workDate" id="workDate">
                                             <option th:each="m:${monthList}"
                                                     th:value="${m}"
                                                     th:text="${m}"

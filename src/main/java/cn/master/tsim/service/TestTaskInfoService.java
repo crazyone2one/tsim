@@ -63,11 +63,8 @@ public interface TestTaskInfoService extends IService<TestTaskInfo> {
     /**
      * 更新任务数据
      *
-     * @param id             任务id
-     * @param finishStatus   完成状态
-     * @param deliveryStatus 交付状态
-     * @param remark         备注内容
-     * @return cn.master.tsim.common.ResponseResult
+     *
+     * @param request@return cn.master.tsim.common.ResponseResult
      */
-    ResponseResult updateTaskInfo(String id, String finishStatus, String deliveryStatus, String remark);
+    ResponseResult updateTaskInfo(HttpServletRequest request);
 }
