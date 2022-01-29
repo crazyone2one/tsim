@@ -11,6 +11,12 @@ import java.lang.annotation.*;
 @Documented
 @Retention(RetentionPolicy.RUNTIME) // 注解的生命周期，RUNTIME代表编译，运行的时候注解都存在，能影响到程序的逻辑
 @Target(ElementType.FIELD) //注解的范围，这里选ElementType.FIELD，表示作用在属性上
-public @interface NotNull {
-    String message() default "";
+public @interface ParamCheck {
+    /**
+     * description:  是否强制校验
+     * @return boolean
+     * @author 11's papa
+     */
+    boolean required() default false;
+    String errorRequiredMessage() default "该字段不能为空";
 }
