@@ -1,18 +1,23 @@
 package cn.master.tsim.listener;
 
+import cn.master.tsim.common.ExcelImportErrDto;
 import cn.master.tsim.entity.TestCase;
 import cn.master.tsim.service.TestCaseService;
+import cn.master.tsim.util.JacksonUtils;
+import cn.master.tsim.util.StreamUtils;
 import cn.master.tsim.util.ValidateUtils;
 import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.read.listener.ReadListener;
 import com.alibaba.fastjson.JSON;
+import com.fasterxml.jackson.core.type.TypeReference;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -26,6 +31,7 @@ public class TestCaseListener implements ReadListener<TestCase> {
      */
     private static final int BATCH_COUNT = 100;
     private final List<TestCase> cachedDataList = new ArrayList<>(BATCH_COUNT);
+    private final List<ExcelImportErrDto> errorDataList = new LinkedList<>();
 
     private final TestCaseService caseService;
 
@@ -40,7 +46,13 @@ public class TestCaseListener implements ReadListener<TestCase> {
 
     @Override
     public void invoke(TestCase data, AnalysisContext context) {
-        if (ValidateUtils.validateFiled(data)) {
+        Map<String, String> validateResults = ValidateUtils.validateFiled(data);
+        if (Objects.equals(validateResults.get("code"), "0")) {
+            Map<Integer, String> map = new LinkedHashMap<>();
+            map.put((context.readRowHolder().getRowIndex()), validateResults.get("msg"));
+            ExcelImportErrDto dto = new ExcelImportErrDto(data, map);
+            errorDataList.add(dto);
+        } else {
             log.info("解析到一条数据:{}", JSON.toJSONString(data));
             cachedDataList.add(data);
             // 达到BATCH_COUNT了，需要去存储一次数据库，防止数据几万条数据在内存，容易OOM
@@ -48,8 +60,6 @@ public class TestCaseListener implements ReadListener<TestCase> {
                 saveData();
                 cachedDataList.clear();
             }
-        } else {
-            throw new RuntimeException("数据校验失败" + data);
         }
     }
 
@@ -60,9 +70,13 @@ public class TestCaseListener implements ReadListener<TestCase> {
         HttpServletRequest request = ((ServletRequestAttributes) (RequestContextHolder.currentRequestAttributes())).getRequest();
         // 过滤文件中未导入的数据
         final List<TestCase> collect = cachedDataList.stream().filter(c -> !c.isRefFlag()).collect(Collectors.toList());
-        log.info("{}条数据，其中{}条数据已导入，开始存储数据库！", cachedDataList.size(), cachedDataList.size() - collect.size());
-        caseService.importCase(request, collect);
-        log.info("存储数据库成功！");
+        if (CollectionUtils.isNotEmpty(collect)) {
+            int imported = cachedDataList.size();
+            int unImport = cachedDataList.size() - collect.size();
+            log.info("{}条数据，其中{}条数据已导入，开始存储数据库！", imported, unImport);
+            caseService.importCase(request, collect);
+            log.info("存储数据库成功！");
+        }
     }
 
     /**
@@ -73,6 +87,15 @@ public class TestCaseListener implements ReadListener<TestCase> {
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
         saveData();
-        log.info("所有数据解析完成！");
+        if (CollectionUtils.isNotEmpty(errorDataList)) {
+            List<String> resultList = new LinkedList<>();
+            StreamUtils.forEach(errorDataList,(index,value)->{
+                final Map<Integer, String> mapMap = JacksonUtils.convertValue(value.getCellMap(), new TypeReference<Map<Integer, String>>() {});
+                for (Map.Entry<Integer, String> entry : mapMap.entrySet()) {
+                    resultList.add("第[" + entry.getKey() + "]行解析数据出错.--" + entry.getValue());
+                }
+            });
+            throw new ExcelAnalysisException(resultList.toString());
+        }
     }
 }

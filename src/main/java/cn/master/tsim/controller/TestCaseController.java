@@ -14,6 +14,7 @@ import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
 import cn.master.tsim.util.StreamUtils;
 import com.alibaba.excel.EasyExcel;
+import com.alibaba.excel.exception.ExcelAnalysisException;
 import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
@@ -137,9 +138,11 @@ public class TestCaseController {
         try {
             ExcelReaderBuilder read = EasyExcel.read(file.getInputStream(), TestCase.class, new TestCaseListener(caseService));
             return ResponseUtils.success("数据导入成功", read.sheet().doReadSync());
+        } catch (ExcelAnalysisException exception) {
+            return ResponseUtils.error(ResponseCode.PARAMS_ERROR.getCode(), "数据导入失败", exception.getMessage());
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseUtils.error("数据导入失败");
+            return ResponseUtils.error("数据导入失败: " + e.getMessage());
         }
     }
 

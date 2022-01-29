@@ -37,7 +37,7 @@ public class TestCase implements Serializable {
     /**
      * 测试用例标题
      */
-    @ParamCheck(errorRequiredMessage = "测试用例标题不能为空")
+    @ParamCheck(required = true, errorRequiredMessage = "测试用例标题不能为空")
     @TableField("name")
     @ExcelProperty(value = "测试用例标题", index = 2)
     private String name;

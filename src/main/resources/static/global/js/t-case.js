@@ -273,6 +273,7 @@ function validateCaseInfo(case_info_data) {
     }
 }
 
+//todo 清空提示信息
 // 导入测试用例js
 $('#case-upload-modal').on('show.bs.modal', function (event) {
     autoComplete("/project/queryList", "import-project", 'p', true);
@@ -310,7 +311,13 @@ function importCase() {
             if (Object.is(200, resp['code'])) {
                 $('#infoHelp').addClass('text-success fw-bold').text(resp['msg']);
             } else {
-                $('#infoHelp').addClass('text-danger fw-bold').text(resp['msg']);
+                const split = resp['data'].split(',');
+                $('#infoHelp').append('<a data-bs-toggle="collapse" href="#collapseExample1" aria-expanded="false" aria-controls="collapseExample1">' + resp['msg'] + '</a>');
+                $('#infoHelp').append('<div class="collapse" id="collapseExample1"></div>');
+                for (let i = 0; i < split.length; i++) {
+                    // <div className="row rounded" id="row_' + div_index + '">
+                    $('#collapseExample1').append('<div id="error_"' + i + ' class="form-text text-danger fw-bold">' + split[i] + '</div>');
+                }
             }
         }
     })
