@@ -65,10 +65,27 @@ public interface TestTaskInfoService extends IService<TestTaskInfo> {
     /**
      * 更新任务数据
      *
-     *
      * @param request@return cn.master.tsim.common.ResponseResult
      */
     ResponseResult updateTaskInfo(HttpServletRequest request);
 
-    void exportTaskInfo(HttpServletRequest request, HttpServletResponse response) throws IOException;
+    /**
+     * description: 导出数据 <br>
+     *
+     * @param request  HttpServletRequest
+     * @param response HttpServletResponse
+     * @param taskInfo TestTaskInfo
+     * @throws IOException io
+     * @author 11's papa
+     */
+    void exportTaskInfo(HttpServletRequest request, HttpServletResponse response, TestTaskInfo taskInfo) throws IOException;
+
+    /**
+     * description: 任务数据导出前检查 <br>
+     *
+     * @param request HttpServletRequest
+     * @return cn.master.tsim.common.ResponseResult
+     * @author 11's papa
+     */
+    ResponseResult checkTaskInfoData(HttpServletRequest request);
 }

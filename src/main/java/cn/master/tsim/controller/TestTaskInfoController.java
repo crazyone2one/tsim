@@ -110,10 +110,16 @@ public class TestTaskInfoController {
         return map;
     }
 
-    @GetMapping("/exportTask")
-    public void exportTask(HttpServletRequest request, HttpServletResponse response) {
+    @RequestMapping("/checkExportData")
+    @ResponseBody
+    public ResponseResult checkExportData(HttpServletRequest request) {
+        return taskInfoService.checkTaskInfoData(request);
+    }
+
+    @RequestMapping("/exportTask")
+    public void exportTask(HttpServletRequest request, HttpServletResponse response, TestTaskInfo taskInfo) {
         try {
-            taskInfoService.exportTaskInfo(request, response);
+            taskInfoService.exportTaskInfo(request, response, taskInfo);
         } catch (IOException e) {
             e.printStackTrace();
         }

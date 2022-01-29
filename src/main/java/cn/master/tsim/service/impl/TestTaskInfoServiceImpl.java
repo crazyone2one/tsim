@@ -9,15 +9,14 @@ import cn.master.tsim.entity.TestTaskInfo;
 import cn.master.tsim.entity.Tester;
 import cn.master.tsim.mapper.TestTaskInfoMapper;
 import cn.master.tsim.service.*;
+import cn.master.tsim.util.ExcelUtils;
 import cn.master.tsim.util.JacksonUtils;
 import cn.master.tsim.util.ResponseUtils;
-import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.util.MapUtils;
-import com.alibaba.fastjson.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.exceptions.TooManyResultsException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.URLEncoder;
-import java.util.*;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
 
 /**
  * <p>
@@ -56,7 +57,7 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
 
     @Override
     public IPage<TestTaskInfo> taskInfoPage(HttpServletRequest request, Integer pageCurrent, Integer pageSize) {
-        QueryWrapper<TestTaskInfo> wrapper = taskInfoQueryWrapper(request);
+        QueryWrapper<TestTaskInfo> wrapper = taskInfoQueryWrapper(request, null);
         final Page<TestTaskInfo> testTaskInfoPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize),
                 wrapper);
@@ -218,56 +219,48 @@ public class TestTaskInfoServiceImpl extends ServiceImpl<TestTaskInfoMapper, Tes
     }
 
     @Override
-    public void exportTaskInfo(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        try {
-            response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
-            response.setCharacterEncoding("utf-8");
-            // 这里URLEncoder.encode可以防止中文乱码 当然和easyexcel没有关系
-            String fileName = URLEncoder.encode("测试", "UTF-8").replaceAll("\\+", "%20");
-            response.setHeader("Content-disposition", "attachment;filename*=utf-8''" + fileName + ".xlsx");
-            // 查询数据
-            QueryWrapper<TestTaskInfo> wrapper = taskInfoQueryWrapper(request);
-            List<TestTaskInfo> taskInfos = baseMapper.selectList(wrapper);
-            for (TestTaskInfo taskInfo : taskInfos) {
-                taskInfo.setProjectId(projectService.getProjectById(taskInfo.getProjectId()).getProjectName());
-                taskInfo.setReqDoc(StringUtils.isNotBlank(taskInfo.getReqDoc()) ? "有" : "无");
-                taskInfo.setFinishStatus(Constants.FINISH_STATUS.get(taskInfo.getFinishStatus()));
-                taskInfo.setDeliveryStatus(Constants.DELIVERY_STATUS.get(taskInfo.getDeliveryStatus()));
-                Tester tester = new Tester();
-                final Object account = request.getSession().getAttribute("account");
-                if (Objects.nonNull(account)) {
-                    tester = JacksonUtils.convertToClass(JacksonUtils.convertToString(account), Tester.class);
-                }
-                taskInfo.setTester(tester.getUsername());
+    public void exportTaskInfo(HttpServletRequest request, HttpServletResponse response, TestTaskInfo taskInfo) throws IOException {
+        // 查询数据
+        QueryWrapper<TestTaskInfo> wrapper = taskInfoQueryWrapper(request, taskInfo);
+        List<TestTaskInfo> taskInfos = baseMapper.selectList(wrapper);
+        for (TestTaskInfo temp : taskInfos) {
+            temp.setProjectId(projectService.getProjectById(temp.getProjectId()).getProjectName());
+            temp.setReqDoc(StringUtils.isNotBlank(temp.getStoryId()) ? "有" : "无");
+            temp.setFinishStatus(Constants.FINISH_STATUS.get(temp.getFinishStatus()));
+            temp.setDeliveryStatus(Constants.DELIVERY_STATUS.get(temp.getDeliveryStatus()));
+            Tester tester = new Tester();
+            final Object account = request.getSession().getAttribute("account");
+            if (Objects.nonNull(account)) {
+                tester = JacksonUtils.convertToClass(JacksonUtils.convertToString(account), Tester.class);
             }
-            // 这里需要设置不关闭流
-            EasyExcel.write(response.getOutputStream(), TestTaskInfo.class).autoCloseStream(Boolean.FALSE).sheet("任务汇总")
-                    .doWrite(taskInfos);
-        } catch (Exception e) {
-            // 重置response
-            response.reset();
-            response.setContentType("application/json");
-            response.setCharacterEncoding("utf-8");
-            Map<String, String> map = MapUtils.newHashMap();
-            map.put("status", "failure");
-            map.put("message", "下载文件失败" + e.getMessage());
-            response.getWriter().println(JSON.toJSONString(map));
+            temp.setTester(tester.getUsername());
         }
+        ExcelUtils.exportByExcelFile(response, taskInfos, "任务汇总数据", TestTaskInfo.class);
     }
 
-    private QueryWrapper<TestTaskInfo> taskInfoQueryWrapper(HttpServletRequest request) {
+    @Override
+    public ResponseResult checkTaskInfoData(HttpServletRequest request) {
+        QueryWrapper<TestTaskInfo> wrapper = taskInfoQueryWrapper(request, null);
+        List<TestTaskInfo> taskInfos = baseMapper.selectList(wrapper);
+        if (CollectionUtils.isNotEmpty(taskInfos)) {
+            return ResponseUtils.success("数据查询成功", taskInfos);
+        }
+        return ResponseUtils.success(ResponseCode.BODY_NOT_MATCH.getCode(), "未查询到相关数据");
+    }
+
+    private QueryWrapper<TestTaskInfo> taskInfoQueryWrapper(HttpServletRequest request, TestTaskInfo taskInfo) {
         QueryWrapper<TestTaskInfo> wrapper = new QueryWrapper<>();
 //        根据项目名称模糊查询
-        String projectName = request.getParameter("projectName");
+        String projectName = Objects.nonNull(taskInfo) ? taskInfo.getProjectId() : request.getParameter("projectName");
         wrapper.lambda().inSql(StringUtils.isNotBlank(projectName),
                 TestTaskInfo::getProjectId, "select id from t_project where project_name like '%" + projectName + "%'");
-        String taskDesc = request.getParameter("taskDesc");
+        String taskDesc = Objects.nonNull(taskInfo) ? taskInfo.getSummaryDesc() : request.getParameter("taskDesc");
         wrapper.lambda().like(StringUtils.isNotBlank(taskDesc), TestTaskInfo::getSummaryDesc, taskDesc);
 //        根据完成状态查询
-        String status = request.getParameter("finishStatus");
+        String status = Objects.nonNull(taskInfo) ? taskInfo.getFinishStatus() : request.getParameter("finishStatus");
         wrapper.lambda().eq(StringUtils.isNotBlank(status), TestTaskInfo::getFinishStatus, status);
 //        根据任务时间查询
-        String taskDate = request.getParameter("taskDate");
+        String taskDate = Objects.nonNull(taskInfo) ? taskInfo.getIssueDate() : request.getParameter("taskDate");
         wrapper.lambda().eq(StringUtils.isNotBlank(taskDate), TestTaskInfo::getIssueDate, taskDate);
         wrapper.lambda().eq(TestTaskInfo::getDelFlag, 0);
         return wrapper;

@@ -58,7 +58,7 @@
                                     <i class="bi-arrow-clockwise"></i>
                                 </button>
                                 <a type="button" class="btn btn-secondary hvr-grow" id="export-button"
-                                   title="导出数据" href="/task/exportTask">
+                                   title="导出数据" onclick="exportTaskInfo()">
                                     <i class="bi-cloud-download"></i>
                                 </a>
                             </div>
@@ -226,9 +226,12 @@
         return '<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#editSummaryModal" onclick="editTask(\'' + row.id + '\')"><i class="bi-pencil-square"></i></button>';
     }
 
+    /**
+     * 数据导出
+     */
     function exportTaskInfo() {
         $.ajax({
-            url: '/task/exportTask/',
+            url: '/task/checkExportData/',
             type: 'get',
             data: {
                 projectName: $('#p-search').val().trim(), // 项目名称
@@ -237,10 +240,19 @@
                 taskDate: $('#workDate-search').val(), // 任务时间
             },
             contentType: 'application/x-www-form-urlencoded',
-            success: function (arg) {
-                showToast(arg['code'], arg['msg']);
-                // 关联测试用例数据后重新加载一次列表数据
-                $('#refCaseTable').bootstrapTable('refresh');
+            success: function (res) {
+                if (Object.is(200, res['code'])) {
+                    const url = '/task/exportTask/';
+                    const form = $('<form method="post"></form>').attr('action', url);
+                    form.append('<input type="hidden" name="projectId" value="' + $('#p-search').val().trim() + '"/>');
+                    form.append('<input type="hidden" name="summaryDesc" value="' + $('#task-desc-search').val().trim() + '"/>');
+                    form.append('<input type="hidden" name="finishStatus" value="' + $('#finishStatus-search').val() + '"/>');
+                    form.append('<input type="hidden" name="issueDate" value="' + $('#workDate-search').val() + '"/>');
+                    $('#tsim_body').append(form);
+                    form.submit();
+                } else {
+                    showToast(res['code'], res['msg']);
+                }
             }
         });
     }
