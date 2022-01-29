@@ -1,6 +1,6 @@
 package cn.master.tsim.entity;
 
-import cn.master.tsim.annotation.NotNull;
+import cn.master.tsim.annotation.ParamCheck;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -31,13 +31,13 @@ public class TestCase implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    @TableId(value = "id",type = IdType.ASSIGN_ID)
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
     /**
      * 测试用例标题
      */
-    @NotNull(message = "测试用例标题不能为空")
+    @ParamCheck(errorRequiredMessage = "测试用例标题不能为空")
     @TableField("name")
     @ExcelProperty(value = "测试用例标题", index = 2)
     private String name;
@@ -51,7 +51,7 @@ public class TestCase implements Serializable {
     @TableField("active")
     private Integer active;
 
-    @NotNull(message = "项目名称不能为空")
+    @ParamCheck(required = true, errorRequiredMessage = "项目名称不能为空")
     @TableField("project_id")
     @ExcelProperty(value = "项目名称", index = 0)
     private String projectId;
@@ -59,7 +59,7 @@ public class TestCase implements Serializable {
     @TableField(exist = false)
     private Project project;
 
-    @NotNull(message = "模块名称不能为空")
+    @ParamCheck(required = true, errorRequiredMessage = "模块名称不能为空")
     @TableField("module_id")
     @ExcelProperty(value = "模块", index = 1)
     private String moduleId;
@@ -87,12 +87,12 @@ public class TestCase implements Serializable {
     @ExcelProperty(value = "前提条件", index = 4)
     private String precondition;
 
-    @NotNull(message = "测试步骤不能为空")
+    @ParamCheck(required = true, errorRequiredMessage = "测试步骤不能为空")
     @TableField("step_store")
     @ExcelProperty(value = "测试步骤", index = 5)
     private String stepStore;
 
-    @NotNull(message = "预期结果不能为空")
+    @ParamCheck(required = true, errorRequiredMessage = "预期结果不能为空")
     @TableField("result_store")
     @ExcelProperty(value = "预期结果", index = 6)
     private String resultStore;

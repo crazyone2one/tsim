@@ -279,7 +279,39 @@ $('#case-upload-modal').on('show.bs.modal', function (event) {
     // myModal.off('shown.bs.modal');//去除绑定
     $("input[type=hidden][id='hidden-import-project']").val('');
     $("input[type=hidden][id='add-case-ref-plan']").val('');
+    // 上传窗口再次打开时清空上次选择的文件
+    const $import = $('#import-case-input');
+    $import.after($import.clone().val(''));
+    $import.remove()
 });
+// 上传窗口中监听计划数据
 $("#import-ref-plan")[0].addEventListener("focus", function () {
-    $('#hidden-import-project').attr('value') && autoComplete("/plan/getPlans/" + $('#hidden-import-project').attr('value'), "import-ref-plan", 'plan', true);
+    const $hidden = $('#hidden-import-project');
+    $hidden.attr('value') && autoComplete("/plan/getPlans/" + $hidden.attr('value'), "import-ref-plan", 'plan', true);
 });
+
+// 导入测试用例数据
+function importCase() {
+    const file = new FormData();
+    const file1 = $('#import-case-input')[0].files[0];
+    if (Object.is(file1, undefined)) {
+        $('#infoHelp').addClass('text-danger fw-bold').text('先选择文件！');
+        return false;
+    }
+    file.append('file', file1);
+    $.ajax({
+        url: '/case/upload',
+        type: 'post',
+        async: false,
+        data: file,
+        processData: false,
+        contentType: false,
+        success: function (resp) {
+            if (Object.is(200, resp['code'])) {
+                $('#infoHelp').addClass('text-success fw-bold').text(resp['msg']);
+            } else {
+                $('#infoHelp').addClass('text-danger fw-bold').text(resp['msg']);
+            }
+        }
+    })
+}

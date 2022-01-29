@@ -14,7 +14,7 @@ import cn.master.tsim.util.DateUtils;
 import cn.master.tsim.util.ResponseUtils;
 import cn.master.tsim.util.StreamUtils;
 import com.alibaba.excel.EasyExcel;
-import com.alibaba.excel.ExcelReader;
+import com.alibaba.excel.read.builder.ExcelReaderBuilder;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.collections4.CollectionUtils;
@@ -132,23 +132,15 @@ public class TestCaseController {
     }
 
     @PostMapping(value = "/upload")
-    public String uploadCase(HttpServletRequest request, MultipartFile file, Model model) {
-        ExcelReader reader = null;
+    @ResponseBody
+    public ResponseResult uploadCase(HttpServletRequest request, MultipartFile file) {
         try {
-            final String fileName = System.currentTimeMillis() + file.getOriginalFilename();
-            final String distFileName = request.getServletContext().getRealPath("") + "upload" + File.separator + fileName;
-            log.info(distFileName);
-            reader = EasyExcel.read(file.getInputStream(), TestCase.class, new TestCaseListener(caseService)).build();
-            reader.read(EasyExcel.readSheet(0).build());
-            model.addAttribute("msg", "success");
-        } catch (IOException e) {
+            ExcelReaderBuilder read = EasyExcel.read(file.getInputStream(), TestCase.class, new TestCaseListener(caseService));
+            return ResponseUtils.success("数据导入成功", read.sheet().doReadSync());
+        } catch (Exception e) {
             e.printStackTrace();
-        } finally {
-            if (Objects.nonNull(reader)) {
-                reader.finish();
-            }
+            return ResponseUtils.error("数据导入失败");
         }
-        return "redirect:/case/list";
     }
 
     @RequestMapping(value = "/queryCase/{id}")
