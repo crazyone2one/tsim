@@ -299,7 +299,7 @@ function importCase() {
                     if (_msg.substr(-1) === ']') {
                         _msg = _msg.substr(0, _msg.length - 1);
                     }
-                    $('#collapseExample1').append('<div id="error_"' + i + ' class="form-text text-danger fw-bold">' + _msg + '</div>');
+                    $('#collapseExample1').append('<div id="error_' + i + '" class="form-text text-danger fw-bold">' + _msg + '</div>');
                 }
             }
         }
