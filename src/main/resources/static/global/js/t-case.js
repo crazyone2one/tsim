@@ -3,36 +3,14 @@ function addCaseStep() {
     const caseStepArea = document.getElementById("case-step-area");
     let div_index = caseStepArea.getElementsByClassName("row").length;
     div_index++;
-    $(caseStepArea).append('<div class="row rounded" id="row_' + div_index + '">\n' +
-        '                                            <div style="width: 47%;">\n' +
-        '                                                <label for="caseSteps_' + div_index + '" class="form-label">测试步骤</label>\n' +
-        '                                                <input name="caseSteps[]" id="caseSteps_' + div_index + '" type="text"\n' +
-        '                                                          class="form-control line_under_input">\n' +
-        '                                            </div>\n' +
-        '                                            <div style="width: 47%;">\n' +
-        '                                                <label for="caseExpectedResults_' + div_index + '" class="form-label">预期结果</label>\n' +
-        '                                                <input name="caseExpectedResults[]" id="caseExpectedResults_' + div_index + '"\n' +
-        '                                                          type="text"\n' +
-        '                                                          class="form-control line_under_input">\n' +
-        '                                            </div>\n' +
-        '                                            <div class="position-relative" style="width: 6%;">\n' +
-        '                                                <a class="position-absolute top-50 start-50" title="移除">\n' +
-        '                                                    <i class="bi bi-backspace" style="color: #bb2d3b" id="del"\n' +
-        '                                                       onclick="removeCaseStep(this)" ></i>\n' +
-        '                                                </a>\n' +
-        '                                            </div>\n' +
-        '                                        </div>')
+    $(caseStepArea).append('<div class="row rounded" id="row_' + div_index + '">\n' + '                                            <div style="width: 47%;">\n' + '                                                <label for="caseSteps_' + div_index + '" class="form-label">测试步骤</label>\n' + '                                                <input name="caseSteps[]" id="caseSteps_' + div_index + '" type="text"\n' + '                                                          class="form-control line_under_input">\n' + '                                            </div>\n' + '                                            <div style="width: 47%;">\n' + '                                                <label for="caseExpectedResults_' + div_index + '" class="form-label">预期结果</label>\n' + '                                                <input name="caseExpectedResults[]" id="caseExpectedResults_' + div_index + '"\n' + '                                                          type="text"\n' + '                                                          class="form-control line_under_input">\n' + '                                            </div>\n' + '                                            <div class="position-relative" style="width: 6%;">\n' + '                                                <a class="position-absolute top-50 start-50" title="移除">\n' + '                                                    <i class="bi bi-backspace" style="color: #bb2d3b" id="del"\n' + '                                                       onclick="removeCaseStep(this)" ></i>\n' + '                                                </a>\n' + '                                            </div>\n' + '                                        </div>')
 }
 
 const addEditStep = () => {
     const caseStepArea = document.getElementById('edit-case-step-table');
     let div_index = caseStepArea.getElementsByClassName("div").length;
     // div_index++;
-    $(caseStepArea).append('<div class="row" id="row' + div_index + '">' +
-        '<input class="line_under_input" style="width: 47%;" id="step' + div_index + '">' +
-        '<input class="line_under_input" style="width: 47%;" id="result' + div_index + '">' +
-        '<a style="width: 6%;" title="移除本条"><i class="bi bi-backspace" style="color: #bb2d3b" id="remove' + div_index + '"></i></a>' +
-        '</div>');
+    $(caseStepArea).append('<div class="row" id="row' + div_index + '">' + '<input class="line_under_input" style="width: 47%;" id="step' + div_index + '">' + '<input class="line_under_input" style="width: 47%;" id="result' + div_index + '">' + '<a style="width: 6%;" title="移除本条"><i class="bi bi-backspace" style="color: #bb2d3b" id="remove' + div_index + '"></i></a>' + '</div>');
 }
 
 /*删除测试步骤*/
@@ -64,12 +42,8 @@ function saveEditCaseInfo() {
     !$('#mode-auto-e').prop('checked') && $('#mode-auto-e').val();
     const data = $("#edit-case-form").serialize();
     $.ajax({
-        url: "/case/save",
-        type: 'POST',
-        data: data,
-        // contentType: "application/json;charset=UTF-8",
-        dataType: 'JSON',
-        success: function (arg) {
+        url: "/case/save", type: 'POST', data: data, // contentType: "application/json;charset=UTF-8",
+        dataType: 'JSON', success: function (arg) {
             if (Object.is(arg['code'], 200)) {
                 resetModal("case-edit-modal", "edit-case-form");
                 $('#case-edit-modal').modal('hide');
@@ -172,8 +146,7 @@ function updateCase(flag) {
         $.ajax({
             type: "post",
             url: _url,
-            data: {ids: JSON.stringify(ids)},
-            // contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            data: {ids: JSON.stringify(ids)}, // contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             success: function (result) {
                 if (Object.is(200, result['code'])) {
                     // resetModal("#delModal", null);
@@ -254,8 +227,7 @@ function validateCaseInfo(case_info_data) {
                         $.ajax({
                             url: "/case/save",
                             type: 'POST',
-                            data: case_info_data,
-                            // contentType: "application/json;charset=UTF-8",
+                            data: case_info_data, // contentType: "application/json;charset=UTF-8",
                             dataType: 'JSON',
                             success: function (arg) {
                                 if (Object.is(arg['code'], 200)) {
@@ -273,7 +245,6 @@ function validateCaseInfo(case_info_data) {
     }
 }
 
-//todo 清空提示信息
 // 导入测试用例js
 $('#case-upload-modal').on('show.bs.modal', function (event) {
     autoComplete("/project/queryList", "import-project", 'p', true);
@@ -283,8 +254,11 @@ $('#case-upload-modal').on('show.bs.modal', function (event) {
     // 上传窗口再次打开时清空上次选择的文件
     const $import = $('#import-case-input');
     $import.after($import.clone().val(''));
-    $import.remove()
+    $import.remove();
+    // 删除之前的导入失败提示信息
+    $('#infoHelp').empty();
 });
+
 // 上传窗口中监听计划数据
 $("#import-ref-plan")[0].addEventListener("focus", function () {
     const $hidden = $('#hidden-import-project');
@@ -293,10 +267,13 @@ $("#import-ref-plan")[0].addEventListener("focus", function () {
 
 // 导入测试用例数据
 function importCase() {
+    const $infoHelp = $('#infoHelp');
+    // 删除之前的导入失败提示信息
+    $infoHelp.empty();
     const file = new FormData();
     const file1 = $('#import-case-input')[0].files[0];
     if (Object.is(file1, undefined)) {
-        $('#infoHelp').addClass('text-danger fw-bold').text('先选择文件！');
+        $infoHelp.addClass('text-danger fw-bold').text('先选择文件！');
         return false;
     }
     file.append('file', file1);
@@ -309,14 +286,20 @@ function importCase() {
         contentType: false,
         success: function (resp) {
             if (Object.is(200, resp['code'])) {
-                $('#infoHelp').addClass('text-success fw-bold').text(resp['msg']);
+                $infoHelp.addClass('text-success fw-bold').text(resp['msg']);
             } else {
                 const split = resp['data'].split(',');
-                $('#infoHelp').append('<a data-bs-toggle="collapse" href="#collapseExample1" aria-expanded="false" aria-controls="collapseExample1">' + resp['msg'] + '</a>');
-                $('#infoHelp').append('<div class="collapse" id="collapseExample1"></div>');
+                $infoHelp.append('<a class="text-danger" data-bs-toggle="collapse" href="#collapseExample1" aria-expanded="false" aria-controls="collapseExample1">' + resp['msg'] + '</a>');
+                $infoHelp.append('<div class="collapse" id="collapseExample1"></div>');
                 for (let i = 0; i < split.length; i++) {
-                    // <div className="row rounded" id="row_' + div_index + '">
-                    $('#collapseExample1').append('<div id="error_"' + i + ' class="form-text text-danger fw-bold">' + split[i] + '</div>');
+                    let _msg = split[i];
+                    if (_msg.substr(0, 1) === '[') {
+                        _msg = _msg.substr(1);
+                    }
+                    if (_msg.substr(-1) === ']') {
+                        _msg = _msg.substr(0, _msg.length - 1);
+                    }
+                    $('#collapseExample1').append('<div id="error_"' + i + ' class="form-text text-danger fw-bold">' + _msg + '</div>');
                 }
             }
         }
