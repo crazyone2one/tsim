@@ -11,7 +11,7 @@
  Target Server Version : 50732
  File Encoding         : 65001
 
- Date: 24/01/2022 13:25:28
+ Date: 07/02/2022 15:42:23
 */
 
 SET NAMES utf8mb4;
@@ -139,6 +139,7 @@ CREATE TABLE `t_plan`  (
   `project_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '项目id',
   `story_id` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '需求id',
   `work_date` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '任务时间',
+  `work_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '完成状态(0-未完成，1-已完成）',
   `del_flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '删除状态（0，有效 1，无效）',
   `group_id` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT 'groupId',
   `num` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT 'num',
@@ -181,6 +182,7 @@ CREATE TABLE `t_project`  (
   `project_name` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '项目名称',
   `project_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '项目code',
   `work_date` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT 'workDate',
+  `project_status` tinyint(1) NOT NULL DEFAULT 0 COMMENT '状态标志(0=正常;1=无效)',
   `del_flag` tinyint(1) NOT NULL DEFAULT 0 COMMENT '删除标志(0=未删除;1=删除)',
   `create_data` datetime NULL DEFAULT NULL COMMENT '创建时间',
   `update_date` datetime NULL DEFAULT NULL COMMENT '修改时间',
@@ -231,8 +233,8 @@ CREATE TABLE `t_task_info`  (
   `summary_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT '' COMMENT '任务描述',
   `create_case_count` int(11) NOT NULL DEFAULT 0 COMMENT '编写用例数量',
   `execute_case_count` int(11) NOT NULL DEFAULT 0 COMMENT '执行测试用例数量',
-  `finish_status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '完成状态（0-已完成，1-进行中，2-待回测，3-已回测）',
-  `delivery_status` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '' COMMENT '交付状态(0-是，1-否，2-不确定)',
+  `finish_status` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '1' COMMENT '完成状态（0-已完成，1-进行中，2-待回测，3-已回测）',
+  `delivery_status` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '1' COMMENT '交付状态(0-是，1-否，2-不确定)',
   `bug_doc` tinyint(1) NULL DEFAULT NULL,
   `report_doc` tinyint(1) NULL DEFAULT NULL,
   `req_doc` varchar(36) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '需求文件数据id',
