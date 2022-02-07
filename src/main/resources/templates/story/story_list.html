@@ -51,6 +51,7 @@
                 <div id="table_refresh" th:fragment="table_refresh">
                     <table id="table" class="table table-hover"></table>
                 </div>
+                <div id="status"></div>
                 <!--        分页-->
                 <!--                        <div th:replace="/fragment/commons :: pagination01"></div>-->
             </div>
@@ -104,8 +105,8 @@
                     let _tempName = row.docInfo.docName;
                     let _hrefStr = '/story/download/' + _tempName + '/' + row.docInfo.uuidName;
                     // fixme 直接传地址，无法正确下载文件
-                    _docName = '<a href=' + _hrefStr + '>' + _tempName + '</a>';
-                    // _docName = '<a href="javascript:void(0)" onclick="downloadFile(\'' + row.docInfo.uuidName + '\')">' + _tempName + '</a>';
+                    // _docName = '<a href=' + _hrefStr + '>' + _tempName + '</a>';
+                    _docName = '<a href="javascript:void(0)" onclick="download_file_by_ajax(\'' + row.docInfo.uuidName + '\')">' + _tempName + '</a>';
                 }
                 return _docName;
             },
@@ -333,22 +334,6 @@
             });
         });
     });
-
-    function downloadFile(uuidName) {
-        $.ajax({
-            url: "/downloadFile/" + uuidName,
-            dataType : "json",
-            data: {},
-            cache: false,
-            success: function (res) {
-                console.log(res);
-            },
-            error: function (err) {
-                console.error(err);
-                showToast(400, "文件下载失败--查询文件错误");
-            },
-        });
-    }
 </script>
 </body>
 </html>
