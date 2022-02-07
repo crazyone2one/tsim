@@ -29,4 +29,12 @@ public class Constants {
         put("1", "否");
         put("2", "不确定");
     }};
+    /**
+     * 测试用例优先级
+     */
+    public static final HashMap<String, String> CASE_PRIORITY = new HashMap<String, String>() {{
+        put("0", "低");
+        put("1", "中");
+        put("2", "高");
+    }};
 }

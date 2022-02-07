@@ -178,7 +178,7 @@ public class TestCaseController {
                     mimeType = "application/octet-stream";
                 }
                 response.setContentType(mimeType);
-                /**
+                /*
                  * Here we have mentioned it to show inline
                  */
                 response.setHeader("Content-Disposition", "inline; filename=\"" + file.getName() + "\"");
@@ -217,6 +217,29 @@ public class TestCaseController {
             return ResponseUtils.success("数据删除成功");
         } catch (Exception e) {
             return ResponseUtils.error("数据删除失败");
+        }
+    }
+
+    @RequestMapping("checkCaseData")
+    @ResponseBody
+    public ResponseResult checkCaseData(HttpServletRequest request) {
+        return caseService.checkCaseData(request);
+    }
+
+    /**
+     * description: 导出测试用例数据 <br>
+     *
+     * @param request HttpServletRequest
+     * @param response HttpServletResponse
+     * @param testCase 查询条件
+     * @author 11's papa
+     */
+    @RequestMapping("/exportCase")
+    public void exportCase(HttpServletRequest request, HttpServletResponse response, TestCase testCase) {
+        try {
+            caseService.exportCaseInfo(request, response, testCase);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

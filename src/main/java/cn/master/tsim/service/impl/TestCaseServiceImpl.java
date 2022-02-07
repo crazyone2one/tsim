@@ -1,5 +1,7 @@
 package cn.master.tsim.service.impl;
 
+import cn.master.tsim.common.Constants;
+import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Module;
 import cn.master.tsim.entity.Project;
@@ -7,6 +9,7 @@ import cn.master.tsim.entity.TestCase;
 import cn.master.tsim.entity.TestTaskInfo;
 import cn.master.tsim.mapper.TestCaseMapper;
 import cn.master.tsim.service.*;
+import cn.master.tsim.util.ExcelUtils;
 import cn.master.tsim.util.ResponseUtils;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
@@ -17,10 +20,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.*;
 
 /**
@@ -59,9 +66,8 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     public ResponseResult saveCase(HttpServletRequest request) {
         final String projectId = request.getParameter("projectId");
         final String moduleId = request.getParameter("moduleId");
-        final String storyId = request.getParameter("storyId");
         final String planId = request.getParameter("tempPlanId");
-        final int priority = Integer.parseInt(request.getParameter("priority"));
+        final String priority = request.getParameter("priority");
         final Module module = moduleService.addModule(request, projectId, moduleId);
         final String stepStore = request.getParameter("stepStore");
         String name = request.getParameter("name");
@@ -106,14 +112,6 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             message = "数据添加成功";
             object = build;
         }
-//       关联需求时 t_project_case_ref表增加一条记录
-//        if (StringUtils.isNotBlank(storyId)) {
-//            assert build != null;
-//            final int item = projectCaseRefService.addRefItem(projectId, storyId, build.getId(), "");
-//            final TestTaskInfo taskInfo = taskInfoService.queryItem(projectId, storyId);
-//            taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + item);
-//            taskInfoService.updateTask(request, taskInfo);
-//        }
         if (StringUtils.isNotBlank(planId)) {
             assert build != null;
             final int item = projectCaseRefService.addRefItem(projectId, "", planId, build.getId());
@@ -156,7 +154,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             final Module module = moduleService.addModule(request, projectId, c.getModuleId());
             final TestCase build = TestCase.builder().active(0).projectId(projectId).moduleId(module.getId())
                     .name(c.getName()).description(c.getDescription()).precondition(c.getPrecondition())
-                    .testMode(0).priority(c.getPriority()).stepStore(stepsJson.toJSONString())
+                    .testMode(0).runModeManual("0").priority(c.getPriority()).stepStore(stepsJson.toJSONString())
                     .resultStore("").delFlag(0).createDate(new Date()).build();
             baseMapper.insert(build);
             stepsService.saveStep(stepsJson, build.getId());
@@ -318,5 +316,84 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
 //        testCase.setModuleId(moduleService.getModuleById(testCase.getModuleId()).getModuleName());
         return testCase;
     }
+
+    @CachePut(cacheNames = "caseData")
+    public List<TestCase> queryList(HttpServletRequest request) {
+        QueryWrapper<TestCase> wrapper = new QueryWrapper<>();
+        List<String> tempProjectId = new LinkedList<>();
+        List<String> tempModuleId = new LinkedList<>();
+        extractedSearchWrapper(request, wrapper, tempProjectId, tempModuleId);
+        final List<String> idList = JSONArray.parseArray(request.getParameter("ids"), String.class);
+        wrapper.lambda().in(CollectionUtils.isNotEmpty(idList), TestCase::getId, idList);
+        return baseMapper.selectList(wrapper);
+    }
+    @Override
+    public ResponseResult checkCaseData(HttpServletRequest request) {
+        List<TestCase> testCases = queryList(request);
+        if (CollectionUtils.isEmpty(testCases)) {
+            return ResponseUtils.success(ResponseCode.PARAMS_ERROR.getCode(), "未查询到相关数据");
+        }
+        return ResponseUtils.success("数据查询成功", testCases);
+    }
+
+    @Override
+    @Cacheable(cacheNames = "caseData")
+    public void exportCaseInfo(HttpServletRequest request, HttpServletResponse response, TestCase testCase) throws IOException {
+        QueryWrapper<TestCase> wrapper = new QueryWrapper<>();
+        List<String> tempProjectId = new LinkedList<>();
+        List<String> tempModuleId = new LinkedList<>();
+        //            项目名称模糊查询
+        final String projectName = testCase.getProjectId();
+        if (StringUtils.isNotBlank(projectName)) {
+            final List<Project> projects = projectService.findByPartialProjectName(projectName);
+//          未查询到项目数时不使用项目查询条件
+            if (CollectionUtils.isNotEmpty(projects)) {
+                projects.forEach(temp -> tempProjectId.add(temp.getId()));
+                wrapper.lambda().in(TestCase::getProjectId, tempProjectId);
+            }
+        }
+//            模块模糊查询
+        final String moduleName = testCase.getModuleId();
+        if (StringUtils.isNotBlank(moduleName)) {
+            moduleService.findByPartialModuleName(moduleName).forEach(temp -> tempModuleId.add(temp.getId()));
+            wrapper.lambda().in(TestCase::getModuleId, tempModuleId);
+        }
+//            测试用例标题模糊查询
+        final String caseName = testCase.getName();
+        wrapper.lambda().like(StringUtils.isNotBlank(caseName), TestCase::getName, caseName);
+//            优先级
+        wrapper.lambda().eq(StringUtils.isNotBlank(testCase.getPriority()),TestCase::getPriority, testCase.getPriority());
+        wrapper.lambda().eq(Objects.nonNull(testCase.getActive()),TestCase::getActive, testCase.getActive());
+        wrapper.lambda().eq(TestCase::getDelFlag, 0).orderByAsc(TestCase::getActive);
+        String caseId = testCase.getId();
+        if (StringUtils.isNotBlank(caseId)) {
+            String[] ids = caseId.split(",");
+            wrapper.lambda().in(TestCase::getId, Arrays.asList(ids));
+        }
+        List<TestCase> testCases = baseMapper.selectList(wrapper);
+        testCases.forEach(t->{
+            t.setProjectId(projectService.getProjectById(t.getProjectId()).getProjectName());
+            t.setModuleId(moduleService.getModuleById(t.getModuleId()).getModuleName());
+            TestCase tempCase = baseMapper.queryCaseInfo(t.getId());
+            StringJoiner tempStep = new StringJoiner("\\n");
+            StringJoiner tempResult = new StringJoiner("\\n");
+            tempCase.getCaseSteps().forEach(testCaseSteps -> {
+                tempStep.add(testCaseSteps.getCaseStep());
+                tempResult.add(testCaseSteps.getCaseStepResult());
+            });
+            t.setStepStore(tempStep.toString());
+            t.setResultStore(tempResult.toString());
+            if (StringUtils.isNotBlank(t.getRunModeManual()) && StringUtils.isNotBlank(t.getRunModeAuto())) {
+                t.setRunModeManual("手动/自动");
+            } else if (StringUtils.isNotBlank(t.getRunModeManual())) {
+                t.setRunModeManual("手动");
+            } else if (StringUtils.isNotBlank(t.getRunModeAuto())) {
+                t.setRunModeManual("自动");
+            }
+            t.setPriority(Constants.CASE_PRIORITY.get(t.getPriority()));
+        });
+        ExcelUtils.exportByExcelFile(response, testCases, "测试用例数据", TestCase.class);
+    }
+
 
 }

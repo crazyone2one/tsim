@@ -305,3 +305,47 @@ function importCase() {
         }
     })
 }
+
+// 导出测试用例数据
+function exportCase() {
+    const selections = getSelections();
+    const ids = [];
+    for (let i = 0; i < selections.length; i++) {
+        ids.push(selections[i].id);
+    }
+    const _projectName = $('#p-search').val().trim();
+    const _moduleName = $('#m-search').val().trim();
+    const _caseName = $('#name-search').val().trim();
+    const _priority = $('#priority-search').val();
+    const _active = $('#active-search').val();
+    $.ajax({
+        url: '/case/checkCaseData/',
+        type: 'get',
+        data: {
+            projectName: _projectName, // 项目名称
+            moduleName: _moduleName, // 项目名称
+            caseName: _caseName, // 完成状态
+            priority: _priority, // 任务时间
+            active: _active,
+            ids: JSON.stringify(ids),
+        },
+        contentType: 'application/x-www-form-urlencoded',
+        success: function (res) {
+            console.log(res);
+            if (Object.is(200, res['code'])) {
+                const url = '/case/exportCase/';
+                const form = $('<form method="post"></form>').attr('action', url);
+                form.append('<input type="hidden" name="projectId" value="' + _projectName + '"/>');
+                form.append('<input type="hidden" name="moduleId" value="' + _moduleName + '"/>');
+                form.append('<input type="hidden" name="name" value="' + _caseName + '"/>');
+                form.append('<input type="hidden" name="priority" value="' + _priority + '"/>');
+                form.append('<input type="hidden" name="active" value="' + _active + '"/>');
+                form.append('<input type="hidden" name="id" value="' + ids + '"/>');
+                $('#tsim_body').append(form);
+                form.submit();
+            } else {
+                showToast(res['code'], res['msg']);
+            }
+        }
+    });
+}

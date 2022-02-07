@@ -6,6 +6,8 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -75,4 +77,8 @@ public interface TestCaseService extends IService<TestCase> {
      * @return cn.master.tsim.entity.TestCase
      */
     TestCase queryCaseById(String caseId);
+
+    ResponseResult checkCaseData(HttpServletRequest request);
+
+    void exportCaseInfo(HttpServletRequest request, HttpServletResponse response, TestCase testCase) throws IOException;
 }

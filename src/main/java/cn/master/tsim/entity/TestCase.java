@@ -1,6 +1,7 @@
 package cn.master.tsim.entity;
 
 import cn.master.tsim.annotation.ParamCheck;
+import com.alibaba.excel.annotation.ExcelIgnore;
 import com.alibaba.excel.annotation.ExcelProperty;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
@@ -31,6 +32,7 @@ public class TestCase implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    @ExcelIgnore
     @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
@@ -48,6 +50,7 @@ public class TestCase implements Serializable {
     /**
      * 删除标志(0=未删除;1=删除)
      */
+    @ExcelIgnore
     @TableField("active")
     private Integer active;
 
@@ -56,6 +59,7 @@ public class TestCase implements Serializable {
     @ExcelProperty(value = "项目名称", index = 0)
     private String projectId;
 
+    @ExcelIgnore
     @TableField(exist = false)
     private Project project;
 
@@ -63,15 +67,21 @@ public class TestCase implements Serializable {
     @TableField("module_id")
     @ExcelProperty(value = "模块", index = 1)
     private String moduleId;
+
+    @ExcelIgnore
     @TableField(exist = false)
     private String storyId;
+
+    @ExcelIgnore
     @TableField(exist = false)
     private Module module;
 
+    @ExcelIgnore
     @JsonFormat(pattern = "yyyy-MM-dd")
     @TableField("create_date")
     private Date createDate;
 
+    @ExcelIgnore
     @JsonFormat(pattern = "yyyy-MM-dd")
     @TableField("update_date")
     private Date updateDate;
@@ -79,6 +89,7 @@ public class TestCase implements Serializable {
      * 备注内容
      */
     @TableField("note")
+    @ExcelProperty(value = "备注内容", index = 8)
     private String note;
     /**
      * 测试前提
@@ -101,22 +112,27 @@ public class TestCase implements Serializable {
      */
     @TableField("priority")
     @ExcelProperty(value = "优先级", index = 7)
-    private Integer priority;
+    private String priority;
     /**
      * 测试方式(0=手动;1=自动)
      */
+    @ExcelIgnore
     @TableField("test_mode")
     private Integer testMode;
 
+    @ExcelProperty(value = "测试方式", index = 9)
     @TableField("run_mode_manual")
     private String runModeManual;
 
+    @ExcelIgnore
     @TableField("run_mode_auto")
     private String runModeAuto;
 
+    @ExcelIgnore
     @TableField(exist = false)
     private List<TestCaseSteps> caseSteps;
 
+    @ExcelIgnore
     @TableField(exist = false)
     @ExcelProperty(value = "是否已导入", index = 8)
     private boolean refFlag;
@@ -124,6 +140,7 @@ public class TestCase implements Serializable {
     /**
      * 删除状态（0，有效 1，无效）
      */
+    @ExcelIgnore
     @TableField("del_flag")
     private Integer delFlag;
 }
