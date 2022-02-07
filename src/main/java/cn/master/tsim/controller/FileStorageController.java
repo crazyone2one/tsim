@@ -8,8 +8,10 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -42,8 +44,16 @@ public class FileStorageController {
         }
     }
 
+    /**
+     * description:  未使用此方法下载文件<br>
+     *
+     * @param fileName 文件名称
+     * @param request  HttpServletRequest
+     * @return org.springframework.http.ResponseEntity<org.springframework.core.io.Resource>
+     * @author 11's papa
+     */
     @GetMapping("/downloadFile/{fileName:.+}")
-    //@ResponseBody
+    @Deprecated
     public ResponseEntity<Resource> downloadFile(@PathVariable String fileName, HttpServletRequest request) throws IOException {
         // Load file as Resource
         Resource resource = fileStorageService.loadFileAsResource(fileName);
@@ -70,6 +80,15 @@ public class FileStorageController {
 
     @PostMapping("deleteFile/{docId}")
     public boolean deleteFile(@PathVariable String docId) {
-       return fileStorageService.deleteFile(docId);
+        return fileStorageService.deleteFile(docId);
+    }
+
+    @RequestMapping("download-file/{fileName:.+}")
+    public ResponseEntity<byte[]> downloadFile(@PathVariable String fileName) throws IOException {
+        Resource resource = fileStorageService.loadFileAsResource(fileName);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"");
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        return new ResponseEntity<>(FileCopyUtils.copyToByteArray(resource.getFile()), headers, HttpStatus.CREATED);
     }
 }
