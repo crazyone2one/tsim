@@ -69,7 +69,7 @@ function autoComplete(url, idSelector, flag, needChange) {
                         let temp = {
                             "p": {label: result['data'][i].projectName, value: result['data'][i].id}, // project
                             "m": {label: result['data'][i].moduleName, value: result['data'][i].id},  // module
-                            "s": {label: result['data'][i].storyName, value: result['data'][i].id} , // story
+                            "s": {label: result['data'][i].storyName, value: result['data'][i].id}, // story
                             "plan": {label: result['data'][i].name, value: result['data'][i].id}  // story
                         }
                         dataAttr.push(temp[flag]);
@@ -211,3 +211,13 @@ const popoverTriggerList = [].slice.call(document.querySelectorAll('[data-bs-tog
 const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
     return new bootstrap.Popover(popoverTriggerEl)
 });
+
+const delete_file_by_ajax = (url) => {
+    $.ajax({
+        url: '/deleteFile/' + url,
+        type: "POST",
+        success: function (res) {
+            console.log(res);
+        }
+    })
+}

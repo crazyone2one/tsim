@@ -1,5 +1,6 @@
 package cn.master.tsim.service.impl;
 
+import cn.master.tsim.common.UploadFileResponse;
 import cn.master.tsim.entity.DocInfo;
 import cn.master.tsim.mapper.DocInfoMapper;
 import cn.master.tsim.service.DocInfoService;
@@ -29,6 +30,19 @@ public class DocInfoServiceImpl extends ServiceImpl<DocInfoMapper, DocInfo> impl
         DocInfo build = DocInfo.builder().docName(docInfo.get("docName")).uuidName(docInfo.get("uuidName"))
                 .docFlag(docInfo.get("flag")).docPath(docInfo.get("docPath")).delFlag(0)
                 .createDate(new Date()).build();
+        baseMapper.insert(build);
+        return build;
+    }
+
+    @Override
+    public DocInfo saveDocInfo(HttpServletRequest request, UploadFileResponse uploadFileResponse) {
+        DocInfo build = DocInfo.builder()
+                .docName(uploadFileResponse.getFileName())
+                .uuidName(uploadFileResponse.getFileNewName())
+                .docFlag(uploadFileResponse.getDocFlag())
+                .docPath(uploadFileResponse.getFileStorageUrl())
+                .delFlag(0).createDate(new Date())
+                .build();
         baseMapper.insert(build);
         return build;
     }

@@ -1,5 +1,6 @@
 package cn.master.tsim.service;
 
+import cn.master.tsim.common.UploadFileResponse;
 import cn.master.tsim.entity.DocInfo;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.IService;
@@ -25,6 +26,16 @@ public interface DocInfoService extends IService<DocInfo> {
      * @author 11's papa
      */
     DocInfo saveDocInfo(HttpServletRequest request, Map<String, String> docInfo);
+
+    /**
+     * description: 保存数据 <br>
+     *
+     * @param request            HttpServletRequest
+     * @param uploadFileResponse 文件上传相应结果
+     * @return cn.master.tsim.entity.DocInfo
+     * @author 11's papa
+     */
+    DocInfo saveDocInfo(HttpServletRequest request, UploadFileResponse uploadFileResponse);
 
     /**
      * description: 根据id查询 <br>
