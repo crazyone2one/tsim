@@ -1,7 +1,7 @@
 package cn.master.tsim.service.impl;
 
-import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
+import cn.master.tsim.common.UploadFileResponse;
 import cn.master.tsim.entity.DocInfo;
 import cn.master.tsim.entity.TestStory;
 import cn.master.tsim.mapper.TestStoryMapper;
@@ -42,10 +42,12 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     @Autowired
     TestTaskInfoService taskInfoService;
     private final DocInfoService docInfoService;
+    private final FileStorageService fileStorageService;
 
     @Autowired
-    public TestStoryServiceImpl(DocInfoService docInfoService) {
+    public TestStoryServiceImpl(DocInfoService docInfoService, FileStorageService fileStorageService) {
         this.docInfoService = docInfoService;
+        this.fileStorageService = fileStorageService;
     }
 
     @Override
@@ -160,22 +162,15 @@ public class TestStoryServiceImpl extends ServiceImpl<TestStoryMapper, TestStory
     @Override
     @Transactional(rollbackFor = {RuntimeException.class, Exception.class})
     public ResponseResult upload(HttpServletRequest request, MultipartFile file) {
-        try {
-            ResponseResult result = systemService.storeFile(request, file);
-            if (Objects.equals(ResponseCode.SUCCESS.getCode(), result.getCode())) {
-                Map<String, String> map = JacksonUtils.convertValue(result.getData(), new TypeReference<Map<String, String>>() {
-                });
-                final String[] docNames = map.get("docName").split("\\.");
-                DocInfo docInfo = docInfoService.saveDocInfo(request, map);
-                Map<String, String> tempMap = new LinkedHashMap<>();
-                tempMap.put("docId", docInfo.getId());
-                tempMap.put("docName", docNames[0]);
-                result.setData(tempMap);
-            }
-            return result;
-        } catch (Exception e) {
-            return ResponseUtils.error(e.getMessage());
+        ResponseResult result = ResponseUtils.success();
+        UploadFileResponse uploadFileResponse = fileStorageService.storeFile(request, file);
+        if (Objects.nonNull(uploadFileResponse)) {
+            DocInfo docInfo = docInfoService.saveDocInfo(request,uploadFileResponse);
+            Map<String, String> tempMap = new LinkedHashMap<>();
+            tempMap.put("docId", docInfo.getId());
+            result.setData(tempMap);
         }
+        return result;
     }
 
     @Override

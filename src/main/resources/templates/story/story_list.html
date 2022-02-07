@@ -105,7 +105,7 @@
                     let _hrefStr = '/story/download/' + _tempName + '/' + row.docInfo.uuidName;
                     // fixme 直接传地址，无法正确下载文件
                     _docName = '<a href=' + _hrefStr + '>' + _tempName + '</a>';
-                    // _docName = '<a href="javascript:void(0)" onclick="downloadFile(\'' + _tempName + '\',\'' + row.docInfo.uuidName + '\')">' + _tempName + '</a>';
+                    // _docName = '<a href="javascript:void(0)" onclick="downloadFile(\'' + row.docInfo.uuidName + '\')">' + _tempName + '</a>';
                 }
                 return _docName;
             },
@@ -313,6 +313,7 @@
             e.preventDefault();
             const formData = new FormData();
             formData.append("file", $('#file-upload-input')[0].files[0]);
+            let previous_doc_id = $('#attachmentId').val();
             $.ajax({
                 url: "/story/upload",
                 type: "POST",
@@ -324,6 +325,7 @@
                 success: function (res) {
                     $('#attachmentId').val(res['data'].docId);
                     $('#infoHelp').addClass('text-success').text('文件上传成功');
+                    delete_file_by_ajax(previous_doc_id);
                 },
                 error: function (err) {
                     console.error(err);
@@ -332,10 +334,9 @@
         });
     });
 
-    function downloadFile(fileName, uuidName) {
+    function downloadFile(uuidName) {
         $.ajax({
-            url: "/story/download/" + fileName + "/" + uuidName,
-            type: "get",
+            url: "/downloadFile/" + uuidName,
             dataType : "json",
             data: {},
             cache: false,
@@ -344,6 +345,7 @@
             },
             error: function (err) {
                 console.error(err);
+                showToast(400, "文件下载失败--查询文件错误");
             },
         });
     }
