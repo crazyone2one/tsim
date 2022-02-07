@@ -212,12 +212,72 @@ const popoverList = popoverTriggerList.map(function (popoverTriggerEl) {
     return new bootstrap.Popover(popoverTriggerEl)
 });
 
-const delete_file_by_ajax = (url) => {
+/**
+ * ajax方式删除文件
+ * @param docId 文件数据id
+ */
+const delete_file_by_ajax = (docId) => {
     $.ajax({
-        url: '/deleteFile/' + url,
+        url: '/deleteFile/' + docId,
         type: "POST",
         success: function (res) {
             console.log(res);
         }
     })
+}
+
+function createXhr() {
+    if (typeof XMLHttpRequest != 'undefined') {
+        return new XMLHttpRequest();
+    } else if (typeof ActiveXObject != 'undefined') {
+        const callee = arguments.callee;
+        if (!Object.is(typeof callee.activeXString, 'string')) {
+            const versions = ["MSXML2.XMLHttp.6.0", "MSXML2.XMLHttp.3.0", "MSXML2.XMLHttp"];
+            const len = versions.length;
+            for (let i = 0; i < len; i++) {
+                try {
+                    new ActiveXObject(versions[i]);
+                    callee.activeXString = versions[i];
+                    break;
+                } catch (e) {
+
+                }
+            }
+        }
+        return new ActiveXObject(callee.activeXString);
+    } else {
+        throw new Error("No XHR object available.");
+    }
+}
+
+/**
+ * ajax方式下载文件
+ * @param uuidName
+ */
+function download_file_by_ajax(uuidName) {
+    const url = "/download-file/" + uuidName;
+    const xhr = createXhr();
+    xhr.onload = function (event) {
+        if ((xhr.status >= 200 && xhr.status < 300) || xhr.status === 304) {
+            const blob = this.response;
+            const reader = new FileReader();
+            reader.readAsDataURL(blob);
+            reader.onload = function (ev) {
+                const a = document.createElement('a');
+                const decode = decodeURI(xhr.getResponseHeader("Content-Disposition"));
+                const cArray = decode.split(";");
+                const subStr = cArray[cArray.length - 1].split("=")[1];
+                a.download = subStr.substring(1, subStr.length - 1);
+                a.href = ev.target.result;
+                $('body').append(a);
+                a.click();
+                $(a).remove();
+            };
+        } else {
+            showToast(400, "request unsuccessful:" + xhr.status);
+        }
+    };
+    xhr.open("get", url, true);
+    xhr.responseType = 'blob';
+    xhr.send(null);
 }
