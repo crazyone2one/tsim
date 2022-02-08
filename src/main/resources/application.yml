@@ -33,12 +33,16 @@ spring:
     default-property-inclusion: non_empty
   servlet:
     multipart:
-      max-request-size: 5GB # 上传文件总的最大值
-      max-file-size: 1GB # 单个文件最大值
+      max-request-size: 200MB # 上传文件总的最大值
+      max-file-size: 200MB # 单个文件最大值
 # 开启mybatis-plus日志
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+logging:
+  level:
+    cn.master.tsim: info
 
 server:
   servlet:
