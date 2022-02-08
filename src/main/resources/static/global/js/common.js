@@ -119,47 +119,6 @@ $('.modal').on('show.bs.modal', function () {
     $invalid.hasClass('is-invalid') && $invalid.removeClass('is-invalid');
 })
 
-/*****文件上传*/
-$('.file-input').on('change', function () {
-    // 恢复提交按钮
-    $('#uploadFileBtn').attr('disabled', false);
-})
-
-$('#uploadFileBtn').click(function (e) {
-    e.preventDefault();
-    // 置灰提交按钮，防止重复提交
-    $(this).attr('disabled', true);
-    const formData = new FormData();
-    formData.append("file", $('#inputGroupFile04')[0].files[0]);
-    const $progressbar = $('#progressbar');
-    $.ajax({
-        url: "/story/upload",
-        type: 'post',
-        data: formData,
-        processData: false,
-        contentType: false,
-        xhr: function () {
-            const xhr = $.ajaxSettings.xhr();
-            xhr.upload.onprogress = function (event) {
-                const perc = Math.round((event.loaded / event.total) * 100);
-                $progressbar.text(perc + "%");
-                $progressbar.css('width', perc + "%");
-            };
-            return xhr;
-        },
-        beforeSend: function (xhr) {
-            $progressbar.text('');
-            $progressbar.css('width', "0%");
-        }
-    })
-        .done(function (result) {
-            $('#inputGroupFile04').val();
-            $('#uploadFileBtn').attr("disabled", false);
-            let tempMap = new Map(Object.entries(result.data));
-            $('#attachmentId').val(tempMap.get('docId'));
-        })
-})
-
 /**
  * 设置select控件选中
  * @param selectId select的id值
