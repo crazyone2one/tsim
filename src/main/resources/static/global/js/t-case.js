@@ -245,7 +245,7 @@ function validateCaseInfo(case_info_data) {
     }
 }
 
-// 导入测试用例js
+// 导入测试用例弹框初始化
 $('#case-upload-modal').on('show.bs.modal', function (event) {
     autoComplete("/project/queryList", "import-project", 'p', true);
     // myModal.off('shown.bs.modal');//去除绑定
@@ -257,6 +257,8 @@ $('#case-upload-modal').on('show.bs.modal', function (event) {
     $import.remove();
     // 删除之前的导入失败提示信息
     $('#infoHelp').empty();
+    // 进度条置为0
+    $('#progress').attr('style', 'width: 0');
 });
 
 // 上传窗口中监听计划数据
@@ -277,33 +279,7 @@ function importCase() {
         return false;
     }
     file.append('file', file1);
-    $.ajax({
-        url: '/case/upload',
-        type: 'post',
-        async: false,
-        data: file,
-        processData: false,
-        contentType: false,
-        success: function (resp) {
-            if (Object.is(200, resp['code'])) {
-                $infoHelp.addClass('text-success fw-bold').text(resp['msg']);
-            } else {
-                const split = resp['data'].split(',');
-                $infoHelp.append('<a class="text-danger" data-bs-toggle="collapse" href="#collapseExample1" aria-expanded="false" aria-controls="collapseExample1">' + resp['msg'] + '</a>');
-                $infoHelp.append('<div class="collapse" id="collapseExample1"></div>');
-                for (let i = 0; i < split.length; i++) {
-                    let _msg = split[i];
-                    if (_msg.substr(0, 1) === '[') {
-                        _msg = _msg.substr(1);
-                    }
-                    if (_msg.substr(-1) === ']') {
-                        _msg = _msg.substr(0, _msg.length - 1);
-                    }
-                    $('#collapseExample1').append('<div id="error_' + i + '" class="form-text text-danger fw-bold">' + _msg + '</div>');
-                }
-            }
-        }
-    })
+    upload_with_progress_bar('/case/upload', file);
 }
 
 // 导出测试用例数据
