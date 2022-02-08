@@ -9,6 +9,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.fasterxml.jackson.core.type.TypeReference;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -54,7 +55,14 @@ public class TestCaseStepsServiceImpl extends ServiceImpl<TestCaseStepsMapper, T
     public void removeStepByCaseId(String id) {
         QueryWrapper<TestCaseSteps> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(TestCaseSteps::getCaseId, id);
-        baseMapper.delete(wrapper);
+        List<TestCaseSteps> testCaseSteps = baseMapper.selectList(wrapper);
+        if (CollectionUtils.isNotEmpty(testCaseSteps)) {
+            testCaseSteps.forEach(t->{
+                t.setActive(1);
+                t.setUpdateDate(new Date());
+                baseMapper.updateById(t);
+            });
+        }
     }
 
 }
