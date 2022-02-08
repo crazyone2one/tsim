@@ -53,6 +53,8 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     TestTaskInfoService taskInfoService;
     @Autowired
     ProjectCaseRefService projectCaseRefService;
+    @Autowired
+    TestCaseStepsService caseStepsService;
 
 
     @Autowired
@@ -233,6 +235,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             testCase.setDelFlag(1);
             testCase.setUpdateDate(new Date());
             baseMapper.updateById(testCase);
+            caseStepsService.removeStepByCaseId(testCase.getId());
         });
     }
 
