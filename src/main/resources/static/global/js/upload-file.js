@@ -3,7 +3,7 @@
 function uploadProgress(evt) {
     if (evt.lengthComputable) {
         const percent = Math.round(evt.loaded * 100 / evt.total);
-        document.getElementById('progress').innerHTML = percent.toFixed(2) + '%';
+        // document.getElementById('progress').innerHTML = percent.toFixed(2) + '%';
         document.getElementById('progress').style.width = percent.toFixed(2) + '%';
     } else {
         document.getElementById('progress').innerHTML = 'unable to compute';

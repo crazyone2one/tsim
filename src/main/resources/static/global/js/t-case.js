@@ -268,7 +268,11 @@ $("#import-ref-plan")[0].addEventListener("focus", function () {
 });
 
 // 导入测试用例数据
-function importCase() {
+$('#import-case-btn').on('click',function (e) {
+    e.preventDefault();
+    $(this).prop('disable', true);
+    $('#progress').parent().show();
+    $('#progress').parent().addClass('active');
     const $infoHelp = $('#infoHelp');
     // 删除之前的导入失败提示信息
     $infoHelp.empty();
@@ -280,7 +284,7 @@ function importCase() {
     }
     file.append('file', file1);
     upload_with_progress_bar('/case/upload', file);
-}
+})
 
 // 导出测试用例数据
 function exportCase() {
