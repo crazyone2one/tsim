@@ -310,16 +310,6 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         return testCase;
     }
 
-    @Override
-    public TestCase queryCaseById(String caseId) {
-        final TestCase testCase = baseMapper.queryCaseInfo(caseId);
-        testCase.setProject(projectService.getProjectById(testCase.getProjectId()));
-//        testCase.setProjectId(projectService.getProjectById(testCase.getProjectId()).getProjectName());
-        testCase.setModule(moduleService.getModuleById(testCase.getModuleId()));
-//        testCase.setModuleId(moduleService.getModuleById(testCase.getModuleId()).getModuleName());
-        return testCase;
-    }
-
     @CachePut(cacheNames = "caseData")
     public List<TestCase> queryList(HttpServletRequest request) {
         QueryWrapper<TestCase> wrapper = new QueryWrapper<>();

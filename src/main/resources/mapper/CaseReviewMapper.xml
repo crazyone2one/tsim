@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.master.tsim.mapper.CaseReviewMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="cn.master.tsim.entity.CaseReview">
+        <id column="id" property="id" />
+        <result column="review_name" property="reviewName" />
+        <result column="review_user" property="reviewUser" />
+        <result column="review_remark" property="reviewRemark" />
+        <result column="finish_date" property="finishDate" />
+        <result column="create_date" property="createDate" />
+        <result column="update_date" property="updateDate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, review_name, review_user, review_remark, finish_date, create_date, update_date
+    </sql>
+
+</mapper>

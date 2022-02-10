@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="/fragment/commons :: common_header(~{::title},~{})">
+    <title>TSIM @ CASE REVIEW</title>
+</head>
+
+<body id="tsim_body" class="aside-enable">
+    <div th:replace="/fragment/commons_v2 :: 2nd-navigation(moduleflag='case',liFlag='review')"></div>
+    <div id="wrapper" class="shadow">
+        <div id="content-wrapper" class="d-flex flex-column">
+            <div id="content">
+                <div class="container-fluid">
+                    <div class="border-bottom">
+                        <form id="search-form">
+                            <div class="btn-group mb-3 mt-3">
+<!--                                <button type="button" class="btn btn-primary hvr-grow me-1" id="search-button"-->
+<!--                                        title="查询">-->
+<!--                                    <i class="bi bi-search"></i>-->
+<!--                                </button>-->
+                                <button type="button" class="btn btn-info hvr-grow me-3"
+                                        data-bs-toggle="modal" data-bs-target="#add-review-modal" title="添加">
+                                    <i class="bi bi-plus-circle"></i>
+                                </button>
+                                <button type="button" class="btn btn-sm hvr-grow me-3 border" id="start-review" disabled>
+                                    <i class="bi-play-circle">开始评审</i>
+                                </button>
+                                <button type="button" class="btn btn-sm hvr-grow border" id="review-ref-case" disabled
+                                        data-bs-toggle="modal" data-bs-target="#ref-case-modal">
+                                    <i class="bi-link">关联用例</i>
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                    <!--            列表数据-->
+                    <div id="table_refresh" th:fragment="table_refresh">
+                        <table id="table" class="table table-hover">
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <footer th:replace="/fragment/commons :: footer"></footer>
+    <div th:replace="/test-case/add_review_modal :: addReviewFragment"></div>
+    <div th:replace="/fragment/commons :: toast-div"></div>
+    <div th:replace="/fragment/commons :: confirm-modal"></div>
+    <div th:replace="/plan/associate_case :: ass_case"></div>
+    <!-- Logout Modal-->
+    <div th:replace="/fragment/commons :: logout"></div>
+    <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
+    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.js}"></script>
+    <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.js}"></script>
+    <script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
+    <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
+    <script type="text/javascript" th:src="@{/global/js/t.case.review.js}"></script>
+</body>
+</html>

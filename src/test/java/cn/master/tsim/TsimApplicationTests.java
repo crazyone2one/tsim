@@ -1,5 +1,6 @@
 package cn.master.tsim;
 
+import cn.master.tsim.service.CaseReviewRefService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,6 +17,8 @@ class TsimApplicationTests {
     @Qualifier("secondaryJdbcTemplate")
     protected JdbcTemplate jdbcTemplate2;
 
+    @Autowired
+    CaseReviewRefService mapper;
     @Test
     void contextLoads() {
 

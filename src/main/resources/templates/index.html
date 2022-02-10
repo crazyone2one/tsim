@@ -1,60 +1,56 @@
 <!doctype html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head th:replace="/fragment/commons :: common_header(~{::title},~{})">
-        <title>TSIM @ Dashboard</title>
-    </head>
-    <!--    begin body-->
-    <body id="tsim_body" class="">
-        <div id="wrapper">
-            <div th:replace="/fragment/commons :: sidebarMenu(flag='dashboard')"></div>
-            <div id="content-wrapper" class="d-flex flex-column">
-                <div id="content">
-                    <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
-                    <div class="container-fluid">
-                        <div class="row mb-4">
-                            <div class="col-xxl-6">
-                                <div class="card shadow ">
-<!--                                    <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">-->
-<!--                                        <h6 class="m-0 font-weight-bold text-primary">测试用例变化情况</h6>-->
-<!--                                        <div class="dropdown no-arrow">-->
-
-<!--                                        </div>-->
-<!--                                    </div>-->
-                                    <div class="card-body">
-                                        <div class="chart-area">
-                                            <div id="case_echarts" class="ps-4 pe-6 mb-1"
-                                                 style="height: 300px;min-height: 215px"
-                                                 data-negative-color="rgba(150,142,126,0.2"></div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-xxl-6">
-                                <div class="card shadow">
-                                    <div class="card-body">
-                                        <div class="chart-area">
-                                            <div id="bug_echarts" class="ps-4 pe-6 mb-1"
-                                                 style="height: 300px;min-height: 215px"
-                                                 data-negative-color="rgba(150,142,126,0.2"></div>
-                                        </div>
-                                    </div>
+<head th:replace="/fragment/commons :: common_header(~{::title},~{})">
+    <title>TSIM @ Dashboard</title>
+</head>
+<!--    begin body-->
+<body id="tsim_body" class="bg-light">
+<!--<nav th:replace="/fragment/commons_v2 :: main-navigation"></nav>-->
+<div th:replace="/fragment/commons_v2 :: 2nd-navigation(moduleflag='other',liFlag='')"></div>
+<div id="wrapper">
+    <div th:replace="/fragment/commons :: sidebarMenu(flag='dashboard')"></div>
+    <div id="content-wrapper" class="d-flex flex-column">
+        <div id="content">
+            <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
+            <div class="container-fluid">
+                <div class="row mb-4">
+                    <div class="col-xxl-6">
+                        <div class="card shadow ">
+                            <div class="card-body">
+                                <div class="chart-area">
+                                    <div id="case_echarts" class="ps-4 pe-6 mb-1"
+                                         style="height: 300px;min-height: 215px"
+                                         data-negative-color="rgba(150,142,126,0.2"></div>
                                 </div>
                             </div>
                         </div>
-
-                        <input type="hidden" th:value="${xAxisList}" id="xAxisList">
+                    </div>
+                    <div class="col-xxl-6">
+                        <div class="card shadow">
+                            <div class="card-body">
+                                <div class="chart-area">
+                                    <div id="bug_echarts" class="ps-4 pe-6 mb-1"
+                                         style="height: 300px;min-height: 215px"
+                                         data-negative-color="rgba(150,142,126,0.2"></div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <footer th:replace="/fragment/commons :: footer"></footer>
+
+                <input type="hidden" th:value="${xAxisList}" id="xAxisList">
             </div>
         </div>
-        <!--        <footer th:replace="/fragment/commons :: footer"></footer>-->
-        <div th:replace="/fragment/commons :: logout"></div>
-        <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/echarts.min.js}"></script>
-        <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
-        <script type="text/javascript" th:src="@{/plugins/element-resize-detector.min.js}"></script>
-        <script th:src="@{/global/js/dashboard.js}"></script>
-        <script th:src="@{/global/js/common.js}"></script>
-    </body>
+        <footer th:replace="/fragment/commons :: footer"></footer>
+    </div>
+</div>
+<!--        <footer th:replace="/fragment/commons :: footer"></footer>-->
+<div th:replace="/fragment/commons :: logout"></div>
+<script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/echarts.min.js}"></script>
+<script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+<script type="text/javascript" th:src="@{/plugins/element-resize-detector.min.js}"></script>
+<script th:src="@{/global/js/dashboard.js}"></script>
+<script th:src="@{/global/js/common.js}"></script>
+</body>
 </html>

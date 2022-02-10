@@ -1,6 +1,7 @@
 package cn.master.tsim.controller;
 
 
+import cn.master.tsim.common.Constants;
 import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.Module;
@@ -59,6 +60,12 @@ public class TestCaseController {
     public String allTests(Model model) {
         model.addAttribute("monthList", DateUtils.currentYearMonth());
         return "test-case/case_list";
+    }
+
+    @RequestMapping("case-review")
+    public String toReviewPage(Model model) {
+        model.addAttribute("users", Constants.userMaps);
+        return "test-case/case_review";
     }
 
     @RequestMapping("/reloadTable")
@@ -150,7 +157,7 @@ public class TestCaseController {
     @ResponseBody
     public ResponseResult queryCase(HttpServletRequest request, @PathVariable String id) {
         try {
-            final TestCase testCase = caseService.queryCaseById(id);
+            final TestCase testCase = caseService.getById(id);
             return ResponseUtils.success("数据查询成功", testCase);
         } catch (Exception e) {
             log.info(e.getMessage());

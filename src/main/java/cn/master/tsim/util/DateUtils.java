@@ -1,5 +1,6 @@
 package cn.master.tsim.util;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -14,7 +15,13 @@ import java.util.List;
  * @version 1.0.0
  */
 public class DateUtils {
-    private static final String DATEFORMAT_DAY = "yyyy-MM-dd";
+    public static final String DATEFORMAT_DAY = "yyyy-MM-dd";
+    public static final String DATETIME_FORMAT = "yyyy-MM-dd HH:mm:ss";
+    /**
+     * 常用的时间格式
+     */
+    private static String[] parsePatterns = { "yyyy-MM-dd", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm", "yyyy/MM/dd",
+            "yyyy/MM/dd HH:mm:ss", "yyyy/MM/dd HH:mm" };
 
     public static LocalDate parse2LocalDate(String date) {
         final DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DATEFORMAT_DAY);
@@ -51,5 +58,14 @@ public class DateUtils {
             list.add(ss);
         }
         return list;
+    }
+
+    public static Date parseStrToDate(final String format, final String ts) {
+        try {
+            return new SimpleDateFormat(format).parse(ts);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            throw new RuntimeException(e);
+        }
     }
 }

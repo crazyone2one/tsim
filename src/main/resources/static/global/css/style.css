@@ -12,7 +12,8 @@
     animation-timing-function: transform cubic-bezier(0.18, 1.25, 0.4, 1), opacity cubic-bezier(0, 1, 0.4, 1);
 }
 
-.topbar .nav-item.dropdown .dropdown-toggle::after {
+.topbar .nav-item.dropdown .dropdown-toggle::after,
+.nav-item.dropdown .dropdown-toggle::after {
     width: 1rem;
     text-align: center;
     float: right;
@@ -22,15 +23,15 @@
     content: '';
 }
 
-.topbar .nav-item.dropdown.show .dropdown-toggle::after {
+.topbar .nav-item.dropdown.show .dropdown-toggle::after, .nav-item.dropdown.show .dropdown-toggle::after {
     content: '';
 }
 
-.topbar .nav-item .nav-link {
+.topbar .nav-item .nav-link, .nav-item .nav-link {
     position: relative;
 }
 
-.topbar .nav-item .nav-link .badge-counter {
+.topbar .nav-item .nav-link .badge-counter, .nav-item .nav-link .badge-counter {
     position: absolute;
     transform: scale(0.7);
     transform-origin: top right;
@@ -38,7 +39,7 @@
     margin-top: -.2rem;
 }
 
-.topbar .nav-item .nav-link .img-profile {
+.topbar .nav-item .nav-link .img-profile, .nav-item .nav-link .img-profile {
     height: 2rem;
     width: 2rem;
 }
@@ -57,9 +58,10 @@
 /*选中菜单改变样式*/
 .nav-item .nav-link.active {
     /*transition: color .2s;*/
-    background-color: #4fc9da;
-    color: #fff;
-    border-radius: 11px;
+    /*background-color: #4fc9da;*/
+    /*color: #fff;*/
+    /*border-radius: 11px;*/
+    box-shadow: 0 -1px 0 0 #b4a078 inset;
 }
 
 .sidebar-brand {
@@ -248,4 +250,11 @@ table {
 /*禁用Bootstrap的Collapse打开/关闭动画*/
 .collapsing {
     transition: none !important;
+}
+
+.nav-scroller {
+    position: relative;
+    z-index: 2;
+    height: 2.75rem;
+    overflow-y: hidden;
 }

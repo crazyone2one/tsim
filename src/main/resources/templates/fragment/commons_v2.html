@@ -1,0 +1,141 @@
+<!--navbar 2.0-->
+<div th:fragment="2nd-navigation(moduleflag,liFlag)">
+    <div class="navbar navbar-expand-lg" style="background: #0b7656">
+        <div class="container-fluid">
+            <nav class="nav" aria-label="Secondary navigation">
+                <a class="nav-link " href="#" th:href="@{/dashboard}">Dashboard</a>
+                <a class="nav-link " href="#" th:href="@{/case-manage-index}">测试跟踪</a>
+                <a class="nav-link " href="#" th:href="@{/api-manage-index}">接口测试</a>
+                <a class="nav-link " href="#">UI测试</a>
+            </nav>
+            <ul class="navbar-nav ml-auto">
+                <li class="nav-item dropdown no-arrow d-sm-none"></li>
+                <!-- Nav Item - Alerts -->
+                <li class="nav-item dropdown no-arrow mx-1">
+                    <a class="nav-link dropdown-toggle" href="#" id="alertsDropdown" role="button"
+                       data-bs-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <i class="bi bi-bell"></i>
+                        <span class="badge badge-danger badge-counter">3+</span>
+                    </a>
+                    <!-- Dropdown - Alerts -->
+                    <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                         aria-labelledby="alertsDropdown">
+
+                    </div>
+                </li>
+                <li class="nav-item dropdown no-arrow mx-1"></li>
+                <!--                <div class="topbar-divider d-none d-sm-block"></div>-->
+                <li class="nav-item dropdown show">
+                    <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button"
+                       data-bs-toggle="dropdown"
+                       aria-haspopup="true" aria-expanded="false">
+                        <span class="mr-2 d-none d-lg-inline small"
+                              th:text="${session.account.username}">11's papa</span>
+                        <!--                        <img class="img-profile rounded-circle" src="/static/img/undraw_profile.svg"-->
+                        <!--                             th:src="@{/img/undraw_profile.svg}">-->
+                    </a>
+                    <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                         aria-labelledby="userDropdown">
+                        <a class="dropdown-item" href="#">
+                            <i class="bi bi-person mr-2 text-gray-400"> Profile</i>
+                        </a>
+                        <a class="dropdown-item" href="#">
+                            <i class="bi bi-gear mr-2 text-gray-400"> Settings</i>
+                        </a>
+                        <a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#logoutModal">
+                            <i class="bi bi-box-arrow-right mr-2 text-gray-400"> logout</i>
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div th:if="${moduleflag =='case'}">
+        <div th:if="${moduleflag =='case'}" th:replace="/fragment/commons_v2 :: case-navigation(${liFlag})"></div>
+    </div>
+    <div th:if="${moduleflag =='api'}">
+        <div th:replace="/fragment/commons_v2 :: api-navigation(${liFlag})"></div>
+    </div>
+    <div th:if="${moduleflag =='other'}">
+        <div th:replace="/fragment/commons_v2 :: other-navigation"></div>
+    </div>
+</div>
+<!--测试跟踪-->
+<div class="navbar navbar-expand-lg pt-0 border-bottom" style="background: #20c997" th:fragment="case-navigation(flag)">
+    <div class="container">
+        <!--        <div class="col">-->
+        <!--            <div class="input-group col-md-6 mt-1 ms-2">-->
+        <!--                <label class="input-group-text" for="globalProject">当前项目</label>-->
+        <!--                <select class="form-select" id="globalProject">-->
+        <!--                    <option selected>Choose...</option>-->
+        <!--                    <option value="1">One</option>-->
+        <!--                    <option value="2">Two</option>-->
+        <!--                    <option value="3">Three</option>-->
+        <!--                </select>-->
+        <!--            </div>-->
+        <!--        </div>-->
+        <div class="collapse navbar-collapse" id="caseNavigation">
+            <ul class="navbar-nav">
+                <li class="nav-item ">
+                    <a th:class="${flag=='index'?'nav-link active':'nav-link'}" href="#"
+                       th:href="@{/case-manage-index}">首页</a>
+                </li>
+                <li class="nav-item ">
+                    <a th:class="${flag=='case'?'nav-link active':'nav-link'}" href="#" th:href="@{/case/list}">测试用例</a>
+                </li>
+                <li class="nav-item ">
+                    <a th:class="${flag=='review'?'nav-link active':'nav-link'}" href="#"
+                       th:href="@{/case/case-review}">用例评审</a>
+                </li>
+                <li class="nav-item ">
+                    <a th:class="${flag=='plan'?'nav-link active':'nav-link'}" href="#" th:href="@{/plan/list}">测试计划</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" href="#">报告</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="navbar navbar-expand-lg mt-1 pt-0 pb-2 border-bottom" style="background: #20c997"
+     th:fragment="api-navigation(flag)">
+    <div class="container">
+        <div class="collapse navbar-collapse" id="apiNavigation">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a th:class="${flag=='index'?'nav-link active':'nav-link'}" href="#">首页</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link " href="#">接口定义</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link " href="#">接口自动化</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link " href="#">测试报告</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="navbar navbar-expand-lg mt-1 pt-0 pb-2 border-bottom" th:fragment="other-navigation">
+    <div class="container">
+        <div class="collapse navbar-collapse" id="navbarCollapse1">
+            <ul class="navbar-nav">
+                <li class="nav-item active">
+                    <a class="nav-link " href="#">link1</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link " href="#">link1</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link " href="#">link1</a>
+                </li>
+                <li class="nav-item active">
+                    <a class="nav-link " href="#">link1</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

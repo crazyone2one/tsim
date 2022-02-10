@@ -24,7 +24,7 @@ public interface TestCaseService extends IService<TestCase> {
     /**
      * 保存测试用例
      *
-     * @param request  HttpServletRequest
+     * @param request HttpServletRequest
      * @return cn.master.tsim.entity.TestCase
      */
     ResponseResult saveCase(HttpServletRequest request);
@@ -33,7 +33,7 @@ public interface TestCaseService extends IService<TestCase> {
      * 导入数据
      *
      * @param request HttpServletRequest
-     * @param cases 待导入的测试用例数据
+     * @param cases   待导入的测试用例数据
      */
     void importCase(HttpServletRequest request, List<TestCase> cases);
 
@@ -45,6 +45,7 @@ public interface TestCaseService extends IService<TestCase> {
      * @param request HttpServletRequest
      */
     void disableCase(HttpServletRequest request);
+
     void deleteCase(HttpServletRequest request);
 
     /**
@@ -68,15 +69,14 @@ public interface TestCaseService extends IService<TestCase> {
 
     Map<String, Integer> caseCountByStatus(String projectId, String moduleId);
 
-    TestCase getById(String caseId);
-
     /**
      * 查询测试用例
      *
      * @param caseId 测试用例id
      * @return cn.master.tsim.entity.TestCase
      */
-    TestCase queryCaseById(String caseId);
+    TestCase getById(String caseId);
+
 
     ResponseResult checkCaseData(HttpServletRequest request);
 

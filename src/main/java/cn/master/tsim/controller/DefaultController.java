@@ -59,6 +59,16 @@ public class DefaultController {
         return "index";
     }
 
+    @RequestMapping("case-manage-index")
+    public String goCaseManageIndex() {
+        return "test-case-index";
+    }
+
+    @RequestMapping("api-manage-index")
+    public String goApiManageIndex() {
+        return "api-index";
+    }
+
     private List<Map<String, Object>> getSeries(List<Map<String, Object>> xAxData) {
         List<Map<String, Object>> xAxi = new ArrayList<>(xAxData);
         for (Map<String, Object> objectMap : xAxi) {

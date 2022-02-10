@@ -143,4 +143,11 @@ public class TestCase implements Serializable {
     @ExcelIgnore
     @TableField("del_flag")
     private Integer delFlag;
+
+    /**
+     * 测试用例评审状态(0-评审,1-通过,2-未通过)
+     */
+    @ExcelIgnore
+    @TableField("review_status")
+    private Integer reviewStatus;
 }

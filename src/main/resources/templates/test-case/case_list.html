@@ -4,11 +4,12 @@
     <title>TSIM @ CASE</title>
 </head>
 <body id="tsim_body" class="aside-enable">
+<div th:replace="/fragment/commons_v2 :: 2nd-navigation(moduleflag='case',liFlag='case')"></div>
 <div id="wrapper">
-    <div th:replace="/fragment/commons :: sidebarMenu(flag='case')"></div>
+    <!--    <div th:replace="/fragment/commons :: sidebarMenu(flag='case')"></div>-->
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
-            <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
+            <!--            <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>-->
             <div class="container-fluid">
                 <!--操作栏-->
                 <div class="pt-2 border-bottom">
@@ -65,7 +66,8 @@
                                         data-bs-target="#case-upload-modal" id="import" title="导入数据">
                                     <i class="bi bi-cloud-arrow-up"></i>
                                 </button>
-                                <button type="button" class="btn btn-primary hvr-grow me-1" id="export-case" title="导出数据" onclick="exportCase()">
+                                <button type="button" class="btn btn-primary hvr-grow me-1" id="export-case"
+                                        title="导出数据" onclick="exportCase()">
                                     <i class="bi bi-cloud-arrow-down"></i>
                                 </button>
                                 <button type="button" class="btn btn-warning hvr-grow me-1" id="batch-disable"

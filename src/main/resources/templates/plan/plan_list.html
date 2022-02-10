@@ -5,11 +5,11 @@
     <link rel="stylesheet" th:href="@{/plugins/bst/bootstrap-table.min.css}">
 </head>
 <body id="tsim_body">
+<div th:replace="/fragment/commons_v2 :: 2nd-navigation(moduleflag='case',liFlag='plan')"></div>
 <div id="wrapper">
-    <div th:replace="/fragment/commons :: sidebarMenu(flag='plan')"></div>
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
-            <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>
+<!--            <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>-->
             <div class="container-fluid">
                 <!--操作栏-->
                 <div class="pt-2 border-bottom">
