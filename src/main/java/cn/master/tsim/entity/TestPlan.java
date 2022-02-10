@@ -62,6 +62,13 @@ public class TestPlan implements Serializable {
      */
     @TableField("work_date")
     private String workDate;
+
+    @TableField("end_date")
+    private Date finishDate;
+
+    @TableField("start_date")
+    private Date startDate;
+
     /**
      * 完成状态(0-未完成，1-已完成）
      */

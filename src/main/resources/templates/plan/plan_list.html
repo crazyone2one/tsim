@@ -9,7 +9,7 @@
 <div id="wrapper">
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
-<!--            <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>-->
+            <!--            <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>-->
             <div class="container-fluid">
                 <!--操作栏-->
                 <div class="pt-2 border-bottom">
@@ -37,7 +37,7 @@
                             </div>
                             <select class="form-select me-2" style="width: fit-content" aria-label="active"
                                     name="workStatus" id="workStatus">
-<!--                                <option th:value="''">结束状态</option>-->
+                                <!--                                <option th:value="''">结束状态</option>-->
                                 <option value="0">未结束</option>
                                 <option value="1">已结束</option>
                             </select>
@@ -110,27 +110,44 @@
             field: 'projectId',
             align: 'center',
             title: '项目名',
-            class: 'col-sm-6', formatter: function (value, row, index) {
+            class: 'col-sm-4', formatter: function (value, row, index) {
                 return row.project.projectName;
             }
         }, {
             field: 'storyId',
             align: 'center',
             title: '关联需求',
-            class: 'col-sm-6', formatter: function (value, row, index) {
+            class: 'col-sm-4', formatter: function (value, row, index) {
                 return row.story != null ? row.story.storyName : undefined;
             }
         }, {
             field: 'name',
             align: 'center',
             title: '测试计划名称',
-            class: 'col-sm-6'
+            class: 'col-sm-4'
         }, {
             field: 'description',
             align: 'center',
             title: '测试计划描述',
-            class: 'col-sm-6'
-        }, {title: '操作', align: 'center', field: 'id', class: 'col-sm-2', formatter: option,}];
+            class: 'col-sm-4'
+        },
+        {
+            field: 'startDate',
+            align: 'center',
+            title: '开始时间', sortable: true,
+            class: 'col-sm-2', formatter: formatter_date,
+        },
+        {
+            field: 'finishDate',
+            align: 'center',
+            title: '结束时间', sortable: true,
+            class: 'col-sm-2', formatter: formatter_date,
+        },
+        {title: '操作', align: 'center', field: 'id', class: 'col-sm-2', formatter: option,}];
+
+    function formatter_date(value) {
+        return value.toString().split(" ")[0];
+    }
 
     function option(value, row, index) {
         // return "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
@@ -149,11 +166,17 @@
             planName: $('#plan-name').val().trim(), // 自定义查询条件
             planDesc: $('#plan-description').val().trim(), // 自定义查询条件
             workStatus: $('#workStatus').val().trim(), // 自定义查询条件
+            sortName: this.sortName,
+            sortOrder: this.sortOrder,
             pageSize: params.limit,
             pageNum: params.offset / params.limit + 1,
 
         }
     };
+    _table.on('sort.bs.table', function (e, name, order) {//点击排序
+        _params.orderField = name
+        _params.order = order
+    });
     InitTable("/plan/loadPlan", "get", _columns, _params);
 
     /** 关联弹框中搜索功能*/

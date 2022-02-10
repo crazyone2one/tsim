@@ -51,6 +51,8 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
 
     @Override
     public IPage<TestPlan> pageList(HttpServletRequest request, Integer pageCurrent, Integer pageSize) {
+        String sortName = request.getParameter("sortName");
+        String sortOrder = request.getParameter("sortOrder");
         QueryWrapper<TestPlan> wrapper = new QueryWrapper<>();
 //        按照项目查询
         final String projectName = request.getParameter("projectName");
@@ -69,7 +71,23 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
         String workStatus = request.getParameter("workStatus");
         wrapper.lambda().eq(StringUtils.isNotBlank(workStatus), TestPlan::getWorkStatus, Integer.valueOf(workStatus));
         wrapper.lambda().eq(TestPlan::getDelFlag, 0);
-        wrapper.lambda().orderByDesc(TestPlan::getCreateDate);
+        // 开始时间、结束时间排序
+        if (StringUtils.isNotBlank(sortName)) {
+            if (Objects.equals("startDate",sortName)) {
+                if (Objects.equals("asc", sortOrder)) {
+                    wrapper.lambda().orderByAsc(TestPlan::getStartDate);
+                } else {
+                    wrapper.lambda().orderByDesc(TestPlan::getStartDate);
+                }
+            }
+            if (Objects.equals("finishDate",sortName)) {
+                if (Objects.equals("asc", sortOrder)) {
+                    wrapper.lambda().orderByAsc(TestPlan::getStartDate);
+                } else {
+                    wrapper.lambda().orderByDesc(TestPlan::getStartDate);
+                }
+            }
+        }
         final Page<TestPlan> iPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
                 wrapper);
@@ -97,6 +115,8 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
         String tempStoryId = request.getParameter("storyId");
         String tempPlanName = request.getParameter("name");
         String description = request.getParameter("description").trim();
+        String startDate = request.getParameter("startDate");
+        String finishDate = request.getParameter("finishDate");
         if (StringUtils.isNotBlank(id)) {
             TestPlan byId = getById(id);
             byId.setStoryId(tempStoryId);
@@ -113,6 +133,8 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
         }
         TestPlan build = TestPlan.builder().description(description).name(tempPlanName)
                 .projectId(tempProjectId).storyId(tempStoryId).workDate(DateUtils.parse2String(new Date(), "yyyy-MM"))
+                .startDate(DateUtils.parseStrToDate(DateUtils.DATEFORMAT_DAY,startDate))
+                .finishDate(DateUtils.parseStrToDate(DateUtils.DATEFORMAT_DAY,finishDate))
                 .delFlag(0).createDate(new Date()).build();
         baseMapper.insert(build);
         planStoryRefService.addRefItem(build.getId(), tempStoryId);

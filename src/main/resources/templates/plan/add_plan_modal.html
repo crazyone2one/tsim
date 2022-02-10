@@ -10,7 +10,7 @@
         <div th:fragment="addPlanFragment">
             <div class="modal fade" id="add-plan-modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
                  aria-hidden="true" data-bs-backdrop="static">
-                <div class="modal-dialog modal-xl modal-dialog-centered">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
                     <div class="modal-content">
                         <div class="modal-header">
                             <h5 class="modal-title" id="staticBackdropLabel">新增测试计划</h5>
@@ -20,31 +20,62 @@
                             <div class="box-body">
                                 <form id="addPlanForm" class="needs-validation" autocomplete="off">
                                     <input type="hidden" name="id" id="hidden-plan-id">
-                                    <div class="input-group mb-3">
-                                        <span class="input-group-text required" id="basic-addon1">项目名称</span>
-                                        <input type="text" class="form-control invalid-item" placeholder="输入项目名称"
-                                               aria-label="project" aria-describedby="basic-addon1" id="p-add">
-                                        <div class="invalid-feedback" id="project-error-tips">
-                                            请输入或选择项目.
+                                    <div class="row mb-3">
+                                        <div class="row col-md-6">
+                                            <label class="col-sm-5 col-form-label required text-end" for="p-add">项目名称</label>
+                                            <div class="col-md-7">
+                                                <input type="text" class="form-control invalid-item" placeholder="输入项目名称" id="p-add">
+                                                <div class="invalid-feedback" id="project-error-tips">请输入或选择项目.</div>
+                                                <input type="hidden" name="projectId" id="s-p-id">
+                                            </div>
                                         </div>
-                                        <input type="hidden" name="projectId" id="s-p-id">
-                                    </div>
-                                    <div class="input-group mb-3">
-                                        <span id="basic-addon2" class="input-group-text">关联需求</span>
-                                        <input type="text" class="form-control" aria-label="story" aria-describedby="basic-addon2"
-                                               id="storyList" name="storyName" placeholder="搜索并选择需求..." onfocus="configureStoryComplete()">
-                                        <input type="hidden" name="storyId" id="storyId">
-                                    </div>
-                                    <div class="input-group mb-3">
-                                        <span id="basic-addon3" class="input-group-text required">测试计划名称</span>
-                                        <input type="text" class="form-control invalid-item" aria-label="name" aria-describedby="basic-addon3" id="add_plan_name" name="name" placeholder="输入测试计划名称"/>
-                                        <div class="invalid-feedback">
-                                            请输入测试计划名称.
+                                        <div class="row col-md-6">
+                                            <label for="add_plan_name" class="col-sm-5 col-form-label required text-end">计划名称</label>
+                                            <div class="col-md-7">
+                                                <input type="text" class="form-control invalid-item" id="add_plan_name" name="name" placeholder="输入测试计划名称"/>
+                                                <div class="invalid-feedback">请输入测试计划名称.</div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div class="input-group mb-3">
-                                        <span id="basic-addon4" class="input-group-text">测试计划描述</span>
-                                        <textarea class="form-control" aria-label="description"  id="add-description-name" name="description" placeholder="输入测试计划描述"></textarea>
+                                    <div class="row mb-3">
+                                        <div class="row col-md-6">
+                                            <label for="storyList" id="basic-addon2" class="col-sm-5 col-form-label text-end">关联需求</label>
+                                            <div class="col-md-7">
+                                                <input type="text" class="form-control" id="storyList" name="storyName" placeholder="搜索并选择需求..." onfocus="configureStoryComplete()">
+                                                <input type="hidden" name="storyId" id="storyId">
+                                            </div>
+                                        </div>
+                                        <div class="row col-md-6">
+                                            <label for="test" class="col-sm-5 col-form-label required text-end">测试阶段</label>
+                                            <select id="test" class="col-md-7">
+                                                <option value="1">1</option>
+                                                <option value="2">2</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="row col-md-6">
+                                            <label for="plan-start-date" class="col-sm-5 col-form-label text-end">开始时间</label>
+                                            <div class="col-md-7">
+                                                <input type="text" class="form-control " id="plan-start-date" name="startDate" placeholder="🕓 开始时间"
+                                                       onfocus="(this.type='date')" onblur="(this.type='text')">
+                                            </div>
+                                        </div>
+                                        <div class="row col-md-6">
+                                            <label for="plan-finish-date" class="col-sm-5 col-form-label text-end">截止时间</label>
+                                            <div class="col-md-7">
+                                                <input type="text" class="form-control" id="plan-finish-date" name="finishDate" placeholder="🕓 结束日期"
+                                                       onfocus="(this.type='date')" onblur="(this.type='text')">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="row mb-3">
+                                        <div class="row">
+                                            <label id="basic-addon4" class="col-sm-2 col-form-label text-end">测试计划描述</label>
+                                            <div class="col-md-10">
+                                                <textarea class="form-control" aria-label="description"  id="add-description-name" name="description" placeholder="输入测试计划描述"></textarea>
+                                            </div>
+                                        </div>
                                     </div>
                                 </form>
                             </div>
