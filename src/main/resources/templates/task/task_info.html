@@ -81,16 +81,9 @@
 <!--                    toast-->
 <div th:replace="/fragment/commons :: toast-div"></div>
 <div th:replace="/task/task_edit :: task-edit"></div>
-<!--        <footer th:replace="/fragment/commons :: footer"></footer>-->
 <!-- Logout Modal-->
 <div th:replace="/fragment/commons :: logout"></div>
-<script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
-<script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
-<script type="text/javascript" th:src="@{/global/js/common.js}"></script>
-<script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
+<div th:replace="/fragment/commons :: generalJS"></div>
 <script th:inline="javascript" th:src="@{/global/js/t-task.js}"></script>
 <script>
     // 列表数据
@@ -118,17 +111,7 @@
                 cellStyle: formatTableUnit,
                 formatter: paramsMatter
             },
-            {
-                align: 'center',
-                title: '关联需求',
-                field: 'reqDoc',
-                rowspan: 2,
-                colspan: 1,
-                valign: 'middle',
-                class: 'col-md-1',
-                cellStyle: formatTableUnit,
-                formatter: paramsMatter
-            },
+            // {align: 'center', title: '关联需求', field: 'reqDoc', rowspan: 2, colspan: 1, valign: 'middle', class: 'col-md-1', cellStyle: formatTableUnit, formatter: paramsMatter},
             {
                 align: 'center', title: '完成状态', field: 'finishStatus', rowspan: 2, colspan: 1, valign: 'middle',
                 formatter: function (value, row, index) {
