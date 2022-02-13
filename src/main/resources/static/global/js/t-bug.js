@@ -86,20 +86,16 @@ function batchDelete(id) {
  * @param id 问题单数据id
  */
 function add_or_update_bug_info(id) {
-    const add_modal = $('#add-bug-modal');
-    add_modal.modal('show');
-    add_modal.on('shown.bs.modal', function () {
-        // 编辑数据时不使用字段提示功能
-        !id && autoComplete("/project/queryList", "projectCode", 'p', true);
-    })
+    // 编辑数据时不使用字段提示功能
+    !id && autoComplete4Project(true, '#projectCode', '#b-a-p');
     // 查询项目关联的模块，编辑数据时不使用字段提示功能
     !id && $("#module")[0].addEventListener("focus", function () {
-        autoComplete("/module/queryList/" + $("#b-a-p").attr("value"), "module", 'm', false);
-    })
+        autoComplete4Module(true, '#module', '#b-a-m', $("#b-a-p").attr("value"));
+    });
     // 查询项目关联的需求，编辑数据时不使用字段提示功能
     !id && $("#add-bug-story")[0].addEventListener("focus", function () {
-        autoComplete("/story/queryList/" + $("#b-a-p").attr("value"), "add-bug-story", 's', true);
-    })
+        autoComplete4Story(true, '#add-bug-story', '#bug-story-ref', $("#b-a-p").attr("value"));
+    });
     document.getElementById('add-bug-modal').querySelector('.modal-title').textContent = id ? '编辑问题单' : '新增问题单';
     // 编辑数据时回显信息
     id && $.ajax({

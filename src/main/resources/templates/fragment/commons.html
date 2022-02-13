@@ -9,6 +9,37 @@
     <th:block th:replace="${links}"/>
     <link rel="stylesheet" th:href="@{/bootstrap/css/bootstrap-icons.css}">
     <link rel="stylesheet" th:href="@{/plugins/hover.css}">
+    <style>
+        .autocomplete-suggestions {
+            border: 1px solid #999;
+            background: #FFF;
+            overflow: auto;
+        }
+
+        .autocomplete-suggestion {
+            padding: 2px 5px;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+
+        .autocomplete-selected {
+            background: #F0F0F0;
+        }
+
+        .autocomplete-suggestions strong {
+            font-weight: normal;
+            color: #3399FF;
+        }
+
+        .autocomplete-group {
+            padding: 2px 5px;
+        }
+
+        .autocomplete-group strong {
+            display: block;
+            border-bottom: 1px solid #f30606;
+        }
+    </style>
     <meta name="author" content="11‘s papa">
 </head>
 <!--菜单-->
@@ -229,7 +260,8 @@
     <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
     <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.min.js}"></script>
     <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.min.js}"></script>
-    <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
+<!--    <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>-->
+    <script type="text/javascript" th:src="@{/plugins/jquery.autocomplete.min.js}"></script>
     <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
     <script th:inline="javascript" th:src="@{/global/js/bs.table.js}"></script>
 </div>

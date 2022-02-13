@@ -2,7 +2,7 @@
 // autoComplete("/project/queryList", "p-search", 'p', false);
 
 $('#add-task-modal').on('shown.bs.modal', function () {
-    autoComplete("/project/queryList", "t-add", 'p', true);
+    autoComplete4Project(true, '#t-add', '#s-p-id');
     removeClass('t-add', 'is-invalid');
 })
 

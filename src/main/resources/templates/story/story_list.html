@@ -166,15 +166,11 @@
 
     // 新增、编辑需求
     function addOrEditStory(id) {
-        const _modal = $('#add-story-modal');
-        _modal.modal('show');
-        _modal.on('shown.bs.modal', function () {
-            // 编辑数据时不使用字段提示功能
-            !id && autoComplete('/project/queryList', 'p-add', 'p', true);
-            !id && $('input[type=hidden]:first').val('');
-            removeClass('#p-add', 'is-invalid');
-            removeClass('#story-name-input', 'is-invalid');
-        })
+        // 编辑数据时不使用字段提示功能
+        !id && autoComplete4Project(true, '#p-add', '#hidden-project-id');
+        !id && $('input[type=hidden]:first').val('');
+        removeClass('#p-add', 'is-invalid');
+        removeClass('#story-name-input', 'is-invalid');
         document.getElementById('add-story-modal').querySelector('.modal-title').textContent = id ? '编辑需求数据' : '添加需求数据';
 
         // 编辑需求
@@ -302,7 +298,7 @@
         }
     })
     // 查询条件：项目
-    autoComplete('/project/queryList', 'p-search', 'p', false);
+    autoComplete4Project(false, '#p-search');
 </script>
 <script>
     /**

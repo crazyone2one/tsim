@@ -51,7 +51,8 @@
                                     <i class="bi bi-search"></i>
                                 </button>
                                 <button type="button" class="btn btn-info hvr-grow me-1"
-                                        data-bs-toggle="modal" data-bs-target="#add-case-modal" title="添加" onclick="addData()">
+                                        data-bs-toggle="modal" data-bs-target="#add-case-modal" title="添加"
+                                        onclick="addData()">
                                     <i class="bi bi-plus-circle"></i>
                                 </button>
                                 <!-- 导出模板数据-->
@@ -277,14 +278,20 @@
                 return _priority;
             }
         },
-        {title: '操作', align: 'center', field: 'id', class: 'col-sm-4', formatter: function option(value, row, index) {
+        {
+            title: '操作',
+            align: 'center',
+            field: 'id',
+            class: 'col-sm-4',
+            formatter: function option(value, row, index) {
                 const _detail = '<button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#case-detail-modal" onclick="detailCase(\'' + row.id + '\')">' +
                     '<i class="bi-journal-text" title="查看"></i></button>';
                 const _edit = '<button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#add-case-modal" onclick="editCase(\'' + row.id + '\')">' +
                     '<i class="bi-pencil-square" title="编辑"></i></button>';
                 const r = '<button disabled class="btn btn-sm btn-warning" onclick="runCase(\'' + row.id + '\')">run</button>';
                 return _edit + _detail;
-            },}
+            },
+        }
     ]
 
     //测试步骤封装
@@ -334,11 +341,11 @@
                     // dataType: 'JSON',
                     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                     success: function (arg) {
-                        $("#project-id-detail").val(arg['data'].project.projectName).attr('readonly',true);
-                        $("#module-id-detail").val(arg['data'].module.moduleName).attr('readonly',true);
-                        $("#case-title-detail").val(arg['data'].name).attr('readonly',true);
-                        $("#case-desc-detail").val(arg['data'].description).attr('readonly',true);
-                        $("#case-precondition-detail").val(arg['data'].precondition).attr('readonly',true);
+                        $("#project-id-detail").val(arg['data'].project.projectName).attr('readonly', true);
+                        $("#module-id-detail").val(arg['data'].module.moduleName).attr('readonly', true);
+                        $("#case-title-detail").val(arg['data'].name).attr('readonly', true);
+                        $("#case-desc-detail").val(arg['data'].description).attr('readonly', true);
+                        $("#case-precondition-detail").val(arg['data'].precondition).attr('readonly', true);
                         select_option_checked('owner-detail', arg['data'].caseOwner);
                         select_option_checked('test-mode-detail', arg['data'].testMode);
                         select_option_checked('case-type-detail', arg['data'].caseType);
@@ -355,7 +362,6 @@
             )
         })
     }
-
 
 
     // 编辑测试用例数据
@@ -436,6 +442,7 @@
             caseName: $('#name-search').val().trim(), // 自定义查询条件
             priority: $('#priority-search').val(), // 优先级
             active: $('#active-search').val(), // 是否有效
+            'globalProject': $('#globalProject').val(),
             pageSize: params.limit,
             pageNum: params.offset / params.limit + 1,
         }
@@ -455,31 +462,36 @@
     }
     InitTable('/case/reloadTable', 'get', _table_columns, _search_params, '', _rowStyle);
 
-    autoComplete("/project/queryList", "p-search", 'p', false);
-
     $addModal.on('show.bs.modal', function (event) {
-        autoComplete("/project/queryList", "projectId", 'p', true);
-        // myModal.off('shown.bs.modal');//去除绑定
         $("input[type=hidden][id='hidden-project-id']").val('');
         $("input[type=hidden][id='m-a']").val('');
         $("input[type=hidden][id='add-case-ref-plan']").val('');
     });
-    // 查询相关关联的模块
-    $("#moduleId")[0].addEventListener("focus", function () {
-        $("#hidden-project-id").attr("value") && autoComplete("/module/queryList/" + $("#hidden-project-id").attr("value"), "moduleId", 'm', false);
-    });
-    $("#ref-plan")[0].addEventListener("focus", function () {
-        $('#hidden-project-id').attr('value') && autoComplete("/plan/getPlans/" + $('#hidden-project-id').attr('value'), "ref-plan", 'plan', true);
-    });
 
-    // 编辑窗口关闭时清空数据。
-    $addModal[0].addEventListener('hide.bs.modal', function () {
+    // 窗口关闭时清空测试用例步骤数据。
+    $addModal.on('hide.bs.modal', function () {
         const className = document.getElementById('case-step-area').getElementsByTagName('div');
         for (let i = className.length - 1; i >= 0; i--) {
             className.item(i).remove();
         }
         document.getElementById('add-case-from').reset();
     })
+</script>
+<script>
+    <!--    自动提示-->
+    // 项目
+    autoComplete4Project(true, '#projectId', '#hidden-project-id');
+
+    // 模块
+    $("#moduleId")[0].addEventListener("focus", function () {
+        const _projectId = $("#hidden-project-id").attr("value");
+        autoComplete4Module(true, '#moduleId', '#m-a', _projectId);
+    });
+    //测试计划
+    $("#ref-plan")[0].addEventListener("focus", function () {
+        const _projectId = $("#hidden-project-id").attr("value");
+        autoComplete4Plan(true, '#ref-plan', '#add-case-ref-plan', _projectId);
+    });
 </script>
 </body>
 </html>

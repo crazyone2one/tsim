@@ -228,7 +228,7 @@ function validateCaseInfo(case_info_data) {
 
 // 导入测试用例弹框初始化
 $('#case-upload-modal').on('show.bs.modal', function (event) {
-    autoComplete("/project/queryList", "import-project", 'p', true);
+    autoComplete4Project(true, '#import-project', '#hidden-import-project');
     // myModal.off('shown.bs.modal');//去除绑定
     $("input[type=hidden][id='hidden-import-project']").val('');
     $("input[type=hidden][id='add-case-ref-plan']").val('');
@@ -245,7 +245,7 @@ $('#case-upload-modal').on('show.bs.modal', function (event) {
 // 上传窗口中监听计划数据
 $("#import-ref-plan")[0].addEventListener("focus", function () {
     const $hidden = $('#hidden-import-project');
-    $hidden.attr('value') && autoComplete("/plan/getPlans/" + $hidden.attr('value'), "import-ref-plan", 'plan', true);
+    $hidden.attr('value') && autoComplete4Plan(true,'#import-ref-plan','#hidden-import-ref-plan',$hidden.attr('value'));
 });
 
 // 导入测试用例数据

@@ -99,13 +99,7 @@
 <div th:replace="/fragment/commons :: toast-div"></div>
 <div th:replace="/fragment/commons :: confirm-modal"></div>
 <div th:replace="/fragment/commons :: logout"></div>
-<script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
-<script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
-<script type="text/javascript" th:src="@{/global/js/common.js}"></script>
-<script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
+<div th:replace="/fragment/commons :: generalJS"></div>
 <script th:src="@{/global/js/t-bug.js}"></script>
 <script>
     const _severity = {
@@ -229,8 +223,8 @@
 
     InitTable('/bug/reloadTable', 'get', columns, params);
 
-    autoComplete("/project/queryList", "p-search", 'p', false);
-    autoComplete("/module/queryList", "module-search", 'm', false);
+    autoComplete4Project(false, '#p-search');
+    autoComplete4Module(false, '#module-search');
 
     // bug详情
     function bugDetail(id) {

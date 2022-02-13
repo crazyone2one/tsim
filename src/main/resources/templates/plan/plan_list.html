@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="/fragment/commons :: common_header(~{::title},~{::link})">
+<head th:replace="/fragment/commons :: common_header(~{::title},~{})">
     <title>TSIM @ PLAN</title>
-    <link rel="stylesheet" th:href="@{/plugins/bst/bootstrap-table.min.css}">
 </head>
 <body id="tsim_body">
 <div th:replace="/fragment/commons_v2 :: 2nd-navigation(moduleflag='case',liFlag='plan')"></div>
@@ -90,16 +89,13 @@
 <script th:src="@{/global/js/t-plan.js}"></script>
 <script th:inline="javascript">
     <!--            查询条件-->
-    autoComplete('/project/queryList', 'p-search', 'p', false);
+    autoComplete4Project(false, '#p-search');
+
     const $add = $('#add-plan-modal');
-    $add.on('show.bs.modal', function () {
-        autoComplete('/project/queryList', 'p-add', 'p', true);
-        $("input[type=hidden][id='storyId']").val('');
-    });
 
     function configureStoryComplete() {
         const val = $('#s-p-id').val();
-        autoComplete('/story/queryList/' + val, 'storyList', 's', true);
+        autoComplete4Story(true, '#storyList', '#storyId', val);
     }
 
     const test_stage = {
@@ -242,20 +238,16 @@
     });
 
     function addOrEditPlan(id) {
-        const _modal = $add;
-        _modal.modal('show');
-        _modal.on('shown.bs.modal', function () {
-            // 编辑数据时不使用字段提示功能
-            !id && autoComplete('/project/queryList', 'p-add', 'p', true);
-            !id && $('input[type=hidden]:first').val('');
-            removeClass('#p-add', 'is-invalid');
-            removeClass('#add_plan_name', 'is-invalid');
-            if (id) {
-                $('#p-add').attr('readonly', 'readonly');
-            } else {
-                $('#p-add').attr('readonly', false);
-            }
-        })
+        // 编辑数据时不使用提示功能
+        !id && autoComplete4Project(true, '#p-add', '#s-p-id');
+        !id && $('input[type=hidden]:first').val('');
+        removeClass('#p-add', 'is-invalid');
+        removeClass('#add_plan_name', 'is-invalid');
+        if (id) {
+            $('#p-add').attr('readonly', 'readonly');
+        } else {
+            $('#p-add').attr('readonly', false);
+        }
         document.getElementById('add-plan-modal').querySelector('.modal-title').textContent = id ? '编辑测试计划' : '新增测试计划';
         if (id) {
             $("#hidden-plan-id").val(id);

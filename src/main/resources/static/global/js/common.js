@@ -46,41 +46,96 @@ const removeProperty = (target, propertyToRemove) => {
 }
 
 /**
- * 输入框自动提示
- * @param url 数据加载地址
- * @param idSelector id选择器
- * @param flag p--project,m--module
- * @param needChange 是否需要将value更改为id
+ * 项目字段提示功能
+ * @param flag true。表示选中数据后将id字段值赋值给隐藏的name属性
+ * @param idSelector
+ * @param hiddenIdSelector
  */
-function autoComplete(url, idSelector, flag, needChange) {
-    const dataAttr = [];
-    $.ajax({
-        url: url,
-        beforeSend: function (xmlHttp) {
-            xmlHttp.setRequestHeader("If-Modified-Since", "0");
-            xmlHttp.setRequestHeader("Cache-Control", "no-cache");
-        },
-        async: false,
-        success: function (result) {
-            if (Object.is(result['code'], 200)) {
-                if (result['data']) {
-                    dataAttr.length = 0;
-                    for (let i = 0; i < result['data'].length; i++) {
-                        let temp = {
-                            "p": {label: result['data'][i].projectName, value: result['data'][i].id}, // project
-                            "m": {label: result['data'][i].moduleName, value: result['data'][i].id},  // module
-                            "s": {label: result['data'][i].storyName, value: result['data'][i].id}, // story
-                            "plan": {label: result['data'][i].name, value: result['data'][i].id}  // story
-                        }
-                        dataAttr.push(temp[flag]);
-                    }
-                }
-            }
+function autoComplete4Project(flag, idSelector, hiddenIdSelector) {
+    let _result = [];
+    $.get('/project/queryList/', function (response) {
+        response['data'].forEach(function (module) {
+            _result.push({value: module['projectName'], data: module['id']})
+        })
+    });
+    $(idSelector).autocomplete({
+        lookup: _result,
+        noCache: true,
+        onSelect: function (suggestion) {
+            flag && $(hiddenIdSelector).val(suggestion.data);
         }
     });
-    new Autocomplete(document.getElementById(idSelector), {
-        data: dataAttr,
-        tsf: needChange
+}
+
+/**
+ * 模块字段提示功能
+ * @param flag true。表示选中数据后将id字段值赋值给隐藏的name属性
+ * @param idSelector
+ * @param hiddenIdSelector
+ * @param projectId
+ */
+function autoComplete4Module(flag, idSelector, hiddenIdSelector, projectId) {
+    let result=[];
+    if (projectId) {
+        $.get('/module/queryList/' + projectId, function (response) {
+            response['data'].forEach(function (module) {
+                result.push({value: module['moduleName'], data: module['id']})
+            })
+        });
+    }
+    $(idSelector).autocomplete({
+        lookup: result,
+        onSelect: function (suggestion) {
+            flag && $(hiddenIdSelector).val(suggestion.data);
+        }
+    });
+}
+
+/**
+ * 测试计划字段提示功能
+ * @param flag
+ * @param idSelector
+ * @param hiddenIdSelector
+ * @param projectId
+ */
+function autoComplete4Plan(flag, idSelector, hiddenIdSelector, projectId) {
+    let result=[];
+    if (projectId) {
+        $.get('/plan/getPlans/' + projectId, function (response) {
+            response['data'].forEach(function (module) {
+                result.push({value: module['name'], data: module['id']})
+            })
+        });
+    }
+    $(idSelector).autocomplete({
+        lookup: result,
+        onSelect: function (suggestion) {
+            flag && $(hiddenIdSelector).val(suggestion.data);
+        }
+    });
+}
+
+/**
+ * 需求字段提示功能
+ * @param flag
+ * @param idSelector
+ * @param hiddenIdSelector
+ * @param projectId
+ */
+function autoComplete4Story(flag, idSelector, hiddenIdSelector, projectId) {
+    let result=[];
+    if (projectId) {
+        $.get('/story/queryList/' + projectId, function (response) {
+            response['data'].forEach(function (module) {
+                result.push({value: module['storyName'], data: module['id']})
+            })
+        });
+    }
+    $(idSelector).autocomplete({
+        lookup: result,
+        onSelect: function (suggestion) {
+            flag && $(hiddenIdSelector).val(suggestion.data);
+        }
     });
 }
 
