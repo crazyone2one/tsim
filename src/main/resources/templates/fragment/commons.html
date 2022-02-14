@@ -61,7 +61,7 @@
 
 <!-- Footer -->
 <footer id="footer" class="py-2 my-0 border-top container fixed-bottom" th:fragment="footer">
-    <p class="text-center text-muted">© 2022 TSIM, Inc</p>
+    <p class="text-center text-muted">© 2022 TSIM/11'papa, All rights reserved</p>
 </footer>
 <!-- End of Footer -->
 <!--分页-->
@@ -217,9 +217,19 @@
                     <i id="modal-i-label" class="h3 text-warning bi-exclamation-triangle"></i>
                     <p class="replace-content mt-3">Modal body text goes here.</p>
                     <button type="button" class="btn btn-sm btn-warning me-1" id="btn-confirm">确认</button>
-                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">取消</button>
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal" id="btn-dismiss">取消</button>
                 </div>
             </div>
         </div>
     </div>
+</div>
+<!--公共js-->
+<div id="js-div" th:fragment="generalJS">
+    <script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
+    <script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.min.js}"></script>
+    <script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.min.js}"></script>
+    <script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
+    <script type="text/javascript" th:src="@{/global/js/common.js}"></script>
+    <script th:inline="javascript" th:src="@{/global/js/bs.table.js}"></script>
 </div>

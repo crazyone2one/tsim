@@ -1,14 +1,14 @@
 <!--navbar 2.0-->
 <div th:fragment="2nd-navigation(moduleflag,liFlag)">
-    <div class="navbar navbar-expand-lg" style="background: #0b7656">
+    <div class="navbar navbar-expand-lg" style="background-color: purple">
         <div class="container-fluid">
-            <nav class="nav" aria-label="Secondary navigation">
-                <a class="nav-link " href="#" th:href="@{/dashboard}">Dashboard</a>
-                <a class="nav-link " href="#" th:href="@{/case-manage-index}">测试跟踪</a>
-                <a class="nav-link " href="#" th:href="@{/api-manage-index}">接口测试</a>
-                <a class="nav-link " href="#">UI测试</a>
+            <nav class="nav fw-bold" aria-label="Secondary navigation">
+                <a class="nav-link shadow" href="#" th:href="@{/dashboard}">Dashboard</a>
+                <a class="nav-link shadow" href="#" th:href="@{/case-manage-index}">测试跟踪</a>
+                <a class="nav-link shadow" href="#" th:href="@{/api-manage-index}">接口测试</a>
+                <a class="nav-link shadow" href="#">UI测试</a>
             </nav>
-            <ul class="navbar-nav ml-auto">
+            <ul class="navbar-nav ml-auto ">
                 <li class="nav-item dropdown no-arrow d-sm-none"></li>
                 <!-- Nav Item - Alerts -->
                 <li class="nav-item dropdown no-arrow mx-1">
@@ -62,7 +62,7 @@
     </div>
 </div>
 <!--测试跟踪-->
-<div class="navbar navbar-expand-lg pt-0 border-bottom" style="background: #20c997" th:fragment="case-navigation(flag)">
+<div class="navbar navbar-expand-lg pt-0 border-bottom" th:fragment="case-navigation(flag)">
     <div class="container">
         <!--        <div class="col">-->
         <!--            <div class="input-group col-md-6 mt-1 ms-2">-->
@@ -98,7 +98,7 @@
         </div>
     </div>
 </div>
-<div class="navbar navbar-expand-lg mt-1 pt-0 pb-2 border-bottom" style="background: #20c997"
+<div class="navbar navbar-expand-lg mt-1 pt-0 pb-2 border-bottom"
      th:fragment="api-navigation(flag)">
     <div class="container">
         <div class="collapse navbar-collapse" id="apiNavigation">
