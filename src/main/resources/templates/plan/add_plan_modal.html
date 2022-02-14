@@ -46,33 +46,50 @@
                                             </div>
                                         </div>
                                         <div class="row col-md-6">
-                                            <label for="test" class="col-sm-5 col-form-label required text-end">测试阶段</label>
-                                            <select id="test" class="col-md-7">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                            </select>
+                                            <label for="test_stage" class="col-sm-5 col-form-label required text-end">测试阶段</label>
+                                            <div class="col-md-7">
+                                                <select id="test_stage" class="form-select" name="testStage">
+                                                    <option value="1">单元测试</option>
+                                                    <option value="2">集成测试</option>
+                                                    <option value="3" selected>系统测试</option>
+                                                    <option value="4">验收测试</option>
+                                                    <option value="5">回归测试</option>
+                                                </select>
+                                            </div>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
                                         <div class="row col-md-6">
                                             <label for="plan-start-date" class="col-sm-5 col-form-label text-end">开始时间</label>
                                             <div class="col-md-7">
-                                                <input type="text" class="form-control " id="plan-start-date" name="startDate" placeholder="🕓 开始时间"
+                                                <input type="text" class="form-control invalid-item" id="plan-start-date" name="startDate" placeholder="🕓 开始时间"
                                                        onfocus="(this.type='date')" onblur="(this.type='text')">
+                                                <div class="invalid-feedback">请选择开始时间.</div>
                                             </div>
                                         </div>
                                         <div class="row col-md-6">
-                                            <label for="plan-finish-date" class="col-sm-5 col-form-label text-end">截止时间</label>
+                                            <label for="plan-finish-date" class="col-sm-5 col-form-label text-end">结束时间</label>
                                             <div class="col-md-7">
-                                                <input type="text" class="form-control" id="plan-finish-date" name="finishDate" placeholder="🕓 结束日期"
+                                                <input type="text" class="form-control invalid-item" id="plan-finish-date" name="finishDate" placeholder="🕓 结束时间"
                                                        onfocus="(this.type='date')" onblur="(this.type='text')">
+                                                <div class="invalid-feedback">请选择结束时间.</div>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="row mb-3">
-                                        <div class="row">
-                                            <label id="basic-addon4" class="col-sm-2 col-form-label text-end">测试计划描述</label>
-                                            <div class="col-md-10">
+                                        <div class="row col-md-6">
+                                            <label for="duty-man" class="col-sm-5 col-form-label required text-end">责任人</label>
+                                            <div class="col-md-7">
+                                                <select id="duty-man" name="dutyMan" class="form-select invalid-item">
+                                                    <option value="" selected>选择责任人</option>
+                                                    <option th:each="user:${users}" th:value="${user.key}" th:text="${user.value.username}"></option>
+                                                </select>
+                                                <div class="invalid-feedback">请选择责任人.</div>
+                                            </div>
+                                        </div>
+                                        <div class="row col-md-6">
+                                            <label id="basic-addon4" class="col-sm-5 col-form-label text-end">测试计划描述</label>
+                                            <div class="col-md-7">
                                                 <textarea class="form-control" aria-label="description"  id="add-description-name" name="description" placeholder="输入测试计划描述"></textarea>
                                             </div>
                                         </div>

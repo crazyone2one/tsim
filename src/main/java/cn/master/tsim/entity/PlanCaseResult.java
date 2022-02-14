@@ -14,22 +14,22 @@ import java.io.Serializable;
  * </p>
  *
  * @author 11's papa
- * @since 2021-10-26
+ * @since 2022-02-11
  */
 @Data
 @EqualsAndHashCode(callSuper = false)
-@TableName("t_plan_case_ref")
+@TableName("t_plan_case_result")
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PlanCaseRef implements Serializable {
+public class PlanCaseResult implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
     /**
      * 主键
      */
-    @TableId(value = "id",type = IdType.ASSIGN_ID)
+    @TableId(value = "id", type = IdType.ASSIGN_ID)
     private String id;
 
     /**
@@ -38,29 +38,35 @@ public class PlanCaseRef implements Serializable {
     @TableField("plan_id")
     private String planId;
 
-    @TableField(exist = false)
-    private TestPlan plan;
-
     /**
      * 测试用例id
      */
     @TableField("case_id")
     private String caseId;
 
-    @TableField(exist = false)
-    private TestCase testCase;
+    /**
+     * 测试用例步骤id
+     */
+    @TableField("case_step_id")
+    private String caseStepId;
 
     /**
      * 是否执行（0，未执行，1，已执行）
      */
     @TableField("run_status")
-    private String runStatus;
+    private Boolean runStatus;
 
     /**
-     * 执行结果（0，通过，1，未通过）
+     * 执行结果
      */
     @TableField("run_result")
     private String runResult;
+
+    /**
+     * 实际结果
+     */
+    @TableField("execute_result")
+    private String executeResult;
 
     /**
      * bug id

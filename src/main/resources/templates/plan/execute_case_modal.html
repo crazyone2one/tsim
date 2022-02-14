@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>plan</title>
+    <meta name="author" content="11‘s papa">
+</head>
+<body>
+<div th:fragment="execute-fragment">
+    <div class="modal fade" id="execute-fragment-modal" tabindex="-1" role="dialog" aria-labelledby="ModalTitle"
+         aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#ref-run-modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="box-body">
+                        <input type="hidden" id="execute-hidden-plan-id">
+                        <input type="hidden" id="execute-hidden-case-id">
+                        <div>
+<!--                            标题-->
+                            <div class="row">
+                                <h5 class="col-md-auto" id="execute-case-name"></h5>
+                                <hr class="col-md-auto">
+                            </div>
+<!--                            测试用例基本-->
+                            <div class="row mt-3">
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="row col-md-3">
+                                            <label for="execute-case-priority" class="col-md-6 col-form-label text-end">优先级</label>
+                                            <label id="execute-case-priority" class="col-md-4 col-form-label"></label>
+                                        </div>
+                                        <div class="row col-md-3">
+                                            <label for="execute-case-priority1" class="col-md-6 col-form-label text-end">优先级</label>
+                                            <label id="execute-case-priority1" class="col-md-4 col-form-label"></label>
+                                        </div>
+                                        <div class="row col-md-6 ms-5">
+                                            <button class="btn btn-sm bg-success col-md-2">通过</button>
+                                            <button class="btn btn-sm bg-danger col-md-2 ms-1">失败</button>
+                                            <button class="btn btn-sm bg-warning col-md-2 ms-1">阻塞</button>
+                                            <button class="btn btn-sm bg-secondary col-md-2 ms-1">跳过</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <span>执行步骤</span>
+                                    <div>
+                                        <table id="execute-case-table"  data-toggle="table" data-pagination="true">
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="row col-md-12 mt-3">
+                                    <div class="form-check form-switch col-md-2 ms-3">
+                                        <input class="form-check-input" type="checkbox" role="switch" id="add-bug-label">
+                                        <label class="form-check-label" for="add-bug-label">提缺陷</label>
+                                    </div>
+<!--                                    <div class="col-md-2">-->
+<!--                                        <button type="button" id="add-bug-flag" class="btn btn-sm" data-bs-container="body"-->
+<!--                                                data-bs-toggle="popover" data-bs-placement="right"-->
+<!--                                                data-bs-content="Right popover" style="display: none">-->
+<!--                                            <i class="bi bi-info-circle">-->
+<!--                                            </i></button>-->
+<!--                                    </div>-->
+                                </div>
+                                <div class="col-md-12 mt-3">
+                                    <div class="form-floating">
+                                        <textarea class="form-control" placeholder="Leave a comment here" id="floatingTextarea2" style="height: 100px"></textarea>
+                                        <label for="floatingTextarea2">Comments</label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="execute-case-submit">保存</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" data-bs-toggle="modal" data-bs-target="#ref-run-modal">关闭</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

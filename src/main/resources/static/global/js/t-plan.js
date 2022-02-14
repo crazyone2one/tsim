@@ -1,9 +1,19 @@
-
-const case_priority={
-    0: '低',
-    1: '中',
-    2: '高'
+const case_priority = {
+    0: '<span class="badge bg-danger">P0</span>',
+    1: '<span class="badge bg-warning">P1</span>',
+    2: '<span class="badge bg-info">P2</span>'
 }
+const case_run_result = {
+    '1': '<span class="badge bg-success">通过</span>',
+    '2': '<span class="badge bg-warning">失败</span>',
+    '3': '<span class="badge bg-danger">阻塞</span>'
+}
+const case_run_status = {
+    '0': '<span class="badge bg-secondary">未执行</span>',
+    '1': '<span class="badge bg-success">已执行</span>',
+    // '2': '<span class="badge bg-danger">阻塞</span>'
+}
+
 /**
  * 执行测试计划关联的测试用例数据时加载测试用例数据
  * @param id 测试计划数据id
@@ -23,14 +33,10 @@ function loadRunCaseInfo(id) {
                 const map1 = eval("(" + tempStepJsonElement + ")");
                 step_result = step_result + map1.t_s + "\r\n";
             }
-            if (step_result) {
-                let html = '';
-                let tempSteps = step_result.split('\r\n');
-                for (let i = 0; i < tempSteps.length; i++) {
-                    html += '<div style="text-align: left">' + tempSteps[i] + '</div>';
-                }
-                return html;
-            }
+            const span = document.createElement('span');
+            span.setAttribute('title', step_result);
+            span.innerHTML = step_result;
+            return span.outerHTML;
         }
 
         // 测试用例预期结果
@@ -43,63 +49,55 @@ function loadRunCaseInfo(id) {
                 const map1 = eval("(" + tempStepJsonElement + ")");
                 step_result = step_result + map1.t_r + "\r\n";
             }
-            if (step_result) {
-                let html = '';
-                let tempSteps = step_result.split('\r\n');
-                for (let i = 0; i < tempSteps.length; i++) {
-                    html += '<div style="text-align: left">' + tempSteps[i] + '</div>';
-                }
-                return html;
-            }
+            const span = document.createElement('span');
+            span.setAttribute('title', step_result);
+            span.innerHTML = step_result;
+            return span.outerHTML;
         }
 
-        const _r_columns = [
-            {field: 'checked', checkbox: true, align: "center", width: '40'},
-            {title: 'id', field: 'id', visible: false},
-            {
-                title: '测试用例标题',
-                field: 'name',
-                align: 'center',
-                class: 'col-md-3',
-                formatter: function (value, row, index) {
-                    return row.testCase.name;
-                }
-            },
-            {title: '测试步骤', field: 'stepStore', align: 'center', class: 'col-md-3', formatter: refLinkFormatter},
-            {
-                title: '预期结果',
-                field: 'resultStore',
-                align: 'center',
-                class: 'col-md-3',
-                formatter: refCaseResultFormatter
-            },
-            {
-                title: "优先级", field: 'priority', align: 'center', formatter: function (value, row, index) {
-                    return case_priority[row.testCase.priority];
-                }
-            },
-            {
-                field: 'Button',
-                title: "操作",
-                align: 'center',
-                formatter: function (value, row, index) {
-                    const temp_case = JSON.stringify(row).replace(/\"/g, "'");
-                    if (row.bugId === '' || row.bugId == null) {
-                        return '<button type="button" class="btn btn-sm btn-danger" onclick="addRefBug(' + temp_case + ')" ' +
-                            'title="录入问题单即表示该条测试用例未通过本次测试" data-bs-toggle="modal" data-bs-target="#add-bug-modal"><i class="bi-bug"></i></button>';
-                    } else {
-                        return '<button disabled type="button" class="btn btn-sm btn-danger" onclick="addRefBug(' + temp_case + ')" ' +
-                            'title="该条测试用例已执行完成" data-bs-toggle="modal" data-bs-target="#add-bug-modal"><i class="bi-bug"></i></button>';
-                    }
+        const _r_columns = [{field: 'checked', checkbox: true, align: "center", width: '40'}, {
+            title: 'id', field: 'id', visible: false
+        }, {
+            title: '用例名称', field: 'name', align: 'center', class: 'col-md-3', formatter: function (value, row, index) {
+                return row.testCase.name;
+            }
+        }, {
+            title: "优先级", field: 'priority', align: 'center', formatter: function (value, row, index) {
+                return case_priority[row.testCase.priority];
+            }
+        }, {field: '', align: "center", title: '类型'}, {
+            field: 'testMode', align: "center", title: '测试方式', formatter: function (value, row, index) {
+                if (Object.is(1, row.testCase.testMode)) {
+                    return '自动';
+                } else {
+                    return '手动';
                 }
             }
-        ];
+        }, {
+            field: 'runStatus', align: "center", title: '执行状态', formatter: function (value) {
+                if (Object.is(value, undefined)) {
+                    return case_run_status['0'];
+                }
+                return case_run_status[value];
+            }
+        }, {
+            field: 'runResult', align: "center", title: '执行结果', formatter: function (value) {
+                return case_run_result[value];
+            }
+        }, {
+            field: 'Button', title: "操作", align: 'center', formatter: function (value, row, index) {
+                const temp_case = JSON.stringify(row).replace(/\"/g, "'");
+                if (Object.is("1", row.runStatus)) {
+                    return '<button disabled class="btn btn-sm hvr-grow me-1" data-bs-toggle="modal" data-bs-target="#execute-fragment-modal" onclick="executeCase(' + temp_case + ')">' + '<i class="bi-play-circle"></i></button>';
+                }
+                return '<button class="btn btn-sm hvr-grow me-1 bg-success" data-bs-toggle="modal" data-bs-target="#execute-fragment-modal" onclick="executeCase(' + temp_case + ')">' + '<i class="bi-play-circle"></i></button>';
+            }
+        }];
         const _r_params = function (params) {
             return {
                 // moduleName: $('#search-modal-name').val().trim(), // 自定义查询条件
                 // title: $('#search-title').val().trim(), // 自定义查询条件
-                pageSize: params.limit,
-                pageNum: params.offset / params.limit + 1,
+                pageSize: params.limit, pageNum: params.offset / params.limit + 1,
 
             }
         };
@@ -112,7 +110,7 @@ function loadRunCaseInfo(id) {
             }
             return {};
         }
-        InitTable(url, 'get', _r_columns, _r_params, "#refRunTable", _rowStyle);
+        InitTable(url, 'get', _r_columns, _r_params, "#refRunTable");
     })
 }
 
@@ -138,14 +136,10 @@ function loadCaseInfo(id) {
                 const map1 = eval("(" + tempStepJsonElement + ")");
                 step_result = step_result + map1.t_s + "\r\n";
             }
-            if (step_result) {
-                let html = '';
-                let tempSteps = step_result.split('\r\n');
-                for (let i = 0; i < tempSteps.length; i++) {
-                    html += '<div style="text-align: left">' + tempSteps[i] + '</div>';
-                }
-                return html;
-            }
+            const span = document.createElement('span');
+            span.setAttribute('title', step_result);
+            span.innerHTML = step_result;
+            return span.outerHTML;
         }
 
         // 测试用例预期结果
@@ -158,51 +152,46 @@ function loadCaseInfo(id) {
                 const map1 = eval("(" + tempStepJsonElement + ")");
                 step_result = step_result + map1.t_r + "\r\n";
             }
-            if (step_result) {
-                let html = '';
-                let tempSteps = step_result.split('\r\n');
-                for (let i = 0; i < tempSteps.length; i++) {
-                    html += '<div style="text-align: left">' + tempSteps[i] + '</div>';
-                }
-                return html;
-            }
+            const span = document.createElement('span');
+            span.setAttribute('title', step_result);
+            span.innerHTML = step_result;
+            return span.outerHTML;
         }
 
-        const _r_columns = [
-            {field: 'checked', checkbox: true, align: "center", width: '40'},
-            {title: 'id', field: 'id', visible: false},
-            {
-                title: '模块', field: 'moduleId', align: 'center', formatter: function (value, row, index) {
-                    return row.module.moduleName;
-                }
-            },
-            {title: '测试用例标题', field: 'name', align: 'center', class: 'col-md-3'},
-            {title: '测试步骤', field: 'stepStore', align: 'center', class: 'col-md-3', formatter: refLinkFormatter},
-            {
-                title: '预期结果',
-                field: 'resultStore',
-                align: 'center',
-                class: 'col-md-3',
-                formatter: refCaseResultFormatter
-            },
-            {title: "优先级", field: 'priority', align: 'center',formatter:function (value, row, index) {
-                    return case_priority[value];
-                }},
-            {
-                field: 'Button',
-                title: "操作",
-                align: 'center',
-                formatter: function (value, row, index) {
-                    return '<button type="button" class="btn btn-sm btn-info hvr-grow" onclick="addRefCase(\'' + row.id + '\')"><i class="bi-plus-circle"></i> </button>';
-                }
+        const _r_columns = [{field: 'checked', checkbox: true, align: "center", width: '40'}, {
+            title: 'id', field: 'id', visible: false
+        }, {
+            title: '模块', field: 'moduleId', align: 'center', formatter: function (value, row, index) {
+                return row.module.moduleName;
             }
-        ];
+        }, {title: '测试用例标题', field: 'name', align: 'center', class: 'col-md-3'}, {
+            title: '测试步骤',
+            field: 'stepStore',
+            align: 'center',
+            class: 'col-md-3',
+            cellStyle: formatTableUnit,
+            formatter: refLinkFormatter
+        }, {
+            title: '预期结果',
+            field: 'resultStore',
+            align: 'center',
+            class: 'col-md-3',
+            cellStyle: formatTableUnit,
+            formatter: refCaseResultFormatter
+        }, {
+            title: "优先级", field: 'priority', align: 'center', formatter: function (value, row, index) {
+                return case_priority[value];
+            }
+        }, {
+            field: 'Button', title: "操作", align: 'center', formatter: function (value, row, index) {
+                return '<button type="button" class="btn btn-sm btn-info hvr-grow" onclick="addRefCase(\'' + row.id + '\')"><i class="bi-plus-circle"></i> </button>';
+            }
+        }];
         const _r_params = function (params) {
             return {
                 moduleName: $('#ass-search-name').val().trim(), // 自定义查询条件
                 title: $('#ass-search-title').val().trim(), // 自定义查询条件
-                pageSize: params.limit,
-                pageNum: params.offset / params.limit + 1,
+                pageSize: params.limit, pageNum: params.offset / params.limit + 1,
 
             }
         };
@@ -229,8 +218,7 @@ function addRefCase(id) {
         }
     }
     const params = {
-        planId: $('#ass-hidden-plan-id').val(),
-        caseId: JSON.stringify(res)
+        planId: $('#ass-hidden-plan-id').val(), caseId: JSON.stringify(res)
     };
     $.ajax({
         url: '/plan/addRefCase/',
@@ -260,7 +248,7 @@ function addRefBug(params) {
         $('#module').val(tempCase.module.moduleName);
         $('#b-a-m').val(tempCase.moduleId);
         const _temp_story = params.plan.story;
-        $('#add-bug-story').val(Object.is(_temp_story,undefined)?"":_temp_story.description);
+        $('#add-bug-story').val(Object.is(_temp_story, undefined) ? "" : _temp_story.description);
         $('#bug-story-ref').val(Object.is(params.plan.storyId, undefined) ? '' : params.plan.storyId);
         $('#functionDesc').val(tempCase.name);
 
@@ -305,3 +293,136 @@ function batchPassCase(id) {
         }
     })
 }
+
+/**
+ * 测试步骤弹框数据加载
+ * @param option
+ */
+function executeCase(option) {
+    // console.log(option);
+    const executeModal = document.getElementById('execute-fragment-modal');
+    executeModal.addEventListener('shown.bs.modal', function (event) {
+        $('#add-bug-label').prop('checked', false);
+        $('#floatingTextarea2').val("");
+        $('#execute-hidden-plan-id').val(option['planId']);
+        $('#execute-hidden-case-id').val(option['caseId']);
+        $('#execute-case-name').text(option['testCase']['name']);
+        $('#temp-priority').remove();
+        $('#execute-case-priority').append('<div id="temp-priority">' + case_priority[option['testCase']['priority']] + '</div>');
+        const _columns = [{field: 'id', align: 'center', title: 'id', visible: false}, {
+            field: 'caseStep',
+            align: 'center',
+            title: '步骤描述',
+            class: 'col-sm-4',
+            formatter: function (value, row, index) {
+                return '<span id="step' + index + '">' + value + '</span>';
+            }
+        }, {
+            field: 'caseStepResult',
+            align: 'center',
+            title: '预期结果',
+            class: 'col-sm-4',
+            formatter: function (value, row, index) {
+                return '<span id="preResult' + index + '">' + value + '</span>';
+            }
+        }, {
+            field: '', align: 'center', title: '实际结果', class: 'col-sm-4', formatter: function (value, row, index) {
+                return '<div><input id="temp_case_result' + row.caseOrder + '"></div>';
+            }
+        }, {
+            field: '', align: 'center', title: '步骤执行结果', class: 'col-sm-2', formatter: function (value, row, index) {
+                return '<div><select id="temp-execute-result' + row.caseOrder + '" class="form-select" aria-label="Default select example">\n' + '  <option value="1">通过</option>\n' + '  <option value="2">失败</option>\n' + '  <option value="3">阻塞</option>\n' + '</select></div>';
+            }
+        },];
+        const _params = function (params) {
+            return {
+                'caseId': option['caseId'], pageSize: params.limit, pageNum: params.offset / params.limit + 1,
+
+            }
+        };
+        InitTable("/testcaseSteps/step4execute", "get", _columns, _params, '#execute-case-table');
+        //移除分页信息
+        const element = document.getElementById('execute-case-table').parentNode.parentNode.parentNode.lastElementChild;
+        element.remove();
+    });
+}
+
+/**
+ * 提交测试用例执行结果
+ */
+$('#execute-case-submit').on('click', function (e) {
+    let tempIssueContent4Step = '[测试步骤]\r\n';
+    let tempIssueContent4PreResult = '[预期结果]\r\n';
+    let tempIssueContent4Result = '[实际结果]\r\n';
+    const planID = $('#execute-hidden-plan-id').val();
+    const caseID = $('#execute-hidden-case-id').val();
+    let requestParams = [];
+    let executeResultList = []; // 用于存放测试步骤执行结果
+    const caseSize = $('#execute-case-table tbody tr').length;
+    for (let i = 0; i < caseSize; i++) {
+        const tempExecuteResult = $('#temp-execute-result' + i).val();
+        const preResult = $('#preResult' + i).text();
+        const $resultEle = $('#temp_case_result' + i);
+        // 测试用例通过时将预期结果赋值给实际结果
+        if (Object.is('1', tempExecuteResult)) {
+            $resultEle.val(preResult);
+        }
+        executeResultList.push(tempExecuteResult);
+        const tempResult = $resultEle.val();
+        tempIssueContent4Step += '步骤' + (i + 1) + ':' + $('#step' + i).text() + ' \r\n';
+        tempIssueContent4PreResult += '步骤' + (i + 1) + ':' + preResult + ' \r\n';
+        tempIssueContent4Result += '步骤' + (i + 1) + ':' + tempResult + ' \r\n';
+        let tempParam = {
+            'caseStepId': $('#execute-case-table tr[data-index="' + i + '"]').attr('data-uniqueid'),
+            'caseResult': tempResult,
+            'executeResult': tempExecuteResult,
+        };
+        requestParams.push(tempParam);
+    }
+    if (executeResultList.includes('2') || executeResultList.includes('3')) {
+        forwardToConfirmModal('confirm-modal', '存在失败的测试步骤，是否添加问题单?');
+    }
+    let tempBugParams = {
+        'step': tempIssueContent4Step,
+        'preResult': tempIssueContent4PreResult,
+        'executeResult': tempIssueContent4Result,
+    };
+    // 确认框点击确定按钮，填充测试步骤、结果数据
+    $('#btn-confirm').on('click', function () {
+        const $floatingTextarea2 = $('#floatingTextarea2');
+        $floatingTextarea2.val(tempIssueContent4Step + '\r\n' + tempIssueContent4PreResult + '\r\n' + tempIssueContent4Result);
+        $floatingTextarea2.textareaAutoHeight();
+        $('#add-bug-label').prop('checked', true);
+        closeModal('confirm-modal');
+
+        $.ajax({
+            url: '/plan-case-result/addRef',
+            type: 'post',
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                'planId': planID,
+                'caseId': caseID,
+                'caseFragment': JSON.stringify(requestParams),
+                'bugFragment': JSON.stringify(tempBugParams),
+            },
+            success: function (res) {
+                console.log(res);
+            }
+        })
+    })
+    $('#btn-dismiss').on('click',function () {
+        $.ajax({
+            url: '/plan-case-result/addRef',
+            type: 'post',
+            contentType: 'application/x-www-form-urlencoded',
+            data: {
+                'planId': planID,
+                'caseId': caseID,
+                'caseFragment': JSON.stringify(requestParams),
+            },
+            success: function (res) {
+                console.log(res);
+            }
+        })
+    })
+})

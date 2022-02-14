@@ -14,27 +14,7 @@
                         <div class="card shadow">
                             <div class="card-header">我的计划</div>
                             <div class="card-body">
-                                <table class="table">
-                                    <thead>
-                                    <tr>
-                                        <th scope="col">名称</th>
-                                        <th scope="col">当前状态</th>
-                                        <th scope="col">通过率</th>
-                                        <th scope="col">已测用例</th>
-                                        <th scope="col">测试进度</th>
-                                        <th scope="col">测试阶段</th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    <tr>
-                                        <th scope="row">v1.0</th>
-                                        <td>进行中</td>
-                                        <td>40%</td>
-                                        <td>4/10</td>
-                                        <td>4/10</td>
-                                        <td>系统测试</td>
-                                    </tr>
-                                    </tbody>
+                                <table id="current-user-plan-table" class="table-hover">
                                 </table>
                             </div>
                         </div>
@@ -116,5 +96,9 @@
         </div>
     </div>
 </div>
+<!-- Logout Modal-->
+<div th:replace="/fragment/commons :: logout"></div>
+<div th:replace="/fragment/commons :: generalJS"></div>
+<script th:inline="javascript" th:src="@{/global/js/test.case.index.js}"></script>
 </body>
 </html>

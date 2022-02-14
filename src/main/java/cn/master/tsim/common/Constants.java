@@ -30,11 +30,11 @@ public class Constants {
         put("2", "不确定");
     }};
     /**
-     * 测试用例优先级
+     * 测试用例等级
      */
     public static final HashMap<String, String> CASE_PRIORITY = new HashMap<String, String>() {{
-        put("0", "低");
-        put("1", "中");
-        put("2", "高");
+        put("0", "P0");
+        put("1", "P1");
+        put("2", "P2");
     }};
 }

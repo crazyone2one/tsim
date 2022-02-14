@@ -4,6 +4,7 @@ import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.PlanCaseRef;
 import cn.master.tsim.entity.TestPlan;
+import cn.master.tsim.entity.Tester;
 import cn.master.tsim.mapper.TestPlanMapper;
 import cn.master.tsim.service.*;
 import cn.master.tsim.util.DateUtils;
@@ -12,12 +13,14 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
+import java.text.DecimalFormat;
 import java.util.Date;
 import java.util.LinkedList;
 import java.util.List;
@@ -43,6 +46,8 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     TestTaskInfoService taskInfoService;
     @Autowired
     PlanCaseRefService planCaseRefService;
+    @Autowired
+    PlanCaseResultService planCaseResultService;
 
     @Autowired
     public TestPlanServiceImpl(PlanStoryRefService planStoryRefService) {
@@ -53,6 +58,7 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     public IPage<TestPlan> pageList(HttpServletRequest request, Integer pageCurrent, Integer pageSize) {
         String sortName = request.getParameter("sortName");
         String sortOrder = request.getParameter("sortOrder");
+        String currentUser = request.getParameter("currentUser");
         QueryWrapper<TestPlan> wrapper = new QueryWrapper<>();
 //        按照项目查询
         final String projectName = request.getParameter("projectName");
@@ -69,24 +75,31 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
         wrapper.lambda().like(StringUtils.isNotBlank(planDesc), TestPlan::getDescription, planDesc);
         // 完成状态
         String workStatus = request.getParameter("workStatus");
-        wrapper.lambda().eq(StringUtils.isNotBlank(workStatus), TestPlan::getWorkStatus, Integer.valueOf(workStatus));
+        if (Objects.nonNull(workStatus) && StringUtils.isNotBlank(workStatus)) {
+            wrapper.lambda().eq(TestPlan::getWorkStatus, Integer.valueOf(workStatus));
+        }
         wrapper.lambda().eq(TestPlan::getDelFlag, 0);
         // 开始时间、结束时间排序
         if (StringUtils.isNotBlank(sortName)) {
-            if (Objects.equals("startDate",sortName)) {
+            if (Objects.equals("startDate", sortName)) {
                 if (Objects.equals("asc", sortOrder)) {
                     wrapper.lambda().orderByAsc(TestPlan::getStartDate);
                 } else {
                     wrapper.lambda().orderByDesc(TestPlan::getStartDate);
                 }
             }
-            if (Objects.equals("finishDate",sortName)) {
+            if (Objects.equals("finishDate", sortName)) {
                 if (Objects.equals("asc", sortOrder)) {
                     wrapper.lambda().orderByAsc(TestPlan::getStartDate);
                 } else {
                     wrapper.lambda().orderByDesc(TestPlan::getStartDate);
                 }
             }
+        }
+        // 当前登录人
+        if (StringUtils.isNotBlank(currentUser)) {
+            Tester user = (Tester) request.getSession().getAttribute("account");
+            wrapper.lambda().eq(TestPlan::getDutyMan, user.getId());
         }
         final Page<TestPlan> iPage = baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 15 : pageSize),
@@ -96,11 +109,21 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
             if (StringUtils.isNotBlank(t.getStoryId())) {
                 t.setStory(storyService.searchStoryById(t.getStoryId()));
             }
+            t.setPassRate(planCaseResultService.getPassRate(t.getId()));
             List<PlanCaseRef> planCaseRefs = planCaseRefService.loadRefItemByPlanId(t.getId());
-            for (PlanCaseRef ref : planCaseRefs) {
-                if (Objects.isNull(ref.getRunStatus())) {
-                    t.setFinished(false);
-                    break;
+            if (CollectionUtils.isNotEmpty(planCaseRefs)) {
+                long count = planCaseRefs.stream().filter(p -> !"0".equals(p.getRunStatus())).count();
+                if (count > 0) {
+                    DecimalFormat decimalFormat = new DecimalFormat("0.00");
+                    float v = Float.parseFloat(decimalFormat.format(count * 1.0 / planCaseRefs.size())) * 100;
+                    t.setFinishProcess(String.valueOf(v));
+                    t.setRunCaseCount(count + "/" + planCaseRefs.size());
+                }
+                for (PlanCaseRef ref : planCaseRefs) {
+                    if (Objects.isNull(ref.getRunStatus())) {
+                        t.setFinished(false);
+                        break;
+                    }
                 }
             }
         });
@@ -117,11 +140,15 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
         String description = request.getParameter("description").trim();
         String startDate = request.getParameter("startDate");
         String finishDate = request.getParameter("finishDate");
+        String dutyMan = request.getParameter("dutyMan");
         if (StringUtils.isNotBlank(id)) {
             TestPlan byId = getById(id);
             byId.setStoryId(tempStoryId);
             byId.setName(tempPlanName);
             byId.setDescription(description);
+            byId.setStartDate(DateUtils.parseStrToDate(DateUtils.DATEFORMAT_DAY, startDate));
+            byId.setFinishDate(DateUtils.parseStrToDate(DateUtils.DATEFORMAT_DAY, finishDate));
+            byId.setDutyMan(dutyMan);
             byId.setUpdateDate(new Date());
             updateById(byId);
             return ResponseUtils.success(ResponseCode.SUCCESS.getCode(), "数据更新成功", byId);
@@ -133,8 +160,9 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
         }
         TestPlan build = TestPlan.builder().description(description).name(tempPlanName)
                 .projectId(tempProjectId).storyId(tempStoryId).workDate(DateUtils.parse2String(new Date(), "yyyy-MM"))
-                .startDate(DateUtils.parseStrToDate(DateUtils.DATEFORMAT_DAY,startDate))
-                .finishDate(DateUtils.parseStrToDate(DateUtils.DATEFORMAT_DAY,finishDate))
+                .startDate(DateUtils.parseStrToDate(DateUtils.DATEFORMAT_DAY, startDate))
+                .finishDate(DateUtils.parseStrToDate(DateUtils.DATEFORMAT_DAY, finishDate))
+                .dutyMan(dutyMan)
                 .delFlag(0).createDate(new Date()).build();
         baseMapper.insert(build);
         planStoryRefService.addRefItem(build.getId(), tempStoryId);

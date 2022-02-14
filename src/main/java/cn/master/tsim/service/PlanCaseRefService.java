@@ -26,6 +26,8 @@ public interface PlanCaseRefService extends IService<PlanCaseRef> {
      */
     void addItemRef(String planId, List<String> caseRef);
 
+    void updateItemRef(String planId, String caseId, String bugId);
+
     /**
      * 更新数据
      *

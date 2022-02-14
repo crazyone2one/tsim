@@ -75,19 +75,15 @@
 <div th:replace="~{plan/add_plan_modal::addPlanFragment}"></div>
 <div th:replace="~{plan/associate_case::ass_case}"></div>
 <div th:replace="~{plan/ref_run_modal::refRunFragment}"></div>
+<div th:replace="~{plan/execute_case_modal::execute-fragment}"></div>
 <!-- 添加问题单Modal弹框 -->
 <div th:replace="~{bug/add_bug_modal::addBugFragment}"></div>
 <!--                    toast-->
 <div th:replace="/fragment/commons :: toast-div"></div>
+<div th:replace="/fragment/commons :: confirm-modal"></div>
 <!-- Logout Modal-->
 <div th:replace="/fragment/commons :: logout"></div>
-<script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
-<script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.min.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.min.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
-<script type="text/javascript" th:src="@{/global/js/common.js}"></script>
-<script th:inline="javascript" th:src="@{/global/js/bs.table.js}"></script>
+<div th:replace="/fragment/commons :: generalJS"></div>
 <script th:src="@{/global/js/t-bug.js}"></script>
 <script th:src="@{/global/js/t-plan.js}"></script>
 <script th:inline="javascript">
@@ -103,13 +99,74 @@
         autoComplete('/story/queryList/' + val, 'storyList', 's', true);
     }
 
+    const test_stage = {
+        "1": '单元测试',
+        "2": '集成测试',
+        "3": '系统测试',
+        "4": '验收测试',
+        "5": '回归测试',
+    }
     // 列表
     const _columns = [
         {field: 'id', align: 'center', title: 'id', visible: false},
         {
+            field: 'name',
+            align: 'center',
+            title: '计划名称',
+            class: 'col-sm-4'
+        },
+        {
+            field: 'description',
+            align: 'center',
+            title: '计划描述',
+            class: 'col-sm-4'
+        },
+        {
+            field: 'workStatus',
+            align: 'center',
+            title: '当前状态',
+            class: 'col-sm-2', formatter: function (value, row) {
+                if (row.finishProcess && !Object.is('100.0', row.finishProcess)) {
+                    return '<span class="badge bg-info">进行中</span>';
+                } else if (Object.is(0, value)) {
+                    return '<span class="badge bg-secondary">未开始</span>';
+                } else {
+                    return '<span class="badge bg-success">已完成</span>';
+                }
+            }
+        },
+        {
+            field: 'testStage',
+            align: 'center',
+            title: '测试阶段',
+            class: 'col-sm-2', formatter: function (value) {
+                return test_stage[value];
+            }
+        },
+        {
+            field: 'finishProcess',
+            align: 'center',
+            title: '测试进度',
+            class: 'col-sm-2', formatter: function (value) {
+                let progress;
+                if (value) {
+                    const per = value.split('.')[0];
+                    progress =
+                        '<div class="progress" style="height: 20px;">\n' +
+                        '  <div class="progress-bar" role="progressbar" style="width: ' + per + '%" aria-valuenow="' + per + '" aria-valuemin="0" aria-valuemax="100">' + value + '%' + '</div>' +
+                        '</div>';
+                } else {
+                    progress = '<div class="progress" style="height: 10px;">\n' +
+                        '  <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>\n' +
+                        '</div>'
+                }
+                return progress;
+            }
+        },
+        {
             field: 'projectId',
             align: 'center',
-            title: '项目名',
+            title: '所属项目',
             class: 'col-sm-4', formatter: function (value, row, index) {
                 return row.project.projectName;
             }
@@ -120,16 +177,6 @@
             class: 'col-sm-4', formatter: function (value, row, index) {
                 return row.story != null ? row.story.storyName : undefined;
             }
-        }, {
-            field: 'name',
-            align: 'center',
-            title: '测试计划名称',
-            class: 'col-sm-4'
-        }, {
-            field: 'description',
-            align: 'center',
-            title: '测试计划描述',
-            class: 'col-sm-4'
         },
         {
             field: 'startDate',
@@ -154,7 +201,7 @@
         const edit = '<button type="button" class="btn btn-sm btn-warning me-1" id="edit-plan-button" data-bs-toggle="modal" ' +
             'data-bs-target="add-plan-modal" title="编辑测试计划数据" onclick="addOrEditPlan(\'' + row.id + '\')"><i class="bi-pencil-square"></i></>';
         const a = '<button type="button" class="btn btn-sm btn-info me-1" id="ref-add" data-bs-toggle="modal" ' +
-            'data-bs-target="#ref-case-modal" data-bs-placement="top" title="关联测试用例" onclick="loadCaseInfo(\'' + row.id + '\')"><i class="bi-check"></i></>';
+            'data-bs-target="#ref-case-modal" data-bs-placement="top" title="关联测试用例" onclick="loadCaseInfo(\'' + row.id + '\')"><i class="bi-link"></i></>';
         const b = '<button type="button" class="btn btn-sm btn-info" id="ref-run" data-bs-toggle="modal" ' +
             'data-bs-target="#ref-run-modal" data-bs-placement="top" title="执行测试用例" onclick="loadRunCaseInfo(\'' + row.id + '\')"><i class="bi-check-all"></></button>';
         return edit + a + b;
@@ -220,6 +267,10 @@
                     data.story && $('#storyList').val(data.story.storyName);
                     $('#add_plan_name').val(data.name);
                     $('#add-description-name').val(data.description);
+                    $('#plan-start-date').val(data.startDate.split(" ")[0]);
+                    $('#plan-finish-date').val(data.finishDate.split(" ")[0]);
+                    select_option_checked('test_stage', data.testStage);
+                    select_option_checked('duty-man', data.dutyMan);
                 },
             })
         }
@@ -233,8 +284,14 @@
         const tempStoryId = $('#storyId').val();
         const $addPlanName = $('#add_plan_name');
         const tempPlanName = $addPlanName.val();
+        const dutyMan = $('#duty-man').val();
+        const _startDate = $('#plan-start-date').val();
+        const _endDate = $('#plan-finish-date').val();
+        singleValidation(_startDate, 'plan-start-date');
+        singleValidation(_endDate, 'plan-finish-date');
+        singleValidation(dutyMan, 'duty-man');
         // 测试计划名称非空验证
-        tempPlanName ? removeClass('#add_plan_name', 'is-invalid') : $addPlanName.addClass("is-invalid");
+        singleValidation(tempPlanName, 'add_plan_name');
         if (!tempProjectName) {
             $('#p-add').addClass("is-invalid");
             return false;

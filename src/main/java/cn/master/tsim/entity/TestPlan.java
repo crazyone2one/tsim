@@ -80,12 +80,14 @@ public class TestPlan implements Serializable {
     @TableField("del_flag")
     private Integer delFlag;
 
+    @TableField("test_stage")
+    private String testStage;
+    /**
+     * 责任人
+     */
+    @TableField("duty_man")
+    private String dutyMan;
 
-    @TableField("group_id")
-    private String groupId;
-
-    @TableField("num")
-    private String num;
     @TableField("create_date")
     private Date createDate;
 
@@ -99,4 +101,17 @@ public class TestPlan implements Serializable {
 
     @TableField(exist = false)
     private boolean finished;
+
+    @TableField(exist = false)
+    private String finishProcess;
+    /**
+     * 通过率
+     */
+    @TableField(exist = false)
+    private String passRate;
+    /**
+     * 已测用例
+     */
+    @TableField(exist = false)
+    private String runCaseCount;
 }

@@ -1,6 +1,7 @@
 package cn.master.tsim.controller;
 
 
+import cn.master.tsim.common.Constants;
 import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.TestPlan;
@@ -12,6 +13,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -42,7 +44,8 @@ public class TestPlanController {
     }
 
     @GetMapping("/list")
-    public String allPlans(HttpServletRequest request) {
+    public String allPlans(HttpServletRequest request, Model model) {
+        model.addAttribute("users", Constants.userMaps);
         return "plan/plan_list";
     }
 

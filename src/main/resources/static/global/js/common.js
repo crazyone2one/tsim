@@ -240,3 +240,34 @@ function download_file_by_ajax(uuidName) {
     xhr.responseType = 'blob';
     xhr.send(null);
 }
+
+/**
+ * 单个字段验证是否为空
+ * @param value 控件值
+ * @param id_location id定位值
+ */
+const singleValidation = (value, id_location) => {
+    value ? removeClass('#' + id_location, 'is-invalid') : $('#' + id_location).addClass("is-invalid");
+};
+
+/**
+ * textarea根据内容自适应高度
+ */
+$.fn.extend({
+    textareaAutoHeight: function () {
+        return this.each(function () {
+            const $this = $(this);
+            if ($this.attr('initAttrH')) {
+                $this.attr('initAttrH', $this.outerHeight());
+            }
+            setAutoHeight(this).on('input', function () {
+                setAutoHeight(this);
+            });
+        });
+
+        function setAutoHeight(element) {
+            const $obj = $(element);
+            return $obj.css({height: $obj.attr('initAttrH'), 'overflow-y': 'hidden'}).height(element.scrollHeight);
+        }
+    },
+});

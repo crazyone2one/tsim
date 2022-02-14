@@ -2,14 +2,12 @@ package cn.master.tsim.service.impl;
 
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.PlanCaseRef;
+import cn.master.tsim.entity.PlanCaseResult;
 import cn.master.tsim.entity.TestBug;
 import cn.master.tsim.entity.TestTaskInfo;
 import cn.master.tsim.mapper.PlanCaseRefMapper;
 import cn.master.tsim.mapper.TestTaskInfoMapper;
-import cn.master.tsim.service.PlanCaseRefService;
-import cn.master.tsim.service.TestBugService;
-import cn.master.tsim.service.TestCaseService;
-import cn.master.tsim.service.TestPlanService;
+import cn.master.tsim.service.*;
 import cn.master.tsim.util.ResponseUtils;
 import com.alibaba.fastjson.JSONArray;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -25,6 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * <p>
@@ -38,14 +37,18 @@ import java.util.Objects;
 public class PlanCaseRefServiceImpl extends ServiceImpl<PlanCaseRefMapper, PlanCaseRef> implements PlanCaseRefService {
 
     private final TestCaseService caseService;
+    private final TestCaseStepsService caseStepsService;
     private final TestBugService bugService;
     private final TestTaskInfoMapper taskInfoMapper;
+    @Autowired
+    private  PlanCaseResultService planCaseResultService;
     @Autowired
     private TestPlanService planService;
 
     @Autowired
-    public PlanCaseRefServiceImpl(TestCaseService caseService, TestBugService bugService, TestTaskInfoMapper testTaskInfoMapper) {
+    public PlanCaseRefServiceImpl(TestCaseService caseService, TestCaseStepsService caseStepsService, TestBugService bugService, TestTaskInfoMapper testTaskInfoMapper) {
         this.caseService = caseService;
+        this.caseStepsService = caseStepsService;
         this.bugService = bugService;
         this.taskInfoMapper = testTaskInfoMapper;
     }
@@ -56,13 +59,26 @@ public class PlanCaseRefServiceImpl extends ServiceImpl<PlanCaseRefMapper, PlanC
         int index = 0;
         for (String caseId : caseRef) {
             final PlanCaseRef build = PlanCaseRef.builder().planId(planId).caseId(caseId).build();
+            caseStepsService.listSteps(caseId).forEach(t->{
+                final PlanCaseResult result = PlanCaseResult.builder().planId(planId).caseId(caseId).caseStepId(t.getId()).build();
+                planCaseResultService.addRefItem(result);
+            });
             index += baseMapper.insert(build);
         }
-        //            保存测试计划关联的测试用例时，更新task表中新增测试用例数量
+        // 保存测试计划关联的测试用例时，更新task表中新增测试用例数量
         final TestTaskInfo taskInfo = taskInfoMapper.queryTaskInfoByPlan(planId);
         taskInfo.setCreateCaseCount(taskInfo.getCreateCaseCount() + index);
         taskInfo.setUpdateDate(new Date());
         taskInfoMapper.updateById(taskInfo);
+    }
+
+    @Override
+    public void updateItemRef(String planId, String caseId, String bugId) {
+        PlanCaseRef planCaseRef = baseMapper.queryPlanCaseRef(planId, caseId);
+        planCaseRef.setRunStatus("1");
+        planCaseRef.setRunResult(planCaseResultService.getExecuteResult(planId, caseId));
+        planCaseRef.setBugId(Optional.ofNullable(bugId).orElse(""));
+        baseMapper.updateById(planCaseRef);
     }
 
     @Override
@@ -87,13 +103,13 @@ public class PlanCaseRefServiceImpl extends ServiceImpl<PlanCaseRefMapper, PlanC
         final TestBug testBug = bugService.saveOrUpdateBug(request, build);
 //        更新关系数据
         PlanCaseRef ref = baseMapper.selectById(request.getParameter("ref-id"));
-        Integer runStatus = ref.getRunStatus();
-        ref.setRunStatus(1);
-        ref.setRunResult(1);
+        String runStatus = ref.getRunStatus();
+        ref.setRunStatus("1");
+        ref.setRunResult("1");
         ref.setBugId(testBug.getId());
         int index = baseMapper.updateById(ref);
 //        更新任务汇总数据执行测试用例数量
-        if (runStatus == 0) {
+        if (Objects.equals(runStatus,"0")) {
             // 已通过测试用例再次录入bug时不增加执行测试用例数量
             final TestTaskInfo taskInfo = taskInfoMapper.queryTaskInfoByPlan(ref.getPlanId());
             taskInfo.setExecuteCaseCount(taskInfo.getExecuteCaseCount() + index);
@@ -133,8 +149,8 @@ public class PlanCaseRefServiceImpl extends ServiceImpl<PlanCaseRefMapper, PlanC
             List<String> refIds = JSONArray.parseArray(request.getParameter("refIds"),String.class);
             refIds.forEach(t -> {
                 PlanCaseRef planCaseRef = getById(t);
-                planCaseRef.setRunStatus(1);
-                planCaseRef.setRunResult(0);
+                planCaseRef.setRunStatus("1");
+                planCaseRef.setRunResult("0");
                 int index = baseMapper.updateById(planCaseRef);
                 //        更新任务汇总数据执行测试用例数量
                 final TestTaskInfo taskInfo = taskInfoMapper.queryTaskInfoByPlan(planCaseRef.getPlanId());

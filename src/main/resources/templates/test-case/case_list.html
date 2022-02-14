@@ -106,13 +106,7 @@
 <div th:replace="/fragment/commons :: confirm-modal"></div>
 <!-- Logout Modal-->
 <div th:replace="/fragment/commons :: logout"></div>
-<script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
-<script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.js}"></script>
-<script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
-<script type="text/javascript" th:src="@{/global/js/common.js}"></script>
+<div th:replace="/fragment/commons :: generalJS"></div>
 <script type="text/javascript" th:src="@{/global/js/t-case.js}"></script>
 <script type="text/javascript" th:src="@{/global/js/t-auto-run.js}"></script>
 <script type="text/javascript" th:src="@{/global/js/upload-file.js}"></script>
@@ -179,13 +173,13 @@
                 let _priority = '';
                 switch (value) {
                     case '0':
-                        _priority = "低";
+                        _priority = '<span class="badge bg-danger">P0</span>';
                         break
                     case '1':
-                        _priority = "中";
+                        _priority = '<span class="badge bg-warning">P1</span>';
                         break
                     case '2':
-                        _priority = "高";
+                        _priority = '<span class="badge bg-info">P2</span>';
                         break
                 }
                 return _priority;
@@ -196,11 +190,12 @@
 
     function option(value, row, index) {
         // const del = "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
-        // const disable = "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='置为无效'>置为无效</a>";
-        const _detail = '<button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#case-detail-modal" onclick="detailCase(\'' + row.id + '\')">查看</button>';
-        const _edit = '<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#case-edit-modal" onclick="editCase(\'' + row.id + '\')">编辑</button>';
+        const _detail = '<button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#case-detail-modal" onclick="detailCase(\'' + row.id + '\')">' +
+            '<i class="bi-journal-text" title="查看"></i></button>';
+        const _edit = '<button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#case-edit-modal" onclick="editCase(\'' + row.id + '\')">' +
+            '<i class="bi-pencil-square" title="编辑"></i></button>';
         const r = '<button disabled class="btn btn-sm btn-warning" onclick="runCase(\'' + row.id + '\')">run</button>';
-        return _detail + _edit;
+        return  _edit+_detail ;
     }
 
     //测试步骤封装
