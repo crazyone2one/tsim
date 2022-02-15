@@ -78,18 +78,21 @@
 <div th:replace="~{plan/execute_case_modal::execute-fragment}"></div>
 <!-- 添加问题单Modal弹框 -->
 <div th:replace="~{bug/add_bug_modal::addBugFragment}"></div>
+<div th:replace="~{plan/plan_report::planReportFragment}"></div>
 <!--                    toast-->
 <div th:replace="/fragment/commons :: toast-div"></div>
 <div th:replace="/fragment/commons :: confirm-modal"></div>
 <!-- Logout Modal-->
 <div th:replace="/fragment/commons :: logout"></div>
 <div th:replace="/fragment/commons :: generalJS"></div>
+<script type="text/javascript" th:src="@{/plugins/echarts.min.js}"></script>
 <script th:src="@{/global/js/t-bug.js}"></script>
 <script th:src="@{/global/js/t-plan.js}"></script>
 <script th:inline="javascript">
     <!--            查询条件-->
     autoComplete('/project/queryList', 'p-search', 'p', false);
-    $('#add-plan-modal').on('show.bs.modal', function () {
+    const $add = $('#add-plan-modal');
+    $add.on('show.bs.modal', function () {
         autoComplete('/project/queryList', 'p-add', 'p', true);
         $("input[type=hidden][id='storyId']").val('');
     });
@@ -190,7 +193,7 @@
             title: '结束时间', sortable: true,
             class: 'col-sm-2', formatter: formatter_date,
         },
-        {title: '操作', align: 'center', field: 'id', class: 'col-sm-2', formatter: option,}];
+        {title: '操作', align: 'center', field: 'id', class: 'col-sm-3', formatter: option,}];
 
     function formatter_date(value) {
         return value.toString().split(" ")[0];
@@ -202,9 +205,11 @@
             'data-bs-target="add-plan-modal" title="编辑测试计划数据" onclick="addOrEditPlan(\'' + row.id + '\')"><i class="bi-pencil-square"></i></>';
         const a = '<button type="button" class="btn btn-sm btn-info me-1" id="ref-add" data-bs-toggle="modal" ' +
             'data-bs-target="#ref-case-modal" data-bs-placement="top" title="关联测试用例" onclick="loadCaseInfo(\'' + row.id + '\')"><i class="bi-link"></i></>';
-        const b = '<button type="button" class="btn btn-sm btn-info" id="ref-run" data-bs-toggle="modal" ' +
-            'data-bs-target="#ref-run-modal" data-bs-placement="top" title="执行测试用例" onclick="loadRunCaseInfo(\'' + row.id + '\')"><i class="bi-check-all"></></button>';
-        return edit + a + b;
+        const b = '<button type="button" class="btn btn-sm btn-info me-1" id="ref-run" data-bs-toggle="modal" ' +
+            'data-bs-target="#ref-run-modal" data-bs-placement="top" title="执行测试用例" onclick="loadRunCaseInfo(\'' + row.id + '\')"><i class="bi-check-all"></i></button>';
+        const report='<button type="button" class="btn btn-sm btn-info" id="plan-report" data-bs-toggle="modal" ' +
+            'data-bs-target="#plan-report-modal" data-bs-placement="top" title="测试报告" onclick="loadReport(\'' + row.id + '\')"><i class="bi-files"></i></button>';
+        return edit + a + b + report;
     }
 
     const _params = function (params) {
@@ -237,7 +242,7 @@
     });
 
     function addOrEditPlan(id) {
-        const _modal = $('#add-plan-modal');
+        const _modal = $add;
         _modal.modal('show');
         _modal.on('shown.bs.modal', function () {
             // 编辑数据时不使用字段提示功能
@@ -325,7 +330,7 @@
             contentType: "application/x-www-form-urlencoded; charset=UTF-8",
             success: function (arg) {
                 if (Object.is(arg['code'], 200)) {
-                    $('#add-plan-modal').modal('hide');
+                    $add.modal('hide');
                     resetModal("#add-plan-modal", "addPlanForm");
                     $('#table').bootstrapTable('refresh');
                 }

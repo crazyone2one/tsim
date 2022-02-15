@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.List;
+import java.util.Map;
 
 /**
  * <p>
@@ -48,4 +49,8 @@ public interface TestPlanService extends IService<TestPlan> {
      * @author 11's papa
      */
     List<TestPlan> queryPlansByProjectId(String projectId);
+
+    List<Map<String, Object>> loadReportInfo(HttpServletRequest request);
+
+    Map<String, Long> getStatisticsCount(HttpServletRequest request);
 }

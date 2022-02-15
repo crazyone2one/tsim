@@ -410,7 +410,7 @@ $('#execute-case-submit').on('click', function (e) {
             }
         })
     })
-    $('#btn-dismiss').on('click',function () {
+    $('#btn-dismiss').on('click', function () {
         $.ajax({
             url: '/plan-case-result/addRef',
             type: 'post',
@@ -425,4 +425,75 @@ $('#execute-case-submit').on('click', function (e) {
             }
         })
     })
-})
+});
+/**
+ * 测试报告
+ */
+const loadReport = (planId) => {
+    $.ajax({
+        url: '/plan/loadReport',
+        type: 'get',
+        contentType: 'application/x-www-form-urlencoded',
+        data: {
+            'planId': planId,
+        },
+        success: function (res) {
+            // console.log(res);
+            const result = res['data'];
+            // 基本信息
+            const plan = result['plan'];
+            $('#report-project-name').text(plan['project']['projectName']);
+            $('#report-begin-date').text(plan['startDate'].toString().split(' ')[0]);
+            $('#report-end-date').text(plan['finishDate'].toString().split(' ')[0]);
+            // 测试用例执行情况
+            const caseInfo = result['caseInfo'];
+            const $table = $('#report-plan-info-table')
+            $table.bootstrapTable("destroy");
+            $table.bootstrapTable({data: caseInfo});
+            //   统计图
+            const statistics = result['statistics'];
+            const option = {
+                title: {
+                    text: '测试结果统计图',
+                    // subtext: 'Fake Data',
+                    left: 'center'
+                },
+                tooltip: {
+                    trigger: 'item'
+                },
+                legend: {
+                    orient: 'vertical',
+                    left: 'left'
+                },
+                series: [
+                    {
+                        // center: ['50%', '50%'],
+                        name: '测试用例执行结果',
+                        type: 'pie',
+                        radius: '50%',
+                        data: [
+                            {value: statistics['unExecute'], name: '未执行'},
+                            {value: statistics['pass'], name: '通过'},
+                            {value: statistics['fail'], name: '失败'},
+                            {value: statistics['blocking'], name: '阻塞'},
+                            // { value: 300, name: 'Video Ads' }
+                        ],
+                        emphasis: {
+                            itemStyle: {
+                                shadowBlur: 10,
+                                shadowOffsetX: 0,
+                                shadowColor: 'rgba(0, 0, 0, 0.5)'
+                            }
+                        }
+                    }
+                ]
+            };
+            const chartDom = document.getElementById('statistics-echarts');
+            const statisticsEcharts = echarts.init(chartDom);
+            option && statisticsEcharts.setOption(option);
+            window.onresize=function () {
+                chartDom.resize();
+            }
+        }
+    })
+};

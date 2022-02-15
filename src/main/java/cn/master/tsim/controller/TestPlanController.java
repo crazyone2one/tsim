@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -128,6 +129,16 @@ public class TestPlanController {
             log.error(e.getMessage());
             return ResponseUtils.error(ResponseCode.BODY_NOT_MATCH.getCode(), "数据添加失败", e.getMessage());
         }
+    }
+
+    @GetMapping("loadReport")
+    @ResponseBody
+    public ResponseResult loadReport(HttpServletRequest request) {
+        Map<String, Object> result = new LinkedHashMap<>();
+        result.put("plan", planService.queryPlanById(request.getParameter("planId")));
+        result.put("caseInfo", planService.loadReportInfo(request));
+        result.put("statistics", planService.getStatisticsCount(request));
+        return ResponseUtils.success(result);
     }
 }
 

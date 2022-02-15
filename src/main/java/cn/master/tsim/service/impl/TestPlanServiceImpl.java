@@ -3,8 +3,10 @@ package cn.master.tsim.service.impl;
 import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
 import cn.master.tsim.entity.PlanCaseRef;
+import cn.master.tsim.entity.TestCase;
 import cn.master.tsim.entity.TestPlan;
 import cn.master.tsim.entity.Tester;
+import cn.master.tsim.mapper.TestCaseMapper;
 import cn.master.tsim.mapper.TestPlanMapper;
 import cn.master.tsim.service.*;
 import cn.master.tsim.util.DateUtils;
@@ -21,10 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.text.DecimalFormat;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * <p>
@@ -48,6 +47,10 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
     PlanCaseRefService planCaseRefService;
     @Autowired
     PlanCaseResultService planCaseResultService;
+    @Autowired
+    TestCaseMapper testCaseMapper;
+    @Autowired
+    TestCaseService testCaseService;
 
     @Autowired
     public TestPlanServiceImpl(PlanStoryRefService planStoryRefService) {
@@ -204,5 +207,39 @@ public class TestPlanServiceImpl extends ServiceImpl<TestPlanMapper, TestPlan> i
         QueryWrapper<TestPlan> wrapper = new QueryWrapper<>();
         wrapper.lambda().eq(TestPlan::getProjectId, projectId).eq(TestPlan::getDelFlag, 0);
         return baseMapper.selectList(wrapper);
+    }
+
+    @Override
+    public List<Map<String, Object>> loadReportInfo(HttpServletRequest request) {
+        List<Map<String, Object>> result = new LinkedList<>();
+        String planId = request.getParameter("planId");
+        List<PlanCaseRef> planCaseRefs = planCaseRefService.loadRefItemByPlanId(planId);
+        if (CollectionUtils.isEmpty(planCaseRefs)) {
+            return result;
+        }
+        List<String> caseId = new LinkedList<>();
+        planCaseRefs.forEach(t -> caseId.add(t.getCaseId()));
+        List<Map<String, Object>> maps = testCaseMapper.selectMaps(new QueryWrapper<TestCase>().lambda().in(TestCase::getId, caseId).groupBy(TestCase::getModuleId));
+        maps.forEach(t -> {
+            Map<String, Object> map = new LinkedHashMap<>();
+            List<TestCase> casesByModule = testCaseMapper.selectList(new QueryWrapper<TestCase>().lambda().in(TestCase::getId, caseId).eq(TestCase::getModuleId, t.get("module_id")));
+            map.put("moduleName", testCaseService.getById((String) t.get("id")).getModule().getModuleName());
+            map.put("caseCount", casesByModule.size());
+            map.put("passRate", baseMapper.getPassRateByPlanAndModule(planId, (String) t.get("module_id")));
+            result.add(map);
+        });
+        return result;
+    }
+
+    @Override
+    public Map<String, Long> getStatisticsCount(HttpServletRequest request) {
+        String planId = request.getParameter("planId");
+        List<PlanCaseRef> results = planCaseRefService.loadRefItemByPlanId(planId);
+        Map<String, Long> map = new LinkedHashMap<>();
+        map.put("unExecute", results.stream().filter(t -> Objects.equals(t.getRunStatus(), "0")).count());
+        map.put("pass", results.stream().filter(t -> (Objects.equals(t.getRunStatus(), "1") && Objects.equals(t.getRunResult(), "1"))).count());
+        map.put("fail", results.stream().filter(t -> (Objects.equals(t.getRunStatus(), "1") && Objects.equals(t.getRunResult(), "2"))).count());
+        map.put("blocking", results.stream().filter(t -> (Objects.equals(t.getRunStatus(), "1") && Objects.equals(t.getRunResult(), "3"))).count());
+        return map;
     }
 }

@@ -114,4 +114,6 @@ public class TestPlan implements Serializable {
      */
     @TableField(exist = false)
     private String runCaseCount;
+    @TableField(exist = false)
+    private Integer refCaseCount;
 }
