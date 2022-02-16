@@ -1,147 +1,163 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Title</title>
-        <meta name="author" content="11‘s papa">
-    </head>
-    <body>
-        <div th:fragment="addCaseFragment">
-            <div class="modal fade" id="add-case-modal" tabindex="-1" aria-labelledby="addCaseModalLabel"
-                 aria-hidden="true" data-bs-backdrop="static">
-                <div class="modal-dialog modal-lg modal-dialog-centered">
-                    <div class="modal-content">
-                        <form th:action="@{/case/save}" method="post" id="add-case-from" autocomplete="off">
-                            <div class="modal-header">
-                                <h5 class="modal-title bg-light" id="addCaseModalLabel">添加测试用例</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text required" id="basic-addon1">项目名称
-                                    </span>
-                                    <input id="projectId" class="form-control invalid-item" aria-label="项目名称" required
-                                           placeholder="填写项目名称">
-                                    <div class="invalid-feedback" id="project-error-tips">
-                                        请输入或选择项目.
-                                    </div>
-                                    <input type="hidden" name="projectId" id="c-a-p">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Title</title>
+    <meta name="author" content="11‘s papa">
+</head>
+<body>
+<div th:fragment="addCaseFragment">
+    <div class="modal fade" id="add-case-modal" tabindex="-1" aria-labelledby="addCaseModalLabel"
+         aria-hidden="true" data-bs-backdrop="static">
+        <div class="modal-dialog modal-xl modal-dialog-centered">
+            <div class="modal-content">
+                <form th:action="@{/case/save}" method="post" id="add-case-from" autocomplete="off">
+                    <input type="hidden" id="hidden-case-id" name="id">
+                    <div class="modal-header">
+                        <h5 class="modal-title bg-light" id="addCaseModalLabel">添加测试用例</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row mb-2">
+                            <div class="row col-md-4">
+                                <label class="col-md-5 col-form-label required text-end" for="projectId">项目名称</label>
+                                <div class="col-md-7">
+                                    <input id="projectId" class="form-control invalid-item" required>
+                                    <div class="invalid-feedback" id="project-error-tips">请输入或选择项目.</div>
+                                    <input type="hidden" name="projectId" id="hidden-project-id">
                                 </div>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text required" id="suite-span">模块名称</span>
-                                    <input id="moduleId" class="form-control invalid-item"
-                                           required aria-label="模块名称"
-                                           aria-describedby="suite-span" placeholder="填写模块名称">
-                                    <div class="invalid-feedback" id="module-error-tips">
-                                        请输入或选择项目.
-                                    </div>
+                            </div>
+                            <div class="row col-md-4">
+                                <span class="col-sm-5 col-form-label required text-end" id="suite-span">模块名称</span>
+                                <div class="col-sm-7">
+                                    <input id="moduleId" class="form-control invalid-item" aria-label="模块名称"
+                                           aria-describedby="module-error-tips" placeholder="填写模块名称">
+                                    <div class="invalid-feedback" id="module-error-tips">请输入或选择项目.</div>
                                     <input type="hidden" name="moduleId" id="m-a">
                                 </div>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="c-s-r">关联测试计划</span>
+                            </div>
+                            <div class="row col-md-4">
+                                <span class="col-sm-5 col-form-label text-end" id="c-s-r">关联测试计划</span>
+                                <div class="col-sm-7">
                                     <input id="ref-plan" class="form-control" aria-label="测试计划"
                                            aria-describedby="suite-span" placeholder="填写测试计划">
-                                    <div class="invalid-feedback" id="plan-error-tips">
-                                        请输入或选择项目.
-                                    </div>
+                                    <div class="invalid-feedback" id="plan-error-tips">请输入或选择项目.</div>
                                     <input type="hidden" name="tempPlanId" id="add-case-ref-plan">
                                 </div>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text required" id="title-span">测试用例标题</span>
-                                    <input name="name" id="caseTitle" type="text"
-                                           class="form-control invalid-item" placeholder="输入测试用例标题"
-                                           aria-label="测试用例标题"
-                                           aria-describedby="title-span"
+                            </div>
+                        </div>
+                        <div class="row mb-2">
+                            <div class="row col-md-4">
+                                <span class="col-sm-5 col-form-label text-end required" id="title-span">用例名称</span>
+                                <div class="col-sm-7">
+                                    <input name="name" id="caseTitle" type="text" class="form-control invalid-item"
+                                           placeholder="输入测试用例名称" aria-label="测试用例标题" aria-describedby="title-span"
                                            required>
-                                    <div class="invalid-feedback">
-                                        请输入测试用例标题.
-                                    </div>
+                                    <div class="invalid-feedback">请输入测试用例标题.</div>
                                 </div>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="summary-span">测试用例描述</span>
+                            </div>
+                            <div class="row col-md-4">
+                                <span class="col-sm-5 col-form-label text-end" id="summary-span">测试用例描述</span>
+                                <div class="col-sm-7">
                                     <input class="form-control" name="description" id="caseSummary"
-                                              placeholder="输入测试用例描述" aria-label="测试用例描述"
-                                              aria-describedby="summary-span">
+                                           placeholder="输入测试用例描述" aria-label="测试用例描述" aria-describedby="summary-span">
                                 </div>
-                                <div class="input-group mb-3">
-                                    <span class="input-group-text" id="pre-span">前提条件</span>
-                                    <input class="form-control " name="precondition" id="casePrecondition"
-                                              placeholder="前提条件" aria-label="前提条件"
-                                              aria-describedby="pre-span">
+                            </div>
+                            <div class="row col-md-4">
+                                <label class="col-sm-5 col-form-label text-end" for="owner">维护人</label>
+                                <div class="col-sm-7">
+                                    <select class=" form-select" name="caseOwner" id="owner">
+                                        <option th:each="user:${users}" th:value="${user.key}"
+                                                th:text="${user.value.username}"></option>
+                                    </select>
                                 </div>
-                                <div class="row g-3 mb-3">
-                                    <div class="col">
-                                        <div class="input-group">
-                                            <label class="input-group-text" for="priority">用例等级</label>
-                                            <select class="form-select" name="priority" id="priority">
-                                                <option value="0">P0</option>
-                                                <option value="1" selected>P1</option>
-                                                <option value="2">P2</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="col">
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="runModeManual" id="mode-manual" value="1">
-                                            <label class="form-check-label" for="mode-manual">手动测试</label>
-                                        </div>
-                                        <div class="form-check form-check-inline">
-                                            <input class="form-check-input" type="checkbox" name="runModeAuto" id="mode-auto" value="1">
-                                            <label class="form-check-label" for="mode-auto">自动测试</label>
-                                        </div>
-                                    </div>
-<!--                                    <div class="  col-md-4">-->
-<!--                                        <select class="form-select" aria-label="workDate" id="workDate" name="workDate"-->
-<!--                                                data-bs-toggle="tooltip" data-bs-placement="bottom"-->
-<!--                                                title="此字段值用于和项目统计关联使用">-->
-<!--                                            <option th:each="m:${monthList}"-->
-<!--                                                    th:value="${m}"-->
-<!--                                                    th:text="${m}"-->
-<!--                                                    th:selected="${#dates.format(#dates.createToday(),'yyyy-MM') eq m}">-->
-<!--                                        </select>-->
-<!--                                    </div>-->
+                            </div>
+                        </div>
+                        <div class="row mb-2 text-center mb-3">
+                            <div class="row col-md-4">
+                                <label class="col-md-5 text-end required" for="priority">优先级</label>
+                                <div class="col-md-7">
+                                    <select class="form-select" name="priority" id="priority">
+                                        <option value="0">P0</option>
+                                        <option value="1" selected>P1</option>
+                                        <option value="2">P2</option>
+                                    </select>
                                 </div>
-                                <div id="case-area">
-                                    <div>
-                                        <a href="#" id="AddMoreFileBox" class="btn btn-info btn-sm"
-                                           onclick="addCaseStep()">添加测试步骤</a>
+                            </div>
+                            <div class="row col-md-4">
+                                <label class="col-sm-5 text-end required" for="case-type">类型</label>
+                                <div class="col-sm-7">
+                                    <select class="form-select" name="caseType" id="case-type">
+                                        <option value="0">功能测试</option>
+                                        <option value="1">接口测试</option>
+                                        <option value="2">性能测试</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row col-md-4">
+                                <label class="col-sm-5 text-end required" for="test-mode">测试方式</label>
+                                <div class="col-sm-7">
+                                    <select class="form-select" name="testMode" id="test-mode">
+                                        <option value="0">手动测试</option>
+                                        <option value="1">自动测试</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row mb-2 me-1">
+                            <label for="casePrecondition" class="form-label">前提条件</label>
+                            <textarea class="form-control me-1" name="precondition" id="casePrecondition"></textarea>
+                        </div>
+                        <div id="case-area" class="me-1">
+                            <div class="mb-1">
+                                <a href="#" id="AddMoreFileBox" class="btn btn-info btn-sm" onclick="addCaseStep()">添加测试步骤</a>
+                            </div>
+                            <table id="view-case-step-table" class="table" style="display: none">
+                                <thead>
+                                <tr>
+                                    <th data-field="caseStep">步骤</th>
+                                    <th data-field="caseStepResult">预期结果</th>
+                                </tr>
+                                </thead>
+                            </table>
+                            <input id="caseSteps" name="stepStore" type="hidden" class="form-control">
+                            <input id="caseExpectedResults" name="resultStore" type="hidden"
+                                   class="form-control">
+                            <div id="case-step-area">
+                                <div class="position-relative invalid-item" id="toast-div"></div>
+                                <div class="invalid-feedback">录入测试步骤和预期结果.</div>
+                                <div class="row rounded" id="row_1">
+                                    <div style="width: 47%;">
+                                        <label for="caseSteps_1" class="form-label">测试步骤</label>
+                                        <input name="caseSteps[]" id="caseSteps_1" type="text"
+                                               class="form-control line_under_input">
                                     </div>
-                                    <input id="caseSteps" name="stepStore" type="hidden" class="form-control">
-                                    <input id="caseExpectedResults" name="resultStore" type="hidden"
-                                           class="form-control">
-                                    <div id="case-step-area">
-                                        <div class="position-relative invalid-item" id="toast-div"></div>
-                                        <div class="invalid-feedback">
-                                            录入测试步骤和预期结果.
-                                        </div>
-                                        <div class="row rounded" id="row_1">
-                                            <div style="width: 47%;">
-                                                <label for="caseSteps_1" class="form-label">测试步骤</label>
-                                                <input name="caseSteps[]" id="caseSteps_1" type="text" class="form-control line_under_input">
-                                            </div>
-                                            <div style="width: 47%;">
-                                                <label for="caseExpectedResults_1" class="form-label">预期结果</label>
-                                                <input name="caseExpectedResults[]" id="caseExpectedResults_1" type="text" class="form-control line_under_input">
-                                            </div>
-                                            <div class="position-relative" style="width: 6%;">
-                                                <a class="position-absolute top-50 start-50">
-                                                    <i class="bi bi-backspace" style="color: #bb2d3b" id="del" onclick="removeCaseStep(this)"></i>
-                                                </a>
-                                            </div>
-                                        </div>
+                                    <div style="width: 47%;">
+                                        <label for="caseExpectedResults_1" class="form-label">预期结果</label>
+                                        <input name="caseExpectedResults[]" id="caseExpectedResults_1" type="text"
+                                               class="form-control line_under_input">
+                                    </div>
+                                    <div class="position-relative" style="width: 6%;">
+                                        <a class="position-absolute top-50 start-50">
+                                            <i class="bi bi-backspace" style="color: #bb2d3b" id="del"
+                                               onclick="removeCaseStep(this)"></i>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                                <button type="button" class="btn btn-primary" onclick="saveCaseInfo()" id="submit">保存</button>
-                                <button type="button" class="btn btn-secondary" id="add_case_cancel" data-bs-dismiss="modal">关闭</button>
-                            </div>
-                        </form>
+                        </div>
                     </div>
-                </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" onclick="saveCaseInfo()" id="submit">保存</button>
+                        <button type="button" class="btn btn-secondary" id="add_case_cancel" data-bs-dismiss="modal">
+                            关闭
+                        </button>
+                    </div>
+                </form>
             </div>
         </div>
-    </body>
+    </div>
+</div>
+</body>
 </html>

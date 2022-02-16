@@ -6,10 +6,8 @@
 <body id="tsim_body" class="aside-enable">
 <div th:replace="/fragment/commons_v2 :: 2nd-navigation(moduleflag='case',liFlag='case')"></div>
 <div id="wrapper">
-    <!--    <div th:replace="/fragment/commons :: sidebarMenu(flag='case')"></div>-->
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
-            <!--            <nav th:replace="/fragment/commons :: nav-on-main-top"></nav>-->
             <div class="container-fluid">
                 <!--操作栏-->
                 <div class="pt-2 border-bottom">
@@ -53,7 +51,7 @@
                                     <i class="bi bi-search"></i>
                                 </button>
                                 <button type="button" class="btn btn-info hvr-grow me-1"
-                                        data-bs-toggle="modal" data-bs-target="#add-case-modal" title="添加">
+                                        data-bs-toggle="modal" data-bs-target="#add-case-modal" title="添加" onclick="addData()">
                                     <i class="bi bi-plus-circle"></i>
                                 </button>
                                 <!-- 导出模板数据-->
@@ -88,8 +86,6 @@
                     <table id="table" class="table table-hover">
                     </table>
                 </div>
-                <!--        分页-->
-                <!--                        <div th:replace="/fragment/commons :: pagination01"></div>-->
             </div>
         </div>
         <footer th:replace="/fragment/commons :: footer"></footer>
@@ -99,7 +95,6 @@
 <!-- 添加问题单Modal弹框 -->
 <div th:replace="~{test-case/add_case_modal::addCaseFragment}"></div>
 <div th:replace="~{test-case/detailModal::caseDetailFragment}"></div>
-<div th:replace="~{test-case/editModal::caseEditFragment}"></div>
 <div th:replace="~{test-case/uploadCase::uploadModal}"></div>
 <!--                    toast-->
 <div th:replace="/fragment/commons :: toast-div"></div>
@@ -111,10 +106,8 @@
 <script type="text/javascript" th:src="@{/global/js/t-auto-run.js}"></script>
 <script type="text/javascript" th:src="@{/global/js/upload-file.js}"></script>
 <script th:inline="javascript">
-    // $(document).on('click', "#import", function () {
-    //     $('#uploadModal').modal('show');
-    // });
-    const editModalId = "#case-edit-modal";
+    'use strict';
+    const $addModal = $('#add-case-modal');
     const _table_columns = [
         {field: 'id', align: 'center', title: 'id', visible: false},
         {field: 'checked', checkbox: true, align: "center", width: '40'}, {
@@ -136,32 +129,110 @@
         }, {
             field: 'name',
             align: 'center',
-            title: '测试用例标题', cellStyle: formatTableUnit, formatter: paramsMatter,
+            title: '测试用例标题', cellStyle: function (value, row, index) {
+                if (row.active === 1) {
+                    // 测试用例无效时，改变底色
+                    return {
+                        css: {
+                            'background-color': '#797b7e',
+                            'max-width': '150px',
+                            'text-overflow': 'ellipsis',
+                            'overflow': 'hidden',
+                            'white-space': 'nowrap'
+                        }
+                    };
+                }
+                return {
+                    css: {
+                        'max-width': '150px',
+                        'text-overflow': 'ellipsis',
+                        'overflow': 'hidden',
+                        'white-space': 'nowrap'
+                    },
+                }
+            }, formatter: paramsMatter,
             class: 'col-sm-4'
         }, {
             field: 'description',
             align: 'center',
-            title: '测试用例描述', cellStyle: formatTableUnit, formatter: paramsMatter,
-            class: 'col-sm-4'
-        },
-        {
-            field: 'precondition',
-            align: 'center',
-            title: '前置条件', cellStyle: formatTableUnit, formatter: paramsMatter,
+            title: '测试用例描述', cellStyle: function (value, row, index) {
+                if (row.active === 1) {
+                    // 测试用例无效时，改变底色
+                    return {
+                        css: {
+                            'background-color': '#797b7e',
+                            'max-width': '150px',
+                            'text-overflow': 'ellipsis',
+                            'overflow': 'hidden',
+                            'white-space': 'nowrap'
+                        }
+                    };
+                }
+                return {
+                    css: {
+                        'max-width': '150px',
+                        'text-overflow': 'ellipsis',
+                        'overflow': 'hidden',
+                        'white-space': 'nowrap'
+                    },
+                }
+            }, formatter: paramsMatter,
             class: 'col-sm-4'
         },
         {
             field: 'stepStore',
             align: 'center',
             title: '测试用例步骤',
-            class: 'col-sm-6', cellStyle: formatTableUnit,
+            class: 'col-sm-6', cellStyle: function (value, row, index) {
+                if (row.active === 1) {
+                    // 测试用例无效时，改变底色
+                    return {
+                        css: {
+                            'background-color': '#797b7e',
+                            'max-width': '150px',
+                            'text-overflow': 'ellipsis',
+                            'overflow': 'hidden',
+                            'white-space': 'nowrap'
+                        }
+                    };
+                }
+                return {
+                    css: {
+                        'max-width': '150px',
+                        'text-overflow': 'ellipsis',
+                        'overflow': 'hidden',
+                        'white-space': 'nowrap'
+                    },
+                }
+            },
             formatter: stepFormatter
         },
         {
             field: 'resultStore',
             align: 'center',
             title: '预期结果',
-            class: 'col-sm-6', cellStyle: formatTableUnit,
+            class: 'col-sm-6', cellStyle: function (value, row, index) {
+                if (row.active === 1) {
+                    // 测试用例无效时，改变底色
+                    return {
+                        css: {
+                            'background-color': '#797b7e',
+                            'max-width': '150px',
+                            'text-overflow': 'ellipsis',
+                            'overflow': 'hidden',
+                            'white-space': 'nowrap'
+                        }
+                    };
+                }
+                return {
+                    css: {
+                        'max-width': '150px',
+                        'text-overflow': 'ellipsis',
+                        'overflow': 'hidden',
+                        'white-space': 'nowrap'
+                    },
+                }
+            },
             formatter: stepResultFormatter
         },
         {
@@ -185,18 +256,36 @@
                 return _priority;
             }
         },
-        {title: '操作', align: 'center', field: 'id', class: 'col-sm-4', formatter: option,}
+        {
+            field: 'caseType',
+            align: 'center',
+            title: '类型',
+            class: 'col-sm-2',
+            formatter: function (value, row, index) {
+                let _priority = '';
+                switch (value) {
+                    case '0':
+                        _priority = '功能测试';
+                        break
+                    case '1':
+                        _priority = '接口测试';
+                        break
+                    case '2':
+                        _priority = '性能测试';
+                        break
+                }
+                return _priority;
+            }
+        },
+        {title: '操作', align: 'center', field: 'id', class: 'col-sm-4', formatter: function option(value, row, index) {
+                const _detail = '<button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#case-detail-modal" onclick="detailCase(\'' + row.id + '\')">' +
+                    '<i class="bi-journal-text" title="查看"></i></button>';
+                const _edit = '<button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#add-case-modal" onclick="editCase(\'' + row.id + '\')">' +
+                    '<i class="bi-pencil-square" title="编辑"></i></button>';
+                const r = '<button disabled class="btn btn-sm btn-warning" onclick="runCase(\'' + row.id + '\')">run</button>';
+                return _edit + _detail;
+            },}
     ]
-
-    function option(value, row, index) {
-        // const del = "<a href='#' id='del-project' onclick='delPro(" + row.id + ")' title='删除'>删除</a>";
-        const _detail = '<button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#case-detail-modal" onclick="detailCase(\'' + row.id + '\')">' +
-            '<i class="bi-journal-text" title="查看"></i></button>';
-        const _edit = '<button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#case-edit-modal" onclick="editCase(\'' + row.id + '\')">' +
-            '<i class="bi-pencil-square" title="编辑"></i></button>';
-        const r = '<button disabled class="btn btn-sm btn-warning" onclick="runCase(\'' + row.id + '\')">run</button>';
-        return  _edit+_detail ;
-    }
 
     //测试步骤封装
     function stepFormatter(value, row, index) {
@@ -229,7 +318,11 @@
         span.setAttribute('title', step_result);
         span.innerHTML = step_result;
         return span.outerHTML;
-        // return step_result;
+    }
+
+    function addData() {
+        $('.modal-title').text("添加测试用例");
+        $('#add-case-from')[0].reset()  //重置表单
     }
 
     // 查看测试用例数据
@@ -241,26 +334,20 @@
                     // dataType: 'JSON',
                     contentType: "application/x-www-form-urlencoded; charset=UTF-8",
                     success: function (arg) {
-                        $("#projectCode-d").val(arg['data'].project.projectName);
-                        $("#moduleId-d").val(arg['data'].module.moduleName);
-                        $("#caseTitle-d").val(arg['data'].name);
-                        $("#description-d").val(arg['data'].description);
-                        $("#precondition-d").val(arg['data'].precondition);
-                        let _priority = "";
-                        switch (arg['data'].priority) {
-                            case '0':
-                                _priority = "低";
-                                break
-                            case '1':
-                                _priority = "中";
-                                break
-                            case '2':
-                                _priority = "高";
-                                break
-                        }
-                        $("#priority-d").val(_priority);
-                        arg['data'].runModeManual && $("#mode-manual-d").prop('checked', true);
-                        arg['data'].runModeAuto && $("#mode-auto-d").prop('checked', true);
+                        $("#project-id-detail").val(arg['data'].project.projectName).attr('readonly',true);
+                        $("#module-id-detail").val(arg['data'].module.moduleName).attr('readonly',true);
+                        $("#case-title-detail").val(arg['data'].name).attr('readonly',true);
+                        $("#case-desc-detail").val(arg['data'].description).attr('readonly',true);
+                        $("#case-precondition-detail").val(arg['data'].precondition).attr('readonly',true);
+                        select_option_checked('owner-detail', arg['data'].caseOwner);
+                        select_option_checked('test-mode-detail', arg['data'].testMode);
+                        select_option_checked('case-type-detail', arg['data'].caseType);
+                        select_option_checked('priority-detail', arg['data'].priority);
+                        $('#owner-detail').attr('disabled', true);
+                        $('#test-mode-detail').attr('disabled', true);
+                        $('#case-type-detail').attr('disabled', true);
+                        $('#priority-detail').attr('disabled', true);
+                        $('#ref-plan-detail').attr('readonly', true);
                         // 填充测试步骤
                         loadStepAndResult(arg);
                     }
@@ -269,9 +356,17 @@
         })
     }
 
+
+
     // 编辑测试用例数据
     function editCase(id) {
-        $(editModalId).on('shown.bs.modal', function () {
+        const _modal = $addModal;
+        document.getElementById('add-case-modal').querySelector('.modal-title').textContent = id ? '编辑测试用例' : '添加测试用例';
+        _modal.on('shown.bs.modal', function () {
+            $('#submit').show();
+            $('#AddMoreFileBox').show();
+            const elementById = document.getElementById('row_1');
+            elementById && elementById.remove();
             $.ajax({
                     url: '/case/queryCase/' + id + "?time=" + new Date().getTime(),
                     type: 'post',
@@ -279,23 +374,22 @@
                     success: function (arg) {
                         $("#hidden-case-id").val(arg['data'].id);
                         $("#hidden-project-id").val(arg['data'].project.id);
-                        $("#edit-case-project-name").val(arg['data'].project.projectName);
-                        $("#hidden-module-id").val(arg['data'].moduleId);
-                        $("#edit-case-module-name").val(arg['data'].module.moduleName);
-                        $("#edit-case-title").val(arg['data'].name);
-                        $("#edit-case-description").val(arg['data'].description);
-                        $("#edit-case-precondition").val(arg['data'].precondition);
-                        select_option_checked('edit-case-priority', arg['data'].priority);
-                        arg['data'].runModeManual && $("#mode-manual-e").prop('checked', true);
-                        arg['data'].runModeAuto && $("#mode-auto-e").prop('checked', true);
-                        // select_option_checked('edit-case-testMode', arg['data'].testMode);
+                        $("#projectId").val(arg['data'].project.projectName);
+                        $("#m-a").val(arg['data'].moduleId);
+                        $("#moduleId").val(arg['data'].module.moduleName);
+                        $("#caseTitle").val(arg['data'].name);
+                        $("#caseSummary").val(arg['data'].description);
+                        $("#casePrecondition").val(arg['data'].precondition);
+                        select_option_checked('owner', arg['data'].caseOwner);
+                        select_option_checked('test-mode', arg['data'].testMode);
+                        select_option_checked('case-type', arg['data'].caseType);
+                        select_option_checked('priority', arg['data'].priority);
                         // 填充测试步骤
                         const _steps = arg['data'].caseSteps;
-                        const case_div = document.getElementById('edit-case-step-table');
-
+                        const case_div = document.getElementById('case-step-area');
                         for (let i = 0; i < _steps.length; i++) {
                             const _temp_step_item_div = document.createElement('div');
-                            _temp_step_item_div.className = 'row';
+                            _temp_step_item_div.className = 'row step-row';
                             _temp_step_item_div.id = 'row' + i;
                             // 测试用例步骤
                             const _temp_step_input = document.createElement('input');
@@ -319,6 +413,7 @@
                             _temp_i_label.className = "bi bi-backspace";
                             _temp_i_label.style = "color: #bb2d3b";
                             _temp_i_label.id = "remove" + i;
+                            _temp_i_label.onclick = "removeCaseStep(this)";
                             _temp_del_label.appendChild(_temp_i_label);
 
                             _temp_step_item_div.appendChild(_temp_step_input)
@@ -329,7 +424,7 @@
                     }
                 }
             )
-            $(editModalId).off('shown.bs.modal');
+            _modal.off('shown.bs.modal');
         })
     }
 
@@ -362,28 +457,28 @@
 
     autoComplete("/project/queryList", "p-search", 'p', false);
 
-    $('#add-case-modal').on('show.bs.modal', function (event) {
+    $addModal.on('show.bs.modal', function (event) {
         autoComplete("/project/queryList", "projectId", 'p', true);
         // myModal.off('shown.bs.modal');//去除绑定
-        $("input[type=hidden][id='c-a-p']").val('');
+        $("input[type=hidden][id='hidden-project-id']").val('');
         $("input[type=hidden][id='m-a']").val('');
         $("input[type=hidden][id='add-case-ref-plan']").val('');
     });
     // 查询相关关联的模块
     $("#moduleId")[0].addEventListener("focus", function () {
-        $("#c-a-p").attr("value") && autoComplete("/module/queryList/" + $("#c-a-p").attr("value"), "moduleId", 'm', false);
+        $("#hidden-project-id").attr("value") && autoComplete("/module/queryList/" + $("#hidden-project-id").attr("value"), "moduleId", 'm', false);
     });
     $("#ref-plan")[0].addEventListener("focus", function () {
-        $('#c-a-p').attr('value') && autoComplete("/plan/getPlans/" + $('#c-a-p').attr('value'), "ref-plan", 'plan', true);
+        $('#hidden-project-id').attr('value') && autoComplete("/plan/getPlans/" + $('#hidden-project-id').attr('value'), "ref-plan", 'plan', true);
     });
 
     // 编辑窗口关闭时清空数据。
-    $(editModalId)[0].addEventListener('hide.bs.modal', function () {
-        const className = document.getElementById('edit-case-step-table').getElementsByTagName('div');
+    $addModal[0].addEventListener('hide.bs.modal', function () {
+        const className = document.getElementById('case-step-area').getElementsByTagName('div');
         for (let i = className.length - 1; i >= 0; i--) {
             className.item(i).remove();
         }
-        document.getElementById('edit-case-form').reset();
+        document.getElementById('add-case-from').reset();
     })
 </script>
 </body>

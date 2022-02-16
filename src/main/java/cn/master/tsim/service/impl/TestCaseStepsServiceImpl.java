@@ -14,6 +14,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -57,11 +58,11 @@ public class TestCaseStepsServiceImpl extends ServiceImpl<TestCaseStepsMapper, T
         wrapper.lambda().eq(TestCaseSteps::getCaseId, id);
         List<TestCaseSteps> testCaseSteps = baseMapper.selectList(wrapper);
         if (CollectionUtils.isNotEmpty(testCaseSteps)) {
+            List<String> ids = new LinkedList<>();
             testCaseSteps.forEach(t->{
-                t.setActive(1);
-                t.setUpdateDate(new Date());
-                baseMapper.updateById(t);
+                ids.add(t.getId());
             });
+            baseMapper.deleteBatchIds(ids);
         }
     }
 

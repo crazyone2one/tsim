@@ -116,17 +116,9 @@ public class TestCase implements Serializable {
     /**
      * 测试方式(0=手动;1=自动)
      */
-    @ExcelIgnore
-    @TableField("test_mode")
-    private Integer testMode;
-
     @ExcelProperty(value = "测试方式", index = 9)
-    @TableField("run_mode_manual")
-    private String runModeManual;
-
-    @ExcelIgnore
-    @TableField("run_mode_auto")
-    private String runModeAuto;
+    @TableField("test_mode")
+    private String testMode;
 
     @ExcelIgnore
     @TableField(exist = false)
@@ -145,9 +137,28 @@ public class TestCase implements Serializable {
     private Integer delFlag;
 
     /**
-     * 测试用例评审状态(0-评审,1-通过,2-未通过)
+     * 测试用例评审状态(0-未评审,1-通过,2-未通过)
      */
     @ExcelIgnore
     @TableField("review_status")
     private Integer reviewStatus;
+
+    /**
+     * 类型(0-功能测试 1-接口测试 2-性能测试)
+     */
+    @ExcelIgnore
+    @TableField("case_type")
+    private String caseType;
+    /**
+     * 维护人
+     */
+    @ExcelIgnore
+    @TableField("case_owner")
+    private String caseOwner;
+    @ExcelIgnore
+    @TableField("create_user")
+    private String createUser;
+    @ExcelIgnore
+    @TableField("update_user")
+    private String updateUser;
 }

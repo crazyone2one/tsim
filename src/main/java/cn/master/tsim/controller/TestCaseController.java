@@ -59,6 +59,7 @@ public class TestCaseController {
     @GetMapping("/list")
     public String allTests(Model model) {
         model.addAttribute("monthList", DateUtils.currentYearMonth());
+        model.addAttribute("users", Constants.userMaps);
         return "test-case/case_list";
     }
 

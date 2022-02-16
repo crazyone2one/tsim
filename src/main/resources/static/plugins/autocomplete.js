@@ -143,8 +143,7 @@ class Autocomplete {
                         label: dataLabel
                     });
                 }
-
-                this.dropdown.hide();
+                this.dropdown.remove();
             })
         });
 

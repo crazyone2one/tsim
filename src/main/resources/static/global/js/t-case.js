@@ -1,15 +1,15 @@
+'use strict';
 /*增加测试步骤*/
 function addCaseStep() {
     const caseStepArea = document.getElementById("case-step-area");
     let div_index = caseStepArea.getElementsByClassName("row").length;
     div_index++;
-    $(caseStepArea).append('<div class="row rounded" id="row_' + div_index + '">\n' + '                                            <div style="width: 47%;">\n' + '                                                <label for="caseSteps_' + div_index + '" class="form-label">测试步骤</label>\n' + '                                                <input name="caseSteps[]" id="caseSteps_' + div_index + '" type="text"\n' + '                                                          class="form-control line_under_input">\n' + '                                            </div>\n' + '                                            <div style="width: 47%;">\n' + '                                                <label for="caseExpectedResults_' + div_index + '" class="form-label">预期结果</label>\n' + '                                                <input name="caseExpectedResults[]" id="caseExpectedResults_' + div_index + '"\n' + '                                                          type="text"\n' + '                                                          class="form-control line_under_input">\n' + '                                            </div>\n' + '                                            <div class="position-relative" style="width: 6%;">\n' + '                                                <a class="position-absolute top-50 start-50" title="移除">\n' + '                                                    <i class="bi bi-backspace" style="color: #bb2d3b" id="del"\n' + '                                                       onclick="removeCaseStep(this)" ></i>\n' + '                                                </a>\n' + '                                            </div>\n' + '                                        </div>')
+    $(caseStepArea).append('<div class="row rounded" id="row_' + div_index + '">\n' + '<div style="width: 47%;">\n' + '<label for="caseSteps_' + div_index + '" class="form-label">测试步骤</label>\n' + '                                                <input name="caseSteps[]" id="caseSteps_' + div_index + '" type="text"\n' + '                                                          class="form-control line_under_input">\n' + '                                            </div>\n' + '                                            <div style="width: 47%;">\n' + '                                                <label for="caseExpectedResults_' + div_index + '" class="form-label">预期结果</label>\n' + '                                                <input name="caseExpectedResults[]" id="caseExpectedResults_' + div_index + '"\n' + '                                                          type="text"\n' + '                                                          class="form-control line_under_input">\n' + '                                            </div>\n' + '                                            <div class="position-relative" style="width: 6%;">\n' + '                                                <a class="position-absolute top-50 start-50" title="移除">\n' + '                                                    <i class="bi bi-backspace" style="color: #bb2d3b" id="del"\n' + '                                                       onclick="removeCaseStep(this)" ></i>\n' + '                                                </a>\n' + '                                            </div>\n' + '                                        </div>')
 }
 
 const addEditStep = () => {
     const caseStepArea = document.getElementById('edit-case-step-table');
     let div_index = caseStepArea.getElementsByClassName("div").length;
-    // div_index++;
     $(caseStepArea).append('<div class="row" id="row' + div_index + '">' + '<input class="line_under_input" style="width: 47%;" id="step' + div_index + '">' + '<input class="line_under_input" style="width: 47%;" id="result' + div_index + '">' + '<a style="width: 6%;" title="移除本条"><i class="bi bi-backspace" style="color: #bb2d3b" id="remove' + div_index + '"></i></a>' + '</div>');
 }
 
@@ -22,36 +22,6 @@ function removeCaseStep(obj) {
     } else {
         alert("至少保留一条", 'warning')
     }
-}
-
-function saveEditCaseInfo() {
-    const p_div = document.getElementById("edit-case-step-table");
-    const s_div = p_div.getElementsByClassName("row");
-    const temp_steps = [];
-    for (let i = 0; i < s_div.length; i++) {
-        const temp_json = {};
-        temp_json['t_s'] = s_div[i].getElementsByTagName("input")[0].value;
-        temp_json['t_r'] = s_div[i].getElementsByTagName("input")[1].value;
-        const result = {};
-        result[i] = temp_json;
-        temp_steps.push(result);
-    }
-    const case_step = document.getElementById("editCaseSteps");
-    case_step.setAttribute("value", JSON.stringify(temp_steps));
-    !$('#mode-manual-e').prop('checked') && $('#mode-manual-e').val();
-    !$('#mode-auto-e').prop('checked') && $('#mode-auto-e').val();
-    const data = $("#edit-case-form").serialize();
-    $.ajax({
-        url: "/case/save", type: 'POST', data: data, // contentType: "application/json;charset=UTF-8",
-        dataType: 'JSON', success: function (arg) {
-            if (Object.is(arg['code'], 200)) {
-                resetModal("case-edit-modal", "edit-case-form");
-                $('#case-edit-modal').modal('hide');
-                refresh_table();
-            }
-            showToast(arg['code'], arg['msg']);
-        }
-    });
 }
 
 /*保存测试用例*/
@@ -75,8 +45,6 @@ function saveCaseInfo() {
     }
     const case_step = document.getElementById("caseSteps");
     case_step.setAttribute("value", JSON.stringify(temp_steps));
-    !$('#mode-manual').prop('checked') && $('#mode-manual').val();
-    !$('#mode-auto').prop('checked') && $('#mode-auto').val();
     const data = $("#add-case-from").serialize();
     validateCaseInfo(data);
 }
@@ -112,14 +80,9 @@ function loadStepAndResult(arg) {
  *
  */
 function updateCase(flag) {
-    // let toast_msg = Object.is('disable', flag) ? "选择置为无效的测试用例数据" : "选择待删除的测试用例数据";
-    let replace_msg = Object.is('disable', flag) ? "确认将选择的测试用例数据置为无效吗" : "确认删除选择的测试用例数据吗";
+    let replace_msg = Object.is('disable', flag) ? "确认将测试用例数据置为无效吗" : "确认删除选择的测试用例数据吗";
     let _url = Object.is('disable', flag) ? "/case/disable" : "/case/delete";
     const selections = getSelections();
-    // if (selections.length === 0) {
-    //     showToast(300, toast_msg);
-    //     return;
-    // }
     // 处理选择已被置为无效状态的测试用例数据
     if (Object.is('disable', flag)) {
         for (let i = 0; i < selections.length; i++) {
@@ -170,7 +133,7 @@ function validateCaseInfo(case_info_data) {
     const _caseTitle = '#caseTitle';
     const tempProjectName = $(_projectId).val();
     const tempModuleName = $(_moduleId).val();
-    const tempHiddenProjectId = $('#c-a-p').val();
+    const tempHiddenProjectId = $('#hidden-project-id').val();
     const tempCaseTitle = $(_caseTitle).val();
     const plan_name = $('#ref-plan').val();
     const hidden_plan_id = $('#add-case-ref-plan').val();

@@ -3,10 +3,7 @@ package cn.master.tsim.service.impl;
 import cn.master.tsim.common.Constants;
 import cn.master.tsim.common.ResponseCode;
 import cn.master.tsim.common.ResponseResult;
-import cn.master.tsim.entity.Module;
-import cn.master.tsim.entity.Project;
-import cn.master.tsim.entity.TestCase;
-import cn.master.tsim.entity.TestTaskInfo;
+import cn.master.tsim.entity.*;
 import cn.master.tsim.mapper.TestCaseMapper;
 import cn.master.tsim.service.*;
 import cn.master.tsim.util.ExcelUtils;
@@ -66,6 +63,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
 
     @Override
     public ResponseResult saveCase(HttpServletRequest request) {
+        Tester user = (Tester) request.getSession().getAttribute("account");
         final String projectId = request.getParameter("projectId");
         final String moduleId = request.getParameter("moduleId");
         final String planId = request.getParameter("tempPlanId");
@@ -76,8 +74,9 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
         String id = request.getParameter("id");
         String description = request.getParameter("description");
         String precondition = request.getParameter("precondition");
-        String runModeManual = request.getParameter("runModeManual");
-        String runModeAuto = request.getParameter("runModeAuto");
+        String caseOwner = request.getParameter("caseOwner");
+        String caseType = request.getParameter("caseType");
+        String testMode = request.getParameter("testMode");
         TestCase build = null;
         String message;
         Object object;
@@ -86,12 +85,13 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             tempCase.setName(name);
             tempCase.setDescription(description);
             tempCase.setPrecondition(precondition);
-            //tempCase.setTestMode(Integer.parseInt(request.getParameter("testMode")));
-            tempCase.setRunModeManual(StringUtils.isNotBlank(runModeManual) ? runModeManual : "");
-            tempCase.setRunModeAuto(StringUtils.isNotBlank(runModeAuto) ? runModeAuto : "");
+            tempCase.setTestMode(testMode);
+            tempCase.setCaseOwner(caseOwner);
+            tempCase.setCaseType(caseType);
             tempCase.setPriority(priority);
             tempCase.setStepStore(stepStore);
             tempCase.setUpdateDate(new Date());
+            tempCase.setUpdateUser(user.getUsername());
             baseMapper.updateById(tempCase);
             stepsService.removeStepByCaseId(id);
             stepsService.saveStep(JSON.parseArray(stepStore), id);
@@ -102,13 +102,11 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
                     .name(name)
                     .description(description)
                     .precondition(precondition)
-                    .runModeManual(StringUtils.isNotBlank(runModeManual) ? runModeManual : "")
-                    .runModeAuto(StringUtils.isNotBlank(runModeAuto) ? runModeAuto : "")
-                    .priority(priority)
-                    .stepStore(stepStore)
+                    .priority(priority).testMode(testMode)
+                    .stepStore(stepStore).caseType(caseType)
                     .resultStore(request.getParameter("resultStore"))
-                    .delFlag(0)
-                    .createDate(new Date()).build();
+                    .delFlag(0).caseOwner(caseOwner)
+                    .createDate(new Date()).createUser(user.getUsername()).build();
             baseMapper.insert(build);
             stepsService.saveStep(JSON.parseArray(stepStore), build.getId());
             message = "数据添加成功";
@@ -156,7 +154,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             final Module module = moduleService.addModule(request, projectId, c.getModuleId());
             final TestCase build = TestCase.builder().active(0).projectId(projectId).moduleId(module.getId())
                     .name(c.getName()).description(c.getDescription()).precondition(c.getPrecondition())
-                    .testMode(0).runModeManual("0").priority(c.getPriority()).stepStore(stepsJson.toJSONString())
+                    .testMode("0").priority(c.getPriority()).stepStore(stepsJson.toJSONString())
                     .resultStore("").delFlag(0).createDate(new Date()).build();
             baseMapper.insert(build);
             stepsService.saveStep(stepsJson, build.getId());
@@ -304,7 +302,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
 
     @Override
     public TestCase getById(String caseId) {
-        final TestCase testCase = baseMapper.selectById(caseId);
+        final TestCase testCase = baseMapper.queryCaseInfo(caseId);
         testCase.setProject(projectService.getProjectById(testCase.getProjectId()));
         testCase.setModule(moduleService.getModuleById(testCase.getModuleId()));
         return testCase;
@@ -376,13 +374,13 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
             });
             t.setStepStore(tempStep.toString());
             t.setResultStore(tempResult.toString());
-            if (StringUtils.isNotBlank(t.getRunModeManual()) && StringUtils.isNotBlank(t.getRunModeAuto())) {
-                t.setRunModeManual("手动/自动");
-            } else if (StringUtils.isNotBlank(t.getRunModeManual())) {
-                t.setRunModeManual("手动");
-            } else if (StringUtils.isNotBlank(t.getRunModeAuto())) {
-                t.setRunModeManual("自动");
-            }
+            //if (StringUtils.isNotBlank(t.getRunModeManual()) && StringUtils.isNotBlank(t.getRunModeAuto())) {
+            //    t.setRunModeManual("手动/自动");
+            //} else if (StringUtils.isNotBlank(t.getRunModeManual())) {
+            //    t.setRunModeManual("手动");
+            //} else if (StringUtils.isNotBlank(t.getRunModeAuto())) {
+            //    t.setRunModeManual("自动");
+            //}
             t.setPriority(Constants.CASE_PRIORITY.get(t.getPriority()));
         });
         ExcelUtils.exportByExcelFile(response, testCases, "测试用例数据", TestCase.class);
