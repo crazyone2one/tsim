@@ -57,24 +57,25 @@
     <div th:if="${moduleflag =='api'}">
         <div th:replace="/fragment/commons_v2 :: api-navigation(${liFlag})"></div>
     </div>
-    <div th:if="${moduleflag =='other'}">
-        <div th:replace="/fragment/commons_v2 :: other-navigation"></div>
+    <div th:if="${moduleflag =='dashboard'}">
+        <div th:replace="/fragment/commons_v2 :: dashboard-navigation(${liFlag})"></div>
     </div>
 </div>
 <!--测试跟踪-->
 <div class="navbar navbar-expand-lg pt-0 border-bottom" th:fragment="case-navigation(flag)">
-    <div class="container">
-        <!--        <div class="col">-->
-        <!--            <div class="input-group col-md-6 mt-1 ms-2">-->
-        <!--                <label class="input-group-text" for="globalProject">当前项目</label>-->
-        <!--                <select class="form-select" id="globalProject">-->
-        <!--                    <option selected>Choose...</option>-->
-        <!--                    <option value="1">One</option>-->
-        <!--                    <option value="2">Two</option>-->
-        <!--                    <option value="3">Three</option>-->
-        <!--                </select>-->
-        <!--            </div>-->
-        <!--        </div>-->
+    <div class="container-fluid">
+        <div class="row ms-3 me-5 mt-1">
+<!--            todo 设置全局项目id参数-->
+            <label class="col-sm-5 col-form-label text-end" for="globalProject">当前项目</label>
+            <div class="col-sm-7">
+                <select class="form-select" id="globalProject">
+                    <option selected>Choose...</option>
+                    <option value="1">One</option>
+                    <option value="2">Two</option>
+                    <option value="3">Three</option>
+                </select>
+            </div>
+        </div>
         <div class="collapse navbar-collapse" id="caseNavigation">
             <ul class="navbar-nav">
                 <li class="nav-item ">
@@ -92,7 +93,7 @@
                     <a th:class="${flag=='plan'?'nav-link active':'nav-link'}" href="#" th:href="@{/plan/list}">测试计划</a>
                 </li>
                 <li class="nav-item ">
-                    <a class="nav-link" href="#">报告</a>
+                    <a class="nav-link" th:class="${flag=='story'?'nav-link active':'nav-link'}" href="#" th:href="@{/story/list}">测试需求</a>
                 </li>
             </ul>
         </div>
@@ -114,6 +115,29 @@
                 </li>
                 <li class="nav-item active">
                     <a class="nav-link " href="#">测试报告</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+<div class="navbar navbar-expand-lg mt-1 pt-0 pb-2 border-bottom" th:fragment="dashboard-navigation(flag)">
+    <div class="container">
+        <div class="collapse navbar-collapse" id="dashboard">
+            <ul class="navbar-nav">
+                <li class="nav-item">
+                    <a class="nav-link" th:class="${flag=='dashboard'?'nav-link active':'nav-link'}"
+                       href="#" th:href="@{/dashboard}">dashboard</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" th:class="${flag=='project'?'nav-link active':'nav-link'}"
+                       href="#" th:href="@{/project/list}">项目管理</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link" th:class="${flag=='task'?'nav-link active':'nav-link'}"
+                       href="#" th:href="@{/task/list}">任务汇总</a>
+                </li>
+                <li class="nav-item ">
+                    <a class="nav-link " href="#">link1</a>
                 </li>
             </ul>
         </div>
