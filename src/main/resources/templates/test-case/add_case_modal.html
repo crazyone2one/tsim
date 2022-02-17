@@ -12,7 +12,7 @@
          aria-hidden="true" data-bs-backdrop="static">
         <div class="modal-dialog modal-xl modal-dialog-centered">
             <div class="modal-content">
-                <form th:action="@{/case/save}" method="post" id="add-case-from" autocomplete="off">
+                <form id="add-case-from" autocomplete="off" class="needs-validation">
                     <input type="hidden" id="hidden-case-id" name="id">
                     <div class="modal-header">
                         <h5 class="modal-title bg-light" id="addCaseModalLabel">添加测试用例</h5>
@@ -23,7 +23,7 @@
                             <div class="row col-md-4">
                                 <label class="col-md-5 col-form-label required text-end" for="projectId">项目名称</label>
                                 <div class="col-md-7">
-                                    <input id="projectId" class="form-control invalid-item" required>
+                                    <input id="projectId" class="form-control" th:name="projectName" required>
                                     <div class="invalid-feedback" id="project-error-tips">请输入或选择项目.</div>
                                     <input type="hidden" name="projectId" id="hidden-project-id">
                                 </div>
@@ -32,8 +32,8 @@
                                 <span class="col-sm-5 col-form-label required text-end" id="suite-span">模块名称</span>
                                 <div class="col-sm-7">
                                     <input id="moduleId" class="form-control invalid-item" aria-label="模块名称"
-                                           aria-describedby="module-error-tips" placeholder="填写模块名称">
-                                    <div class="invalid-feedback" id="module-error-tips">请输入或选择项目.</div>
+                                           aria-describedby="module-error-tips" placeholder="填写模块名称" required>
+                                    <div class="invalid-feedback" id="module-error-tips">请输入或选择模块.</div>
                                     <input type="hidden" name="moduleId" id="m-a">
                                 </div>
                             </div>
@@ -51,25 +51,22 @@
                             <div class="row col-md-4">
                                 <span class="col-sm-5 col-form-label text-end required" id="title-span">用例名称</span>
                                 <div class="col-sm-7">
-                                    <input name="name" id="caseTitle" type="text" class="form-control invalid-item"
-                                           placeholder="输入测试用例名称" aria-label="测试用例标题" aria-describedby="title-span"
-                                           required>
+                                    <input name="name" id="caseTitle" type="text" class="form-control"
+                                           placeholder="输入测试用例名称" aria-label="测试用例标题" aria-describedby="title-span" required>
                                     <div class="invalid-feedback">请输入测试用例标题.</div>
                                 </div>
                             </div>
                             <div class="row col-md-4">
                                 <span class="col-sm-5 col-form-label text-end" id="summary-span">测试用例描述</span>
                                 <div class="col-sm-7">
-                                    <input class="form-control" name="description" id="caseSummary"
-                                           placeholder="输入测试用例描述" aria-label="测试用例描述" aria-describedby="summary-span">
+                                    <input class="form-control" name="description" id="caseSummary" placeholder="输入测试用例描述" aria-label="测试用例描述" aria-describedby="summary-span">
                                 </div>
                             </div>
                             <div class="row col-md-4">
                                 <label class="col-sm-5 col-form-label text-end" for="owner">维护人</label>
                                 <div class="col-sm-7">
                                     <select class=" form-select" name="caseOwner" id="owner">
-                                        <option th:each="user:${users}" th:value="${user.key}"
-                                                th:text="${user.value.username}"></option>
+                                        <option th:each="user:${users}" th:value="${user.key}" th:text="${user.value.username}"></option>
                                     </select>
                                 </div>
                             </div>
@@ -131,12 +128,12 @@
                                     <div style="width: 47%;">
                                         <label for="caseSteps_1" class="form-label">测试步骤</label>
                                         <input name="caseSteps[]" id="caseSteps_1" type="text"
-                                               class="form-control line_under_input">
+                                               class="form-control line_under_input" required>
                                     </div>
                                     <div style="width: 47%;">
                                         <label for="caseExpectedResults_1" class="form-label">预期结果</label>
                                         <input name="caseExpectedResults[]" id="caseExpectedResults_1" type="text"
-                                               class="form-control line_under_input">
+                                               class="form-control line_under_input" required>
                                     </div>
                                     <div class="position-relative" style="width: 6%;">
                                         <a class="position-absolute top-50 start-50">

@@ -1,4 +1,5 @@
 'use strict';
+
 /*增加测试步骤*/
 function addCaseStep() {
     const caseStepArea = document.getElementById("case-step-area");
@@ -26,25 +27,6 @@ function removeCaseStep(obj) {
 
 /*保存测试用例*/
 function saveCaseInfo() {
-    const p_div = document.getElementById("case-step-area");
-    const s_div = p_div.getElementsByClassName("row");
-    const temp_steps = [];
-    for (let i = 0; i < s_div.length; i++) {
-        const temp_json = {};
-        temp_json['t_s'] = s_div[i].getElementsByTagName("input")[0].value;
-        temp_json['t_r'] = s_div[i].getElementsByTagName("input")[1].value;
-        if (!temp_json['t_s'] && !temp_json['t_r']) {
-            $('#toast-div').addClass("is-invalid");
-            return;
-        } else {
-            removeClass('#toast-div', 'is-invalid');
-        }
-        const result = {};
-        result[i] = temp_json;
-        temp_steps.push(result);
-    }
-    const case_step = document.getElementById("caseSteps");
-    case_step.setAttribute("value", JSON.stringify(temp_steps));
     const data = $("#add-case-from").serialize();
     validateCaseInfo(data);
 }
@@ -138,73 +120,109 @@ function validateCaseInfo(case_info_data) {
     const plan_name = $('#ref-plan').val();
     const hidden_plan_id = $('#add-case-ref-plan').val();
 
-    if (plan_name) {
-        if (!hidden_plan_id) {
-            $('#ref-plan').addClass("is-invalid");
-            $('#plan-error-tips').text(plan_name + '不存在,先添加测试计划');
-        } else {
-            removeClass('#ref-plan', 'is-invalid');
-            $.ajax({
-                url: '/plan/getPlan',
-                type: 'get',
-                data: {name: tempProjectName, id: hidden_plan_id},
-                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-                success: function (result) {
-                    if (Object.is(403, result['code'])) {
-                        $('#ref-plan').addClass("is-invalid");
-                        $('#plan-error-tips').text(plan_name + '不存在,先添加测试计划');
-                    } else {
-                        if (!Object.is(result['data'].name, plan_name)) {
-                            $('#ref-plan').addClass("is-invalid");
-                            $('#plan-error-tips').text(plan_name + '不存在,先添加测试计划');
-                        }
-                    }
-                },
-            });
-        }
-    }
-
-    // 所属模块名称非空验证
-    tempModuleName ? removeClass(_moduleId, 'is-invalid') : $(_moduleId).addClass("is-invalid");
-    // 测试用例标题为空验证
-    tempCaseTitle ? removeClass(_caseTitle, 'is-invalid') : $(_caseTitle).addClass("is-invalid");
-    if (!tempProjectName) {
-        $(_projectId).addClass("is-invalid");
-    } else {
-        removeClass(_projectId, 'is-invalid');
-        if (!tempHiddenProjectId) {
-            $('#project-error-tips').text(tempProjectName + '不存在,先在项目管理模块添加');
+    function valid() {
+        // 项目字段验证
+        if (!tempProjectName) {
             $(_projectId).addClass("is-invalid");
+            return false;
         } else {
-            removeClass('_projectId', 'is-invalid');
-            $.ajax({
-                url: '/project/checkUniqueProject',
-                type: 'get',
-                data: {name: tempProjectName, id: tempHiddenProjectId},
-                contentType: "application/x-www-form-urlencoded; charset=UTF-8",
-                success: function (result) {
+            removeClass(_projectId, 'is-invalid');
+            if (!tempHiddenProjectId) {
+                $('#project-error-tips').text(tempProjectName + '不存在,先在项目管理模块添加');
+                $(_projectId).addClass("is-invalid");
+                return false;
+            } else {
+                removeClass('_projectId', 'is-invalid');
+                $.get('/project/checkUniqueProject', {
+                    name: tempProjectName,
+                    id: tempHiddenProjectId
+                }, function (result) {
                     if (Object.is(403, result['code'])) {
                         $('#project-error-tips').text('[' + tempProjectName + ']不存在,先在项目管理模块添加');
                         $(_projectId).addClass("is-invalid");
-                    } else {
-                        $.ajax({
-                            url: "/case/save",
-                            type: 'POST',
-                            data: case_info_data, // contentType: "application/json;charset=UTF-8",
-                            dataType: 'JSON',
-                            success: function (arg) {
-                                if (Object.is(arg['code'], 200)) {
-                                    resetModal("#add-case-modal", "add-case-from");
-                                    $('#add-case-modal').modal('hide');
-                                    refresh_table();
-                                }
-                                showToast(arg['code'], arg['msg']);
-                            }
-                        });
+                        return false;
                     }
-                }
-            })
+                });
+            }
         }
+        if (plan_name) {
+            if (!hidden_plan_id) {
+                $('#ref-plan').addClass("is-invalid");
+                $('#plan-error-tips').text(plan_name + '不存在,先添加测试计划');
+                return false;
+            } else {
+                removeClass('#ref-plan', 'is-invalid');
+                $.ajax({
+                    url: '/plan/getPlan',
+                    type: 'get',
+                    data: {name: tempProjectName, id: hidden_plan_id},
+                    contentType: "application/x-www-form-urlencoded; charset=UTF-8",
+                    success: function (result) {
+                        if (Object.is(403, result['code'])) {
+                            $('#ref-plan').addClass("is-invalid");
+                            $('#plan-error-tips').text(plan_name + '不存在,先添加测试计划');
+                        } else {
+                            if (!Object.is(result['data'].name, plan_name)) {
+                                $('#ref-plan').addClass("is-invalid");
+                                $('#plan-error-tips').text(plan_name + '不存在,先添加测试计划');
+                            }
+                        }
+                    },
+                });
+            }
+        }
+
+        // 所属模块名称非空验证
+        if (tempModuleName) {
+            removeClass(_moduleId, 'is-invalid')
+        } else {
+            $(_moduleId).addClass("is-invalid");
+            return false;
+        }
+        // 测试用例标题为空验证
+        if (tempCaseTitle) {
+            removeClass(_caseTitle, 'is-invalid');
+        } else {
+            $(_caseTitle).addClass("is-invalid");
+            return false;
+        }
+        const p_div = document.getElementById("case-step-area");
+        const s_div = p_div.getElementsByClassName("row");
+        const temp_steps = [];
+        for (let i = 0; i < s_div.length; i++) {
+            const temp_json = {};
+            temp_json['t_s'] = s_div[i].getElementsByTagName("input")[0].value;
+            temp_json['t_r'] = s_div[i].getElementsByTagName("input")[1].value;
+            if ((!temp_json['t_s'] && !temp_json['t_r']) || !temp_json['t_s']) {
+                $('#toast-div').addClass("is-invalid");
+                return false;
+            } else {
+                removeClass('#toast-div', 'is-invalid');
+            }
+            const result = {};
+            result[i] = temp_json;
+            temp_steps.push(result);
+        }
+        const case_step = document.getElementById("caseSteps");
+        case_step.setAttribute("value", JSON.stringify(temp_steps));
+        return true;
+    }
+
+    if (valid()) {
+        $.ajax({
+            url: "/case/save",
+            type: 'POST',
+            data: case_info_data, // contentType: "application/json;charset=UTF-8",
+            dataType: 'JSON',
+            success: function (arg) {
+                if (Object.is(arg['code'], 200)) {
+                    resetModal("#add-case-modal", "add-case-from");
+                    $('#add-case-modal').modal('hide');
+                    refresh_table();
+                }
+                showToast(arg['code'], arg['msg']);
+            }
+        });
     }
 }
 
@@ -231,7 +249,7 @@ $("#import-ref-plan")[0].addEventListener("focus", function () {
 });
 
 // 导入测试用例数据
-$('#import-case-btn').on('click',function (e) {
+$('#import-case-btn').on('click', function (e) {
     e.preventDefault();
     $(this).prop('disable', true);
     $('#progress').parent().show();
