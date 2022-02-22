@@ -48,7 +48,7 @@ public class DefaultController {
     }
 
     @GetMapping(value = "/dashboard")
-    public String dashboard(Model model, HttpServletRequest request) {
+    public String dashboard(Model model) {
 
         /*时间轴，当前月份往前12个月份*/
         String xAxisSql = "SELECT GROUP_CONCAT(date ORDER BY date) result from (SELECT DATE_FORMAT( DATE_SUB(NOW(),INTERVAL ac - 1 MONTH),'%Y-%m' ) AS date \n" +
@@ -69,6 +69,21 @@ public class DefaultController {
         return "api-index";
     }
 
+    /**
+     * description: 系统设置页面 <br>
+     *
+     * @param request HttpServletRequest
+     * @param model   Model
+     * @return java.lang.String
+     * @author 11's papa
+     */
+    @RequestMapping("system-manage-index")
+    public String goSystemManageIndex(HttpServletRequest request, Model model) {
+        Tester user = (Tester) request.getSession().getAttribute("account");
+        model.addAttribute("user", Constants.userMaps.get(user.getId()));
+        return "/system/system-manage";
+    }
+
     private List<Map<String, Object>> getSeries(List<Map<String, Object>> xAxData) {
         List<Map<String, Object>> xAxi = new ArrayList<>(xAxData);
         for (Map<String, Object> objectMap : xAxi) {
@@ -80,7 +95,7 @@ public class DefaultController {
 
     @GetMapping(value = "/loadUser")
     @ResponseBody
-    public ResponseResult loadUser(HttpServletRequest request) {
+    public ResponseResult loadUser() {
         try {
             return ResponseUtils.success("数据加载成功", userService.testList());
         } catch (Exception e) {
