@@ -7,15 +7,15 @@
 <div th:replace="/fragment/commons_v2 :: 2nd-navigation(moduleflag='case',liFlag='case')"></div>
 <div id="wrapper">
     <!--    左侧菜单-->
-    <div style="width: 15%">
+    <div class="border" style="width: 14%">
         <div class="input-group input-group-sm p-1 mt-3">
             <span class="input-group-text" id="search-module">查询模块</span>
             <input type="text" class="form-control" aria-label="search-module" aria-describedby="search-module">
         </div>
-        <div class="tree mt-3" style="height: 100%;">
-            <ul>
-                <li>
-                    <span><i class="bi bi-dash me-2"></i>全部测试用例</span>
+        <div class="tree mt-3">
+            <ul class="p-1">
+                <li style="height: 600px; overflow: auto">
+                    <span><i class="bi bi-dash me-2"></i><a href="javascript:void(0);" onclick="refreshTable()">全部测试用例</a></span>
                     <ul id="modal-li" class="">
                     </ul>
                 </li>
@@ -480,8 +480,6 @@
     // 查询条件
     const _search_params = function (params) {
         return {
-            // projectName: $('#p-search').val().trim(), // 自定义查询条件
-            // moduleName: $('#m-search').val().trim(), // 自定义查询条件
             caseName: $('#name-search').val().trim(), // 自定义查询条件
             priority: $('#priority-search').val(), // 优先级
             active: $('#active-search').val(), // 是否有效
@@ -514,6 +512,10 @@
     function refreshTable(moduleId) {
         const params = function (params) {
             return {
+                globalProject: $('#globalProject').val(),
+                caseName: $('#name-search').val().trim(), // 自定义查询条件
+                priority: $('#priority-search').val(), // 优先级
+                active: $('#active-search').val(), // 是否有效
                 moduleName: moduleId,
                 pageSize: params.limit,
                 pageNum: params.offset / params.limit + 1,
