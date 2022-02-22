@@ -4,7 +4,7 @@ const test_stage = {
 }
 // 列表
 const _columns = [{field: 'id', align: 'center', title: 'id', visible: false}, {
-    field: 'name', align: 'center', title: '名称', class: 'col-sm-2'
+    field: 'name', align: 'center', title: '名称', class: 'col-sm-3',cellStyle: formatTableUnit, formatter: paramsMatter
 }, {
     field: 'workStatus', align: 'center', title: '当前状态', class: 'col-sm-2', formatter: function (value, row, index) {
         if (row.finishProcess && !Object.is('100.0', row.finishProcess)) {
@@ -26,7 +26,7 @@ const _columns = [{field: 'id', align: 'center', title: 'id', visible: false}, {
         let progress;
         if (value) {
             const per = value.split('.')[0];
-            progress = '<div class="progress" style="height: 10px;">\n' + '  <div class="progress-bar" role="progressbar" style="width: ' + per + '%" aria-valuenow="' + per + '" aria-valuemin="0" aria-valuemax="100">' + value + '%' + '</div>' + '</div>';
+            progress = '<div class="progress" style="height: 15px;">\n' + '  <div class="progress-bar" role="progressbar" style="width: ' + per + '%" aria-valuenow="' + per + '" aria-valuemin="0" aria-valuemax="100">' + value + '%' + '</div>' + '</div>';
         } else {
             progress = '<div class="progress" style="height: 10px;">\n' + '  <div class="progress-bar" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>\n' + '</div>';
         }
