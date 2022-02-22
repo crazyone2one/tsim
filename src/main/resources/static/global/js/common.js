@@ -75,7 +75,7 @@ function autoComplete4Project(flag, idSelector, hiddenIdSelector) {
  * @param projectId
  */
 function autoComplete4Module(flag, idSelector, hiddenIdSelector, projectId) {
-    let result=[];
+    let result = [];
     if (projectId) {
         $.get('/module/queryList/' + projectId, function (response) {
             response['data'].forEach(function (module) {
@@ -99,7 +99,7 @@ function autoComplete4Module(flag, idSelector, hiddenIdSelector, projectId) {
  * @param projectId
  */
 function autoComplete4Plan(flag, idSelector, hiddenIdSelector, projectId) {
-    let result=[];
+    let result = [];
     if (projectId) {
         $.get('/plan/getPlans/' + projectId, function (response) {
             response['data'].forEach(function (module) {
@@ -123,7 +123,7 @@ function autoComplete4Plan(flag, idSelector, hiddenIdSelector, projectId) {
  * @param projectId
  */
 function autoComplete4Story(flag, idSelector, hiddenIdSelector, projectId) {
-    let result=[];
+    let result = [];
     if (projectId) {
         $.get('/story/queryList/' + projectId, function (response) {
             response['data'].forEach(function (module) {
@@ -326,3 +326,20 @@ $.fn.extend({
         }
     },
 });
+
+/**
+ * 设置全局项目信息
+ */
+$(function () {
+    const $globalProject = $('#globalProject');
+    if ($globalProject) {
+        const item = sessionStorage.getItem('globalProject');
+        if (item) {
+            select_option_checked('globalProject', item);
+        }
+        $globalProject.on('change', function () {
+            let value = $globalProject.val();
+            sessionStorage.setItem('globalProject', value);
+        });
+    }
+})
