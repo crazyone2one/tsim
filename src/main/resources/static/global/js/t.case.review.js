@@ -49,8 +49,7 @@ const _table_columns = [
 
 function review_option(value, row, index) {
     const _detail = '<button class="btn btn-sm btn-info me-1" data-bs-toggle="modal" data-bs-target="#case-detail-modal" onclick="detailCase(\'' + row.id + '\')">查看</button>';
-    const _edit = '<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#case-edit-modal" ' +
-        'onclick="editCase(\'' + row.id + '\')"><i class="bi-link"></i></button>';
+    const _edit = '<button class="btn btn-sm btn-warning" data-bs-toggle="modal" data-bs-target="#ref-case-modal" onclick="loadReviewCase(\'' + row.id + '\')"><i class="bi-link"></i></button>';
     return _detail + _edit;
 }
 
@@ -117,7 +116,86 @@ $('#new_review_save').on('click', function (e) {
 
 $(function () {
     _table.on('check.bs.table uncheck.bs.table check-all.bs.table uncheck-all.bs.table', function () {
+        console.log(getSelections().length);
         $('#start-review').prop('disabled', !Object.is(getSelections().length, 1));
         $('#review-ref-case').prop('disabled', !Object.is(getSelections().length, 1));
+    })
+})
+
+// 评审任务关联测试用例
+function loadReviewCase(id) {
+    $('#ref-case-modal').on('shown.bs.modal', function () {
+        $('#ass-hidden-plan-id').val(id);
+        $('#ass-search-name').val();
+        $('#ass-search-title').val();
+    })
+    const reviewAssociateCaseTable = [
+        {field: 'id', align: 'center', title: 'id', visible: false},
+        {field: 'checked', checkbox: true, align: "center", width: '40'},
+        {
+            field: 'name',
+            align: 'center',
+            title: '用例标题',
+            class: 'col-sm-4',
+        }, {
+            field: 'caseOwner',
+            align: 'center',
+            title: '维护人',
+            class: 'col-sm-4',
+        }, {
+            field: 'reviewStatus',
+            align: 'center',
+            title: '评审状态',
+            class: 'col-sm-4'
+        }, {
+            title: '操作', align: 'center', field: 'id', class: 'col-sm-4', formatter: function (value, row, index) {
+                return '<button type="button" class="btn btn-sm btn-info hvr-grow" id="' + row.id + '" onclick="addReviewCase(\'' + row.id + '\')"><i class="bi-plus-circle"></i></button>'
+            }
+        }
+    ]
+    const reviewAssociateCaseParams = function (params) {
+        return {
+            // projectName: $('#p-search').val().trim(), // 自定义查询条件
+            pageSize: params.limit,
+            pageNum: params.offset / params.limit + 1,
+        }
+    };
+    InitTable('/case/loadUnReviewCases', 'get', reviewAssociateCaseTable, reviewAssociateCaseParams, '#refCaseTable');
+}
+
+
+function addReviewCase(id) {
+    let res = [];
+    if (id) {
+        res.push(id);
+    }
+    const params = {
+        reviewId: $('#ass-hidden-plan-id').val(), caseId: JSON.stringify(res)
+    };
+    $.ajax({
+        url: '/case-review-ref/save-ref/',
+        type: 'post',
+        data: params,
+        contentType: 'application/x-www-form-urlencoded',
+        success: function (arg) {
+            showToast(arg['code'], arg['msg']);
+            // 关联测试用例数据后重新加载一次列表数据
+            $('#refCaseTable').bootstrapTable('refresh');
+        }
+    });
+    $('#ref-case-modal').off('shown.bs.modal');
+}
+
+$('#review-modal').on('shown.bs.modal', function () {
+    const selections = getSelections();
+    const reviewId = selections[0].id;
+    $('#hidden-review-id').val(reviewId);
+    $.get('/case-review-ref/getRefCases/', {reviewId: reviewId}, function (result) {
+        const records = result['data'];
+        records.forEach(function (record) {
+            console.log(record);
+        });
+        // $('#projectId').val(record.testCase.projectId)
+        // $('#moduleId').val(record.testCase.moduleId)
     })
 })
