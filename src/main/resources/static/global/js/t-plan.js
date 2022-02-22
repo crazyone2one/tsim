@@ -207,15 +207,6 @@ function addRefCase(id) {
     let res = [];
     if (id) {
         res.push(id);
-    } else {
-        const selections = getSelections();
-        if (selections.length <= 0) {
-            showToast(300, "先选择数据");
-            return;
-        }
-        for (let i = 0; i < selections.length; i++) {
-            res.push(selections[i].id);
-        }
     }
     const params = {
         planId: $('#ass-hidden-plan-id').val(), caseId: JSON.stringify(res)
@@ -233,6 +224,33 @@ function addRefCase(id) {
     });
     $('#ref-case-modal').off('shown.bs.modal');
 }
+// 批量关联测试用例
+$('#batch-add-case-ref').on('click',function () {
+    let res = [];
+    const selections = getSelections();
+    if (selections.length <= 0) {
+        showToast(300, "先选择数据");
+        return;
+    }
+    for (let i = 0; i < selections.length; i++) {
+        res.push(selections[i].id);
+    }
+    const params = {
+        planId: $('#ass-hidden-plan-id').val(), caseId: JSON.stringify(res)
+    };
+    $.ajax({
+        url: '/plan/addRefCase/',
+        type: 'post',
+        data: params,
+        contentType: 'application/x-www-form-urlencoded',
+        success: function (arg) {
+            showToast(arg['code'], arg['msg']);
+            // 关联测试用例数据后重新加载一次列表数据
+            $('#refCaseTable').bootstrapTable('refresh');
+        }
+    });
+    $('#ref-case-modal').off('shown.bs.modal');
+})
 
 /**
  * 测试计划关联测试用例：未通过测试用例录入bug数据弹框填充部分数据
