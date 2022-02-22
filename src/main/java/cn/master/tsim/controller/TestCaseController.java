@@ -250,5 +250,16 @@ public class TestCaseController {
             e.printStackTrace();
         }
     }
+
+    @GetMapping("/loadUnReviewCases")
+    @ResponseBody
+    public Map<String, Object> loadUnReviewCases(HttpServletRequest request, @RequestParam(value = "pageNum") Integer offset,
+                                           @RequestParam(value = "pageSize") Integer limit) {
+        Map<String, Object> map = new LinkedHashMap<>();
+        IPage<TestCase> iPage = caseService.loadUnReviewCases(request, offset, limit);
+        map.put("total", iPage.getTotal());
+        map.put("rows", CollectionUtils.isNotEmpty(iPage.getRecords()) ? new LinkedList<>(iPage.getRecords()) : new LinkedList<TestCase>());
+        return map;
+    }
 }
 

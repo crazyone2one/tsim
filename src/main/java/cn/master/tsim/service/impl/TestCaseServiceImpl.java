@@ -39,8 +39,10 @@ import java.util.*;
 @Transactional(rollbackFor = {Exception.class, RuntimeException.class})
 public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> implements TestCaseService {
 
-    private final ProjectService projectService;
-    private final ModuleService moduleService;
+    @Autowired
+    private ProjectService projectService;
+    @Autowired
+    private ModuleService moduleService;
     private final TestCaseStepsService stepsService;
     @Autowired
     private PlanCaseRefService refService;
@@ -55,9 +57,7 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
 
 
     @Autowired
-    public TestCaseServiceImpl(ProjectService projectService, ModuleService moduleService, TestCaseStepsService stepsService) {
-        this.projectService = projectService;
-        this.moduleService = moduleService;
+    public TestCaseServiceImpl(TestCaseStepsService stepsService) {
         this.stepsService = stepsService;
     }
 
@@ -182,21 +182,13 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     }
 
     private void extractedSearchWrapper(HttpServletRequest request, QueryWrapper<TestCase> wrapper, List<String> tempProjectId, List<String> tempModuleId) {
-        //            项目名称模糊查询
-        final String projectName = request.getParameter("projectName");
-        if (StringUtils.isNotBlank(projectName)) {
-            final List<Project> projects = projectService.findByPartialProjectName(projectName);
-//          未查询到项目数时不使用项目查询条件
-            if (CollectionUtils.isNotEmpty(projects)) {
-                projects.forEach(temp -> tempProjectId.add(temp.getId()));
-                wrapper.lambda().in(TestCase::getProjectId, tempProjectId);
-            }
-        }
+        String globalProject = request.getParameter("globalProject");
+        // 根据项目查询
+        wrapper.lambda().eq(StringUtils.isNotBlank(globalProject), TestCase::getProjectId, globalProject);
 //            模块模糊查询
         final String moduleName = request.getParameter("moduleName");
         if (StringUtils.isNotBlank(moduleName)) {
-            moduleService.findByPartialModuleName(moduleName).forEach(temp -> tempModuleId.add(temp.getId()));
-            wrapper.lambda().in(TestCase::getModuleId, tempModuleId);
+            wrapper.lambda().eq(TestCase::getModuleId, moduleName);
         }
 //            测试用例标题模糊查询
         final String caseName = request.getParameter("caseName");
@@ -240,19 +232,44 @@ public class TestCaseServiceImpl extends ServiceImpl<TestCaseMapper, TestCase> i
     @Override
     public IPage<TestCase> pageList(HttpServletRequest request, Integer pageCurrent, Integer pageSize) {
         QueryWrapper<TestCase> wrapper = new QueryWrapper<>();
+        String globalProject = request.getParameter("globalProject");
+        // 根据项目查询
+        wrapper.lambda().eq(StringUtils.isNotBlank(globalProject), TestCase::getProjectId, globalProject);
+//            模块模糊查询
+        final String moduleName = request.getParameter("moduleName");
+        if (StringUtils.isNotBlank(moduleName)) {
+            wrapper.lambda().eq(TestCase::getModuleId, moduleName);
+        }
+//            测试用例标题模糊查询
+        final String caseName = request.getParameter("caseName");
+        wrapper.lambda().like(StringUtils.isNotBlank(caseName), TestCase::getName, caseName);
+//            优先级
+        final String priority = request.getParameter("priority");
+        if (StringUtils.isNotBlank(priority)) {
+            wrapper.lambda().eq(TestCase::getPriority, Integer.parseInt(priority));
+        }
+        final String active = request.getParameter("active");
+        if (StringUtils.isNotBlank(active)) {
+            wrapper.lambda().eq(TestCase::getActive, Integer.parseInt(active));
+        }
+        wrapper.lambda().eq(TestCase::getDelFlag, 0).orderByAsc(TestCase::getActive);
+        return baseMapper.selectPage(
+                new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize),
+                wrapper);
+    }
+
+    @Override
+    public IPage<TestCase> loadUnReviewCases(HttpServletRequest request, Integer pageCurrent, Integer pageSize) {
+        QueryWrapper<TestCase> wrapper = new QueryWrapper<>();
         List<String> tempProjectId = new LinkedList<>();
         List<String> tempModuleId = new LinkedList<>();
         if (Objects.nonNull(request)) {
             extractedSearchWrapper(request, wrapper, tempProjectId, tempModuleId);
         }
-        final Page<TestCase> page = baseMapper.selectPage(
+        wrapper.lambda().in(TestCase::getReviewStatus, "0", "2");
+        return baseMapper.selectPage(
                 new Page<>(Objects.equals(pageCurrent, 0) ? 1 : pageCurrent, Objects.equals(pageSize, 0) ? 10 : pageSize),
                 wrapper);
-        page.getRecords().forEach(t -> {
-            t.setProject(projectService.getProjectById(t.getProjectId()));
-            t.setModule(moduleService.getModuleById(t.getModuleId()));
-        });
-        return page;
     }
 
     @Override

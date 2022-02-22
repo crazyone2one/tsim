@@ -6,6 +6,22 @@
 <body id="tsim_body" class="aside-enable">
 <div th:replace="/fragment/commons_v2 :: 2nd-navigation(moduleflag='case',liFlag='case')"></div>
 <div id="wrapper">
+    <!--    左侧菜单-->
+    <div style="width: 15%">
+        <div class="input-group input-group-sm p-1 mt-3">
+            <span class="input-group-text" id="search-module">查询模块</span>
+            <input type="text" class="form-control" aria-label="search-module" aria-describedby="search-module">
+        </div>
+        <div class="tree mt-3" style="height: 100%;">
+            <ul>
+                <li>
+                    <span><i class="bi bi-dash me-2"></i>全部测试用例</span>
+                    <ul id="modal-li" class="">
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </div>
     <div id="content-wrapper" class="d-flex flex-column">
         <div id="content">
             <div class="container-fluid">
@@ -13,24 +29,17 @@
                 <div class="pt-2 border-bottom">
                     <form id="search-form">
                         <div class="btn-group mb-2" role="group" aria-label="search">
-                            <div class="input-group me-2" style="width:15%">
-                                <span class="input-group-text" id="basic-addon1">所属项目</span>
-                                <input type="text" class="form-control" name="projectId" id="p-search"
-                                       placeholder="项目名称（模糊查询）" aria-label="projectId"
-                                       aria-describedby="basic-addon1">
-                            </div>
-                            <div class="input-group me-2" style="width:20%">
-                                <span class="input-group-text" id="basic-addon2">所属模块</span>
-                                <input type="text" class="form-control" name="moduleId"
-                                       placeholder="模块名称（模糊查询）"
-                                       aria-label="moduleId" id="m-search"
-                                       aria-describedby="basic-addon2">
-                            </div>
-                            <div class="input-group me-2" style="width:20%">
-                                <span class="input-group-text" id="basic-addon3">测试用例标题</span>
-                                <input type="text" class="form-control" name="name" placeholder="标题（模糊查询）"
-                                       aria-label="name" id="name-search"
-                                       aria-describedby="basic-addon3">
+<!--                            <div class="input-group me-2" style="width:15%">-->
+<!--                                <span class="input-group-text" id="basic-addon1">所属项目</span>-->
+<!--                                <input type="text" class="form-control" name="projectId" id="p-search" placeholder="项目名称（模糊查询）" aria-label="projectId" aria-describedby="basic-addon1">-->
+<!--                            </div>-->
+<!--                            <div class="input-group me-2" style="width:20%">-->
+<!--                                <span class="input-group-text" id="basic-addon2">所属模块</span>-->
+<!--                                <input type="text" class="form-control" name="moduleId" placeholder="模块名称（模糊查询）" aria-label="moduleId" id="m-search" aria-describedby="basic-addon2">-->
+<!--                            </div>-->
+                            <div class="input-group me-2" >
+                                <span class="input-group-text" id="basic-addon3">用例标题</span>
+                                <input type="text" class="form-control" name="name" placeholder="标题（模糊查询）" aria-label="name" id="name-search" aria-describedby="basic-addon3">
                             </div>
                             <select class="form-select me-2" style="width: fit-content"
                                     aria-label="priority" name="priority" id="priority-search">
@@ -106,28 +115,62 @@
 <script type="text/javascript" th:src="@{/global/js/t-case.js}"></script>
 <script type="text/javascript" th:src="@{/global/js/t-auto-run.js}"></script>
 <script type="text/javascript" th:src="@{/global/js/upload-file.js}"></script>
+<script>
+    /**
+     * 加载左侧模块菜单
+     */
+    function loadModuleTree(url, data) {
+        $.get(url, data, function (response) {
+            const responseElement = response['data'];
+            $('#modal-li').empty();
+            responseElement.forEach(function (r) {
+                let temp_li = '<li class="mb-1"> <span><i class="bi-bookmark me-2"></i>' +
+                    '<a data-module-id="' + r.id + '" href="javascript:void(0);" onclick="refreshTable(\'' + r.id + '\')">' + r.moduleName + '</a>' +
+                    '</span> </li>';
+                $('#modal-li').append(temp_li);
+            });
+        });
+    }
+
+    function cus() {
+        $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+        $('.tree li.parent_li > span').on('click', function (e) {
+            const children = $(this).parent('li.parent_li').find(' > ul > li');
+            if (children.is(':visible')) {
+                children.hide('fast');
+                $(this).attr('title', 'Expand this branch').find(' > i').addClass('bi-plus').removeClass('bi-dash');
+            } else {
+                children.show('fast');
+                $(this).attr('title', 'Collapse this branch').find(' > i').addClass('bi-dash').removeClass('bi-plus');
+            }
+            e.stopPropagation();
+        });
+    }
+
+    $(function () {
+        const url = '/module/queryList/' + $('#globalProject').val();
+        loadModuleTree(url);
+        cus();
+    });
+    /**
+     * 搜索模块功能
+     */
+    $('input[aria-label="search-module"]').on('blur',function (event) {
+        const url = '/module/load-module/';
+        const data = {projectId: $('#globalProject').val(), moduleName: $('input[aria-label="search-module"]').val()};
+        loadModuleTree(url, data);
+        cus();
+    })
+</script>
 <script th:inline="javascript">
     'use strict';
     const $addModal = $('#add-case-modal');
     const _table_columns = [
         {field: 'id', align: 'center', title: 'id', visible: false},
-        {field: 'checked', checkbox: true, align: "center", width: '40'}, {
-            field: 'projectId',
-            align: 'center',
-            title: '所属项目',
-            class: 'col-sm-4',
-            formatter: function (value, row, index) {
-                return row.project.projectName;
-            }
-        }, {
-            field: 'moduleId',
-            align: 'center',
-            title: '所属模块',
-            class: 'col-sm-4',
-            formatter: function (value, row, index) {
-                return row.module.moduleName;
-            }
-        }, {
+        {field: 'checked', checkbox: true, align: "center", width: '40'},
+        // {field: 'projectId', align: 'center', title: '所属项目', class: 'col-sm-4', formatter: function (value, row, index) {return row.project.projectName;}},
+        // {field: 'moduleId', align: 'center', title: '所属模块', class: 'col-sm-4', formatter: function (value, row, index) {return row.module.moduleName;}},
+        {
             field: 'name',
             align: 'center',
             title: '测试用例标题', cellStyle: function (value, row, index) {
@@ -437,8 +480,8 @@
     // 查询条件
     const _search_params = function (params) {
         return {
-            projectName: $('#p-search').val().trim(), // 自定义查询条件
-            moduleName: $('#m-search').val().trim(), // 自定义查询条件
+            // projectName: $('#p-search').val().trim(), // 自定义查询条件
+            // moduleName: $('#m-search').val().trim(), // 自定义查询条件
             caseName: $('#name-search').val().trim(), // 自定义查询条件
             priority: $('#priority-search').val(), // 优先级
             active: $('#active-search').val(), // 是否有效
@@ -460,7 +503,24 @@
         }
         return {};
     }
-    InitTable('/case/reloadTable', 'get', _table_columns, _search_params, '', _rowStyle);
+    $(function () {
+        InitTable('/case/reloadTable', 'get', _table_columns, _search_params, '', _rowStyle);
+    })
+
+    /**
+     * 点击模块后加载测试用例数据
+     * @param moduleId module id
+     */
+    function refreshTable(moduleId) {
+        const params = function (params) {
+            return {
+                moduleName: moduleId,
+                pageSize: params.limit,
+                pageNum: params.offset / params.limit + 1,
+            }
+        };
+        InitTable('/case/reloadTable', 'get', _table_columns, params, '', _rowStyle);
+    }
 
     $addModal.on('show.bs.modal', function (event) {
         $("input[type=hidden][id='hidden-project-id']").val('');

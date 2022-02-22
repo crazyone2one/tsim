@@ -58,6 +58,8 @@ public interface TestCaseService extends IService<TestCase> {
      */
     IPage<TestCase> pageList(HttpServletRequest request, Integer pageCurrent, Integer pageSize);
 
+    IPage<TestCase> loadUnReviewCases(HttpServletRequest request, Integer pageCurrent, Integer pageSize);
+
     /**
      * 测试计划关联测试用例，查询相应的测试用例
      *
