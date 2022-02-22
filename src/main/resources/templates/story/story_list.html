@@ -67,13 +67,7 @@
 <div th:replace="/fragment/commons :: confirm-modal"></div>
 <!-- Logout Modal-->
 <div th:replace="/fragment/commons :: logout"></div>
-<script type="text/javascript" th:src="@{/plugins/jquery-3.6.0.min.js}"></script>
-<script type="text/javascript" th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/bst/bootstrap-table-zh-CN.js}"></script>
-<script type="text/javascript" th:src="@{/plugins/autocomplete.js}"></script>
-<script type="text/javascript" th:src="@{/global/js/common.js}"></script>
-<script type="text/javascript" th:src="@{/global/js/bs.table.js}"></script>
+<div th:replace="/fragment/commons :: generalJS"></div>
 <script>
     const _table_columns = [
         {field: 'id', align: 'center', title: 'id', visible: false}, {
@@ -138,7 +132,7 @@
     InitTable("/story/reloadTable", 'get', _table_columns, _search_params);
 
     function option(value, row, index) {
-        const e = '<button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="add-story-modal" onclick="addOrEditStory(\'' + row.id + '\')"><i class="bi-pencil-square"></i></button>'
+        const e = '<button class="btn btn-sm btn-warning me-1" data-bs-toggle="modal" data-bs-target="#add-story-modal" onclick="addOrEditStory(\'' + row.id + '\')"><i class="bi-pencil-square"></i></button>'
         const d = '<button class="btn btn-sm btn-danger" onclick="deleteStory(\'' + row.id + '\')"><i class="bi-trash"></i></button>';
         return e + d;
     }
