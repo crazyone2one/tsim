@@ -35,8 +35,11 @@ public class CaseReviewRef implements Serializable {
     @TableField("case_id")
     private String caseId;
 
+    @TableField(exist = false)
+    private TestCase testCase;
+
     @TableField("review_status")
-    private Boolean reviewStatus;
+    private Integer reviewStatus;
 
     @TableField("review_content")
     private String reviewContent;

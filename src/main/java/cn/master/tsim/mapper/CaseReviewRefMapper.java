@@ -10,7 +10,7 @@ import java.util.Map;
 
 /**
  * <p>
- *  Mapper 接口
+ * Mapper 接口
  * </p>
  *
  * @author 11's papa
@@ -21,4 +21,7 @@ public interface CaseReviewRefMapper extends BaseMapper<CaseReviewRef> {
 
     @Select("SELECT review_status as s, COUNT(1) as c FROM t_case_review_ref where review_id=#{reviewId} GROUP BY review_status;")
     List<Map<String, String>> queryData(String reviewId);
+
+    @Select("SELECT * FROM t_case_review_ref where review_id=#{reviewId} and review_status!='2';")
+    List<CaseReviewRef> queryByReviewId(String reviewId);
 }
