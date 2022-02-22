@@ -46,6 +46,19 @@ public class ModuleController {
         return result;
     }
 
+    @RequestMapping(value = "/load-module")
+    @ResponseBody
+    public ResponseResult loadModule(HttpServletRequest request) {
+        ResponseResult result = ResponseUtils.success("成功");
+        try {
+            final List<Module> modules = moduleService.findByPartialModuleName(request);
+            result.setData(modules);
+        } catch (Exception e) {
+            ResponseUtils.error("数据查询失败");
+        }
+        return result;
+    }
+
     @RequestMapping(value = "/queryList/{id}")
     @ResponseBody
     public ResponseResult queryListByProject(@PathVariable String id) {

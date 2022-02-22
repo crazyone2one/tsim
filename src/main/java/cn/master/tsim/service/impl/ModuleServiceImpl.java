@@ -3,12 +3,10 @@ package cn.master.tsim.service.impl;
 import cn.master.tsim.entity.Module;
 import cn.master.tsim.mapper.ModuleMapper;
 import cn.master.tsim.service.ModuleService;
-import cn.master.tsim.service.ProjectService;
 import cn.master.tsim.util.UuidUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -24,17 +22,20 @@ import java.util.*;
  */
 @Service
 public class ModuleServiceImpl extends ServiceImpl<ModuleMapper, Module> implements ModuleService {
-    @Autowired
-    private ProjectService projectService;
-
-//    public ModuleServiceImpl(ProjectService projectService) {
-//        this.projectService = projectService;
-//    }
 
     @Override
     public List<Module> findByPartialModuleName(String moduleName) {
         return baseMapper.selectList(new QueryWrapper<Module>().lambda()
                 .like(StringUtils.isNotBlank(moduleName), Module::getModuleName, moduleName));
+    }
+
+    @Override
+    public List<Module> findByPartialModuleName(HttpServletRequest request) {
+        String projectId = request.getParameter("projectId");
+        String moduleId = request.getParameter("moduleName");
+        return baseMapper.selectList(new QueryWrapper<Module>().lambda()
+                .eq(Module::getProjectId,projectId)
+                .like(StringUtils.isNotBlank(moduleId), Module::getModuleName, moduleId));
     }
 
     @Override

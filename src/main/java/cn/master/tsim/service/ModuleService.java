@@ -19,6 +19,8 @@ public interface ModuleService extends IService<Module> {
 
     List<Module> findByPartialModuleName(String moduleName);
 
+    List<Module> findByPartialModuleName(HttpServletRequest request);
+
     Map<String, Module> moduleMap();
 
     Module getModuleById(String id);
